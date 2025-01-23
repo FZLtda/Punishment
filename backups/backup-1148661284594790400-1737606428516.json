@@ -1,0 +1,123 @@
+{
+  "guildName": "Desenvolvimento",
+  "guildId": "1148661284594790400",
+  "roles": [
+    {
+      "id": "1321247794484478004",
+      "name": "Punishment",
+      "color": 0,
+      "permissions": "8",
+      "position": 6,
+      "hoist": false,
+      "mentionable": false
+    },
+    {
+      "id": "1282151743672811532",
+      "name": "configuração",
+      "color": 0,
+      "permissions": "1721826618638327",
+      "position": 5,
+      "hoist": true,
+      "mentionable": false
+    },
+    {
+      "id": "1256054836496175195",
+      "name": "•",
+      "color": 16660536,
+      "permissions": "1721807559716687",
+      "position": 4,
+      "hoist": true,
+      "mentionable": false
+    },
+    {
+      "id": "1326324178457985056",
+      "name": "FuncZero Status",
+      "color": 0,
+      "permissions": "8",
+      "position": 3,
+      "hoist": false,
+      "mentionable": false
+    },
+    {
+      "id": "1330305042044948504",
+      "name": "Tradutor IA",
+      "color": 0,
+      "permissions": "8",
+      "position": 2,
+      "hoist": false,
+      "mentionable": false
+    },
+    {
+      "id": "1331086787426385991",
+      "name": "Teste do func",
+      "color": 654403,
+      "permissions": "0",
+      "position": 1,
+      "hoist": false,
+      "mentionable": false
+    }
+  ],
+  "channels": [
+    {
+      "id": "1330537225095479398",
+      "name": "Desenvolvimento",
+      "type": 4,
+      "parentId": null,
+      "position": 0,
+      "permissionOverwrites": []
+    },
+    {
+      "id": "1330537226408562688",
+      "name": "Musicas",
+      "type": 2,
+      "parentId": "1330537225095479398",
+      "position": 0,
+      "permissionOverwrites": []
+    },
+    {
+      "id": "1290963861377253426",
+      "name": "testes",
+      "type": 0,
+      "parentId": null,
+      "position": 2,
+      "permissionOverwrites": [
+        {
+          "id": "1148661284594790400",
+          "type": 0,
+          "allow": "274877910016",
+          "deny": "103079215104"
+        }
+      ]
+    },
+    {
+      "id": "1312816457712668752",
+      "name": "logs",
+      "type": 0,
+      "parentId": "1330537225095479398",
+      "position": 4,
+      "permissionOverwrites": [
+        {
+          "id": "1148661284594790400",
+          "type": 0,
+          "allow": "1024",
+          "deny": "377957124096"
+        }
+      ]
+    },
+    {
+      "id": "1330537227238768763",
+      "name": "comandos",
+      "type": 0,
+      "parentId": "1330537225095479398",
+      "position": 5,
+      "permissionOverwrites": [
+        {
+          "id": "1148661284594790400",
+          "type": 0,
+          "allow": "0",
+          "deny": "0"
+        }
+      ]
+    }
+  ]
+}
