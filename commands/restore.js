@@ -1,5 +1,4 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const fs = require('fs');
 const fetch = require('node-fetch');
 
 module.exports = {
@@ -29,8 +28,26 @@ module.exports = {
       const channelMapping = new Map();
       const roleMapping = new Map();
 
+      const channelTypeMapping = {
+        GUILD_TEXT: 0,
+        GUILD_VOICE: 2,
+        GUILD_CATEGORY: 4,
+        GUILD_NEWS: 5,
+        GUILD_STAGE_VOICE: 13,
+      };
+
       for (const roleData of backupData.roles) {
-        if (guild.roles.cache.has(roleData.id)) continue;
+        const existingRole = guild.roles.cache.find(
+          (role) =>
+            role.name === roleData.name &&
+            role.color === roleData.color &&
+            role.permissions.bitfield.toString() === roleData.permissions
+        );
+
+        if (existingRole) {
+          roleMapping.set(roleData.id, existingRole.id);
+          continue;
+        }
 
         const newRole = await guild.roles.create({
           name: roleData.name,
@@ -43,9 +60,19 @@ module.exports = {
       }
 
       for (const channelData of backupData.channels.filter((ch) => ch.type === 4)) {
+        const existingCategory = guild.channels.cache.find(
+          (channel) => channel.name === channelData.name && channel.type === 4
+        );
+
+        if (existingCategory) {
+          categoryMapping.set(channelData.id, existingCategory.id);
+          channelMapping.set(channelData.id, existingCategory.id);
+          continue;
+        }
+
         const newCategory = await guild.channels.create({
           name: channelData.name,
-          type: channelData.type,
+          type: channelTypeMapping['GUILD_CATEGORY'],
           position: channelData.position,
         });
         categoryMapping.set(channelData.id, newCategory.id);
@@ -53,11 +80,20 @@ module.exports = {
       }
 
       for (const channelData of backupData.channels.filter((ch) => ch.type !== 4)) {
+        const existingChannel = guild.channels.cache.find(
+          (channel) => channel.name === channelData.name && channel.type === channelTypeMapping[channelData.type]
+        );
+
+        if (existingChannel) {
+          channelMapping.set(channelData.id, existingChannel.id);
+          continue;
+        }
+
         const parentId = categoryMapping.get(channelData.parentId) || null;
 
         const newChannel = await guild.channels.create({
           name: channelData.name,
-          type: channelData.type,
+          type: channelTypeMapping[channelData.type] || 0,
           parent: parentId,
           position: channelData.position,
           permissionOverwrites: channelData.permissionOverwrites.map((overwrite) => ({
