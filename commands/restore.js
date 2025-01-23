@@ -71,7 +71,7 @@ module.exports = {
       }
 
       const embed = new EmbedBuilder()
-        .setTitle('<:emoji_33:1219788320234803250> Restauração Completa')
+        .setTitle('<:emoji_48:1324013629884076083> Restauração Completa')
         .setColor('Green')
         .setDescription('O estado do servidor foi restaurado com sucesso a partir do backup fornecido!')
         .setFooter({

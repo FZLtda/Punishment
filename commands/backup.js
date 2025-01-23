@@ -54,12 +54,11 @@ module.exports = {
       const backupPath = path.resolve(__dirname, '../backups');
       if (!fs.existsSync(backupPath)) fs.mkdirSync(backupPath);
 
-      const timestamp = Date.now();
-      const backupFile = path.join(backupPath, `backup-${guild.id}-${timestamp}.json`);
+      const backupFile = path.join(backupPath, `backup_${guild.id}.json`);
       fs.writeFileSync(backupFile, JSON.stringify(backupData, serializeBigInt, 2));
 
       const embed = new EmbedBuilder()
-        .setTitle('<:emoji_33:1219788320234803250> Backup Criado com Sucesso')
+        .setTitle('<:emoji_46:1332034311800619029> Backup Criado com Sucesso')
         .setColor('Green')
         .setDescription('As informações do servidor foram salvas com sucesso!')
         .addFields({ name: 'Servidor', value: `${guild.name}`, inline: true })
