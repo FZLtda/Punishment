@@ -18,26 +18,32 @@ module.exports = {
     const isEnabled = subcommand === 'on';
     antilinkStatus.set(message.guild.id, isEnabled);
 
-    console.log(`Antilink para o servidor ${message.guild.id}: ${isEnabled}`);
-
-    return message.reply(
-      `**<:emoji_33:1219788320234803250> Sistema de bloqueio de links ${
+    message.channel.send(
+      `<:emoji_33:1219788320234803250> Sistema de bloqueio de links ${
         isEnabled ? 'ativado' : 'desativado'
-      } com sucesso.**`
+      } com sucesso.`
     );
+
+    if (isEnabled) {
+      this.startAntilinkListener(message.client);
+    }
   },
 
-  init(client) {
+  startAntilinkListener(client) {
+    if (this.listenerRegistered) return; 
+    this.listenerRegistered = true;
+
     client.on('messageCreate', async (message) => {
       const isAntilinkEnabled = antilinkStatus.get(message.guild?.id);
       if (!isAntilinkEnabled) return;
 
       if (!message.guild || message.author.bot) return;
-      if (message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) return;
 
       const linkRegex = /(https?:\/\/|www\.)\S+/gi;
 
       if (linkRegex.test(message.content)) {
+        if (message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) return;
+
         try {
           await message.delete();
           const reply = await message.channel.send(
