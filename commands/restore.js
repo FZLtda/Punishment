@@ -1,5 +1,6 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const fs = require('fs');
+const fetch = require('node-fetch');
 
 module.exports = {
   name: 'restore',
@@ -15,51 +16,58 @@ module.exports = {
     }
 
     try {
-      // Baixa o arquivo de backup
       const response = await fetch(attachment.url);
       const backupData = await response.json();
 
-      // Verifica o formato do backup
       if (!backupData.roles || !backupData.channels) {
         return message.reply('<:no:1122370713932795997> O arquivo de backup é inválido ou está corrompido.');
       }
 
       const guild = message.guild;
 
-      // Restaurar cargos
-      for (const roleData of backupData.roles) {
-        if (guild.roles.cache.has(roleData.id)) continue; // Ignorar cargos já existentes
+      const categoryMapping = new Map();
+      const channelMapping = new Map();
+      const roleMapping = new Map();
 
-        await guild.roles.create({
+      for (const roleData of backupData.roles) {
+        if (guild.roles.cache.has(roleData.id)) continue;
+
+        const newRole = await guild.roles.create({
           name: roleData.name,
           color: roleData.color,
           permissions: BigInt(roleData.permissions),
           hoist: roleData.hoist,
           mentionable: roleData.mentionable,
-          position: roleData.position,
         });
+        roleMapping.set(roleData.id, newRole.id);
       }
 
-      // Restaurar canais
-      for (const channelData of backupData.channels) {
-        if (guild.channels.cache.has(channelData.id)) continue; // Ignorar canais já existentes
-
-        const parent = channelData.parentId
-          ? guild.channels.cache.get(channelData.parentId)
-          : null;
-
-        await guild.channels.create({
+      for (const channelData of backupData.channels.filter((ch) => ch.type === 4)) {
+        const newCategory = await guild.channels.create({
           name: channelData.name,
           type: channelData.type,
-          parent: parent || null,
+          position: channelData.position,
+        });
+        categoryMapping.set(channelData.id, newCategory.id);
+        channelMapping.set(channelData.id, newCategory.id);
+      }
+
+      for (const channelData of backupData.channels.filter((ch) => ch.type !== 4)) {
+        const parentId = categoryMapping.get(channelData.parentId) || null;
+
+        const newChannel = await guild.channels.create({
+          name: channelData.name,
+          type: channelData.type,
+          parent: parentId,
           position: channelData.position,
           permissionOverwrites: channelData.permissionOverwrites.map((overwrite) => ({
-            id: overwrite.id,
+            id: roleMapping.get(overwrite.id) || overwrite.id,
             allow: BigInt(overwrite.allow),
             deny: BigInt(overwrite.deny),
             type: overwrite.type,
           })),
         });
+        channelMapping.set(channelData.id, newChannel.id);
       }
 
       const embed = new EmbedBuilder()
