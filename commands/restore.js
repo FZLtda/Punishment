@@ -59,14 +59,12 @@ module.exports = {
         roleMapping.set(roleData.id, newRole.id);
       }
 
-      for (const channelData of backupData.channels.filter((ch) => ch.type === 4)) {
-        const existingCategory = guild.channels.cache.find(
-          (channel) => channel.name === channelData.name && channel.type === 4
-        );
+      const serverChannelIds = guild.channels.cache.map((channel) => channel.id);
 
-        if (existingCategory) {
-          categoryMapping.set(channelData.id, existingCategory.id);
-          channelMapping.set(channelData.id, existingCategory.id);
+      for (const channelData of backupData.channels.filter((ch) => ch.type === 4)) {
+        if (serverChannelIds.includes(channelData.id)) {
+          categoryMapping.set(channelData.id, channelData.id);
+          channelMapping.set(channelData.id, channelData.id);
           continue;
         }
 
@@ -80,12 +78,8 @@ module.exports = {
       }
 
       for (const channelData of backupData.channels.filter((ch) => ch.type !== 4)) {
-        const existingChannel = guild.channels.cache.find(
-          (channel) => channel.name === channelData.name && channel.type === channelTypeMapping[channelData.type]
-        );
-
-        if (existingChannel) {
-          channelMapping.set(channelData.id, existingChannel.id);
+        if (serverChannelIds.includes(channelData.id)) {
+          channelMapping.set(channelData.id, channelData.id);
           continue;
         }
 
