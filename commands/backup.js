@@ -24,28 +24,30 @@ module.exports = {
           .filter((role) => role.id !== guild.id)
           .sort((a, b) => b.position - a.position)
           .map((role) => ({
-            id: role.id.toString(),
-            name: role.name,
-            color: role.color,
-            permissions: role.permissions.bitfield.toString(),
-            position: role.position,
-            hoist: role.hoist,
-            mentionable: role.mentionable,
+            id: role.id?.toString() || 'N/A',
+            name: role.name || 'Sem Nome',
+            color: role.color || 0,
+            permissions: role.permissions?.bitfield?.toString() || '0',
+            position: role.position || 0,
+            hoist: role.hoist || false,
+            mentionable: role.mentionable || false,
           })),
-        channels: guild.channels.cache
-          .sort((a, b) => a.rawPosition - b.rawPosition)
+        channels: guild.channels?.cache
+          .sort((a, b) => (a.rawPosition || 0) - (b.rawPosition || 0))
           .map((channel) => ({
-            id: channel.id.toString(),
-            name: channel.name,
-            type: channel.type,
+            id: channel.id?.toString() || 'N/A',
+            name: channel.name || 'Sem Nome',
+            type: channel.type || 'UNKNOWN',
             parentId: channel.parentId ? channel.parentId.toString() : null,
-            position: channel.rawPosition,
-            permissionOverwrites: channel.permissionOverwrites.cache.map((overwrite) => ({
-              id: overwrite.id.toString(),
-              type: overwrite.type,
-              allow: overwrite.allow.bitfield.toString(),
-              deny: overwrite.deny.bitfield.toString(),
-            })),
+            position: channel.rawPosition || 0,
+            permissionOverwrites: channel.permissionOverwrites?.cache
+              ? channel.permissionOverwrites.cache.map((overwrite) => ({
+                  id: overwrite.id?.toString() || 'N/A',
+                  type: overwrite.type || 'UNKNOWN',
+                  allow: overwrite.allow?.bitfield?.toString() || '0',
+                  deny: overwrite.deny?.bitfield?.toString() || '0',
+                }))
+              : [],
           })),
       };
 
@@ -67,15 +69,16 @@ module.exports = {
         })
         .setTimestamp();
 
-      const msg = await message.channel.send({ embeds: [embed] });
+      await message.channel.send({ embeds: [embed] });
 
       const attachment = new AttachmentBuilder(backupFile);
       await message.channel.send({ files: [attachment] });
     } catch (error) {
       console.error(error);
+
       const errorEmbed = new EmbedBuilder()
         .setTitle('<:no:1122370713932795997> Erro ao Criar Backup')
-        .setDescription('Houve um problema ao tentar criar o backup.')
+        .setDescription('Houve um problema ao tentar criar o backup. Confira o console para mais detalhes.')
         .setColor('Red')
         .setTimestamp();
 
