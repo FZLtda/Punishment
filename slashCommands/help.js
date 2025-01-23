@@ -28,7 +28,7 @@ module.exports = {
 
       const commandEmbed = new EmbedBuilder()
         .setColor('#0077FF')
-        .setTitle(`📘 Informações do Comando: ${slashCommand ? `/${slashCommand.data.name}` : `${prefixCommand.name}`}`)
+        .setTitle(`<:emoji_45:1323360352498618398> Informações do Comando: ${slashCommand ? `/${slashCommand.data.name}` : `${prefixCommand.name}`}`)
         .addFields(
           { name: 'Descrição', value: slashCommand?.data.description || prefixCommand?.description || 'Nenhuma descrição disponível.', inline: false },
           {
@@ -38,7 +38,7 @@ module.exports = {
           }
         )
         .setFooter({
-          text: `Requisitado por ${interaction.user.tag}`,
+          text: `${interaction.user.tag}`,
           iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
