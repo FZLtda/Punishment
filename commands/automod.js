@@ -159,7 +159,7 @@ async function handleRemoveWord(interaction) {
   await interaction.followUp({ embeds: [embed] });
 
   const filter = (m) => m.author.id === interaction.user.id;
-  const collector = interaction.channel.createMessageCollector({ filter, time: 30000, max: 2 });
+  const collector = interaction.channel.createMessageCollector({ filter, time: 60000 });
 
   let step = 0;
   let ruleId;
@@ -173,18 +173,19 @@ async function handleRemoveWord(interaction) {
       await interaction.followUp({ embeds: [embed] });
       step++;
     } else {
-      const wordsToRemove = collected.content.split(',').map((word) => word.trim());
+      const wordsToRemove = collected.content.split(',').map((word) => word.trim().toLowerCase());
       try {
         const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
         if (!rule) {
           const errorEmbed = new EmbedBuilder()
-            .setDescription('⚠️ Regra não encontrada.')
+            .setDescription('⚠️ Regra não encontrada. Verifique o ID da regra.')
             .setColor('Red');
           return interaction.followUp({ embeds: [errorEmbed] });
         }
 
-        const updatedWords = rule.triggerMetadata.keywordFilter.filter(
-          (word) => !wordsToRemove.includes(word)
+        const currentWords = rule.triggerMetadata.keywordFilter || [];
+        const updatedWords = currentWords.filter(
+          (word) => !wordsToRemove.includes(word.toLowerCase())
         );
 
         await rule.edit({
@@ -194,16 +195,22 @@ async function handleRemoveWord(interaction) {
         });
 
         const successEmbed = new EmbedBuilder()
-          .setDescription(`✅ Palavras removidas com sucesso da regra **${rule.name}**.`)
+          .setDescription(
+            `✅ Palavras removidas com sucesso da regra **${rule.name}**.\n\n` +
+            `**Palavras removidas:** ${wordsToRemove.join(', ')}\n` +
+            `**Palavras restantes:** ${updatedWords.join(', ') || 'Nenhuma'}`
+          )
           .setColor('Green');
         await interaction.followUp({ embeds: [successEmbed] });
       } catch (error) {
         console.error(error);
         const errorEmbed = new EmbedBuilder()
-          .setDescription('❌ Ocorreu um erro ao remover palavras.')
+          .setDescription('❌ Ocorreu um erro ao remover palavras. Verifique o ID ou as palavras.')
           .setColor('Red');
         await interaction.followUp({ embeds: [errorEmbed] });
       }
+
+      collector.stop();
     }
   });
 }
