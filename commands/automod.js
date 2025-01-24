@@ -60,9 +60,12 @@ module.exports = {
       if (interaction.user.id !== message.author.id) {
         return interaction.reply({
           content: '⚠️ Apenas quem executou o comando pode interagir com os botões.',
-          flags: 64,
+          ephemeral: true,
         });
       }
+
+      // Defer a interação para evitar o erro InteractionNotReplied
+      await interaction.deferReply({ ephemeral: true });
 
       switch (interaction.customId) {
         case 'create_rule':
@@ -86,7 +89,7 @@ module.exports = {
           break;
 
         default:
-          await interaction.reply({ content: '❌ Botão inválido.', flags: 64 });
+          await interaction.followUp({ content: '❌ Botão inválido.' });
       }
     });
 
@@ -97,9 +100,8 @@ module.exports = {
 };
 
 async function handleCreateRule(interaction) {
-  await interaction.reply({
+  await interaction.followUp({
     content: '📝 Digite o nome da nova regra:',
-    flags: 64,
   });
 
   const filter = (m) => m.author.id === interaction.user.id;
@@ -108,7 +110,7 @@ async function handleCreateRule(interaction) {
   collector.on('collect', async (collected) => {
     const ruleName = collected.content.trim();
     if (!ruleName) {
-      return interaction.followUp({ content: '⚠️ O nome da regra não pode ser vazio.', flags: 64 });
+      return interaction.followUp({ content: '⚠️ O nome da regra não pode ser vazio.' });
     }
 
     try {
@@ -127,10 +129,10 @@ async function handleCreateRule(interaction) {
         enabled: true,
       });
 
-      await interaction.followUp({ content: `✅ Regra criada com sucesso: **${ruleName}**.`, flags: 64 });
+      await interaction.followUp({ content: `✅ Regra criada com sucesso: **${ruleName}**.` });
     } catch (error) {
       console.error(error);
-      await interaction.followUp({ content: '❌ Ocorreu um erro ao criar a regra.', flags: 64 });
+      await interaction.followUp({ content: '❌ Ocorreu um erro ao criar a regra.' });
     }
   });
 }
@@ -140,9 +142,8 @@ async function handleViewRules(interaction) {
     const rules = await interaction.guild.autoModerationRules.fetch();
 
     if (rules.size === 0) {
-      return interaction.reply({
+      return interaction.followUp({
         content: '⚠️ Não há regras de AutoMod configuradas no servidor.',
-        flags: 64,
       });
     }
 
@@ -153,13 +154,12 @@ async function handleViewRules(interaction) {
 
     const chunks = chunkMessage(ruleList.join('\n'), 2000);
     for (const chunk of chunks) {
-      await interaction.followUp({ content: chunk, flags: 64 });
+      await interaction.followUp({ content: chunk });
     }
   } catch (error) {
     console.error(error);
-    await interaction.reply({
+    await interaction.followUp({
       content: '❌ Ocorreu um erro ao listar as regras.',
-      flags: 64,
     });
   }
 }
