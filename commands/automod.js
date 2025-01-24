@@ -60,7 +60,7 @@ module.exports = {
       if (interaction.user.id !== message.author.id) {
         return interaction.reply({
           content: '⚠️ Apenas quem executou o comando pode interagir com os botões.',
-          ephemeral: true,
+          flags: 64,
         });
       }
 
@@ -86,7 +86,7 @@ module.exports = {
           break;
 
         default:
-          await interaction.reply({ content: '❌ Botão inválido.', ephemeral: true });
+          await interaction.reply({ content: '❌ Botão inválido.', flags: 64 });
       }
     });
 
@@ -99,7 +99,7 @@ module.exports = {
 async function handleCreateRule(interaction) {
   await interaction.reply({
     content: '📝 Digite o nome da nova regra:',
-    ephemeral: true,
+    flags: 64,
   });
 
   const filter = (m) => m.author.id === interaction.user.id;
@@ -108,7 +108,7 @@ async function handleCreateRule(interaction) {
   collector.on('collect', async (collected) => {
     const ruleName = collected.content.trim();
     if (!ruleName) {
-      return interaction.followUp('⚠️ O nome da regra não pode ser vazio.');
+      return interaction.followUp({ content: '⚠️ O nome da regra não pode ser vazio.', flags: 64 });
     }
 
     try {
@@ -127,121 +127,10 @@ async function handleCreateRule(interaction) {
         enabled: true,
       });
 
-      await interaction.followUp(`✅ Regra criada com sucesso: **${ruleName}**.`);
+      await interaction.followUp({ content: `✅ Regra criada com sucesso: **${ruleName}**.`, flags: 64 });
     } catch (error) {
       console.error(error);
-      await interaction.followUp('❌ Ocorreu um erro ao criar a regra.');
-    }
-  });
-}
-
-async function handleAddWord(interaction) {
-  await interaction.reply({
-    content: '📝 Digite o ID da regra onde deseja adicionar palavras:',
-    ephemeral: true,
-  });
-
-  const filter = (m) => m.author.id === interaction.user.id;
-  const collector = interaction.channel.createMessageCollector({ filter, time: 30000, max: 2 });
-
-  let step = 0;
-  let ruleId;
-
-  collector.on('collect', async (collected) => {
-    if (step === 0) {
-      ruleId = collected.content.trim();
-      await interaction.followUp('📝 Agora, digite as palavras que deseja adicionar (separe por vírgulas):');
-      step++;
-    } else {
-      const words = collected.content.split(',').map((word) => word.trim());
-      try {
-        const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
-        if (!rule) {
-          return interaction.followUp('⚠️ Regra não encontrada.');
-        }
-
-        const existingWords = rule.triggerMetadata.keywordFilter || [];
-        await rule.edit({
-          triggerMetadata: {
-            keywordFilter: [...existingWords, ...words],
-          },
-        });
-
-        await interaction.followUp(`✅ Palavras adicionadas com sucesso à regra **${rule.name}**.`);
-      } catch (error) {
-        console.error(error);
-        await interaction.followUp('❌ Ocorreu um erro ao adicionar palavras.');
-      }
-    }
-  });
-}
-
-async function handleDeleteRule(interaction) {
-  await interaction.reply({
-    content: '🗑️ Digite o ID da regra que deseja excluir:',
-    ephemeral: true,
-  });
-
-  const filter = (m) => m.author.id === interaction.user.id;
-  const collector = interaction.channel.createMessageCollector({ filter, time: 30000, max: 1 });
-
-  collector.on('collect', async (collected) => {
-    const ruleId = collected.content.trim();
-
-    try {
-      const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
-      if (!rule) {
-        return interaction.followUp('⚠️ Regra não encontrada.');
-      }
-
-      await rule.delete();
-      await interaction.followUp(`✅ Regra **${rule.name}** excluída com sucesso.`);
-    } catch (error) {
-      console.error(error);
-      await interaction.followUp('❌ Ocorreu um erro ao excluir a regra.');
-    }
-  });
-}
-
-async function handleRemoveWord(interaction) {
-  await interaction.reply({
-    content: '🗑️ Digite o ID da regra onde deseja remover palavras:',
-    ephemeral: true,
-  });
-
-  const filter = (m) => m.author.id === interaction.user.id;
-  const collector = interaction.channel.createMessageCollector({ filter, time: 30000, max: 2 });
-
-  let step = 0;
-  let ruleId;
-
-  collector.on('collect', async (collected) => {
-    if (step === 0) {
-      ruleId = collected.content.trim();
-      await interaction.followUp('📝 Agora, digite as palavras que deseja remover (separe por vírgulas):');
-      step++;
-    } else {
-      const wordsToRemove = collected.content.split(',').map((word) => word.trim());
-      try {
-        const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
-        if (!rule) {
-          return interaction.followUp('⚠️ Regra não encontrada.');
-        }
-
-        const updatedWords = rule.triggerMetadata.keywordFilter.filter(
-          (word) => !wordsToRemove.includes(word)
-        );
-        await rule.edit({
-          triggerMetadata: {
-            keywordFilter: updatedWords,
-          },
-        });
-
-        await interaction.followUp(`✅ Palavras removidas com sucesso da regra **${rule.name}**.`);
-      } catch (error) {
-        console.error(error);
-        await interaction.followUp('❌ Ocorreu um erro ao remover palavras.');
-      }
+      await interaction.followUp({ content: '❌ Ocorreu um erro ao criar a regra.', flags: 64 });
     }
   });
 }
@@ -253,20 +142,39 @@ async function handleViewRules(interaction) {
     if (rules.size === 0) {
       return interaction.reply({
         content: '⚠️ Não há regras de AutoMod configuradas no servidor.',
-        ephemeral: true,
+        flags: 64,
       });
     }
 
-    const ruleList = rules
-      .map((rule) => `🔹 **${rule.name}** (ID: \`${rule.id}\`) - Palavras: ${rule.triggerMetadata.keywordFilter.join(', ') || 'Nenhuma'}`)
-      .join('\n');
-
-    await interaction.reply({
-      content: `📋 **Regras de AutoMod configuradas:**\n${ruleList}`,
-      ephemeral: true,
+    const ruleList = rules.map((rule) => {
+      const keywords = rule.triggerMetadata.keywordFilter.join(', ') || 'Nenhuma';
+      return `🔹 **${rule.name}** (ID: \`${rule.id}\`) - Palavras: ${keywords}`;
     });
+
+    const chunks = chunkMessage(ruleList.join('\n'), 2000);
+    for (const chunk of chunks) {
+      await interaction.followUp({ content: chunk, flags: 64 });
+    }
   } catch (error) {
     console.error(error);
-    await interaction.reply('❌ Ocorreu um erro ao listar as regras.');
+    await interaction.reply({
+      content: '❌ Ocorreu um erro ao listar as regras.',
+      flags: 64,
+    });
   }
+}
+
+function chunkMessage(message, maxLength) {
+  const chunks = [];
+  while (message.length > maxLength) {
+    let chunk = message.slice(0, maxLength);
+    const lastLineBreak = chunk.lastIndexOf('\n');
+    if (lastLineBreak > 0) {
+      chunk = message.slice(0, lastLineBreak);
+    }
+    chunks.push(chunk);
+    message = message.slice(chunk.length);
+  }
+  chunks.push(message);
+  return chunks;
 }
