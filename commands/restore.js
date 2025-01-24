@@ -1,5 +1,6 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const fetch = require('node-fetch');
+const { logModerationAction } = require('../moderationUtils');
 
 module.exports = {
   name: 'restore',
@@ -36,6 +37,8 @@ module.exports = {
         GUILD_STAGE_VOICE: 13,
       };
 
+      const serverChannelIds = guild.channels.cache.map((channel) => channel.id);
+
       for (const roleData of backupData.roles) {
         const existingRole = guild.roles.cache.find(
           (role) =>
@@ -58,8 +61,6 @@ module.exports = {
         });
         roleMapping.set(roleData.id, newRole.id);
       }
-
-      const serverChannelIds = guild.channels.cache.map((channel) => channel.id);
 
       for (const channelData of backupData.channels.filter((ch) => ch.type === 4)) {
         if (serverChannelIds.includes(channelData.id)) {
@@ -100,10 +101,22 @@ module.exports = {
         channelMapping.set(channelData.id, newChannel.id);
       }
 
+      logModerationAction(
+        message.guild.id,
+        message.author.id,
+        'Restore',
+        null,
+        `Servidor restaurado com ${backupData.roles.length} cargos e ${backupData.channels.length} canais`
+      );
+
       const embed = new EmbedBuilder()
         .setTitle('<:emoji_48:1324013629884076083> Restauração Completa')
         .setColor('Green')
         .setDescription('O estado do servidor foi restaurado com sucesso a partir do backup fornecido!')
+        .addFields(
+          { name: 'Canais Restaurados', value: `${backupData.channels.length}`, inline: true },
+          { name: 'Cargos Restaurados', value: `${backupData.roles.length}`, inline: true }
+        )
         .setFooter({
           text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),

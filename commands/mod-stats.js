@@ -13,25 +13,39 @@ module.exports = {
     }
 
     try {
-      const totalActions = db.prepare('SELECT COUNT(*) AS count FROM mod_actions').get();
+      const guildId = message.guild.id;
 
+      // Total de ações no servidor atual
+      const totalActions = db
+        .prepare('SELECT COUNT(*) AS count FROM mod_actions WHERE guild_id = ?')
+        .get(guildId);
+
+      // Ações agrupadas por tipo no servidor atual
       const actionsByType = db
-        .prepare('SELECT action_type, COUNT(*) AS count FROM mod_actions GROUP BY action_type')
-        .all();
+        .prepare('SELECT action_type, COUNT(*) AS count FROM mod_actions WHERE guild_id = ? GROUP BY action_type')
+        .all(guildId);
 
+      // Top moderadores por número de ações no servidor atual
       const actionsByModerator = db
-        .prepare('SELECT moderator_id, COUNT(*) AS count FROM mod_actions GROUP BY moderator_id ORDER BY count DESC LIMIT 5')
-        .all();
+        .prepare(
+          'SELECT moderator_id, COUNT(*) AS count FROM mod_actions WHERE guild_id = ? GROUP BY moderator_id ORDER BY count DESC LIMIT 5'
+        )
+        .all(guildId);
 
+      // Ações mais recentes no servidor atual
       const recentActions = db
-        .prepare('SELECT moderator_id, action_type, target_id, reason, timestamp FROM mod_actions ORDER BY timestamp DESC LIMIT 5')
-        .all();
+        .prepare(
+          'SELECT moderator_id, action_type, target_id, reason, timestamp FROM mod_actions WHERE guild_id = ? ORDER BY timestamp DESC LIMIT 5'
+        )
+        .all(guildId);
 
+      // Construindo as estatísticas por tipo de ação
       let typeStats = '';
       for (const action of actionsByType) {
         typeStats += `**${action.action_type}:** ${action.count}\n`;
       }
 
+      // Construindo as estatísticas por moderador
       let moderatorStats = '';
       for (const mod of actionsByModerator) {
         const user = await message.guild.members.fetch(mod.moderator_id).catch(() => null);
@@ -39,6 +53,7 @@ module.exports = {
         moderatorStats += `**${username}:** ${mod.count} ações\n`;
       }
 
+      // Construindo a lista de ações mais recentes
       let recentStats = '';
       for (const action of recentActions) {
         const moderator = await message.guild.members.fetch(action.moderator_id).catch(() => null);
@@ -48,6 +63,7 @@ module.exports = {
         recentStats += `**${action.action_type}:** ${moderatorName} -> ${targetName}\nMotivo: ${action.reason || 'Nenhum'}\n\n`;
       }
 
+      // Cria o embed para exibir as estatísticas
       const embed = new EmbedBuilder()
         .setTitle('<:emoji_48:1332357299339005974> Estatísticas de Moderação')
         .setColor('Blue')

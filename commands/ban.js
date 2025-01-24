@@ -1,4 +1,5 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { logModerationAction } = require('../moderationUtils');
 
 module.exports = {
   name: 'ban',
@@ -22,6 +23,8 @@ module.exports = {
     try {
       await membro.ban({ reason: motivo });
 
+      logModerationAction(message.guild.id, message.author.id, 'Ban', membro.id, motivo);
+
       const embed = new EmbedBuilder()
         .setTitle('<:emoji_49:1207525971884900373> Punição aplicada')
         .setColor('Red')
@@ -31,7 +34,7 @@ module.exports = {
         )
         .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
         .setFooter({
-          text: `${message.author.displayName}`,
+          text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();

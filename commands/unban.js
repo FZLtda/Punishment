@@ -1,4 +1,5 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { logModerationAction } = require('../moderationUtils');
 
 module.exports = {
   name: 'unban',
@@ -24,6 +25,14 @@ module.exports = {
 
       await message.guild.members.unban(userId, motivo);
 
+      logModerationAction(
+        message.guild.id,
+        message.author.id,
+        'Unban',
+        userId,
+        motivo
+      );
+
       const embed = new EmbedBuilder()
         .setTitle('<:emoji_48:1207522369426423808> Punição revogada')
         .setColor('Green')
@@ -32,7 +41,7 @@ module.exports = {
           { name: 'Motivo', value: motivo, inline: false }
         )
         .setFooter({
-          text: `${message.author.displayName}`,
+          text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();

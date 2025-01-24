@@ -1,4 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
+const { logModerationAction } = require('../moderationUtils');
 
 const antilinkStatus = new Map();
 
@@ -46,6 +47,15 @@ module.exports = {
 
         try {
           await message.delete();
+
+          logModerationAction(
+            message.guild.id,
+            message.client.user.id,
+            'Antilink',
+            message.author.id,
+            'Mensagem com link excluída automaticamente'
+          );
+
           const reply = await message.channel.send(
             `<:no:1122370713932795997> ${message.author}, links não são permitidos neste servidor.`
           );

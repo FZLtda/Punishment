@@ -31,13 +31,10 @@ module.exports = {
     }
 
     try {
-      // Aplica o timeout no membro
       await membro.timeout(duracao, motivo);
 
-      // Registra a ação de moderação no banco de dados
-      logModerationAction(message.author.id, 'Mute', membro.id, motivo);
+      logModerationAction(message.guild.id, message.author.id, 'Mute', membro.id, motivo);
 
-      // Cria o embed de confirmação
       const embed = new EmbedBuilder()
         .setTitle('<:mute:1207381613185339473> Punição aplicada')
         .setColor('Red')

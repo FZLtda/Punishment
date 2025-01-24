@@ -29,8 +29,7 @@ module.exports = {
     try {
       await member.roles.add(role);
 
-      // Registrar a ação no banco de dados
-      logModerationAction(message.author.id, 'AddRole', member.id, `Cargo adicionado: ${role.name}`);
+      logModerationAction(message.guild.id,message.author.id, 'AddRole', member.id, `Cargo adicionado: ${role.name}`);
 
       return message.reply({
         embeds: [

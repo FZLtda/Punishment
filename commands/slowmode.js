@@ -1,4 +1,5 @@
-const { SlashCommandBuilder, PermissionsBitField } = require('discord.js');
+const { PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { logModerationAction } = require('../moderationUtils');
 
 module.exports = {
   name: 'slowmode',
@@ -15,9 +16,26 @@ module.exports = {
 
     try {
       await message.channel.setRateLimitPerUser(tempo);
-      return message.reply(
-        `**<:emoji_50:1323312545532088330> O modo lento foi configurado para \`${tempo}\` segundos neste canal**.`
+
+      logModerationAction(
+        message.guild.id,
+        message.author.id,
+        'Slowmode',
+        message.channel.id,
+        `Modo lento configurado para ${tempo} segundos`
       );
+
+      const embed = new EmbedBuilder()
+        .setTitle('<:emoji_50:1323312545532088330> Modo Lento Configurado')
+        .setColor('Blue')
+        .setDescription(`O modo lento foi configurado para \`${tempo}\` segundos neste canal.`)
+        .setFooter({
+          text: `${message.author.username}`,
+          iconURL: message.author.displayAvatarURL({ dynamic: true }),
+        })
+        .setTimestamp();
+
+      return message.channel.send({ embeds: [embed] });
     } catch (error) {
       console.error(error);
       return message.reply('<:no:1122370713932795997> Ocorreu um erro ao tentar configurar o modo lento.');

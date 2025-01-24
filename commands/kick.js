@@ -1,5 +1,5 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
-const { logModerationAction } = require('../moderationUtils'); // Importa a função de registro
+const { logModerationAction } = require('../moderationUtils');
 
 module.exports = {
   name: 'kick',
@@ -21,13 +21,10 @@ module.exports = {
     }
 
     try {
-      // Expulsa o membro do servidor
       await membro.kick(motivo);
 
-      // Registra a ação no banco de dados
-      logModerationAction(message.author.id, 'Kick', membro.id, motivo);
+      logModerationAction(message.guild.id, message.author.id, 'Kick', membro.id, motivo);
 
-      // Cria o embed de confirmação
       const kickEmbed = new EmbedBuilder()
         .setTitle('<:emoji_23:1216481209153224745> Membro Expulso')
         .setColor('Red')

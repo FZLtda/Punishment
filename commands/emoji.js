@@ -1,6 +1,6 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const fetch = require('node-fetch');
-const { logModerationAction } = require('../moderationUtils'); // Importa a função de registro no mod-stats
+const { logModerationAction } = require('../moderationUtils');
 
 module.exports = {
   name: 'emoji',
@@ -49,8 +49,8 @@ module.exports = {
           name: emojiName,
         });
 
-        // Registra a ação no banco de dados
         logModerationAction(
+          message.guild.id,
           message.author.id,
           'AddEmoji',
           addedEmoji.id,
@@ -100,8 +100,8 @@ module.exports = {
           name: emojiName,
         });
 
-        // Registra a ação no banco de dados
         logModerationAction(
+          message.guild.id,
           message.author.id,
           'CopyEmoji',
           copiedEmoji.id,

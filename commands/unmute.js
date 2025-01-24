@@ -1,4 +1,5 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { logModerationAction } = require('../moderationUtils');
 
 module.exports = {
   name: 'unmute',
@@ -21,13 +22,21 @@ module.exports = {
     try {
       await membro.timeout(null);
 
+      logModerationAction(
+        message.guild.id,
+        message.author.id,
+        'Unmute',
+        membro.id,
+        'Timeout removido'
+      );
+
       const embed = new EmbedBuilder()
         .setTitle('<:ummute:1207381662741037147> Punição removida')
         .setColor('Green')
         .setDescription(`${membro} (\`${membro.id}\`) foi desmutado(a)!`)
         .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
         .setFooter({
-          text: `${message.author.displayName}`,
+          text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
