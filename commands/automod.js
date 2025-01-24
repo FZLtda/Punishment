@@ -153,6 +153,59 @@ async function handleCreateRule(interaction) {
   });
 }
 
+async function handleAddWord(interaction) {
+  const embed = new EmbedBuilder()
+    .setDescription('📝 Digite o ID da regra onde deseja adicionar palavras:')
+    .setColor('Yellow');
+  await interaction.followUp({ embeds: [embed] });
+
+  const filter = (m) => m.author.id === interaction.user.id;
+  const collector = interaction.channel.createMessageCollector({ filter, time: 30000, max: 2 });
+
+  let step = 0;
+  let ruleId;
+
+  collector.on('collect', async (collected) => {
+    if (step === 0) {
+      ruleId = collected.content.trim();
+      const embed = new EmbedBuilder()
+        .setDescription('📝 Agora, digite as palavras que deseja adicionar (separe por vírgulas):')
+        .setColor('Yellow');
+      await interaction.followUp({ embeds: [embed] });
+      step++;
+    } else {
+      const words = collected.content.split(',').map((word) => word.trim());
+      try {
+        const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
+        if (!rule) {
+          const errorEmbed = new EmbedBuilder()
+            .setDescription('⚠️ Regra não encontrada.')
+            .setColor('Red');
+          return interaction.followUp({ embeds: [errorEmbed] });
+        }
+
+        const existingWords = rule.triggerMetadata.keywordFilter || [];
+        await rule.edit({
+          triggerMetadata: {
+            keywordFilter: [...existingWords, ...words],
+          },
+        });
+
+        const successEmbed = new EmbedBuilder()
+          .setDescription(`✅ Palavras adicionadas com sucesso à regra **${rule.name}**.`)
+          .setColor('Green');
+        await interaction.followUp({ embeds: [successEmbed] });
+      } catch (error) {
+        console.error(error);
+        const errorEmbed = new EmbedBuilder()
+          .setDescription('❌ Ocorreu um erro ao adicionar palavras.')
+          .setColor('Red');
+        await interaction.followUp({ embeds: [errorEmbed] });
+      }
+    }
+  });
+}
+
 async function handleViewRules(interaction) {
   try {
     const rules = await interaction.guild.autoModerationRules.fetch();
