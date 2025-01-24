@@ -10,7 +10,10 @@ module.exports = {
   description: 'Gerencie o sistema de AutoMod do servidor de forma interativa.',
   async execute(message) {
     if (!message.member.permissions.has('Administrator')) {
-      return message.reply('⚠️ Você precisa de permissões de administrador para usar este comando.');
+      const embed = new EmbedBuilder()
+        .setDescription('⚠️ Você precisa de permissões de administrador para usar este comando.')
+        .setColor('Red');
+      return message.reply({ embeds: [embed] });
     }
 
     const embed = new EmbedBuilder()
@@ -58,10 +61,10 @@ module.exports = {
 
     collector.on('collect', async (interaction) => {
       if (interaction.user.id !== message.author.id) {
-        return interaction.reply({
-          content: '⚠️ Apenas quem executou o comando pode interagir com os botões.',
-          ephemeral: true,
-        });
+        const embed = new EmbedBuilder()
+          .setDescription('⚠️ Apenas quem executou o comando pode interagir com os botões.')
+          .setColor('Red');
+        return interaction.reply({ embeds: [embed], ephemeral: true });
       }
 
       // Defer a interação para evitar o erro InteractionNotReplied
@@ -89,7 +92,10 @@ module.exports = {
           break;
 
         default:
-          await interaction.followUp({ content: '❌ Botão inválido.' });
+          const errorEmbed = new EmbedBuilder()
+            .setDescription('❌ Botão inválido.')
+            .setColor('Red');
+          await interaction.followUp({ embeds: [errorEmbed] });
       }
     });
 
@@ -100,9 +106,10 @@ module.exports = {
 };
 
 async function handleCreateRule(interaction) {
-  await interaction.followUp({
-    content: '📝 Digite o nome da nova regra:',
-  });
+  const embed = new EmbedBuilder()
+    .setDescription('📝 Digite o nome da nova regra:')
+    .setColor('Yellow');
+  await interaction.followUp({ embeds: [embed] });
 
   const filter = (m) => m.author.id === interaction.user.id;
   const collector = interaction.channel.createMessageCollector({ filter, time: 30000, max: 1 });
@@ -110,7 +117,10 @@ async function handleCreateRule(interaction) {
   collector.on('collect', async (collected) => {
     const ruleName = collected.content.trim();
     if (!ruleName) {
-      return interaction.followUp({ content: '⚠️ O nome da regra não pode ser vazio.' });
+      const errorEmbed = new EmbedBuilder()
+        .setDescription('⚠️ O nome da regra não pode ser vazio.')
+        .setColor('Red');
+      return interaction.followUp({ embeds: [errorEmbed] });
     }
 
     try {
@@ -129,88 +139,16 @@ async function handleCreateRule(interaction) {
         enabled: true,
       });
 
-      await interaction.followUp({ content: `✅ Regra criada com sucesso: **${ruleName}**.` });
+      const successEmbed = new EmbedBuilder()
+        .setDescription(`✅ Regra criada com sucesso: **${ruleName}**.`)
+        .setColor('Green');
+      await interaction.followUp({ embeds: [successEmbed] });
     } catch (error) {
       console.error(error);
-      await interaction.followUp({ content: '❌ Ocorreu um erro ao criar a regra.' });
-    }
-  });
-}
-
-async function handleAddWord(interaction) {
-  await interaction.followUp({
-    content: '📝 Digite o ID da regra onde deseja adicionar palavras:',
-  });
-
-  const filter = (m) => m.author.id === interaction.user.id;
-  const collector = interaction.channel.createMessageCollector({ filter, time: 30000, max: 2 });
-
-  let step = 0;
-  let ruleId;
-
-  collector.on('collect', async (collected) => {
-    if (step === 0) {
-      ruleId = collected.content.trim();
-      await interaction.followUp('📝 Agora, digite as palavras que deseja adicionar (separe por vírgulas):');
-      step++;
-    } else {
-      const words = collected.content.split(',').map((word) => word.trim());
-      try {
-        const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
-        if (!rule) {
-          return interaction.followUp('⚠️ Regra não encontrada.');
-        }
-
-        const existingWords = rule.triggerMetadata.keywordFilter || [];
-        await rule.edit({
-          triggerMetadata: {
-            keywordFilter: [...existingWords, ...words],
-          },
-        });
-
-        await interaction.followUp(`✅ Palavras adicionadas com sucesso à regra **${rule.name}**.`);
-      } catch (error) {
-        console.error(error);
-        await interaction.followUp('❌ Ocorreu um erro ao adicionar palavras.');
-      }
-    }
-  });
-}
-
-async function handleDeleteRule(interaction) {
-  await interaction.followUp({
-    content: '🗑️ Digite o ID da regra que deseja excluir:',
-  });
-
-  const filter = (m) => m.author.id === interaction.user.id;
-  const collector = interaction.channel.createMessageCollector({ filter, time: 30000, max: 1 });
-
-  collector.on('collect', async (collected) => {
-    const ruleId = collected.content.trim();
-
-    try {
-      const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
-      if (!rule) {
-        return interaction.followUp('⚠️ Regra não encontrada.');
-      }
-
-      // Verifica se a regra é imutável
-      if (rule.isSystem) {
-        return interaction.followUp('⚠️ Esta regra é gerenciada pelo Discord e não pode ser excluída.');
-      }
-
-      await rule.delete();
-      await interaction.followUp(`✅ Regra **${rule.name}** excluída com sucesso.`);
-    } catch (error) {
-      console.error(error);
-
-      if (error.code === 200006) {
-        return interaction.followUp(
-          '⚠️ Não é possível excluir regras padrão, como o filtro de spam de menções, em servidores comunitários.'
-        );
-      }
-
-      await interaction.followUp('❌ Ocorreu um erro ao tentar excluir a regra.');
+      const errorEmbed = new EmbedBuilder()
+        .setDescription('❌ Ocorreu um erro ao criar a regra.')
+        .setColor('Red');
+      await interaction.followUp({ embeds: [errorEmbed] });
     }
   });
 }
@@ -220,39 +158,32 @@ async function handleViewRules(interaction) {
     const rules = await interaction.guild.autoModerationRules.fetch();
 
     if (rules.size === 0) {
-      return interaction.followUp({
-        content: '⚠️ Não há regras de AutoMod configuradas no servidor.',
-      });
+      const noRulesEmbed = new EmbedBuilder()
+        .setDescription('⚠️ Não há regras de AutoMod configuradas no servidor.')
+        .setColor('Yellow');
+      return interaction.followUp({ embeds: [noRulesEmbed] });
     }
 
-    const ruleList = rules.map((rule) => {
+    const embeds = rules.map((rule) => {
       const keywords = rule.triggerMetadata.keywordFilter.join(', ') || 'Nenhuma';
-      return `🔹 **${rule.name}** (ID: \`${rule.id}\`) - Palavras: ${keywords}`;
+      return new EmbedBuilder()
+        .setTitle(`📜 Regra: ${rule.name}`)
+        .addFields(
+          { name: '🔑 ID', value: `\`${rule.id}\``, inline: true },
+          { name: '📚 Palavras-Chave', value: keywords, inline: true },
+          { name: '📅 Criado em', value: `<t:${Math.floor(new Date(rule.createdTimestamp) / 1000)}:R>` }
+        )
+        .setColor('Blue');
     });
 
-    const chunks = chunkMessage(ruleList.join('\n'), 2000);
-    for (const chunk of chunks) {
-      await interaction.followUp({ content: chunk });
+    for (const embed of embeds) {
+      await interaction.followUp({ embeds: [embed] });
     }
   } catch (error) {
     console.error(error);
-    await interaction.followUp({
-      content: '❌ Ocorreu um erro ao listar as regras.',
-    });
+    const errorEmbed = new EmbedBuilder()
+      .setDescription('❌ Ocorreu um erro ao listar as regras.')
+      .setColor('Red');
+    await interaction.followUp({ embeds: [errorEmbed] });
   }
-}
-
-function chunkMessage(message, maxLength) {
-  const chunks = [];
-  while (message.length > maxLength) {
-    let chunk = message.slice(0, maxLength);
-    const lastLineBreak = chunk.lastIndexOf('\n');
-    if (lastLineBreak > 0) {
-      chunk = message.slice(0, lastLineBreak);
-    }
-    chunks.push(chunk);
-    message = message.slice(chunk.length);
-  }
-  chunks.push(message);
-  return chunks;
 }
