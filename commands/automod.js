@@ -194,11 +194,23 @@ async function handleDeleteRule(interaction) {
         return interaction.followUp('⚠️ Regra não encontrada.');
       }
 
+      // Verifica se a regra é imutável
+      if (rule.isSystem) {
+        return interaction.followUp('⚠️ Esta regra é gerenciada pelo Discord e não pode ser excluída.');
+      }
+
       await rule.delete();
       await interaction.followUp(`✅ Regra **${rule.name}** excluída com sucesso.`);
     } catch (error) {
       console.error(error);
-      await interaction.followUp('❌ Ocorreu um erro ao excluir a regra.');
+
+      if (error.code === 200006) {
+        return interaction.followUp(
+          '⚠️ Não é possível excluir regras padrão, como o filtro de spam de menções, em servidores comunitários.'
+        );
+      }
+
+      await interaction.followUp('❌ Ocorreu um erro ao tentar excluir a regra.');
     }
   });
 }
