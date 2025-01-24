@@ -67,7 +67,6 @@ module.exports = {
         return interaction.reply({ embeds: [embed], ephemeral: true });
       }
 
-      // Defer a interação para evitar o erro InteractionNotReplied
       await interaction.deferReply({ ephemeral: true });
 
       switch (interaction.customId) {
@@ -153,9 +152,9 @@ async function handleCreateRule(interaction) {
   });
 }
 
-async function handleAddWord(interaction) {
+async function handleRemoveWord(interaction) {
   const embed = new EmbedBuilder()
-    .setDescription('📝 Digite o ID da regra onde deseja adicionar palavras:')
+    .setDescription('📝 Digite o ID da regra onde deseja remover palavras:')
     .setColor('Yellow');
   await interaction.followUp({ embeds: [embed] });
 
@@ -169,12 +168,12 @@ async function handleAddWord(interaction) {
     if (step === 0) {
       ruleId = collected.content.trim();
       const embed = new EmbedBuilder()
-        .setDescription('📝 Agora, digite as palavras que deseja adicionar (separe por vírgulas):')
+        .setDescription('📝 Agora, digite as palavras que deseja remover (separe por vírgulas):')
         .setColor('Yellow');
       await interaction.followUp({ embeds: [embed] });
       step++;
     } else {
-      const words = collected.content.split(',').map((word) => word.trim());
+      const wordsToRemove = collected.content.split(',').map((word) => word.trim());
       try {
         const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
         if (!rule) {
@@ -184,21 +183,24 @@ async function handleAddWord(interaction) {
           return interaction.followUp({ embeds: [errorEmbed] });
         }
 
-        const existingWords = rule.triggerMetadata.keywordFilter || [];
+        const updatedWords = rule.triggerMetadata.keywordFilter.filter(
+          (word) => !wordsToRemove.includes(word)
+        );
+
         await rule.edit({
           triggerMetadata: {
-            keywordFilter: [...existingWords, ...words],
+            keywordFilter: updatedWords,
           },
         });
 
         const successEmbed = new EmbedBuilder()
-          .setDescription(`✅ Palavras adicionadas com sucesso à regra **${rule.name}**.`)
+          .setDescription(`✅ Palavras removidas com sucesso da regra **${rule.name}**.`)
           .setColor('Green');
         await interaction.followUp({ embeds: [successEmbed] });
       } catch (error) {
         console.error(error);
         const errorEmbed = new EmbedBuilder()
-          .setDescription('❌ Ocorreu um erro ao adicionar palavras.')
+          .setDescription('❌ Ocorreu um erro ao remover palavras.')
           .setColor('Red');
         await interaction.followUp({ embeds: [errorEmbed] });
       }
