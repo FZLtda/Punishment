@@ -164,21 +164,19 @@ async function handleViewRules(interaction) {
       return interaction.followUp({ embeds: [noRulesEmbed] });
     }
 
-    const embeds = rules.map((rule) => {
+    const embed = new EmbedBuilder()
+      .setTitle('📋 Regras de AutoMod Configuradas')
+      .setDescription('Aqui estão as regras configuradas no AutoMod:')
+      .setColor('Blue');
+
+    rules.forEach((rule) => {
       const keywords = rule.triggerMetadata.keywordFilter.join(', ') || 'Nenhuma';
-      return new EmbedBuilder()
-        .setTitle(`📜 Regra: ${rule.name}`)
-        .addFields(
-          { name: '🔑 ID', value: `\`${rule.id}\``, inline: true },
-          { name: '📚 Palavras-Chave', value: keywords, inline: true },
-          { name: '📅 Criado em', value: `<t:${Math.floor(new Date(rule.createdTimestamp) / 1000)}:R>` }
-        )
-        .setColor('Blue');
+      embed.addFields(
+        { name: `📜 ${rule.name}`, value: `**ID:** \`${rule.id}\`\n**Palavras-Chave:** ${keywords}` }
+      );
     });
 
-    for (const embed of embeds) {
-      await interaction.followUp({ embeds: [embed] });
-    }
+    await interaction.followUp({ embeds: [embed] });
   } catch (error) {
     console.error(error);
     const errorEmbed = new EmbedBuilder()
