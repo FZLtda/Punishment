@@ -137,6 +137,72 @@ async function handleCreateRule(interaction) {
   });
 }
 
+async function handleAddWord(interaction) {
+  await interaction.followUp({
+    content: '📝 Digite o ID da regra onde deseja adicionar palavras:',
+  });
+
+  const filter = (m) => m.author.id === interaction.user.id;
+  const collector = interaction.channel.createMessageCollector({ filter, time: 30000, max: 2 });
+
+  let step = 0;
+  let ruleId;
+
+  collector.on('collect', async (collected) => {
+    if (step === 0) {
+      ruleId = collected.content.trim();
+      await interaction.followUp('📝 Agora, digite as palavras que deseja adicionar (separe por vírgulas):');
+      step++;
+    } else {
+      const words = collected.content.split(',').map((word) => word.trim());
+      try {
+        const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
+        if (!rule) {
+          return interaction.followUp('⚠️ Regra não encontrada.');
+        }
+
+        const existingWords = rule.triggerMetadata.keywordFilter || [];
+        await rule.edit({
+          triggerMetadata: {
+            keywordFilter: [...existingWords, ...words],
+          },
+        });
+
+        await interaction.followUp(`✅ Palavras adicionadas com sucesso à regra **${rule.name}**.`);
+      } catch (error) {
+        console.error(error);
+        await interaction.followUp('❌ Ocorreu um erro ao adicionar palavras.');
+      }
+    }
+  });
+}
+
+async function handleDeleteRule(interaction) {
+  await interaction.followUp({
+    content: '🗑️ Digite o ID da regra que deseja excluir:',
+  });
+
+  const filter = (m) => m.author.id === interaction.user.id;
+  const collector = interaction.channel.createMessageCollector({ filter, time: 30000, max: 1 });
+
+  collector.on('collect', async (collected) => {
+    const ruleId = collected.content.trim();
+
+    try {
+      const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
+      if (!rule) {
+        return interaction.followUp('⚠️ Regra não encontrada.');
+      }
+
+      await rule.delete();
+      await interaction.followUp(`✅ Regra **${rule.name}** excluída com sucesso.`);
+    } catch (error) {
+      console.error(error);
+      await interaction.followUp('❌ Ocorreu um erro ao excluir a regra.');
+    }
+  });
+}
+
 async function handleViewRules(interaction) {
   try {
     const rules = await interaction.guild.autoModerationRules.fetch();
