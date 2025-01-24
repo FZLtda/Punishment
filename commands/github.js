@@ -7,21 +7,22 @@ module.exports = {
   description: 'Busca informações detalhadas sobre um repositório do GitHub.',
   usage: '!github <usuário/repositório>',
   async execute(message, args) {
-    const repo = args[0];
-    if (!repo) {
+    if (!args[0] || typeof args[0] !== 'string') {
       return message.reply(
         '<:no:1122370713932795997> Uso inválido! Você precisa fornecer o repositório no formato `usuário/repositório`.'
       );
     }
 
+    const repo = args[0].trim();
     const githubToken = process.env.GITHUB_TOKEN;
     const apiUrl = `https://api.github.com/repos/${repo}`;
 
     try {
       console.log(`[DEBUG] Buscando repositório: ${repo}`);
+
       const response = await axios.get(apiUrl, {
         headers: {
-          Authorization: `Bearer ${githubToken}`,
+          Authorization: githubToken ? `Bearer ${githubToken}` : undefined,
           Accept: 'application/vnd.github.v3+json',
         },
       });
@@ -53,8 +54,16 @@ module.exports = {
     } catch (error) {
       console.error(`[ERROR] Falha ao buscar repositório: ${repo}`, error.response?.data || error.message);
 
-      if (error.response?.status === 404) {
-        return message.reply('<:no:1122370713932795997> Repositório não encontrado. Verifique o nome e tente novamente.');
+      if (error.response) {
+        const status = error.response.status;
+
+        if (status === 404) {
+          return message.reply('<:no:1122370713932795997> Repositório não encontrado. Verifique o nome e tente novamente.');
+        }
+
+        if (status === 403) {
+          return message.reply('<:no:1122370713932795997> Limite de requisições da API do GitHub excedido. Tente novamente mais tarde.');
+        }
       }
 
       return message.reply('<:no:1122370713932795997> Ocorreu um erro ao buscar informações do repositório.');
