@@ -152,6 +152,43 @@ async function handleCreateRule(interaction) {
   });
 }
 
+async function handleDeleteRule(interaction) {
+  const embed = new EmbedBuilder()
+    .setDescription('🗑️ Digite o ID da regra que deseja excluir:')
+    .setColor('Yellow');
+  await interaction.followUp({ embeds: [embed] });
+
+  const filter = (m) => m.author.id === interaction.user.id;
+  const collector = interaction.channel.createMessageCollector({ filter, time: 30000, max: 1 });
+
+  collector.on('collect', async (collected) => {
+    const ruleId = collected.content.trim();
+
+    try {
+      const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
+      if (!rule) {
+        const errorEmbed = new EmbedBuilder()
+          .setDescription('⚠️ Regra não encontrada. Verifique o ID fornecido.')
+          .setColor('Red');
+        return interaction.followUp({ embeds: [errorEmbed] });
+      }
+
+      await rule.delete();
+
+      const successEmbed = new EmbedBuilder()
+        .setDescription(`✅ Regra **${rule.name}** excluída com sucesso.`)
+        .setColor('Green');
+      await interaction.followUp({ embeds: [successEmbed] });
+    } catch (error) {
+      console.error(error);
+      const errorEmbed = new EmbedBuilder()
+        .setDescription('❌ Ocorreu um erro ao excluir a regra. Verifique o ID e tente novamente.')
+        .setColor('Red');
+      await interaction.followUp({ embeds: [errorEmbed] });
+    }
+  });
+}
+
 async function handleRemoveWord(interaction) {
   const embed = new EmbedBuilder()
     .setDescription('📝 Digite o ID da regra onde deseja remover palavras:')
