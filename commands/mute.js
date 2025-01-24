@@ -1,4 +1,5 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { logModerationAction } = require('../moderationUtils');
 
 module.exports = {
   name: 'mute',
@@ -30,8 +31,13 @@ module.exports = {
     }
 
     try {
+      // Aplica o timeout no membro
       await membro.timeout(duracao, motivo);
 
+      // Registra a ação de moderação no banco de dados
+      logModerationAction(message.author.id, 'Mute', membro.id, motivo);
+
+      // Cria o embed de confirmação
       const embed = new EmbedBuilder()
         .setTitle('<:mute:1207381613185339473> Punição aplicada')
         .setColor('Red')
@@ -42,7 +48,7 @@ module.exports = {
         )
         .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
         .setFooter({
-          text: `${message.author.displayName}`,
+          text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();

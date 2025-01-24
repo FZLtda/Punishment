@@ -1,4 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
+const { logModerationAction } = require('../moderationUtils'); // Importa a função de registro no mod-stats
 
 module.exports = {
   name: 'clear',
@@ -27,10 +28,18 @@ module.exports = {
         mensagensParaApagar = Array.from(mensagens.filter((msg) => !msg.pinned).values()).slice(0, quantidade);
       }
 
-      await message.channel.bulkDelete(mensagensParaApagar, true);
+      const apagadas = await message.channel.bulkDelete(mensagensParaApagar, true);
+
+      // Registra a ação no banco de dados
+      logModerationAction(
+        message.author.id,
+        'Clear',
+        usuario ? usuario.id : 'N/A',
+        `${apagadas.size} mensagens apagadas${usuario ? ` de ${usuario.tag}` : ''}`
+      );
 
       const feedbackMessage = await message.channel.send(
-        `<:emoji_33:1219788320234803250> ${mensagensParaApagar.length} mensagens foram apagadas ${
+        `<:emoji_33:1219788320234803250> ${apagadas.size} mensagens foram apagadas ${
           usuario ? `de ${usuario}` : ''
         }`
       );

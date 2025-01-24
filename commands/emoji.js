@@ -1,5 +1,6 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const fetch = require('node-fetch');
+const { logModerationAction } = require('../moderationUtils'); // Importa a função de registro no mod-stats
 
 module.exports = {
   name: 'emoji',
@@ -48,6 +49,14 @@ module.exports = {
           name: emojiName,
         });
 
+        // Registra a ação no banco de dados
+        logModerationAction(
+          message.author.id,
+          'AddEmoji',
+          addedEmoji.id,
+          `Emoji adicionado: ${emojiName}`
+        );
+
         const embed = new EmbedBuilder()
           .setTitle('<:emoji_33:1219788320234803250> Emoji Adicionado com Sucesso!')
           .setColor('Green')
@@ -90,6 +99,14 @@ module.exports = {
           attachment: buffer,
           name: emojiName,
         });
+
+        // Registra a ação no banco de dados
+        logModerationAction(
+          message.author.id,
+          'CopyEmoji',
+          copiedEmoji.id,
+          `Emoji copiado: ${emojiName}`
+        );
 
         const embed = new EmbedBuilder()
           .setTitle('<:emoji_33:1219788320234803250> Emoji Copiado com Sucesso!')

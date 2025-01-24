@@ -1,4 +1,5 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { logModerationAction } = require('../moderationUtils'); // Importa a função de registro
 
 module.exports = {
   name: 'lock',
@@ -11,10 +12,15 @@ module.exports = {
     const channel = message.mentions.channels.first() || message.channel;
 
     try {
+      // Bloqueia o canal para envio de mensagens
       await channel.permissionOverwrites.edit(message.guild.roles.everyone, {
         SendMessages: false,
       });
 
+      // Registra a ação no banco de dados
+      logModerationAction(message.author.id, 'Lock', channel.id, 'Canal bloqueado');
+
+      // Cria o embed de confirmação
       const embed = new EmbedBuilder()
         .setTitle('<:emoji_48:1322515129144705045> Canal Bloqueado')
         .setDescription(`O canal ${channel} foi bloqueado para envio de mensagens.`)

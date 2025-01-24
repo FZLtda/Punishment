@@ -1,6 +1,7 @@
 const { EmbedBuilder, PermissionsBitField, AttachmentBuilder } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+const { logModerationAction } = require('../moderationUtils'); // Importa a função de registro no mod-stats
 
 function serializeBigInt(key, value) {
   return typeof value === 'bigint' ? value.toString() : value;
@@ -56,6 +57,9 @@ module.exports = {
 
       const backupFile = path.join(backupPath, `backup_${guild.id}.json`);
       fs.writeFileSync(backupFile, JSON.stringify(backupData, serializeBigInt, 2));
+
+      // Registra a ação no banco de dados
+      logModerationAction(message.author.id, 'Backup', guild.id, 'Backup completo do servidor criado');
 
       const embed = new EmbedBuilder()
         .setTitle('<:emoji_46:1332034311800619029> Backup Criado com Sucesso')
