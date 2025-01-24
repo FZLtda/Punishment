@@ -9,6 +9,7 @@ module.exports = {
   name: 'automod',
   description: 'Gerencie o sistema de AutoMod do servidor de forma interativa.',
   async execute(message) {
+    // Verifica permissões
     if (!message.member.permissions.has('Administrator')) {
       const embed = new EmbedBuilder()
         .setDescription('⚠️ Você precisa de permissões de administrador para usar este comando.')
@@ -16,6 +17,7 @@ module.exports = {
       return message.reply({ embeds: [embed] });
     }
 
+    // Cria o embed principal
     const embed = new EmbedBuilder()
       .setTitle('📋 Gerenciamento de AutoMod')
       .setDescription(
@@ -30,6 +32,7 @@ module.exports = {
       .setFooter({ text: `Solicitado por ${message.author.tag}`, iconURL: message.author.displayAvatarURL() })
       .setTimestamp();
 
+    // Adiciona os botões
     const buttons = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId('create_rule')
@@ -53,13 +56,16 @@ module.exports = {
         .setStyle(ButtonStyle.Primary)
     );
 
+    // Envia a mensagem com os botões
     const sentMessage = await message.channel.send({ embeds: [embed], components: [buttons] });
 
+    // Cria o coletor de interações
     const collector = sentMessage.createMessageComponentCollector({
       time: 60000,
     });
 
     collector.on('collect', async (interaction) => {
+      // Permissão para usar os botões
       if (interaction.user.id !== message.author.id) {
         const embed = new EmbedBuilder()
           .setDescription('⚠️ Apenas quem executou o comando pode interagir com os botões.')
@@ -69,6 +75,7 @@ module.exports = {
 
       await interaction.deferReply({ ephemeral: true });
 
+      // Lida com cada botão
       switch (interaction.customId) {
         case 'create_rule':
           await handleCreateRule(interaction);
@@ -104,6 +111,7 @@ module.exports = {
   },
 };
 
+// Função para criar regra
 async function handleCreateRule(interaction) {
   const embed = new EmbedBuilder()
     .setDescription('📝 Digite o nome da nova regra:')
@@ -152,6 +160,171 @@ async function handleCreateRule(interaction) {
   });
 }
 
+// Função para adicionar palavras
+async function handleAddWord(interaction) {
+  const embed = new EmbedBuilder()
+    .setDescription('📝 Digite o ID da regra onde deseja adicionar palavras:')
+    .setColor('Yellow');
+  await interaction.followUp({ embeds: [embed] });
+
+  const filter = (m) => m.author.id === interaction.user.id;
+  const collector = interaction.channel.createMessageCollector({ filter, time: 30000, max: 2 });
+
+  let step = 0;
+  let ruleId;
+
+  collector.on('collect', async (collected) => {
+    if (step === 0) {
+      ruleId = collected.content.trim();
+      const embed = new EmbedBuilder()
+        .setDescription('📝 Agora, digite as palavras que deseja adicionar (separe por vírgulas):')
+        .setColor('Yellow');
+      await interaction.followUp({ embeds: [embed] });
+      step++;
+    } else {
+      const words = collected.content.split(',').map((word) => word.trim());
+      try {
+        const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
+        if (!rule) {
+          const errorEmbed = new EmbedBuilder()
+            .setDescription('⚠️ Regra não encontrada. Verifique o ID fornecido.')
+            .setColor('Red');
+          return interaction.followUp({ embeds: [errorEmbed] });
+        }
+
+        const currentWords = rule.triggerMetadata.keywordFilter || [];
+        const updatedWords = [...currentWords, ...words];
+
+        await rule.edit({
+          triggerMetadata: {
+            keywordFilter: updatedWords,
+          },
+        });
+
+        const successEmbed = new EmbedBuilder()
+          .setDescription(
+            `✅ Palavras adicionadas com sucesso à regra **${rule.name}**.\n\n` +
+            `**Palavras adicionadas:** ${words.join(', ')}\n` +
+            `**Todas as palavras:** ${updatedWords.join(', ')}`
+          )
+          .setColor('Green');
+        await interaction.followUp({ embeds: [successEmbed] });
+      } catch (error) {
+        console.error(error);
+        const errorEmbed = new EmbedBuilder()
+          .setDescription('❌ Ocorreu um erro ao adicionar palavras.')
+          .setColor('Red');
+        await interaction.followUp({ embeds: [errorEmbed] });
+      }
+    }
+  });
+}
+
+// Função para excluir regra
+async function handleDeleteRule(interaction) {
+  const embed = new EmbedBuilder()
+    .setDescription('🗑️ Digite o ID da regra que deseja excluir:')
+    .setColor('Yellow');
+  await interaction.followUp({ embeds: [embed] });
+
+  const filter = (m) => m.author.id === interaction.user.id;
+  const collector = interaction.channel.createMessageCollector({ filter, time: 30000, max: 1 });
+
+  collector.on('collect', async (collected) => {
+    const ruleId = collected.content.trim();
+
+    try {
+      const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
+      if (!rule) {
+        const errorEmbed = new EmbedBuilder()
+          .setDescription('⚠️ Regra não encontrada. Verifique o ID fornecido.')
+          .setColor('Red');
+        return interaction.followUp({ embeds: [errorEmbed] });
+      }
+
+      await rule.delete();
+
+      const successEmbed = new EmbedBuilder()
+        .setDescription(`✅ Regra **${rule.name}** excluída com sucesso.`)
+        .setColor('Green');
+      await interaction.followUp({ embeds: [successEmbed] });
+    } catch (error) {
+      console.error(error);
+      const errorEmbed = new EmbedBuilder()
+        .setDescription('❌ Ocorreu um erro ao excluir a regra. Verifique o ID e tente novamente.')
+        .setColor('Red');
+      await interaction.followUp({ embeds: [errorEmbed] });
+    }
+  });
+}
+
+// Função para remover palavras
+async function handleRemoveWord(interaction) {
+  const embed = new EmbedBuilder()
+    .setDescription('📝 Digite o ID da regra onde deseja remover palavras:')
+    .setColor('Yellow');
+  await interaction.followUp({ embeds: [embed] });
+
+  const filter = (m) => m.author.id === interaction.user.id;
+  const collector = interaction.channel.createMessageCollector({ filter, time: 60000 });
+
+  let step = 0;
+  let ruleId;
+
+  collector.on('collect', async (collected) => {
+    if (step === 0) {
+      ruleId = collected.content.trim();
+      const embed = new EmbedBuilder()
+        .setDescription('📝 Agora, digite as palavras que deseja remover (separe por vírgulas):')
+        .setColor('Yellow');
+      await interaction.followUp({ embeds: [embed] });
+      step++;
+    } else {
+      const wordsToRemove = collected.content.split(',').map((word) => word.trim().toLowerCase());
+      try {
+        const rule = await interaction.guild.autoModerationRules.fetch(ruleId);
+        if (!rule) {
+          const errorEmbed = new EmbedBuilder()
+            .setDescription('⚠️ Regra não encontrada. Verifique o ID da regra.')
+            .setColor('Red');
+          return interaction.followUp({ embeds: [errorEmbed] });
+        }
+
+        const currentWords = rule.triggerMetadata.keywordFilter || [];
+        const updatedWords = currentWords.filter(
+          (word) => !wordsToRemove.includes(word.toLowerCase())
+        );
+
+        await rule.edit({
+          triggerMetadata: {
+            keywordFilter: updatedWords,
+          },
+        });
+
+        const successEmbed = new EmbedBuilder()
+          .setDescription(
+            `✅ Palavras removidas com sucesso da regra **${rule.name}**.\n\n` +
+            `**Palavras removidas:** ${wordsToRemove.join(', ')}\n` +
+            `**Palavras restantes:** ${updatedWords.join(', ') || 'Nenhuma'}`
+          )
+          .setColor('Green');
+        await interaction.followUp({ embeds: [successEmbed] });
+      } catch (error) {
+        console.error(error);
+        const errorEmbed = new EmbedBuilder()
+          .setDescription(
+            '❌ Ocorreu um erro ao remover palavras. Verifique o ID ou as palavras fornecidas.'
+          )
+          .setColor('Red');
+        await interaction.followUp({ embeds: [errorEmbed] });
+      }
+
+      collector.stop();
+    }
+  });
+}
+
+// Função para visualizar regras
 async function handleViewRules(interaction) {
   try {
     const rules = await interaction.guild.autoModerationRules.fetch();
@@ -170,21 +343,9 @@ async function handleViewRules(interaction) {
 
     rules.forEach((rule) => {
       const keywords = rule.triggerMetadata.keywordFilter.join(', ') || 'Nenhuma';
-      if (keywords.length > 1024) {
-        const keywordChunks = splitString(keywords, 1024);
-        embed.addFields({ name: `📜 ${rule.name} (ID: ${rule.id})`, value: keywordChunks[0] });
-        keywordChunks.slice(1).forEach((chunk, index) => {
-          embed.addFields({
-            name: `🔹 Palavras-Chave (Continuação ${index + 1})`,
-            value: chunk,
-          });
-        });
-      } else {
-        embed.addFields({
-          name: `📜 ${rule.name}`,
-          value: `**ID:** \`${rule.id}\`\n**Palavras-Chave:** ${keywords}`,
-        });
-      }
+      embed.addFields(
+        { name: `📜 ${rule.name}`, value: `**ID:** \`${rule.id}\`\n**Palavras-Chave:** ${keywords}` }
+      );
     });
 
     await interaction.followUp({ embeds: [embed] });
@@ -195,19 +356,4 @@ async function handleViewRules(interaction) {
       .setColor('Red');
     await interaction.followUp({ embeds: [errorEmbed] });
   }
-}
-
-function splitString(str, maxLength) {
-  const chunks = [];
-  while (str.length > maxLength) {
-    let chunk = str.slice(0, maxLength);
-    const lastComma = chunk.lastIndexOf(',');
-    if (lastComma > 0) {
-      chunk = str.slice(0, lastComma + 1);
-    }
-    chunks.push(chunk.trim());
-    str = str.slice(chunk.length).trim();
-  }
-  if (str) chunks.push(str);
-  return chunks;
 }
