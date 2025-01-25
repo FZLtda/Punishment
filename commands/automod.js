@@ -43,7 +43,7 @@ module.exports = {
     const collector = sentMessage.createMessageComponentCollector({ time: 60000 });
 
     collector.on('collect', async (interaction) => {
-      // Permissão para usar os botões
+      // Verifica se quem interagiu é o autor do comando
       if (interaction.user.id !== message.author.id) {
         const embed = new EmbedBuilder()
           .setDescription('⚠️ Apenas quem executou o comando pode interagir com os botões.')
@@ -53,33 +53,25 @@ module.exports = {
 
       await interaction.deferReply({ ephemeral: true });
 
-      // Lida com cada botão
+      // Processa o botão pressionado
       switch (interaction.customId) {
         case 'create_rule':
           await handleCreateRule(interaction);
           break;
-
         case 'add_word':
           await handleAddWord(interaction);
           break;
-
         case 'delete_rule':
           await handleDeleteRule(interaction);
           break;
-
         case 'remove_word':
           await handleRemoveWord(interaction);
           break;
-
         case 'view_rules':
           await handleViewRules(interaction);
           break;
-
         default:
-          const errorEmbed = new EmbedBuilder()
-            .setDescription('❌ Botão inválido.')
-            .setColor('Red');
-          await interaction.followUp({ embeds: [errorEmbed] });
+          await interaction.followUp({ content: '❌ Botão inválido.', ephemeral: true });
       }
     });
 
@@ -147,12 +139,14 @@ async function handleViewRules(interaction) {
 
     const embed = new EmbedBuilder()
       .setTitle('📋 Regras de AutoMod Configuradas')
-      .setDescription('Aqui estão as regras configuradas no AutoMod:')
       .setColor('Blue');
 
     rules.forEach((rule) => {
       const keywords = rule.triggerMetadata.keywordFilter?.join(', ') || 'Nenhuma';
-      embed.addFields({ name: `📜 ${rule.name}`, value: `**ID:** \`${rule.id}\`\n**Palavras:** ${keywords}` });
+      embed.addFields({
+        name: `📜 ${rule.name}`,
+        value: `**ID:** \`${rule.id}\`\n**Palavras-Chave:** ${keywords}`,
+      });
     });
 
     await interaction.followUp({ embeds: [embed] });
