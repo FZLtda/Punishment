@@ -4,7 +4,6 @@ module.exports = {
   name: 'automod',
   description: 'Gerencie o sistema de AutoMod do servidor de forma interativa.',
   async execute(message) {
-    // Verifica permissões
     if (!message.member.permissions.has('Administrator')) {
       const embed = new EmbedBuilder()
         .setDescription('⚠️ Você precisa de permissões de administrador para usar este comando.')
@@ -12,7 +11,6 @@ module.exports = {
       return message.reply({ embeds: [embed] });
     }
 
-    // Cria o embed principal
     const embed = new EmbedBuilder()
       .setTitle('📋 Gerenciamento de AutoMod')
       .setDescription(
@@ -27,7 +25,6 @@ module.exports = {
       .setFooter({ text: `Solicitado por ${message.author.tag}`, iconURL: message.author.displayAvatarURL() })
       .setTimestamp();
 
-    // Adiciona os botões
     const buttons = new ActionRowBuilder().addComponents(
       new ButtonBuilder().setCustomId('create_rule').setLabel('Criar Regra').setStyle(ButtonStyle.Success),
       new ButtonBuilder().setCustomId('add_word').setLabel('Adicionar Palavras').setStyle(ButtonStyle.Primary),
@@ -35,15 +32,12 @@ module.exports = {
       new ButtonBuilder().setCustomId('remove_word').setLabel('Excluir Palavras').setStyle(ButtonStyle.Secondary),
       new ButtonBuilder().setCustomId('view_rules').setLabel('Ver Regras').setStyle(ButtonStyle.Primary)
     );
-
-    // Envia a mensagem com os botões
+    
     const sentMessage = await message.channel.send({ embeds: [embed], components: [buttons] });
 
-    // Cria o coletor de interações
     const collector = sentMessage.createMessageComponentCollector({ time: 60000 });
 
     collector.on('collect', async (interaction) => {
-      // Verifica se quem interagiu é o autor do comando
       if (interaction.user.id !== message.author.id) {
         const embed = new EmbedBuilder()
           .setDescription('⚠️ Apenas quem executou o comando pode interagir com os botões.')
@@ -53,7 +47,6 @@ module.exports = {
 
       await interaction.deferReply({ ephemeral: true });
 
-      // Processa o botão pressionado
       switch (interaction.customId) {
         case 'create_rule':
           await handleCreateRule(interaction);
@@ -81,7 +74,6 @@ module.exports = {
   },
 };
 
-// Função para criar regra
 async function handleCreateRule(interaction) {
   const embed = new EmbedBuilder()
     .setDescription('📝 Digite o nome da nova regra:')
@@ -125,7 +117,6 @@ async function handleCreateRule(interaction) {
   });
 }
 
-// Função para visualizar regras
 async function handleViewRules(interaction) {
   try {
     const rules = await interaction.guild.autoModerationRules.fetch();
