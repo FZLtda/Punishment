@@ -34,7 +34,7 @@ module.exports = {
     const botAvatar = client.user?.displayAvatarURL({ dynamic: true }) || null;
 
     const helpEmbed = new EmbedBuilder()
-      .setColor('#0077FF')
+      .setColor('#fe3838')
       .setTitle('<:emoji_45:1323360352498618398> Bem-vindo ao Punishment!')
       .setDescription(
         `Olá, **${message.author.displayName}**! Aqui estão algumas informações importantes para você começar.`

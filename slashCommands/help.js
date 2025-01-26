@@ -26,8 +26,8 @@ module.exports = {
       }
 
       const commandEmbed = new EmbedBuilder()
-        .setColor('#0077FF')
-        .setTitle(`📖 Informações do Comando: \`${command.name}\``)
+        .setColor('#fe3838')
+        .setTitle(`<:emoji_45:1323360352498618398> Informações do Comando: \`${command.name}\``)
         .addFields(
           { name: 'Descrição', value: command.description || 'Nenhuma descrição disponível.', inline: false },
           { name: 'Uso', value: command.usage || 'Sem informações de uso.', inline: false }
