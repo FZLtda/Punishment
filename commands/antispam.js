@@ -1,43 +1,73 @@
-const { PermissionsBitField } = require('discord.js');
-const { logModerationAction } = require('../moderationUtils');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const fs = require('fs');
+const path = './data/antispam.json';
 
-const antispamStatus = new Map();
+if (!fs.existsSync(path)) {
+  fs.writeFileSync(path, JSON.stringify({}));
+}
+
 const messageCounts = new Map();
 
 module.exports = {
   name: 'antispam',
   description: 'Ativa ou desativa o sistema de bloqueio de spam no servidor.',
+  usage: '.antispam [on/off]',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
       return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
     }
 
-    const subcommand = args[0]?.toLowerCase();
-    if (!subcommand || !['on', 'off'].includes(subcommand)) {
-      return message.reply('<:no:1122370713932795997> Use: `antispam on` para ativar ou `antispam off` para desativar.');
+    const option = args[0]?.toLowerCase();
+    const guildId = message.guild.id;
+
+    if (!['on', 'off'].includes(option)) {
+      return message.reply(
+        '<:no:1122370713932795997> Uso incorreto! Use `.antispam on` para ativar ou `.antispam off` para desativar o sistema de bloqueio de spam.'
+      );
     }
 
-    const isEnabled = subcommand === 'on';
-    antispamStatus.set(message.guild.id, isEnabled);
+    const settings = JSON.parse(fs.readFileSync(path, 'utf8'));
 
-    logModerationAction(
-      message.guild.id,
-      message.author.id,
-      'Antispam',
-      null,
-      `Sistema de antispam ${isEnabled ? 'ativado' : 'desativado'}`
-    );
+    if (option === 'on') {
+      settings[guildId] = { enabled: true };
+      fs.writeFileSync(path, JSON.stringify(settings, null, 4));
 
-    return message.reply(
-      `<:emoji_33:1219788320234803250> Sistema de bloqueio de spam ${
-        isEnabled ? 'ativado' : 'desativado'
-      } com sucesso.`
-    );
+      const embed = new EmbedBuilder()
+        .setColor('#2ecc71')
+        .setTitle('<:on:1232142357848260639> Antispam Ativado')
+        .setDescription('O sistema de bloqueio de spam foi ativado neste servidor.')
+        .setFooter({
+          text: `${message.author.tag}`,
+          iconURL: message.author.displayAvatarURL({ dynamic: true }),
+        })
+        .setTimestamp();
+
+      return message.channel.send({ embeds: [embed] });
+    }
+
+    if (option === 'off') {
+      delete settings[guildId];
+      fs.writeFileSync(path, JSON.stringify(settings, null, 4));
+
+      const embed = new EmbedBuilder()
+        .setColor('#fe3838')
+        .setTitle('<:emoji_51:1248416468819906721> Antispam Desativado')
+        .setDescription('O sistema de bloqueio de spam foi desativado neste servidor.')
+        .setFooter({
+          text: `${message.author.tag}`,
+          iconURL: message.author.displayAvatarURL({ dynamic: true }),
+        })
+        .setTimestamp();
+
+      return message.channel.send({ embeds: [embed] });
+    }
   },
 
-  init(client) {
+  startAntispamListener(client) {
     client.on('messageCreate', async (message) => {
-      const isAntispamEnabled = antispamStatus.get(message.guild?.id);
+      const settings = JSON.parse(fs.readFileSync(path, 'utf8'));
+      const isAntispamEnabled = settings[message.guild?.id]?.enabled;
+
       if (!isAntispamEnabled || !message.guild || message.author.bot) return;
 
       if (message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) return;
@@ -74,13 +104,19 @@ module.exports = {
 
           await message.member.timeout(10 * 60 * 1000, 'Spam detectado pelo sistema de antispam.');
 
-          logModerationAction(
-            guildId,
-            client.user.id,
-            'Timeout',
-            authorId,
-            'Spam detectado e usuário mutado automaticamente'
-          );
+          const embed = new EmbedBuilder()
+            .setColor('#fe3838')
+            .setTitle('Antispam: Usuário Mutado')
+            .setDescription(
+              `Usuário **${message.author.tag}** foi mutado automaticamente por spam.`
+            )
+            .setFooter({
+              text: `Detectado por: ${client.user.tag}`,
+              iconURL: client.user.displayAvatarURL(),
+            })
+            .setTimestamp();
+
+          message.channel.send({ embeds: [embed] });
         } catch (error) {
           console.error('Erro ao processar antispam:', error);
         }

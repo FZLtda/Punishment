@@ -1,32 +1,63 @@
-const { PermissionsBitField } = require('discord.js');
-const { logModerationAction } = require('../moderationUtils');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const fs = require('fs');
+const path = './data/antilink.json';
 
-const antilinkStatus = new Map();
+if (!fs.existsSync(path)) {
+  fs.writeFileSync(path, JSON.stringify({}));
+}
 
 module.exports = {
   name: 'antilink',
   description: 'Ativa ou desativa o sistema de bloqueio de links no servidor.',
+  usage: '.antilink [on/off]',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
       return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
     }
 
-    const subcommand = args[0]?.toLowerCase();
-    if (!subcommand || !['on', 'off'].includes(subcommand)) {
-      return message.reply('<:no:1122370713932795997> Use: `antilink on` para ativar ou `antilink off` para desativar.');
+    const option = args[0]?.toLowerCase();
+    const guildId = message.guild.id;
+
+    if (!['on', 'off'].includes(option)) {
+      return message.reply(
+        '<:no:1122370713932795997> Uso incorreto! Use `.antilink on` para ativar ou `.antilink off` para desativar o sistema de bloqueio de links.'
+      );
     }
 
-    const isEnabled = subcommand === 'on';
-    antilinkStatus.set(message.guild.id, isEnabled);
+    const settings = JSON.parse(fs.readFileSync(path, 'utf8'));
 
-    message.channel.send(
-      `<:emoji_33:1219788320234803250> Sistema de bloqueio de links ${
-        isEnabled ? 'ativado' : 'desativado'
-      } com sucesso.`
-    );
+    if (option === 'on') {
+      settings[guildId] = { enabled: true };
+      fs.writeFileSync(path, JSON.stringify(settings, null, 4));
 
-    if (isEnabled) {
-      this.startAntilinkListener(message.client);
+      const embed = new EmbedBuilder()
+        .setColor('#2ecc71')
+        .setTitle('<:on:1232142357848260639> Antilink Ativado')
+        .setDescription('O sistema de bloqueio de links foi ativado neste servidor.')
+        .setFooter({
+          text: `${message.author.tag}`,
+          iconURL: message.author.displayAvatarURL({ dynamic: true }),
+        })
+        .setTimestamp();
+
+      return message.channel.send({ embeds: [embed] });
+    }
+
+    if (option === 'off') {
+      delete settings[guildId];
+      fs.writeFileSync(path, JSON.stringify(settings, null, 4));
+
+      const embed = new EmbedBuilder()
+        .setColor('#fe3838')
+        .setTitle('<:emoji_51:1248416468819906721> Antilink Desativado')
+        .setDescription('O sistema de bloqueio de links foi desativado neste servidor.')
+        .setFooter({
+          text: `${message.author.tag}`,
+          iconURL: message.author.displayAvatarURL({ dynamic: true }),
+        })
+        .setTimestamp();
+
+      return message.channel.send({ embeds: [embed] });
     }
   },
 
@@ -35,10 +66,10 @@ module.exports = {
     this.listenerRegistered = true;
 
     client.on('messageCreate', async (message) => {
-      const isAntilinkEnabled = antilinkStatus.get(message.guild?.id);
-      if (!isAntilinkEnabled) return;
+      const settings = JSON.parse(fs.readFileSync(path, 'utf8'));
+      const isAntilinkEnabled = settings[message.guild?.id]?.enabled;
 
-      if (!message.guild || message.author.bot) return;
+      if (!isAntilinkEnabled || !message.guild || message.author.bot) return;
 
       const linkRegex = /(https?:\/\/|www\.)\S+/gi;
 
@@ -47,14 +78,6 @@ module.exports = {
 
         try {
           await message.delete();
-
-          logModerationAction(
-            message.guild.id,
-            message.client.user.id,
-            'Antilink',
-            message.author.id,
-            'Mensagem com link excluída automaticamente'
-          );
 
           const reply = await message.channel.send(
             `<:no:1122370713932795997> ${message.author}, links não são permitidos neste servidor.`
