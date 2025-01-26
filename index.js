@@ -26,13 +26,13 @@ if (!fs.existsSync(prefixesPath)) {
 
 const getPrefix = (guildId) => {
   const prefixes = JSON.parse(fs.readFileSync(prefixesPath, 'utf8'));
-  return prefixes[guildId] || '.'; // Retorna o prefixo do servidor ou o padrão
+  return prefixes[guildId] || '.';
 };
 
 const setPrefix = (guildId, newPrefix) => {
   const prefixes = JSON.parse(fs.readFileSync(prefixesPath, 'utf8'));
-  prefixes[guildId] = newPrefix; // Atualiza o prefixo para o servidor
-  fs.writeFileSync(prefixesPath, JSON.stringify(prefixes, null, 4)); // Salva as mudanças
+  prefixes[guildId] = newPrefix;
+  fs.writeFileSync(prefixesPath, JSON.stringify(prefixes, null, 4));
 };
 
 const commandsPath = path.join(__dirname, 'commands');
@@ -83,7 +83,7 @@ client.once('ready', () => {
     activities: [
       {
         name: '.help',
-        type: 'PLAYING',
+        type: 0,
       },
     ],
   });
@@ -95,7 +95,7 @@ client.on('messageCreate', async (message) => {
   const prefixes = fs.existsSync(prefixesPath)
     ? JSON.parse(fs.readFileSync(prefixesPath, 'utf8'))
     : {};
-  const prefix = prefixes[message.guild.id] || '.'; // Prefixo padrão para novos servidores
+  const prefix = prefixes[message.guild.id] || '.';
 
   if (!message.content.startsWith(prefix)) return;
 

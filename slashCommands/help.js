@@ -3,23 +3,22 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('help')
-    .setDescription('Exibe a lista de comandos disponíveis ou informações detalhadas de um comando.')
-    .addStringOption((option) =>
+    .setDescription('Exibe informações sobre o bot e seus comandos.')
+    .addStringOption(option =>
       option
         .setName('comando')
-        .setDescription('Nome do comando para obter mais informações.')
+        .setDescription('Nome do comando para obter informações detalhadas.')
         .setRequired(false)
     ),
   async execute(interaction) {
-    const { slashCommands, commands } = interaction.client;
-
+    const client = interaction.client;
+    const commands = client.commands;
     const commandName = interaction.options.getString('comando');
 
     if (commandName) {
-      const slashCommand = slashCommands.get(commandName.toLowerCase());
-      const prefixCommand = commands.get(commandName.toLowerCase());
+      const command = commands.get(commandName);
 
-      if (!slashCommand && !prefixCommand) {
+      if (!command) {
         return interaction.reply({
           content: `<:no:1122370713932795997> Comando \`${commandName}\` não encontrado.`,
           ephemeral: true,
@@ -28,52 +27,57 @@ module.exports = {
 
       const commandEmbed = new EmbedBuilder()
         .setColor('#0077FF')
-        .setTitle(`<:emoji_45:1323360352498618398> Informações do Comando: ${slashCommand ? `/${slashCommand.data.name}` : `${prefixCommand.name}`}`)
+        .setTitle(`📖 Informações do Comando: \`${command.name}\``)
         .addFields(
-          { name: 'Descrição', value: slashCommand?.data.description || prefixCommand?.description || 'Nenhuma descrição disponível.', inline: false },
-          {
-            name: 'Uso',
-            value: prefixCommand ? `\`${prefixCommand.name} ${prefixCommand.usage || ''}\`` : 'Comando Slash: Use diretamente no Discord.',
-            inline: false,
-          }
+          { name: 'Descrição', value: command.description || 'Nenhuma descrição disponível.', inline: false },
+          { name: 'Uso', value: command.usage || 'Sem informações de uso.', inline: false }
         )
         .setFooter({
-          text: `${interaction.user.tag}`,
+          text: `Solicitado por ${interaction.user.tag}`,
           iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
 
-      return interaction.reply({ embeds: [commandEmbed], ephemeral: true });
+      return interaction.reply({ embeds: [commandEmbed] });
     }
+
+    const botAvatar = client.user?.displayAvatarURL({ dynamic: true }) || null;
 
     const helpEmbed = new EmbedBuilder()
       .setColor('#0077FF')
-      .setTitle('<:emoji_45:1323360352498618398> Lista de Comandos')
+      .setTitle('📖 Bem-vindo ao Punishment!')
       .setDescription(
-        'Aqui está uma lista de todos os comandos disponíveis no bot. Use `/help [comando]` para obter informações detalhadas de um comando específico.'
+        `Olá, **${interaction.user.username}**! Aqui estão algumas informações importantes para você começar.`
+      )
+      .addFields(
+        {
+          name: 'Prefixo Atual',
+          value: 'Para comandos prefixados, consulte as configurações do servidor.',
+          inline: true,
+        },
+        {
+          name: 'Como usar:',
+          value: `Para obter informações detalhadas de um comando, use \`/help [comando]\`.`,
+          inline: true,
+        },
+        {
+          name: 'Exemplos de Uso:',
+          value: `/help ping - Mostra informações sobre o comando \`ping\`.\n/help uptime - Mostra informações sobre o comando \`uptime\`.\n/help ban - Mostra informações sobre o comando \`ban\`.`,
+          inline: false,
+        },
+        {
+          name: 'Sobre o Bot:',
+          value: `Eu sou o Punishment, um bot de moderação criado para tornar sua experiência no Discord mais segura e organizada.`,
+          inline: false,
+        }
       )
       .setFooter({
-        text: `Requisitado por ${interaction.user.tag}`,
+        text: `Solicitado por ${interaction.user.tag} | Punishment`,
         iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
       })
+      .setThumbnail(botAvatar)
       .setTimestamp();
 
-    if (commands.size > 0) {
-      helpEmbed.addFields({
-        name: 'Comandos por Prefixo',
-        value: commands.map((cmd) => `\`${cmd.name}\``).join(', ') || 'Nenhum comando disponível.',
-        inline: false,
-      });
-    }
-
-    if (slashCommands.size > 0) {
-      helpEmbed.addFields({
-        name: 'Comandos Slash',
-        value: slashCommands.map((cmd) => `\`/${cmd.data.name}\``).join(', ') || 'Nenhum comando disponível.',
-        inline: false,
-      });
-    }
-
-    await interaction.reply({ embeds: [helpEmbed], ephemeral: true });
+    await interaction.reply({ embeds: [helpEmbed] });
   },
 };
