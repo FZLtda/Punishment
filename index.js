@@ -24,6 +24,17 @@ if (!fs.existsSync(prefixesPath)) {
   fs.writeFileSync(prefixesPath, JSON.stringify({}));
 }
 
+const getPrefix = (guildId) => {
+  const prefixes = JSON.parse(fs.readFileSync(prefixesPath, 'utf8'));
+  return prefixes[guildId] || '.'; // Retorna o prefixo do servidor ou o padrão
+};
+
+const setPrefix = (guildId, newPrefix) => {
+  const prefixes = JSON.parse(fs.readFileSync(prefixesPath, 'utf8'));
+  prefixes[guildId] = newPrefix; // Atualiza o prefixo para o servidor
+  fs.writeFileSync(prefixesPath, JSON.stringify(prefixes, null, 4)); // Salva as mudanças
+};
+
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
@@ -71,8 +82,8 @@ client.once('ready', () => {
     status: 'dnd',
     activities: [
       {
-        name: 'Moderar servidores',
-        type: 'WATCHING',
+        name: '.help',
+        type: 'PLAYING',
       },
     ],
   });
@@ -81,9 +92,10 @@ client.once('ready', () => {
 client.on('messageCreate', async (message) => {
   if (message.author.bot || !message.guild) return;
 
-  const prefixes = JSON.parse(fs.readFileSync(prefixesPath, 'utf8'));
-
-  const prefix = prefixes[message.guild.id] || '.';
+  const prefixes = fs.existsSync(prefixesPath)
+    ? JSON.parse(fs.readFileSync(prefixesPath, 'utf8'))
+    : {};
+  const prefix = prefixes[message.guild.id] || '.'; // Prefixo padrão para novos servidores
 
   if (!message.content.startsWith(prefix)) return;
 
@@ -94,10 +106,10 @@ client.on('messageCreate', async (message) => {
   if (!command) return;
 
   try {
-    await command.execute(message, args);
+    await command.execute(message, args, { setPrefix, getPrefix });
   } catch (error) {
     console.error(`Erro ao executar o comando "${commandName}":`, error);
-    message.reply('Houve um erro ao executar este comando.');
+    message.reply('<:no:1122370713932795997> Não foi possível executar o comando.');
   }
 });
 
@@ -112,7 +124,7 @@ client.on('interactionCreate', async (interaction) => {
   } catch (error) {
     console.error(`Erro ao executar o comando "${interaction.commandName}":`, error);
     await interaction.reply({
-      content: 'Houve um erro ao executar este comando.',
+      content: '<:no:1122370713932795997> Não foi possível executar o comando.',
       ephemeral: true,
     });
   }

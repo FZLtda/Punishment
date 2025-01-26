@@ -20,6 +20,7 @@
     "@types/node": "^18.0.6",
     "axios": "^1.7.9",
     "better-sqlite3": "^11.8.1",
+    "dayjs": "^1.11.13",
     "discord-api-types": "^0.37.117",
     "discord.js": "^14.17.3",
     "dotenv": "^16.4.7",
