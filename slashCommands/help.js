@@ -44,10 +44,10 @@ module.exports = {
     const botAvatar = client.user?.displayAvatarURL({ dynamic: true }) || null;
 
     const helpEmbed = new EmbedBuilder()
-      .setColor('#0077FF')
-      .setTitle('📖 Bem-vindo ao Punishment!')
+      .setColor('#fe3838')
+      .setTitle('<:emoji_45:1323360352498618398> Bem-vindo ao Punishment!')
       .setDescription(
-        `Olá, **${interaction.user.username}**! Aqui estão algumas informações importantes para você começar.`
+        `Olá, **${interaction.user.displayName}**! Aqui estão algumas informações importantes para você começar.`
       )
       .addFields(
         {
@@ -72,7 +72,7 @@ module.exports = {
         }
       )
       .setFooter({
-        text: `Solicitado por ${interaction.user.tag} | Punishment`,
+        text: `${interaction.user.tag} | Punishment`,
         iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
       })
       .setThumbnail(botAvatar)
