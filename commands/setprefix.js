@@ -18,9 +18,9 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Prefixo Atualizado')
-                .setDescription(`✅ O prefixo foi alterado para: \`${newPrefix}\``)
+                .setDescription(`<:emoji_33:1219788320234803250> Prefixo alterado para: \`${newPrefix}\``)
                 .setColor('#00FF00')
-                .setFooter({ text: `Alterado por ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) });
+                .setFooter({ text: `${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) });
 
             return message.channel.send({ embeds: [embed] });
         } catch (error) {

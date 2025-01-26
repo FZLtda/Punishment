@@ -13,7 +13,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Prefixo Redefinido')
-                .setDescription('✅ O prefixo foi redefinido para o padrão: `.`')
+                .setDescription('<:emoji_33:1219788320234803250> Prefixo redefinido para o padrão: `.`')
                 .setColor('#00FF00');
 
             message.channel.send({ embeds: [embed] });
