@@ -137,3 +137,21 @@ client.on('interactionCreate', async (interaction) => {
     console.error('Erro ao inicializar o bot:', error);
   }
 })();
+
+
+const verifyCommand = require('./commands/verify');
+client.on('interactionCreate', async (interaction) => {
+  if (!interaction.isButton()) return;
+
+  if (verifyCommand && typeof verifyCommand.handleInteraction === 'function') {
+    try {
+      await verifyCommand.handleInteraction(interaction);
+    } catch (error) {
+      console.error('Erro ao lidar com a interação do comando verify:', error);
+      await interaction.reply({
+        content: 'Ocorreu um erro ao processar esta interação.',
+        ephemeral: true,
+      });
+    }
+  }
+});
