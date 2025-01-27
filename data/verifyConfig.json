@@ -8,5 +8,15 @@
         "roleId": "1267270735232110644",
         "channelId": "1018658580016152736",
         "messageId": "1333571174680105072"
+    },
+    "1148661284594790400": {
+        "title": "Verificação Necessária",
+        "description": "Clique no botão abaixo para se verificar e obter acesso ao servidor.",
+        "color": "#fe3838",
+        "buttonText": "Verificar",
+        "buttonEmoji": "<:emoji_34:1219815388921991259>",
+        "roleId": null,
+        "channelId": null,
+        "messageId": "1333583478436008017"
     }
 }
