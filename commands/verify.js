@@ -103,7 +103,7 @@ module.exports = {
     settings[guildId] = guildConfig;
     fs.writeFileSync(path, JSON.stringify(settings, null, 4));
 
-    interactionAuthors.set(sentMessage.id, message.author.id); // Armazena o autor do comando
+    interactionAuthors.set(sentMessage.id, message.author.id);
   },
 
   async handleInteraction(interaction) {
@@ -128,7 +128,6 @@ module.exports = {
     const guildConfig = settings[guildId];
     const interactionAuthor = interactionAuthors.get(interaction.message.id);
 
-    // Restringe a interação aos autores do comando
     if (interactionAuthor && interaction.user.id !== interactionAuthor) {
       return interaction.reply({
         content: '<:no:1122370713932795997> Apenas o autor do comando pode interagir com este sistema.',
