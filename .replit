@@ -16,3 +16,4 @@ run = ["sh", "-c", "npm run start"]
 deploymentTarget = "cloudrun"
 ignorePorts = false
 run = "source init.sh && bash"
+run = "source init.sh && bash"
