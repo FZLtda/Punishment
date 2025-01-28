@@ -1,5 +1,8 @@
-
-run = "npm start"
+run = "npm run start"
+modules = ["nodejs-20", "nix"]
 
 [nix]
-channel = "stable"
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "npm run start"]
