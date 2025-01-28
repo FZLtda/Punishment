@@ -16,7 +16,7 @@
   "author": "FuncZero",
   "license": "MIT",
   "dependencies": {
-    "@discordjs/rest": "^2.4.2",
+    "@discordjs/rest": "^2.2.0",
     "@discordjs/voice": "^0.18.0",
     "@types/node": "^22.10.10",
     "axios": "^1.7.9",
@@ -25,7 +25,7 @@
     "dayjs": "^1.11.13",
     "discord-api-types": "^0.37.117",
     "discord-player": "^7.1.0",
-    "discord.js": "^14.17.3",
+    "discord.js": "^14.14.1",
     "dotenv": "^16.4.7",
     "ffmpeg-static": "^5.2.0",
     "moment-timezone": "^0.5.46",
