@@ -29,7 +29,7 @@ module.exports = {
 
       if (error.response) {
         if (error.response.status === 404) {
-          message.reply(`<:no:1122370713932795997> O comando **"${commandName}"** não foi encontrado.`);
+          message.reply(`<:no:1122370713932795997> Este comando não existe na API.`);
         } else {
           message.reply('<:no:1122370713932795997> Não foi possível remover o comando.');
         }

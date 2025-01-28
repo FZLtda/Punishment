@@ -32,7 +32,7 @@ module.exports = {
 
       if (error.response) {
         if (error.response.status === 400) {
-          return message.reply('Este comando já existe na API');
+          return message.reply('<:no:1122370713932795997> Este comando já existe na API');
         } else {
           return message.reply('<:no:1122370713932795997> Erro na API. Verifique os logs.');
         }
