@@ -18,10 +18,17 @@ client.commands = new Collection();
 client.slashCommands = new Collection();
 
 const prefixesPath = path.resolve(__dirname, './data/prefixes.json');
+const acceptedUsersPath = path.resolve(__dirname, './data/acceptedUsers.json');
 
+// Certifique-se de que os arquivos necessários existem
 if (!fs.existsSync(prefixesPath)) {
   fs.mkdirSync(path.dirname(prefixesPath), { recursive: true });
   fs.writeFileSync(prefixesPath, JSON.stringify({}));
+}
+
+if (!fs.existsSync(acceptedUsersPath)) {
+  fs.mkdirSync(path.dirname(acceptedUsersPath), { recursive: true });
+  fs.writeFileSync(acceptedUsersPath, JSON.stringify([]));
 }
 
 const getPrefix = (guildId) => {
@@ -99,6 +106,36 @@ client.on('messageCreate', async (message) => {
   const command = client.commands.get(commandName);
   if (!command) return;
 
+  // Verifique se o usuário aceitou os termos de uso
+  const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
+  if (!acceptedUsers.includes(message.author.id)) {
+    const filter = (m) => m.author.id === message.author.id;
+    message.reply(
+      'Você precisa aceitar os termos de uso para continuar usando o bot. Por favor, leia e digite "aceito" para continuar:\n\n' +
+        '**Termos de Uso:**\n' +
+        '1. Você é responsável por seus atos.\n' +
+        '2. Não use o bot para atividades ilegais.\n' +
+        '3. Respeite os outros usuários.\n\n' +
+        'Digite "aceito" para continuar.'
+    );
+
+    try {
+      const collected = await message.channel.awaitMessages({ filter, max: 1, time: 60000, errors: ['time'] });
+      const response = collected.first().content.toLowerCase();
+
+      if (response === 'aceito') {
+        acceptedUsers.push(message.author.id);
+        fs.writeFileSync(acceptedUsersPath, JSON.stringify(acceptedUsers, null, 4));
+        return message.reply('Obrigado por aceitar os termos! Agora você pode usar os comandos.');
+      } else {
+        return message.reply('Você não aceitou os termos. Não poderá usar o bot.');
+      }
+    } catch (error) {
+      return message.reply('Você não respondeu a tempo. Tente usar o comando novamente e aceitar os termos.');
+    }
+  }
+
+  // Execute o comando se os termos foram aceitos
   try {
     await command.execute(message, args, { setPrefix, getPrefix });
   } catch (error) {
