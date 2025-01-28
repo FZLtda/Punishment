@@ -1,1 +1,0 @@
-alias gitupdate="bash ~/workspace/update.sh"
