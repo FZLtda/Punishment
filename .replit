@@ -1,19 +1,5 @@
-modules = ["nodejs-20", "bash", "nix"]
-hidden = [".config", "package-lock.json"]
-run = "npm run start"
 
-[gitHubImport]
-requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
+run = "npm start"
 
 [nix]
-channel = "stable-24_05"
-
-[unitTest]
-language = "nodejs"
-
-[deployment]
-run = ["sh", "-c", "npm run start"]
-deploymentTarget = "cloudrun"
-ignorePorts = false
-run = "source init.sh && bash"
-run = "source init.sh && bash"
+channel = "stable"
