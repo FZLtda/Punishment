@@ -53,26 +53,12 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 
-const slashCommandsPath = path.join(__dirname, 'slashCommands');
-const slashCommandFiles = fs.readdirSync(slashCommandsPath).filter((file) => file.endsWith('.js'));
-
-const slashCommands = [];
-for (const file of slashCommandFiles) {
-  const command = require(path.join(slashCommandsPath, file));
-  if (command.data && command.data.name) {
-    client.slashCommands.set(command.data.name, command);
-    slashCommands.push(command.data.toJSON());
-  } else {
-    console.warn(`Comando Slash "${file}" está mal formatado ou falta a propriedade 'data'.`);
-  }
-}
-
 const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
   try {
     console.log('Registrando Slash Commands...');
-    await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: slashCommands });
+    await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: [] });
     console.log('Slash Commands registrados com sucesso!');
   } catch (error) {
     console.error('Erro ao registrar Slash Commands:', error);
@@ -96,10 +82,14 @@ client.once('ready', () => {
 client.on('messageCreate', async (message) => {
   if (message.author.bot || !message.guild) return;
 
+  const prefix = getPrefix(message.guild.id);
+  if (!message.content.startsWith(prefix)) return;
+
   const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
+
   if (!acceptedUsers.includes(message.author.id)) {
     const embed = new EmbedBuilder()
-      .setColor(0x0099ff)
+      .setColor(0xfe3838)
       .setTitle('Termos de Uso')
       .setDescription(
         'Para continuar usando o **Punishment**, você precisa aceitar nossos **Termos de Uso**.\n\nClique no botão **"Ler Termos"** para visualizar os termos, ou clique em **"Aceitar Termos"** se você já leu e concorda com eles.'
@@ -107,23 +97,21 @@ client.on('messageCreate', async (message) => {
       .setFooter({ text: 'Obrigado por utilizar o Punishment!' });
 
     const row = new ActionRowBuilder()
-      .addComponents(
-        new ButtonBuilder()
-          .setLabel('Ler Termos')
-          .setStyle(ButtonStyle.Link)
-          .setURL('https://docs.google.com/document/d/12-nG-vY0bhgIzsaO2moSHjh7QeCrQLSGd7W2XYDMXsk/edit?usp=drivesdk'),
-        new ButtonBuilder()
-          .setCustomId('accept_terms')
-          .setLabel('Aceitar Termos')
-          .setStyle(ButtonStyle.Success)
+  .addComponents(
+    new ButtonBuilder()
+      .setLabel('Ler Termos')
+      .setStyle(ButtonStyle.Link)
+      .setURL('https://docs.google.com/document/d/12-nG-vY0bhgIzsaO2moSHjh7QeCrQLSGd7W2XYDMXsk/edit?usp=drivesdk'),
+    new ButtonBuilder()
+      .setCustomId('accept_terms')
+      .setLabel('Aceitar Termos')
+      .setStyle(ButtonStyle.Success)
+      .setEmoji({ id: '1219815388921991259', name: 'emoji_34' })
       );
 
     await message.reply({ embeds: [embed], components: [row] });
     return;
   }
-
-  const prefix = getPrefix(message.guild.id);
-  if (!message.content.startsWith(prefix)) return;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
@@ -154,7 +142,7 @@ client.on('interactionCreate', async (interaction) => {
     fs.writeFileSync(acceptedUsersPath, JSON.stringify(acceptedUsers, null, 4));
 
     return interaction.reply({
-      content: 'Obrigado por aceitar os termos! Agora você pode usar o bot.',
+      content: '<:emoji_33:1219788320234803250> Obrigado por aceitar nossos termos! Agora você pode usar o Punishment.',
       ephemeral: true,
     });
   }
