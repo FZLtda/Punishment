@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Collection } = require('discord.js');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 require('dotenv').config();
@@ -18,10 +18,16 @@ client.commands = new Collection();
 client.slashCommands = new Collection();
 
 const prefixesPath = path.resolve(__dirname, './data/prefixes.json');
+const acceptedUsersPath = path.resolve(__dirname, './data/acceptedUsers.json');
 
 if (!fs.existsSync(prefixesPath)) {
   fs.mkdirSync(path.dirname(prefixesPath), { recursive: true });
   fs.writeFileSync(prefixesPath, JSON.stringify({}));
+}
+
+if (!fs.existsSync(acceptedUsersPath)) {
+  fs.mkdirSync(path.dirname(acceptedUsersPath), { recursive: true });
+  fs.writeFileSync(acceptedUsersPath, JSON.stringify([]));
 }
 
 const getPrefix = (guildId) => {
@@ -90,6 +96,32 @@ client.once('ready', () => {
 client.on('messageCreate', async (message) => {
   if (message.author.bot || !message.guild) return;
 
+  const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
+  if (!acceptedUsers.includes(message.author.id)) {
+    const embed = new EmbedBuilder()
+      .setColor(0x0099ff)
+      .setTitle('Termos de Uso')
+      .setDescription(
+        'Para continuar usando o **Punishment**, você precisa aceitar nossos **Termos de Uso**.\n\nClique no botão **"Ler Termos"** para visualizar os termos, ou clique em **"Aceitar Termos"** se você já leu e concorda com eles.'
+      )
+      .setFooter({ text: 'Obrigado por utilizar o Punishment!' });
+
+    const row = new ActionRowBuilder()
+      .addComponents(
+        new ButtonBuilder()
+          .setLabel('Ler Termos')
+          .setStyle(ButtonStyle.Link)
+          .setURL('https://docs.google.com/document/d/12-nG-vY0bhgIzsaO2moSHjh7QeCrQLSGd7W2XYDMXsk/edit?usp=drivesdk'),
+        new ButtonBuilder()
+          .setCustomId('accept_terms')
+          .setLabel('Aceitar Termos')
+          .setStyle(ButtonStyle.Success)
+      );
+
+    await message.reply({ embeds: [embed], components: [row] });
+    return;
+  }
+
   const prefix = getPrefix(message.guild.id);
   if (!message.content.startsWith(prefix)) return;
 
@@ -108,34 +140,23 @@ client.on('messageCreate', async (message) => {
 });
 
 client.on('interactionCreate', async (interaction) => {
-  if (interaction.isCommand()) {
-    const command = client.slashCommands.get(interaction.commandName);
-    if (!command) return;
+  if (interaction.isButton() && interaction.customId === 'accept_terms') {
+    const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
 
-    try {
-      await command.execute(interaction);
-    } catch (error) {
-      console.error(`Erro ao executar o comando "${interaction.commandName}":`, error);
-      await interaction.reply({
-        content: '<:no:1122370713932795997> Não foi possível executar o comando.',
+    if (acceptedUsers.includes(interaction.user.id)) {
+      return interaction.reply({
+        content: 'Você já aceitou os termos anteriormente.',
         ephemeral: true,
       });
     }
-  }
 
-  if (interaction.isButton()) {
-    const verifyCommand = require('./commands/verify');
-    if (verifyCommand && typeof verifyCommand.handleInteraction === 'function') {
-      try {
-        await verifyCommand.handleInteraction(interaction);
-      } catch (error) {
-        console.error('Erro ao lidar com a interação do botão:', error);
-        await interaction.reply({
-          content: 'Ocorreu um erro ao processar esta interação.',
-          ephemeral: true,
-        });
-      }
-    }
+    acceptedUsers.push(interaction.user.id);
+    fs.writeFileSync(acceptedUsersPath, JSON.stringify(acceptedUsers, null, 4));
+
+    return interaction.reply({
+      content: 'Obrigado por aceitar os termos! Agora você pode usar o bot.',
+      ephemeral: true,
+    });
   }
 });
 
