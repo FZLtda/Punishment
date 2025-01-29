@@ -22,7 +22,7 @@ module.exports = {
       const response = await axios.delete(`https://punishment.squareweb.app/api/commands/${commandName}`);
 
       if (response.status === 200) {
-        message.reply(`<:emoji_33:1219788320234803250> Comando **"${commandName}"** foi removido com sucesso.`);
+        message.reply(`<:emoji_33:1219788320234803250> Comando **${commandName}** foi removido com sucesso.`);
       }
     } catch (error) {
       console.error('Erro ao remover o comando:', error.message);
