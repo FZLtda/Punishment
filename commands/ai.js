@@ -29,7 +29,7 @@ module.exports = {
 
     try {
       const thread = await message.channel.threads.create({
-        name: `🤖 Chat com IA - ${message.author.displayName}`,
+        name: `Punishment - ${message.author.displayName}`,
         autoArchiveDuration: 60,
         reason: 'Conversa iniciada com a IA',
       });
@@ -67,7 +67,7 @@ module.exports = {
         conversationHistory[userId].shift();
       }
 
-      await thinkingMessage.edit(`🤖 **Resposta da IA:**\n${answer}`);
+      await thinkingMessage.edit(`\n${answer}`);
 
       setTimeout(async () => {
         if (thread && !thread.locked) {
