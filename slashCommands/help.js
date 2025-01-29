@@ -51,8 +51,8 @@ module.exports = {
       )
       .addFields(
         {
-          name: 'Prefixo Atual',
-          value: 'Para comandos prefixados, consulte as configurações do servidor.',
+          name: 'Prefixo Padrão:',
+          value: '.',
           inline: true,
         },
         {
