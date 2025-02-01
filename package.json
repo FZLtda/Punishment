@@ -16,6 +16,7 @@
   "author": "FuncZero",
   "license": "MIT",
   "dependencies": {
+    "@discordjs/builders": "^1.10.0",
     "@discordjs/rest": "^2.2.0",
     "@discordjs/voice": "^0.18.0",
     "@types/node": "^22.10.10",
@@ -32,6 +33,7 @@
     "moment-timezone": "^0.5.46",
     "node-fetch": "^2.7.0",
     "opusscript": "^0.0.8",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "stripe": "^17.6.0"
   }
 }

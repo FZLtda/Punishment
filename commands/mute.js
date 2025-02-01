@@ -6,7 +6,14 @@ module.exports = {
   description: 'Aplica um timeout (mute) em um membro.',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-      return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você não possui permissão para usar este comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
@@ -14,20 +21,48 @@ module.exports = {
     const motivo = args.slice(2).join(' ') || 'Não especificado.';
 
     if (!membro) {
-      return message.reply('<:no:1122370713932795997> Você precisa mencionar um membro ou fornecer o ID.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Mencione um usuário para executar esta ação.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     if (!tempo) {
-      return message.reply('<:no:1122370713932795997> Você precisa especificar um tempo de duração (ex.: 1m, 1h, 1d).');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Defina um tempo de duração para prosseguir (ex.: 1m, 1h, 1d).',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const duracao = convertToMilliseconds(tempo);
     if (!duracao) {
-      return message.reply('<:no:1122370713932795997> Por favor, forneça uma duração válida (ex.: 1m, 1h, 1d).');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Duração inválida. Forneça um valor válido (ex.: 1m, 1h, 1d).',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     if (!membro.moderatable) {
-      return message.reply('<:no:1122370713932795997> Não é possível aplicar mute nesse membro.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Este usuário não pode ser silenciado devido às suas permissões.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {

@@ -8,22 +8,50 @@ module.exports = {
   permissions: ['ManageRoles'],
   async execute(message, args) {
     if (!message.member.permissions.has('ManageRoles')) {
-      return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você não possui permissão para usar este comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const member = message.mentions.members.first();
     const role = message.mentions.roles.first();
 
     if (!member || !role) {
-      return message.reply('<:no:1122370713932795997> Uso incorreto do comando. Use: `.addrole @membro @cargo`');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Argumentos inválidos. O formato correto do comando é: addrole @membro @cargo',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     if (role.position >= message.guild.members.me.roles.highest.position) {
-      return message.reply('<:no:1122370713932795997> Não posso adicionar este cargo, pois ele está acima do meu cargo mais alto.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não tenho permissão para adicionar este cargo, pois ele está acima do meu cargo mais alto.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     if (member.roles.cache.has(role.id)) {
-      return message.reply(`<:no:1122370713932795997> O usuário já possui este cargo.`);
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Este usuário já possui este cargo.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {
@@ -44,7 +72,14 @@ module.exports = {
       });
     } catch (error) {
       console.error(error);
-      return message.reply('<:no:1122370713932795997> Erro ao tentar adicionar o cargo. Verifique minhas permissões.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível adicionar o cargo.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
   }
 };

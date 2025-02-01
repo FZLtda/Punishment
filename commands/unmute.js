@@ -6,17 +6,38 @@ module.exports = {
   description: 'Remove o mute (timeout) de um membro.',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-      return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você não possui permissão para usar este comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
     if (!membro) {
-      return message.reply('<:no:1122370713932795997> Você precisa mencionar um membro ou fornecer o ID.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Mencione um usuário para executar esta ação.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] }); 
     }
 
     if (!membro.communicationDisabledUntilTimestamp) {
-      return message.reply('<:no:1122370713932795997> Este membro não está mutado.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não é possível remover o mute, pois o usuário não está silenciado.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {

@@ -14,17 +14,38 @@ module.exports = {
 
     if (!apiKey) {
       console.error('ERRO: A chave da API OpenAI não está configurada no .env!');
-      return message.reply('<:no:1122370713932795997> Erro interno: chave da API não configurada.');
+      const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Erro interno: chave da API não configurada.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
     }
 
     if (!args.length) {
-      return message.reply('<:no:1122370713932795997> Você precisa fornecer uma pergunta!');
+      const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Você precisa fornecer uma pergunta!',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const question = args.join(' ');
 
     if (question.length > MAX_CHARACTERS) {
-      return message.reply(`<:no:1122370713932795997> A pergunta é muito longa! Limite de ${MAX_CHARACTERS} caracteres.`);
+      const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'A pergunta é muito longa! Limite de ${MAX_CHARACTERS} caracteres.`',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {
@@ -35,7 +56,14 @@ module.exports = {
       });
 
       if (!thread) {
-        return message.reply('<:no:1122370713932795997> Não foi possível criar um tópico. Verifique as permissões do bot.');
+        const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Não foi possível criar um tópico. Verifique as permissões do bot.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
       }
 
       const thinkingMessage = await thread.send(`🤖 **${message.author.displayName} perguntou:**\n> ${question}\n\n⏳ **Aguarde...**`);
@@ -78,7 +106,14 @@ module.exports = {
 
     } catch (error) {
       console.error('Erro ao consultar a OpenAI:', error);
-      await message.reply('<:no:1122370713932795997> Não foi possível obter uma resposta no momento.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível criar um tópico. Verifique as permissões do bot.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };
