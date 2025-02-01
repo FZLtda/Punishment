@@ -1,3 +1,4 @@
+const { EmbedBuilder } = require('discord.js');
 const axios = require('axios');
 require('dotenv').config();
 
@@ -15,37 +16,37 @@ module.exports = {
     if (!apiKey) {
       console.error('ERRO: A chave da API OpenAI não está configurada no .env!');
       const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'Erro interno: chave da API não configurada.',
-                iconURL: 'http://bit.ly/4aIyY9j'
-            });
-      
-        return message.reply({ embeds: [embedErroMinimo] });
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Erro interno: chave da API não configurada.',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+
+      return message.reply({ embeds: [embedErroMinimo] });
     }
 
     if (!args.length) {
       const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'Você precisa fornecer uma pergunta!',
-                iconURL: 'http://bit.ly/4aIyY9j'
-            });
-      
-        return message.reply({ embeds: [embedErroMinimo] });
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Você precisa fornecer uma pergunta!',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+
+      return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const question = args.join(' ');
 
     if (question.length > MAX_CHARACTERS) {
       const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'A pergunta é muito longa! Limite de ${MAX_CHARACTERS} caracteres.`',
-                iconURL: 'http://bit.ly/4aIyY9j'
-            });
-      
-        return message.reply({ embeds: [embedErroMinimo] });
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: `A pergunta é muito longa! Limite de ${MAX_CHARACTERS} caracteres.`,
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+
+      return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {
@@ -57,16 +58,18 @@ module.exports = {
 
       if (!thread) {
         const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'Não foi possível criar um tópico. Verifique as permissões do bot.',
-                iconURL: 'http://bit.ly/4aIyY9j'
-            });
-      
+          .setColor('#FF4C4C')
+          .setAuthor({
+            name: 'Não foi possível criar um tópico. Verifique as permissões do bot.',
+            iconURL: 'http://bit.ly/4aIyY9j',
+          });
+
         return message.reply({ embeds: [embedErroMinimo] });
       }
 
-      const thinkingMessage = await thread.send(`🤖 **${message.author.displayName} perguntou:**\n> ${question}\n\n⏳ **Aguarde...**`);
+      const thinkingMessage = await thread.send(
+        `🤖 **${message.author.username} perguntou:**\n> ${question}\n\n⏳ **Aguarde...**`
+      );
 
       if (!conversationHistory[userId]) {
         conversationHistory[userId] = [];
@@ -82,9 +85,9 @@ module.exports = {
         },
         {
           headers: {
-            'Authorization': `Bearer ${apiKey}`,
+            Authorization: `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
-          },
+          }
         }
       );
 
@@ -98,7 +101,7 @@ module.exports = {
       await thinkingMessage.edit(`\n${answer}`);
 
       setTimeout(async () => {
-        if (thread && !thread.locked) {
+        if (thread && !thread.archived && !thread.locked) {
           await thread.setLocked(true);
           await thread.send('🔒 **Este tópico foi fechado devido à inatividade.**');
         }
@@ -107,13 +110,13 @@ module.exports = {
     } catch (error) {
       console.error('Erro ao consultar a OpenAI:', error);
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Não foi possível criar um tópico. Verifique as permissões do bot.',
-          iconURL: 'http://bit.ly/4aIyY9j'
-      });
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Não foi possível processar sua solicitação. Tente novamente mais tarde.',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };

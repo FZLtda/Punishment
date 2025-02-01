@@ -12,16 +12,28 @@ module.exports = {
   usage: '.antinuke [on/off]',
   async execute(message, args) {
     if (!message.member.permissions.has('ADMINISTRATOR')) {
-      return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você não possui permissão para usar este comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const option = args[0]?.toLowerCase();
     const guildId = message.guild.id;
 
     if (!['on', 'off'].includes(option)) {
-      return message.reply(
-        '<:no:1122370713932795997> Uso incorreto! Use `.antinuke on` para ativar ou `.antinuke off` para desativar o sistema Anti-Nuke.'
-      );
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Uso incorreto! Use `.antinuke on` para ativar ou `.antinuke off` para desativar o sistema Anti-Nuke.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const settings = JSON.parse(fs.readFileSync(path, 'utf8'));

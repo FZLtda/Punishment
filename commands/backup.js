@@ -12,7 +12,14 @@ module.exports = {
   description: 'Cria um backup completo do servidor, incluindo canais, cargos e permissões.',
   async execute(message) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você não possui permissão para usar este comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {
@@ -78,13 +85,14 @@ module.exports = {
     } catch (error) {
       console.error(error);
 
-      const errorEmbed = new EmbedBuilder()
-        .setTitle('<:no:1122370713932795997> Erro ao Criar Backup')
-        .setDescription('Houve um problema ao tentar criar o backup. Confira o console para mais detalhes.')
-        .setColor('Red')
-        .setTimestamp();
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível criar o backup devido a um problema.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
 
-      return message.channel.send({ embeds: [errorEmbed] });
+  return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };
