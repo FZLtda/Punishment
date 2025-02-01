@@ -18,15 +18,36 @@ module.exports = {
     description: 'Cria um cargo no servidor com configurações personalizadas.',
     async execute(message, args) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-            return message.reply('<:no:1122370713932795997> Você não tem permissão para criar cargos. Requer a permissão de **Gerenciar Cargos**.');
+            const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você não possui permissão para usar este comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
         }
 
         if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-            return message.reply('<:no:1122370713932795997> Eu não tenho permissão para criar cargos no servidor. Verifique as minhas permissões.');
+            const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não tenho permissão para criar cargos no servidor.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
         }
 
         if (!args[0]) {
-            return message.reply('<:no:1122370713932795997> Por favor, forneça um nome para o cargo.\n**Uso:** `!createrole <nome> [cor] [permissões]`');
+            const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você precisa fornecer um nome para o cargo. \n**Uso:** `!createrole <nome> [cor] [permissões]`',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
         }
         
         const roleName = args[0];
@@ -69,7 +90,14 @@ module.exports = {
             message.channel.send({ embeds: [embed] });
         } catch (error) {
             console.error('Erro ao criar o cargo:', error);
-            message.reply('<:no:1122370713932795997> Não foi possível criar o cargo.');
+            const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível criar o cargo.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
         }
     },
 };

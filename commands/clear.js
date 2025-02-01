@@ -6,14 +6,28 @@ module.exports = {
   description: 'Apaga mensagens do chat, com suporte para apagar mensagens de um usuário específico.',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-      return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
+      const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Você não possui permissão para usar este comando.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const quantidade = parseInt(args[0], 10);
     const usuario = message.mentions.users.first();
 
     if (!quantidade || isNaN(quantidade) || quantidade < 1 || quantidade > 100) {
-      return message.reply('<:no:1122370713932795997> Por favor, forneça um número válido entre 1 e 100.');
+      const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Só é possível excluir de 1 a 100 mensagens por vez.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {
@@ -47,7 +61,14 @@ module.exports = {
       setTimeout(() => feedbackMessage.delete().catch(() => null), 4000);
     } catch (error) {
       console.error(error);
-      return message.reply('<:no:1122370713932795997> Ocorreu um erro ao tentar apagar as mensagens.');
+      const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Não foi possível apagar as mensagens devido a um erro.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };

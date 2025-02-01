@@ -13,7 +13,14 @@ module.exports = {
     const commandName = args[0];
 
     if (!commandName) {
-      return message.reply('<:no:1122370713932795997> Você precisa informar o nome do comando.');
+      const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Você precisa informar o nome do comando.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {
@@ -29,12 +36,33 @@ module.exports = {
 
       if (error.response) {
         if (error.response.status === 404) {
-          message.reply(`<:no:1122370713932795997> Este comando não existe na API.`);
+          const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Este comando não existe na API.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
         } else {
-          message.reply('<:no:1122370713932795997> Não foi possível remover o comando.');
+          const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Não foi possível remover o comando.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
         }
       } else {
-        message.reply('<:no:1122370713932795997> Erro ao conectar com a API. Verifique se ela está funcionando.');
+        const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Não foi possível estabelecer conexão com a API.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
       }
     }
   },

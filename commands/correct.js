@@ -6,9 +6,14 @@ module.exports = {
   description: 'Corrige erros em um texto utilizando a inteligência da DeepL.',
   async execute(message, args) {
     if (args.length === 0) {
-      return message.reply(
-        '<:no:1122370713932795997> Você precisa fornecer um texto para corrigir.\nExemplo: `.correct Olá, como vai você?`'
-      );
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você precisa fornecer um texto para corrigir.\nExemplo: `.correct Olá, como vai você?',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const textToCorrect = args.join(' ');
@@ -67,9 +72,14 @@ module.exports = {
       }, 60 * 1000);
     } catch (error) {
       console.error('Erro ao corrigir o texto:', error);
-      await message.reply(
-        '<:no:1122370713932795997> Não foi possível corrigir o texto.'
-      );
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível corrigir a mensagem fornecida.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };

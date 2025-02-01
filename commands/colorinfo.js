@@ -7,7 +7,14 @@ module.exports = {
   usage: '.colorinfo [nome da cor | código hexadecimal]',
   async execute(message, args) {
     if (!args[0]) {
-      return message.reply('<:no:1122370713932795997> Forneça o nome da cor ou um código hexadecimal.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Forneça o nome da cor ou um código hexadecimal.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     let colorInput = args[0];
@@ -16,7 +23,14 @@ module.exports = {
     try {
       color = Color(colorInput);
     } catch {
-      return message.reply('<:no:1122370713932795997> Não foi possível obter informações dessa cor.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível obter informações dessa cor.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const hexCode = color.hex();
