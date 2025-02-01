@@ -6,7 +6,14 @@ module.exports = {
   description: 'Desbloqueia o envio de mensagens em um canal.',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
-      return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você não possui permissão para usar este comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const channel = message.mentions.channels.first() || message.channel;
@@ -37,7 +44,14 @@ module.exports = {
       await message.channel.send({ embeds: [embed] });
     } catch (error) {
       console.error(error);
-      return message.reply('<:no:1122370713932795997> Ocorreu um erro ao desbloquear o canal.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível desbloquear o canal devido a um erro.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };

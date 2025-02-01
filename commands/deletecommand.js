@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
   name: 'deletecommand',
@@ -14,13 +15,13 @@ module.exports = {
 
     if (!commandName) {
       const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'Você precisa informar o nome do comando.',
-                iconURL: 'http://bit.ly/4aIyY9j'
-            });
-      
-        return message.reply({ embeds: [embedErroMinimo] });
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Você precisa informar o nome do comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+        });
+
+      return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {
@@ -39,29 +40,29 @@ module.exports = {
           const embedErroMinimo = new EmbedBuilder()
             .setColor('#FF4C4C')
             .setAuthor({
-                name: 'Este comando não existe na API.',
-                iconURL: 'http://bit.ly/4aIyY9j'
+              name: 'Este comando não existe na API.',
+              iconURL: 'http://bit.ly/4aIyY9j'
             });
-      
-        return message.reply({ embeds: [embedErroMinimo] });
+
+          return message.reply({ embeds: [embedErroMinimo] });
         } else {
           const embedErroMinimo = new EmbedBuilder()
             .setColor('#FF4C4C')
             .setAuthor({
-                name: 'Não foi possível remover o comando.',
-                iconURL: 'http://bit.ly/4aIyY9j'
+              name: 'Não foi possível remover o comando.',
+              iconURL: 'http://bit.ly/4aIyY9j'
             });
-      
-        return message.reply({ embeds: [embedErroMinimo] });
+
+          return message.reply({ embeds: [embedErroMinimo] });
         }
       } else {
         const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'Não foi possível estabelecer conexão com a API.',
-                iconURL: 'http://bit.ly/4aIyY9j'
-            });
-      
+          .setColor('#FF4C4C')
+          .setAuthor({
+            name: 'Não foi possível estabelecer conexão com a API.',
+            iconURL: 'http://bit.ly/4aIyY9j'
+          });
+
         return message.reply({ embeds: [embedErroMinimo] });
       }
     }

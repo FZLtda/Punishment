@@ -5,12 +5,17 @@ require('dotenv').config();
 module.exports = {
   name: 'github',
   description: 'Busca informações detalhadas sobre um repositório do GitHub.',
-  usage: '!github <usuário/repositório>',
+  usage: '.github <usuário/repositório>',
   async execute(message, args) {
     if (!args[0] || typeof args[0] !== 'string') {
-      return message.reply(
-        '<:no:1122370713932795997> Uso inválido! Você precisa fornecer o repositório no formato `usuário/repositório`.'
-      );
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você precisa fornecer o repositório no formato `usuário/repositório`',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const repo = args[0].trim();
@@ -58,15 +63,35 @@ module.exports = {
         const status = error.response.status;
 
         if (status === 404) {
-          return message.reply('<:no:1122370713932795997> Repositório não encontrado. Verifique o nome e tente novamente.');
+          const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Repositório não encontrado. Verifique o nome e tente novamente.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
         }
 
         if (status === 403) {
-          return message.reply('<:no:1122370713932795997> Limite de requisições da API do GitHub excedido. Tente novamente mais tarde.');
+          const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Limite de requisições da API do GitHub excedido. Tente novamente mais tarde.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
         }
       }
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Ocorreu um erro ao buscar informações do repositório.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
 
-      return message.reply('<:no:1122370713932795997> Ocorreu um erro ao buscar informações do repositório.');
+  return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };

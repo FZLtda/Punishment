@@ -99,6 +99,15 @@ client.once('ready', () => {
 client.on('messageCreate', async (message) => {
   if (message.author.bot || !message.guild) return;
 
+  const prefix = getPrefix(message.guild.id);
+  if (!message.content.startsWith(prefix)) return;
+
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const commandName = args.shift().toLowerCase();
+
+  const command = client.commands.get(commandName);
+  if (!command) return; // 🔹 Agora o aviso só aparece se o comando for válido
+
   const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
 
   if (!acceptedUsers.includes(message.author.id)) {
@@ -126,15 +135,6 @@ client.on('messageCreate', async (message) => {
     await message.reply({ embeds: [embed], components: [row] });
     return;
   }
-
-  const prefix = getPrefix(message.guild.id);
-  if (!message.content.startsWith(prefix)) return;
-
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
-  const commandName = args.shift().toLowerCase();
-
-  const command = client.commands.get(commandName);
-  if (!command) return;
 
   try {
     await command.execute(message, args, { setPrefix, getPrefix });
@@ -177,6 +177,14 @@ client.on('interactionCreate', async (interaction) => {
         ephemeral: true,
       });
     }
+  }
+});
+
+const verifyCommand = require('./commands/verify');
+
+client.on('interactionCreate', async (interaction) => {
+  if (interaction.isButton()) {
+    await verifyCommand.handleInteraction(interaction);
   }
 });
 

@@ -6,18 +6,39 @@ module.exports = {
   description: 'Expulsa um membro do servidor.',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
-      return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você não possui permissão para usar este comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
     const motivo = args.slice(1).join(' ') || 'Não especificado.';
 
     if (!membro) {
-      return message.reply('<:no:1122370713932795997> Você precisa mencionar um membro ou fornecer o ID.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Mencione um usuário para executar esta ação.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     if (!membro.kickable) {
-      return message.reply('<:no:1122370713932795997> Não é possível expulsar este membro.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Este usuário não pode ser expulso devido às suas permissões.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {
@@ -42,7 +63,14 @@ module.exports = {
       await message.channel.send({ embeds: [kickEmbed] });
     } catch (error) {
       console.error(error);
-      message.reply('<:no:1122370713932795997> Ocorreu um erro ao tentar expulsar o membro.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível expulsar o usuário devido a um erro.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };

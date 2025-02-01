@@ -1,6 +1,6 @@
 const { PermissionsBitField } = require('discord.js');
 const { logModerationAction } = require('../moderationUtils');
-
+const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: 'clear',
   description: 'Apaga mensagens do chat, com suporte para apagar mensagens de um usuário específico.',

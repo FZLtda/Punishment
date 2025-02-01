@@ -6,32 +6,29 @@ module.exports = {
     description: 'Faça uma doação para apoiar o servidor!',
     async execute(message, args) {
         if (!args[0] || isNaN(args[0])) {
-            // Mensagem de erro com setAuthor
             const embedErro = new EmbedBuilder()
-                .setColor('#FF4C4C') // Vermelho para erro
+                .setColor('#FF4C4C')
                 .setAuthor({
                     name: 'Informe um valor válido! Exemplo: .doar 10',
-                    iconURL: 'http://bit.ly/4aIyY9j' // Ícone vermelho
+                    iconURL: 'http://bit.ly/4aIyY9j'
                 });
 
             return message.reply({ embeds: [embedErro] });
         }
 
-        const valor = parseFloat(args[0]) * 100; // Stripe usa centavos
+        const valor = parseFloat(args[0]) * 100;
         if (valor < 100) {
-            // Mensagem de erro com setAuthor para valor mínimo
             const embedErroMinimo = new EmbedBuilder()
-                .setColor('#FF4C4C') // Vermelho para erro
+                .setColor('#FF4C4C')
                 .setAuthor({
                     name: 'O valor mínimo para doação é R$1,00.',
-                    iconURL: 'http://bit.ly/4aIyY9j' // Ícone vermelho
+                    iconURL: 'http://bit.ly/4aIyY9j'
                 });
 
             return message.reply({ embeds: [embedErroMinimo] });
         }
 
         try {
-            // Criar sessão de pagamento
             const session = await stripe.checkout.sessions.create({
                 payment_method_types: ['card'],
                 line_items: [{
@@ -48,37 +45,32 @@ module.exports = {
                 metadata: { userId: message.author.id }
             });
 
-            // Criar botão de doação
             const row = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
-                        .setLabel('Fazer Doação')
+                        .setLabel('Finalizar Doação')
                         .setStyle(ButtonStyle.Link)
                         .setURL(session.url)
                 );
 
-            // Criar embed
             const embed = new EmbedBuilder()
                 .setColor('#FFD700')
                 .setTitle('💰 Doação Iniciada')
                 .setDescription(`Obrigado pelo apoio, ${message.author}! 🙌\n\nClique no botão abaixo para doar **R$${(valor / 100).toFixed(2)}**.`)
-                .setFooter({ text: 'Seu apoio ajuda a manter o servidor ativo!' });
+                .setFooter({ text: 'Seu apoio ajuda a me mater ativo!' });
 
-            // Responder ao usuário
             await message.reply({ embeds: [embed], components: [row] });
 
         } catch (error) {
             console.error('Erro ao criar a sessão de pagamento:', error);
 
-            // Criar embed de erro com setAuthor
             const embedErro = new EmbedBuilder()
-                .setColor('#FF4C4C') // Vermelho para erro
+                .setColor('#FF4C4C')
                 .setAuthor({
                     name: 'Algo deu errado. Tente novamente mais tarde.',
-                    iconURL: 'http://bit.ly/4aIyY9j' // Ícone vermelho ao lado do texto
+                    iconURL: 'http://bit.ly/4aIyY9j'
                 });
 
-            // Responder com o embed de erro
             await message.reply({ embeds: [embedErro] });
         }
     }

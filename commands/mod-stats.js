@@ -7,9 +7,14 @@ module.exports = {
   usage: '.mod-stats',
   async execute(message) {
     if (!message.member.permissions.has('ManageGuild')) {
-      return message.reply(
-        '<:no:1122370713932795997> Você precisa da permissão **Gerenciar Servidor** para usar este comando.'
-      );
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você não possui permissão para usar este comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {
@@ -74,7 +79,14 @@ module.exports = {
       return message.channel.send({ embeds: [embed] });
     } catch (error) {
       console.error(`[ERROR] Falha ao gerar estatísticas:`, error);
-      return message.reply('<:no:1122370713932795997> Ocorreu um erro ao gerar as estatísticas de moderação.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível gerar as estatísticas de moderação devido a um erro.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };

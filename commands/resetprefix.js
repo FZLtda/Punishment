@@ -5,7 +5,14 @@ module.exports = {
     description: 'Redefine o prefixo do bot para o padrão neste servidor.',
     async execute(message, args, { setPrefix }) {
         if (!message.member.permissions.has('MANAGE_GUILD')) {
-            return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
+            const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Você não possui permissão para usar este comando.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
         }
 
         try {
@@ -19,7 +26,14 @@ module.exports = {
             message.channel.send({ embeds: [embed] });
         } catch (error) {
             console.error('Erro ao redefinir o prefixo:', error);
-            message.reply('<:no:1122370713932795997> Não foi possível redefinir o prefixo.');
+            const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível redefinir o prefixo.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
         }
     },
 };

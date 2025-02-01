@@ -12,7 +12,14 @@ module.exports = {
       const command = commands.get(commandName);
 
       if (!command) {
-        return message.reply(`<:no:1122370713932795997> Comando \`${commandName}\` não encontrado.`);
+        const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível localizar esse comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
       }
 
       const commandEmbed = new EmbedBuilder()

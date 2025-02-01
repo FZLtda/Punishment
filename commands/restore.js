@@ -7,12 +7,26 @@ module.exports = {
   description: 'Restaura o estado do servidor a partir de um arquivo de backup.',
   async execute(message) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
+      const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Você não possui permissão para usar este comando.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const attachment = message.attachments.first();
     if (!attachment) {
-      return message.reply('<:no:1122370713932795997> Por favor, envie o arquivo de backup junto com o comando.');
+      const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Para continuar, envie o arquivo de backup junto com o comando.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {
@@ -20,7 +34,14 @@ module.exports = {
       const backupData = await response.json();
 
       if (!backupData.roles || !backupData.channels) {
-        return message.reply('<:no:1122370713932795997> O arquivo de backup é inválido ou está corrompido.');
+        const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Não foi possível processar o backup. O arquivo pode estar corrompido.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
       }
 
       const guild = message.guild;
@@ -126,7 +147,14 @@ module.exports = {
       return message.channel.send({ embeds: [embed] });
     } catch (error) {
       console.error(error);
-      return message.reply('<:no:1122370713932795997> Ocorreu um erro ao tentar restaurar o backup.');
+      const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Não foi possível processar o backup devido a um erro.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };

@@ -18,19 +18,13 @@ module.exports = {
       const supportGuild = message.client.guilds.cache.get(supportGuildId);
 
       if (!supportGuild) {
-        return message.reply({
-          content: '<:no:1122370713932795997> Não foi possível encontrar o servidor de suporte.',
-          ephemeral: true,
-        });
+        return;
       }
 
       const forumChannel = supportGuild.channels.cache.get(forumChannelId);
 
       if (!forumChannel || forumChannel.type !== 15) {
-        return message.reply({
-          content: '<:no:1122370713932795997> Canal de suporte não encontrado ou não é um canal de fórum.',
-          ephemeral: true,
-        });
+        return;
       }
 
       const embed = new EmbedBuilder()
@@ -105,7 +99,14 @@ module.exports = {
       });
     } catch (error) {
       console.error(`<:no:1122370713932795997> Erro ao executar o comando report: ${error.message}`);
-      await message.reply('<:no:1122370713932795997> Erro ao processar seu reporte. Tente novamente mais tarde.');
+      const embedErro = new EmbedBuilder()
+                .setColor('#FF4C4C')
+                .setAuthor({
+                    name: 'Não conseguimos processar seu reporte.',
+                    iconURL: 'http://bit.ly/4aIyY9j'
+                });
+
+            return message.reply({ embeds: [embedErro] });
     }
   },
 };

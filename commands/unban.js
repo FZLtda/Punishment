@@ -6,21 +6,42 @@ module.exports = {
   description: 'Desbane um membro do servidor.',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-      return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você não possui permissão para usar este comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const userId = args[0];
     const motivo = args.slice(1).join(' ') || 'Não especificado.';
 
     if (!userId) {
-      return message.reply('<:no:1122370713932795997> Você precisa fornecer o ID do usuário para desbanir.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você precisa fornecer o ID do usuário para desbanir.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {
       const user = await message.guild.bans.fetch(userId).catch(() => null);
 
       if (!user) {
-        return message.reply('<:no:1122370713932795997> Este ID não pertence a um usuário banido.');
+        const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não há registro de banimento para este usuário.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
       }
 
       await message.guild.members.unban(userId, motivo);
@@ -49,7 +70,14 @@ module.exports = {
       return message.channel.send({ embeds: [embed] });
     } catch (error) {
       console.error(error);
-      return message.reply('<:no:1122370713932795997> Ocorreu um erro ao tentar desbanir o usuário.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível desbanir o usuário devido a um erro.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };

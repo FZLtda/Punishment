@@ -8,21 +8,38 @@ module.exports = {
   usage: '<add|copy> <emoji/link> [nome]',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageEmojisAndStickers)) {
-      return message.reply(
-        '<:no:1122370713932795997> Você não tem permissão para usar este comando.'
-      );
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você não possui permissão para usar este comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const action = args[0]?.toLowerCase();
     if (!['add', 'copy'].includes(action)) {
-      return message.reply(
-        '<:no:1122370713932795997> Uso inválido! Use o comando corretamente: `emoji add <link> <nome>` ou `emoji copy <emoji> [nome opcional]`.'
-      );
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Uso inválido! Use o comando corretamente: `emoji add <link> <nome>` ou `emoji copy <emoji> [nome opcional]`.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const emojiInput = args[1];
     if (!emojiInput) {
-      return message.reply('<:no:1122370713932795997> Você precisa fornecer um link ou um emoji válido.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você precisa fornecer um link ou um emoji válido.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     let emojiName = args[2] || null;
@@ -30,18 +47,39 @@ module.exports = {
     try {
       if (action === 'add') {
         if (!emojiInput.startsWith('http')) {
-          return message.reply('<:no:1122370713932795997> O link fornecido não é válido.');
+          const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'O link fornecido não é válido.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
         }
 
         if (!emojiName) {
-          return message.reply('<:no:1122370713932795997> Você precisa fornecer um nome para o emoji.');
+          const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você precisa fornecer um nome para o emoji.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
         }
 
         const response = await fetch(emojiInput);
         const buffer = await response.buffer();
 
         if (buffer.byteLength > 256 * 1024) {
-          return message.reply('<:no:1122370713932795997> O arquivo excede o limite de 256 KB.');
+          const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'O arquivo excede o limite de 256 KB.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
         }
 
         const addedEmoji = await message.guild.emojis.create({
@@ -76,7 +114,14 @@ module.exports = {
       } else if (action === 'copy') {
         const emojiMatch = emojiInput.match(/<a?:\w+:(\d+)>/);
         if (!emojiMatch) {
-          return message.reply('<:no:1122370713932795997> O emoji fornecido não é válido.');
+          const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'O emoji fornecido não é válido.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
         }
 
         const emojiId = emojiMatch[1];
@@ -92,7 +137,14 @@ module.exports = {
         const buffer = await response.buffer();
 
         if (buffer.byteLength > 256 * 1024) {
-          return message.reply('<:no:1122370713932795997> O arquivo excede o limite de 256 KB.');
+          const embedErroMinimo = new EmbedBuilder()
+          .setColor('#FF4C4C')
+          .setAuthor({
+              name: 'O arquivo excede o limite de 256 KB.',
+              iconURL: 'http://bit.ly/4aIyY9j'
+          });
+    
+      return message.reply({ embeds: [embedErroMinimo] });
         }
 
         const copiedEmoji = await message.guild.emojis.create({
@@ -127,7 +179,14 @@ module.exports = {
       }
     } catch (error) {
       console.error(error);
-      return message.reply('<:no:1122370713932795997> Ocorreu um erro ao tentar adicionar/copiar o emoji.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível adicionar ou copiar o emoji devido a um erro.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };
