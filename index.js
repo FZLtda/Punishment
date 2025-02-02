@@ -82,19 +82,49 @@ const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
   }
 })();
 
-client.once('ready', () => {
+
+client.once('ready', async () => {
   console.log(`Bot online como ${client.user.tag}`);
 
+  // Atualiza o status do bot
   client.user.setPresence({
-    status: 'dnd',
+    status: 'online', // Define o status geral como "online"
     activities: [
       {
         name: '.help | .doar | .report',
-        type: 0,
+        type: 0, // Jogando (Playing)
       },
     ],
   });
+
+  // Envia diretamente o status como "mobile"
+  try {
+    client.ws.shards.forEach(shard => {
+      shard.send({
+        op: 3, // Opcode para Update Presence
+        d: {
+          since: null,
+          status: 'online', // "online", "dnd", "idle"
+          afk: false,
+          activities: [
+            {
+              name: '.help | .doar | .report',
+              type: 0, // Jogando (Playing)
+            },
+          ],
+          client_status: {
+            mobile: 'online', // Define explicitamente como "mobile"
+          },
+        },
+      });
+    });
+
+    console.log('Status de celular atualizado com sucesso!');
+  } catch (error) {
+    console.error('Erro ao tentar definir o status como celular:', error);
+  }
 });
+
 
 client.on('messageCreate', async (message) => {
   if (message.author.bot || !message.guild) return;
