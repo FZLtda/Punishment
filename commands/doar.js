@@ -55,9 +55,9 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor('#FFD700')
-                .setTitle('💰 Doação Iniciada')
-                .setDescription(`Obrigado pelo apoio, ${message.author}! 🙌\n\nClique no botão abaixo para doar **R$${(valor / 100).toFixed(2)}**.`)
-                .setFooter({ text: 'Seu apoio ajuda a me mater ativo!' });
+                .setTitle('<:doar:1335395138620358749> Doação Iniciada')
+                .setDescription(`Obrigado pelo apoio, ${message.author}! \n\nClique no botão abaixo para doar **R$${(valor / 100).toFixed(2)}**.`)
+                .setFooter({ text: 'Seu apoio ajuda a me manter ativo!' });
 
             await message.reply({ embeds: [embed], components: [row] });
 
