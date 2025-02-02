@@ -83,12 +83,14 @@ const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
 })();
 
 
+
+
 client.once('ready', async () => {
   console.log(`Bot online como ${client.user.tag}`);
 
-  // Atualiza o status do bot
+  // Atualiza a presença básica
   client.user.setPresence({
-    status: 'online', // Define o status geral como "online"
+    status: 'online',
     activities: [
       {
         name: '.help | .doar | .report',
@@ -97,33 +99,33 @@ client.once('ready', async () => {
     ],
   });
 
-  // Envia diretamente o status como "mobile"
+  // Força o envio do status "mobile" diretamente ao WebSocket
   try {
-    client.ws.shards.forEach(shard => {
-      shard.send({
-        op: 3, // Opcode para Update Presence
-        d: {
-          since: null,
-          status: 'online', // "online", "dnd", "idle"
-          afk: false,
-          activities: [
-            {
-              name: '.help | .doar | .report',
-              type: 0, // Jogando (Playing)
-            },
-          ],
-          client_status: {
-            mobile: 'online', // Define explicitamente como "mobile"
+    client.ws.connection.send(JSON.stringify({
+      op: 3, // Opcode para Update Presence
+      d: {
+        since: null,
+        status: 'online', // Define o status como online
+        afk: false,
+        activities: [
+          {
+            name: '.help | .doar | .report',
+            type: 0, // Jogando
           },
+        ],
+        client_status: {
+          mobile: 'online', // Configura explicitamente como mobile
         },
-      });
-    });
+      },
+    }));
 
-    console.log('Status de celular atualizado com sucesso!');
+    console.log('Status de celular enviado diretamente ao WebSocket.');
   } catch (error) {
-    console.error('Erro ao tentar definir o status como celular:', error);
+    console.error('Erro ao enviar status de celular diretamente ao WebSocket:', error);
   }
 });
+  
+          
 
 
 client.on('messageCreate', async (message) => {

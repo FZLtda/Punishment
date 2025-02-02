@@ -24,7 +24,7 @@ module.exports = {
 
       const commandEmbed = new EmbedBuilder()
         .setColor('#fe3838')
-        .setTitle(`<:emoji_45:1323360352498618398> Informações do Comando: \`${command.name}\``)
+        .setTitle(`<:info:1335704448651100200> Informações do Comando: \`${command.name}\``)
         .addFields(
           { name: 'Descrição', value: command.description || 'Nenhuma descrição disponível.', inline: false },
           { name: 'Uso', value: command.usage || 'Sem informações de uso.', inline: false }
@@ -42,7 +42,7 @@ module.exports = {
 
     const helpEmbed = new EmbedBuilder()
       .setColor('#fe3838')
-      .setTitle('<:emoji_45:1323360352498618398> Bem-vindo ao Punishment!')
+      .setTitle('<:p_:1335703348686622723> Bem-vindo ao Punishment!')
       .setDescription(
         `Olá, **${message.author.displayName}**! Aqui estão algumas informações importantes para você começar.`
       )
