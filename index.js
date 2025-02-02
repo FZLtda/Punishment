@@ -89,7 +89,7 @@ client.once('ready', () => {
     status: 'dnd',
     activities: [
       {
-        name: '.help',
+        name: '.help | .doar | .report',
         type: 0,
       },
     ],
@@ -106,7 +106,7 @@ client.on('messageCreate', async (message) => {
   const commandName = args.shift().toLowerCase();
 
   const command = client.commands.get(commandName);
-  if (!command) return; // 🔹 Agora o aviso só aparece se o comando for válido
+  if (!command) return;
 
   const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
 
