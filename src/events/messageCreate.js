@@ -75,7 +75,7 @@ module.exports = {
     } catch (error) {
       console.error(`[ERROR] Erro ao executar o comando "${commandName}":`, error);
       await message.reply(
-        ':1000042883: Não foi possível executar o comando.'
+        '<:1000042883:1336044555354771638> Não foi possível executar o comando.'
       );
     }
   },
