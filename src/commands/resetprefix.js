@@ -1,21 +1,23 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 
 module.exports = {
     name: 'resetprefix',
     description: 'Redefine o prefixo do bot para o padrão neste servidor.',
     async execute(message, args, { setPrefix }) {
-        if (!message.member.permissions.has('MANAGE_GUILD')) {
+        
+        if (!message.member.permissions.has(PermissionsBitField.Flags.ManageGuild)) {
             const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'Você não possui permissão para usar este comando.',
-                iconURL: 'http://bit.ly/4aIyY9j'
-            });
-      
-        return message.reply({ embeds: [embedErroMinimo] });
+                .setColor('#FF4C4C')
+                .setAuthor({
+                    name: 'Você não possui permissão para usar este comando.',
+                    iconURL: 'http://bit.ly/4aIyY9j',
+                });
+
+            return message.reply({ embeds: [embedErroMinimo] });
         }
 
         try {
+            
             setPrefix(message.guild.id, '.');
 
             const embed = new EmbedBuilder()
@@ -26,14 +28,15 @@ module.exports = {
             message.channel.send({ embeds: [embed] });
         } catch (error) {
             console.error('Erro ao redefinir o prefixo:', error);
-            const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Não foi possível redefinir o prefixo.',
-          iconURL: 'http://bit.ly/4aIyY9j'
-      });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+            const embedErro = new EmbedBuilder()
+                .setColor('#FF4C4C')
+                .setAuthor({
+                    name: 'Não foi possível redefinir o prefixo.',
+                    iconURL: 'http://bit.ly/4aIyY9j',
+                });
+
+            return message.reply({ embeds: [embedErro] });
         }
     },
 };
