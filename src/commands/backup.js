@@ -68,7 +68,7 @@ module.exports = {
       logModerationAction(message.guild.id,message.author.id, 'Backup', guild.id, 'Backup completo do servidor criado');
 
       const embed = new EmbedBuilder()
-        .setTitle('<:emoji_46:1332034311800619029> Backup Criado com Sucesso')
+        .setTitle('<:1000042902:1336071814761152702> Backup Criado com Sucesso')
         .setColor('Green')
         .setDescription('As informações do servidor foram salvas com sucesso!')
         .addFields({ name: 'Servidor', value: `${guild.name}`, inline: true })
