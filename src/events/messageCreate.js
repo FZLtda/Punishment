@@ -14,11 +14,12 @@ if (!fs.existsSync(acceptedUsersPath)) {
 module.exports = {
   name: 'messageCreate',
 
+  
   async execute(message, client) {
    
     if (message.author.bot || !message.guild) return;
 
-   
+    
     const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
 
     
@@ -40,7 +41,7 @@ module.exports = {
             type: 2,
             label: 'Ler Termos',
             style: 5,
-            url: 'https://bit.ly/3WMYa93', // Link para os termos
+            url: 'https://bit.ly/3WMYa93', // Link para os Termos de Uso
           },
           {
             type: 2,
@@ -51,21 +52,20 @@ module.exports = {
         ],
       };
 
+      
       await message.reply({ embeds: [embed], components: [row] });
       return;
     }
 
     
     const prefix = getPrefix(message.guild.id);
-
-    
     if (!message.content.startsWith(prefix)) return;
 
-   
+    
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
 
-   
+    
     const command = client.commands.get(commandName);
     if (!command) return;
 
@@ -74,9 +74,7 @@ module.exports = {
       await command.execute(message, args);
     } catch (error) {
       console.error(`[ERROR] Erro ao executar o comando "${commandName}":`, error);
-      await message.reply(
-        '<:1000042883:1336044555354771638> Não foi possível executar o comando.'
-      );
+      await message.reply('<:1000042883:1336044555354771638> Não foi possível executar o comando.');
     }
   },
 };
