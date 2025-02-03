@@ -35,7 +35,7 @@ module.exports = {
             type: 2,
             label: 'Ler Termos',
             style: 5,
-            url: 'https://docs.google.com/document/d/12-nG-vY0bhgIzsaO2moSHjh7QeCrQLSGd7W2XYDMXsk/edit?usp=drivesdk',
+            url: 'https://bit.ly/3WMYa93',
           },
           {
             type: 2,
@@ -64,7 +64,7 @@ module.exports = {
       await command.execute(message, args);
     } catch (error) {
       console.error(`[ERROR] Erro ao executar o comando "${commandName}":`, error);
-      await message.reply('❌ Não foi possível executar o comando.');
+      await message.reply('<:1000042883:1336044555354771638> Não foi possível executar o comando.');
     }
   },
 };
