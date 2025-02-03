@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 require('dotenv').config();
@@ -17,8 +17,10 @@ const client = new Client({
 client.commands = new Collection();
 client.slashCommands = new Collection();
 
+
 const prefixesPath = path.resolve(__dirname, './data/prefixes.json');
 const acceptedUsersPath = path.resolve(__dirname, './data/acceptedUsers.json');
+
 
 if (!fs.existsSync(prefixesPath)) {
   fs.mkdirSync(path.dirname(prefixesPath), { recursive: true });
@@ -29,6 +31,7 @@ if (!fs.existsSync(acceptedUsersPath)) {
   fs.mkdirSync(path.dirname(acceptedUsersPath), { recursive: true });
   fs.writeFileSync(acceptedUsersPath, JSON.stringify([]));
 }
+
 
 const getPrefix = (guildId) => {
   const prefixes = JSON.parse(fs.readFileSync(prefixesPath, 'utf8'));
@@ -41,17 +44,19 @@ const setPrefix = (guildId, newPrefix) => {
   fs.writeFileSync(prefixesPath, JSON.stringify(prefixes, null, 4));
 };
 
+
 const commandsPath = path.join(__dirname, 'src/commands');
 const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
 
 for (const file of commandFiles) {
   const command = require(path.join(commandsPath, file));
   if (!command.execute) {
-    console.warn(`Comando "${file}" não possui o método "execute" e foi ignorado.`);
+    console.warn(`[INFO] Comando "${file}" não possui o método "execute" e foi ignorado.`);
     continue;
   }
   client.commands.set(command.name, command);
 }
+
 
 const slashCommandsPath = path.join(__dirname, 'src/slashCommands');
 const slashCommandFiles = fs.readdirSync(slashCommandsPath).filter((file) => file.endsWith('.js'));
@@ -63,26 +68,39 @@ for (const file of slashCommandFiles) {
     client.slashCommands.set(command.data.name, command);
     slashCommands.push(command.data.toJSON());
   } else {
-    console.warn(`Comando Slash "${file}" está mal formatado ou falta a propriedade 'data'.`);
+    console.warn(`[INFO] Comando Slash "${file}" está mal formatado ou falta a propriedade 'data'.`);
   }
 }
+
 
 const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
   try {
-    console.log('Registrando Slash Commands...');
+    console.log('[INFO] Registrando Slash Commands...');
     await rest.put(
       Routes.applicationCommands(process.env.CLIENT_ID),
       { body: slashCommands }
     );
-    console.log('Slash Commands registrados com sucesso!');
+    console.log('[SUCESSO] Slash Commands registrados com sucesso!');
   } catch (error) {
     console.error('Erro ao registrar Slash Commands:', error);
   }
 })();
 
-  
+
+const eventsPath = path.join(__dirname, 'src/events');
+const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
+
+for (const file of eventFiles) {
+  const event = require(path.join(eventsPath, file));
+  if (event.once) {
+    client.once(event.name, (...args) => event.execute(...args, client));
+  } else {
+    client.on(event.name, (...args) => event.execute(...args, client));
+  }
+}
+
 
 client.on('messageCreate', async (message) => {
   if (message.author.bot || !message.guild) return;
@@ -99,26 +117,31 @@ client.on('messageCreate', async (message) => {
   const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
 
   if (!acceptedUsers.includes(message.author.id)) {
-    const embed = new EmbedBuilder()
-      .setColor(0xfe3838)
-      .setTitle('Termos de Uso')
-      .setDescription(
-        'Para continuar usando o **Punishment**, você precisa aceitar nossos **Termos de Uso**.\n\nClique no botão **"Ler Termos"** para visualizar os termos, ou clique em **"Aceitar Termos"** se você já leu e concorda com eles.'
-      )
-      .setFooter({ text: 'Obrigado por utilizar o Punishment!' });
+    const embed = {
+      color: 0xfe3838,
+      title: 'Termos de Uso',
+      description:
+        'Para continuar usando o **Punishment**, você precisa aceitar nossos **Termos de Uso**.\n\nClique no botão **"Ler Termos"** para visualizar os termos, ou clique em **"Aceitar Termos"** se você já leu e concorda com eles.',
+      footer: { text: 'Obrigado por utilizar o Punishment!' },
+    };
 
-    const row = new ActionRowBuilder()
-      .addComponents(
-        new ButtonBuilder()
-          .setLabel('Ler Termos')
-          .setStyle(ButtonStyle.Link)
-          .setURL('https://docs.google.com/document/d/12-nG-vY0bhgIzsaO2moSHjh7QeCrQLSGd7W2XYDMXsk/edit?usp=drivesdk'),
-        new ButtonBuilder()
-          .setCustomId('accept_terms')
-          .setLabel('Aceitar Termos')
-          .setStyle(ButtonStyle.Success)
-          .setEmoji({ id: '1219815388921991259', name: 'emoji_34' })
-      );
+    const row = {
+      type: 1,
+      components: [
+        {
+          type: 2,
+          label: 'Ler Termos',
+          style: 5,
+          url: 'https://docs.google.com/document/d/12-nG-vY0bhgIzsaO2moSHjh7QeCrQLSGd7W2XYDMXsk/edit?usp=drivesdk',
+        },
+        {
+          type: 2,
+          customId: 'accept_terms',
+          label: 'Aceitar Termos',
+          style: 3,
+        },
+      ],
+    };
 
     await message.reply({ embeds: [embed], components: [row] });
     return;
@@ -127,59 +150,17 @@ client.on('messageCreate', async (message) => {
   try {
     await command.execute(message, args, { setPrefix, getPrefix });
   } catch (error) {
-    console.error(`Erro ao executar o comando "${commandName}":`, error);
-    message.reply('<:no:1122370713932795997> Não foi possível executar o comando.');
+    console.error(`[INFO] Erro ao executar o comando "${commandName}":`, error);
+    message.reply('Não foi possível executar o comando.');
   }
 });
 
-client.on('interactionCreate', async (interaction) => {
-  if (interaction.isButton() && interaction.customId === 'accept_terms') {
-    const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
-
-    if (acceptedUsers.includes(interaction.user.id)) {
-      return interaction.reply({
-        content: 'Você já aceitou os termos anteriormente.',
-        ephemeral: true,
-      });
-    }
-
-    acceptedUsers.push(interaction.user.id);
-    fs.writeFileSync(acceptedUsersPath, JSON.stringify(acceptedUsers, null, 4));
-
-    return interaction.reply({
-      content: '<:emoji_33:1219788320234803250> Obrigado por aceitar nossos termos! Agora você pode usar o Punishment.',
-      ephemeral: true,
-    });
-  }
-
-  if (interaction.isCommand()) {
-    const command = client.slashCommands.get(interaction.commandName);
-    if (!command) return;
-
-    try {
-      await command.execute(interaction);
-    } catch (error) {
-      console.error(`Erro ao executar o comando "${interaction.commandName}":`, error);
-      await interaction.reply({
-        content: '<:no:1122370713932795997> Não foi possível executar o comando.',
-        ephemeral: true,
-      });
-    }
-  }
-});
-
-const verifyCommand = require('./src/commands/verify');
-
-client.on('interactionCreate', async (interaction) => {
-  if (interaction.isButton()) {
-    await verifyCommand.handleInteraction(interaction);
-  }
-});
 
 (async () => {
   try {
     await client.login(process.env.DISCORD_TOKEN);
+    console.log('[SUCESSO] Bot iniciado com sucesso!');
   } catch (error) {
-    console.error('Erro ao inicializar o bot:', error);
+    console.error('[INFO] Erro ao inicializar o bot:', error);
   }
 })();
