@@ -2,7 +2,7 @@ module.exports = {
   name: 'ready',
   once: true,
   execute(client) {
-    console.log(`[INFO] Bot iniciado como ${client.user.tag}`);
+    console.log(`[SUCESSO] Bot iniciado como ${client.user.tag}`);
 
     client.user.setPresence({
       status: 'dnd',
