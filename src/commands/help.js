@@ -43,7 +43,7 @@ module.exports = {
           { name: 'clear', value: 'Remove mensagens do canal.', inline: true },
           { name: 'serverinfo', value: 'Exibe informações do servidor.', inline: true },
           { name: 'userinfo', value: 'Exibe informações de um membro.', inline: true },
-          { name: 'roleinfo', value: 'Exibe informações de um cargo.', inline: true }
+          { name: 'colorinfo', value: 'Exibe informações de um cargo.', inline: true }
         )
         .setFooter({ text: 'Punishment • Página 3/6' }),
 
