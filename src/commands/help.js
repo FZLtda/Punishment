@@ -4,24 +4,33 @@ module.exports = {
   name: 'help',
   description: 'Mostra informações sobre comandos',
   execute: async (message, args, client) => {
-    const commands = client.commands; 
+    // Certifique-se de que os comandos estão carregados
+    const commands = client.commands;
 
-    
+    if (!commands) {
+      return message.reply({
+        content: '⚠️ Os comandos não foram carregados corretamente. Verifique a configuração do bot.',
+        ephemeral: true,
+      });
+    }
+
+    // Verifica se um comando específico foi solicitado
     if (args.length > 0) {
       const commandName = args[0].toLowerCase();
       const command = commands.get(commandName);
 
       if (!command) {
         const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Parece que esse comando não está registrado.',
-          iconURL: 'http://bit.ly/4aIyY9j'
-      });
+          .setColor('#FF4C4C')
+          .setAuthor({
+            name: 'Parece que esse comando não está registrado.',
+            iconURL: 'http://bit.ly/4aIyY9j',
+          });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+        return message.reply({ embeds: [embedErroMinimo] });
       }
 
+      // Exibe as informações detalhadas sobre o comando
       const embed = new EmbedBuilder()
         .setColor(0x00ff00)
         .setTitle(`Informações do Comando: \`${command.name}\``)
@@ -30,12 +39,15 @@ module.exports = {
           { name: 'Uso', value: command.usage || 'Não especificado.' },
           { name: 'Permissões Necessárias', value: command.permissions || 'Nenhuma' }
         )
-        .setFooter({ text: 'Punishment', iconURL: client.user.displayAvatarURL() });
+        .setFooter({
+          text: 'Punishment',
+          iconURL: client.user ? client.user.displayAvatarURL() : 'http://bit.ly/4aIyY9j',
+        });
 
       return message.reply({ embeds: [embed] });
     }
 
-    
+    // Página principal do comando `help`
     const embed = new EmbedBuilder()
       .setColor(0x00aaff)
       .setTitle('<:1000042770:1335945568136069233> Comandos Principais')
@@ -51,8 +63,10 @@ module.exports = {
         { name: '\u200b', value: '❓ Use `.help <comando>` para ver mais informações sobre um comando.' },
         { name: '\u200b', value: '📨 Precisa de ajuda? [Servidor de Suporte](https://discord.gg/exemplo)' }
       )
-      .setFooter({ text: 'Punishment', iconURL: client.user.displayAvatarURL() });
-
+      .setFooter({
+        text: 'Punishment',
+        iconURL: client.user ? client.user.displayAvatarURL() : 'http://bit.ly/4aIyY9j',
+      });
 
     return message.reply({ embeds: [embed] });
   },
