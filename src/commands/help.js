@@ -2,32 +2,32 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('
 
 module.exports = {
   name: 'help',
-  description: 'Exibe a lista de comandos em páginas com botões de navegação.',
+  description: 'Mostra a lista completa de comandos',
   execute: async (message) => {
     
     const pages = [
      
       new EmbedBuilder()
         .setColor(0xff0000) 
-        .setTitle('<:home:1335703348686622723> Core Commands')
+        .setTitle('<:1000042770:1335945568136069233> Comandos principais')
         .addFields(
-          { name: 'help', value: 'Show full command list', inline: true },
-          { name: 'ping', value: 'Bot connection details', inline: true },
-          { name: 'privacy', value: 'Privacy policy', inline: true },
-          { name: 'shard', value: 'Shard information', inline: true },
-          { name: 'stats', value: 'Bot statistics', inline: true },
-          { name: 'undo', value: 'Undo last command', inline: true }
+          { name: 'help', value: 'Mostra a lista completa de comandos', inline: true },
+          { name: 'ping', value: 'Detalhes da conexão do bot', inline: true },
+          { name: 'privacy', value: 'Política de privacidade', inline: true },
+          { name: 'shard', value: 'Informações do shard', inline: true },
+          { name: 'stats', value: 'Estatísticas do bot', inline: true },
+          { name: 'undo', value: 'Desfazer o último comando', inline: true }
         )
         .addFields(
-          { name: '\u200b', value: '<:info:1335704448651100200> Use `.help <command>` to view more information about a command.' },
-          { name: '\u200b', value: '<:discord:1335708434284286115> Need help with anything else? [Support Server](https://discord.gg/EXEMPLO)' }
+          { name: '\u200b', value: '<:1000042773:1335945498212696085> Use `.help <command>` para exibir mais informações sobre um comando.' },
+          { name: '\u200b', value: '<:1000042771:1335945525601505351> Precisa de ajuda com mais alguma coisa? [Support Server](https://discord.gg/EXEMPLO)' }
         )
-        .setFooter({ text: 'Punishment • Page 1/6' }),
+        .setFooter({ text: 'Punishment • Página 1/6' }),
 
       
       new EmbedBuilder()
         .setColor(0xff0000)
-        .setTitle('Moderation Commands')
+        .setTitle('Comandos de moderação')
         .addFields(
           { name: 'ban', value: 'Bane um membro do servidor.', inline: true },
           { name: 'kick', value: 'Expulsa um membro do servidor.', inline: true },
@@ -36,12 +36,12 @@ module.exports = {
           { name: 'warn', value: 'Adiciona um aviso a um membro.', inline: true },
           { name: 'lock', value: 'Trava o canal atual.', inline: true }
         )
-        .setFooter({ text: 'Punishment • Page 2/6' }),
+        .setFooter({ text: 'Punishment • Página 2/6' }),
 
      
       new EmbedBuilder()
         .setColor(0xff0000)
-        .setTitle('Utility Commands')
+        .setTitle('Comandos Utilitários')
         .addFields(
           { name: 'uptime', value: 'Mostra o tempo de atividade do bot.', inline: true },
           { name: 'clear', value: 'Remove mensagens do canal.', inline: true },
@@ -49,39 +49,39 @@ module.exports = {
           { name: 'userinfo', value: 'Exibe informações de um membro.', inline: true },
           { name: 'roleinfo', value: 'Exibe informações de um cargo.', inline: true }
         )
-        .setFooter({ text: 'Punishment • Page 3/6' }),
+        .setFooter({ text: 'Punishment • Página 3/6' }),
 
       
       new EmbedBuilder()
         .setColor(0xff0000)
-        .setTitle('Fun Commands')
+        .setTitle('Comandos Divertidos')
         .addFields(
           { name: 'joke', value: 'Conta uma piada.', inline: true },
           { name: 'meme', value: 'Envia um meme aleatório.', inline: true },
           { name: '8ball', value: 'Responde perguntas com sim ou não.', inline: true }
         )
-        .setFooter({ text: 'Punishment • Page 4/6' }),
+        .setFooter({ text: 'Punishment • Página 4/6' }),
 
       
       new EmbedBuilder()
         .setColor(0xff0000)
-        .setTitle('Info Commands')
+        .setTitle('Em desenvolvimento')
         .addFields(
-          { name: 'botinfo', value: 'Informações sobre o bot.', inline: true },
-          { name: 'stats', value: 'Exibe estatísticas do bot.', inline: true }
+          { name: 'xxx', value: 'xxx', inline: true },
+          { name: 'xxx', value: 'xxx', inline: true }
         )
-        .setFooter({ text: 'Punishment • Page 5/6' }),
+        .setFooter({ text: 'Punishment • Página 5/6' }),
 
      
       new EmbedBuilder()
         .setColor(0xff0000)
-        .setTitle('Links & Support')
+        .setTitle('Links & Suporte')
         .addFields(
-          { name: 'Source Code', value: '[Clique aqui](https://github.com/funczero/punishment)', inline: true },
-          { name: 'Invite', value: '[Convide o bot](https://discord.com/oauth2/authorize?client_id=SEU_CLIENT_ID&permissions=8&scope=bot)', inline: true },
-          { name: 'Support', value: '[Servidor de Suporte](https://discord.gg/exemplo)', inline: true }
+          { name: 'GitHub', value: '[Clique aqui](https://github.com/funczero/punishment)', inline: true },
+          { name: 'Adicionar', value: '[Convide o bot](https://discord.com/oauth2/authorize?client_id=SEU_CLIENT_ID&permissions=8&scope=bot)', inline: true },
+          { name: 'Suporte', value: '[Servidor de Suporte](https://discord.gg/exemplo)', inline: true }
         )
-        .setFooter({ text: 'Punishment • Page 6/6' }),
+        .setFooter({ text: 'Punishment • Página 6/6' }),
     ];
 
     
