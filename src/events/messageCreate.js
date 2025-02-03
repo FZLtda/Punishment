@@ -2,7 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const { getPrefix } = require('../utils/prefixes');
 
+
 const acceptedUsersPath = path.resolve(__dirname, '../../data/acceptedUsers.json');
+
 
 if (!fs.existsSync(acceptedUsersPath)) {
   fs.mkdirSync(path.dirname(acceptedUsersPath), { recursive: true });
@@ -11,12 +13,15 @@ if (!fs.existsSync(acceptedUsersPath)) {
 
 module.exports = {
   name: 'messageCreate',
+
   async execute(message, client) {
+   
     if (message.author.bot || !message.guild) return;
 
-    
+   
     const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
 
+    
     if (!acceptedUsers.includes(message.author.id)) {
       const embed = {
         color: 0xfe3838,
@@ -35,7 +40,7 @@ module.exports = {
             type: 2,
             label: 'Ler Termos',
             style: 5,
-            url: 'https://bit.ly/3WMYa93',
+            url: 'https://bit.ly/3WMYa93', // Link para os termos
           },
           {
             type: 2,
@@ -52,19 +57,26 @@ module.exports = {
 
     
     const prefix = getPrefix(message.guild.id);
+
+    
     if (!message.content.startsWith(prefix)) return;
 
+   
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
 
+   
     const command = client.commands.get(commandName);
     if (!command) return;
 
+    
     try {
       await command.execute(message, args);
     } catch (error) {
       console.error(`[ERROR] Erro ao executar o comando "${commandName}":`, error);
-      await message.reply('<:1000042883:1336044555354771638> Não foi possível executar o comando.');
+      await message.reply(
+        ':1000042883: Não foi possível executar o comando.'
+      );
     }
   },
 };
