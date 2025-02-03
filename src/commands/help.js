@@ -3,7 +3,39 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: 'help',
   description: 'Mostra informações sobre os comandos.',
-  execute: async (message) => {
+  usage: '.help [comando]',
+  execute: async (message, args) => {
+    const commands = message.client.commands;
+
+    
+    if (args.length > 0) {
+      const commandName = args[0].toLowerCase();
+      const command = commands.get(commandName);
+
+      if (!command) {
+        return message.reply({
+          content: '<:1000042883:1336044555354771638> Não encontrei esse comando no sistema.',
+          ephemeral: true,
+        });
+      }
+
+      const embed = new EmbedBuilder()
+        .setColor(0x00ff00)
+        .setTitle(`Informações sobre o comando: \`${command.name}\``)
+        .setDescription(command.description || 'Nenhuma descrição disponível.')
+        .addFields(
+          { name: 'Uso', value: command.usage || 'Não especificado.' },
+          { name: 'Permissões Necessárias', value: command.permissions || 'Nenhuma' }
+        )
+        .setFooter({
+          text: 'Punishment',
+          iconURL: message.client.user.displayAvatarURL(),
+        });
+
+      return message.reply({ embeds: [embed] });
+    }
+
+   
     const embed = new EmbedBuilder()
       .setColor(0x00aaff)
       .setTitle('<:1000042770:1335945568136069233> Comandos Principais')
