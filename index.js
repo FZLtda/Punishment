@@ -5,6 +5,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 require('dotenv').config();
 
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -21,7 +22,6 @@ client.slashCommands = new Collection();
 const prefixesPath = path.resolve(__dirname, './data/prefixes.json');
 const acceptedUsersPath = path.resolve(__dirname, './data/acceptedUsers.json');
 
-
 if (!fs.existsSync(prefixesPath)) {
   fs.mkdirSync(path.dirname(prefixesPath), { recursive: true });
   fs.writeFileSync(prefixesPath, JSON.stringify({}));
@@ -31,7 +31,6 @@ if (!fs.existsSync(acceptedUsersPath)) {
   fs.mkdirSync(path.dirname(acceptedUsersPath), { recursive: true });
   fs.writeFileSync(acceptedUsersPath, JSON.stringify([]));
 }
-
 
 const getPrefix = (guildId) => {
   const prefixes = JSON.parse(fs.readFileSync(prefixesPath, 'utf8'));
@@ -100,60 +99,6 @@ for (const file of eventFiles) {
     client.on(event.name, (...args) => event.execute(...args, client));
   }
 }
-
-
-client.on('messageCreate', async (message) => {
-  if (message.author.bot || !message.guild) return;
-
-  const prefix = getPrefix(message.guild.id);
-  if (!message.content.startsWith(prefix)) return;
-
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
-  const commandName = args.shift().toLowerCase();
-
-  const command = client.commands.get(commandName);
-  if (!command) return;
-
-  const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
-
-  if (!acceptedUsers.includes(message.author.id)) {
-    const embed = {
-      color: 0xfe3838,
-      title: 'Termos de Uso',
-      description:
-        'Para continuar usando o **Punishment**, você precisa aceitar nossos **Termos de Uso**.\n\nClique no botão **"Ler Termos"** para visualizar os termos, ou clique em **"Aceitar Termos"** se você já leu e concorda com eles.',
-      footer: { text: 'Obrigado por utilizar o Punishment!' },
-    };
-
-    const row = {
-      type: 1,
-      components: [
-        {
-          type: 2,
-          label: 'Ler Termos',
-          style: 5,
-          url: 'https://docs.google.com/document/d/12-nG-vY0bhgIzsaO2moSHjh7QeCrQLSGd7W2XYDMXsk/edit?usp=drivesdk',
-        },
-        {
-          type: 2,
-          customId: 'accept_terms',
-          label: 'Aceitar Termos',
-          style: 3,
-        },
-      ],
-    };
-
-    await message.reply({ embeds: [embed], components: [row] });
-    return;
-  }
-
-  try {
-    await command.execute(message, args, { setPrefix, getPrefix });
-  } catch (error) {
-    console.error(`[INFO] Erro ao executar o comando "${commandName}":`, error);
-    message.reply('Não foi possível executar o comando.');
-  }
-});
 
 
 (async () => {
