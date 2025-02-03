@@ -12,10 +12,10 @@ if (!fs.existsSync(acceptedUsersPath)) {
 module.exports = {
   name: 'messageCreate',
   async execute(message, client) {
-    // Ignorar mensagens de bots e fora de servidores
+    
     if (message.author.bot || !message.guild) return;
 
-    // Verificar Termos de Uso
+    
     const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
     if (!acceptedUsers.includes(message.author.id)) {
       const embed = {
@@ -50,11 +50,11 @@ module.exports = {
       return;
     }
 
-    // Obter o prefixo do servidor
+    
     const prefix = getPrefix(message.guild.id);
     if (!message.content.startsWith(prefix)) return;
 
-    // Processar comando
+   
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
 
@@ -62,7 +62,7 @@ module.exports = {
     if (!command) return;
 
     try {
-      // Executar comando com contexto adicional
+      
       await command.execute(message, args, { setPrefix, getPrefix });
     } catch (error) {
       console.error(`[ERROR] Erro ao executar o comando "${commandName}":`, error);

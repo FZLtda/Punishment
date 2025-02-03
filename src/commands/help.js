@@ -3,21 +3,21 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: 'help',
   description: 'Mostra informações sobre comandos',
-  execute: async (message, args, client) => {
-    // Certifique-se de que os comandos estão carregados
-    const commands = client.commands;
-
-    if (!commands) {
+  usage: '.help [comando]',
+  permissions: 'Nenhuma', 
+  execute: async (message, args, { client }) => {
+    
+    if (!client.commands || client.commands.size === 0) {
       return message.reply({
         content: '⚠️ Os comandos não foram carregados corretamente. Verifique a configuração do bot.',
         ephemeral: true,
       });
     }
 
-    // Verifica se um comando específico foi solicitado
+    
     if (args.length > 0) {
       const commandName = args[0].toLowerCase();
-      const command = commands.get(commandName);
+      const command = client.commands.get(commandName);
 
       if (!command) {
         const embedErroMinimo = new EmbedBuilder()
@@ -30,7 +30,7 @@ module.exports = {
         return message.reply({ embeds: [embedErroMinimo] });
       }
 
-      // Exibe as informações detalhadas sobre o comando
+      
       const embed = new EmbedBuilder()
         .setColor(0x00ff00)
         .setTitle(`Informações do Comando: \`${command.name}\``)
@@ -47,10 +47,10 @@ module.exports = {
       return message.reply({ embeds: [embed] });
     }
 
-    // Página principal do comando `help`
+   
     const embed = new EmbedBuilder()
       .setColor(0x00aaff)
-      .setTitle('<:1000042770:1335945568136069233> Comandos Principais')
+      .setTitle('💡 Comandos Principais')
       .addFields(
         { name: 'help', value: 'Mostra a lista completa de comandos ou informações detalhadas sobre um comando.', inline: true },
         { name: 'ping', value: 'Mostra os detalhes da conexão do bot.', inline: true },
