@@ -1,11 +1,11 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const { logModerationAction } = require('../moderationUtils');
+const { logModerationAction } = require('../utils/moderationUtils');
 
 module.exports = {
-  name: 'ban',
-  description: 'Bane um membro do servidor.',
+  name: 'unmute',
+  description: 'Remove o mute (timeout) de um membro.',
   async execute(message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
       const embedErroMinimo = new EmbedBuilder()
       .setColor('#FF4C4C')
       .setAuthor({
@@ -17,7 +17,6 @@ module.exports = {
     }
 
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-    const motivo = args.slice(1).join(' ') || 'Não especificado.';
 
     if (!membro) {
       const embedErroMinimo = new EmbedBuilder()
@@ -27,14 +26,14 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo] }); 
     }
 
-    if (!membro.bannable) {
+    if (!membro.communicationDisabledUntilTimestamp) {
       const embedErroMinimo = new EmbedBuilder()
       .setColor('#FF4C4C')
       .setAuthor({
-          name: 'Este usuário não pode ser banido devido às suas permissões.',
+          name: 'Não é possível remover o mute, pois o usuário não está silenciado.',
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
@@ -42,17 +41,20 @@ module.exports = {
     }
 
     try {
-      await membro.ban({ reason: motivo });
+      await membro.timeout(null);
 
-      logModerationAction(message.guild.id, message.author.id, 'Ban', membro.id, motivo);
+      logModerationAction(
+        message.guild.id,
+        message.author.id,
+        'Unmute',
+        membro.id,
+        'Timeout removido'
+      );
 
       const embed = new EmbedBuilder()
-        .setTitle('<:emoji_49:1207525971884900373> Punição aplicada')
-        .setColor('Red')
-        .setDescription(`${membro} (\`${membro.id}\`) foi banido(a)!`)
-        .addFields(
-          { name: 'Motivo', value: motivo, inline: false }
-        )
+        .setTitle('<:ummute:1207381662741037147> Punição removida')
+        .setColor('Green')
+        .setDescription(`${membro} (\`${membro.id}\`) foi desmutado(a)!`)
         .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
         .setFooter({
           text: `${message.author.username}`,
@@ -63,14 +65,7 @@ module.exports = {
       return message.channel.send({ embeds: [embed] });
     } catch (error) {
       console.error(error);
-      const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Não foi possível banir o usuário devido a um erro.',
-          iconURL: 'http://bit.ly/4aIyY9j'
-      });
-
-  return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply('<:no:1122370713932795997> Ocorreu um erro ao tentar remover o mute.');
     }
   },
 };

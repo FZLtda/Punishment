@@ -1,9 +1,9 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
-const { logModerationAction } = require('../moderationUtils');
+const { logModerationAction } = require('../utils/moderationUtils');
 
 module.exports = {
-  name: 'lock',
-  description: 'Bloqueia o envio de mensagens em um canal.',
+  name: 'unlock',
+  description: 'Desbloqueia o envio de mensagens em um canal.',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
       const embedErroMinimo = new EmbedBuilder()
@@ -20,15 +20,21 @@ module.exports = {
 
     try {
       await channel.permissionOverwrites.edit(message.guild.roles.everyone, {
-        SendMessages: false,
+        SendMessages: true,
       });
 
-      logModerationAction(message.guild.id, message.author.id, 'Lock', channel.id, 'Canal bloqueado');
+      logModerationAction(
+        message.guild.id,
+        message.author.id,
+        'Unlock',
+        channel.id,
+        'Canal desbloqueado para envio de mensagens'
+      );
 
       const embed = new EmbedBuilder()
-        .setTitle('<:emoji_48:1322515129144705045> Canal Bloqueado')
-        .setDescription(`O canal ${channel} foi bloqueado para envio de mensagens.`)
-        .setColor('Red')
+        .setTitle('<:emoji_49:1322515171578744915> Canal Desbloqueado')
+        .setDescription(`O canal ${channel} foi desbloqueado para envio de mensagens.`)
+        .setColor('Green')
         .setFooter({
           text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
@@ -41,7 +47,7 @@ module.exports = {
       const embedErroMinimo = new EmbedBuilder()
       .setColor('#FF4C4C')
       .setAuthor({
-          name: 'Não foi possível bloquear o canal devido a um erro.',
+          name: 'Não foi possível desbloquear o canal devido a um erro.',
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 

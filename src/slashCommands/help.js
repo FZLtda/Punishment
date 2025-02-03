@@ -3,7 +3,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('help')
-    .setDescription('Exibe informações sobre o bot e seus comandos.')
+    .setDescription('Mostra informações sobre o bot e seus comandos.')
     .addStringOption(option =>
       option
         .setName('comando')

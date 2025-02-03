@@ -3,7 +3,7 @@ const moment = require('moment-timezone');
 
 module.exports = {
   name: 'serverinfo',
-  description: 'Exibe informações detalhadas sobre o servidor.',
+  description: 'Mostra informações sobre o servidor.',
   async execute(message) {
     const guild = message.guild;
 

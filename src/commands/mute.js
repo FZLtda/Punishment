@@ -1,5 +1,5 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const { logModerationAction } = require('../moderationUtils');
+const { logModerationAction } = require('../utils/moderationUtils');
 
 module.exports = {
   name: 'mute',

@@ -1,26 +1,61 @@
-Licença MIT
+# Licença do Punishment
 
-Copyright (c) 2025 FuncZero
-====================================
-Contato
-====================================
-E-mail: contato@funczero.xyz
-Site: https://funczero.xyz
+## Creative Commons Atribuição-NãoComercial-CompartilhaIgual 4.0 Internacional
 
-A permissão é concedida, gratuitamente, a qualquer pessoa que obtenha uma cópia
-deste software e dos arquivos de documentação associados (o "Software"), para
-lidar com o Software sem restrições, incluindo, sem limitação, os direitos de
-usar, copiar, modificar, mesclar, publicar, distribuir, sublicenciar e/ou vender
-cópias do Software, e permitir que pessoas a quem o Software seja fornecido
-façam o mesmo, sujeitas às seguintes condições:
+Desenvolvedor: FuncZero  
+Projeto: Punishment  
+Licença: Creative Commons Atribuição-NãoComercial-CompartilhaIgual 4.0 Internacional  
 
-O aviso de copyright acima e este aviso de permissão devem ser incluídos em todas
-as cópias ou partes substanciais do Software.
+---
 
-O SOFTWARE É FORNECIDO "NO ESTADO EM QUE SE ENCONTRA", SEM GARANTIA DE QUALQUER
-TIPO, EXPRESSA OU IMPLÍCITA, INCLUINDO, MAS NÃO SE LIMITANDO ÀS GARANTIAS DE
-COMERCIALIZAÇÃO, ADEQUAÇÃO A UMA FINALIDADE ESPECÍFICA E NÃO VIOLAÇÃO. EM NENHUMA
-HIPÓTESE OS AUTORES OU DETENTORES DOS DIREITOS AUTORAIS SERÃO RESPONSÁVEIS POR
-QUALQUER REIVINDICAÇÃO, DANO OU OUTRA RESPONSABILIDADE, SEJA EM UMA AÇÃO DE
-CONTRATO, RESPONSABILIDADE CIVIL OU DE OUTRA FORMA, DECORRENTE DE, OU EM
-CONEXÃO COM O SOFTWARE OU O USO OU OUTRAS NEGOCIAÇÕES NO SOFTWARE.
+### Direitos Autorais e Permissões
+
+O Punishment está protegido por direitos autorais e licenciado sob os termos da Creative Commons Atribuição-NãoComercial-CompartilhaIgual 4.0 Internacional.
+
+Isso significa que:  
+- Você pode compartilhar e modificar este projeto desde que atribua o crédito ao autor original (FuncZero).  
+- Uso comercial não é permitido sem autorização do autor.  
+- Se modificar e compartilhar, deve manter a mesma licença aplicada ao novo trabalho.  
+
+Para mais detalhes, consulte a versão oficial da licença em português:  
+[Creative Commons BY-NC-SA 4.0 (PT-BR)](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.pt)
+
+---
+
+### Termos da Licença
+
+Esta Licença Pública Creative Commons permite que você:
+
+1. Compartilhe — copie e redistribua o material em qualquer meio ou formato.  
+2. Adapte — remixe, transforme e crie a partir do material, desde que respeite os termos.  
+
+Desde que siga as condições abaixo:
+
+- **Atribuição** — Você deve dar crédito adequado ao autor original (FuncZero), fornecer um link para a licença e indicar se mudanças foram feitas.  
+- **NãoComercial** — Você não pode usar o material para fins comerciais.  
+- **CompartilhaIgual** — Se modificar o material, deverá distribuí-lo sob a mesma licença.  
+- **Sem Restrições Adicionais** — Você não pode aplicar termos legais ou medidas tecnológicas que restrinjam outros de fazerem o que a licença permite.  
+
+Para mais detalhes, leia a versão completa da licença em português:  
+[https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.pt](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.pt)
+
+---
+
+### Informações Importantes
+
+- Esta licença é irrevogável. Uma vez aplicada, os direitos concedidos não podem ser retirados.  
+- Esta licença não afeta direitos autorais adicionais. Ela não substitui permissões necessárias para o uso de partes do código que podem estar sob outras licenças.  
+- O autor original não é responsável por modificações feitas por terceiros.  
+
+---
+
+### Contato
+
+Caso tenha dúvidas sobre o uso da licença ou precise de autorização especial para fins comerciais, entre em contato com o desenvolvedor:
+
+E-mail: contato@funczero.xyz  
+Website: [https://funczero.xyz](https://funczero.xyz)
+
+---
+
+© 2025 FuncZero - Todos os direitos reservados.

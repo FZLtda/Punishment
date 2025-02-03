@@ -3,7 +3,7 @@ const moment = require('moment-timezone');
 
 module.exports = {
   name: 'userinfo',
-  description: 'Exibe informações detalhadas sobre um usuário.',
+  description: 'Mostra informações sobre um usuário.',
   async execute(message, args) {
     const user = message.mentions.users.first() || message.author;
     const member = message.guild.members.cache.get(user.id);

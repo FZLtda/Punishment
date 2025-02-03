@@ -1,5 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
-const { logModerationAction } = require('../moderationUtils');
+const { logModerationAction } = require('../utils/moderationUtils');
 const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: 'clear',

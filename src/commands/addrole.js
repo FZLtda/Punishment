@@ -1,4 +1,4 @@
-const { logModerationAction } = require('../moderationUtils'); // Importação correta
+const { logModerationAction } = require('../utils/moderationUtils');
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {

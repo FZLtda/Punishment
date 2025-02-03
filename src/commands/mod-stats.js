@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const db = require('../database');
+const db = require('../data/database');
 
 module.exports = {
   name: 'mod-stats',

@@ -1,6 +1,6 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const fetch = require('node-fetch');
-const { logModerationAction } = require('../moderationUtils');
+const { logModerationAction } = require('../utils/moderationUtils');
 
 module.exports = {
   name: 'emoji',

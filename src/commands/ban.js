@@ -1,9 +1,9 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const { logModerationAction } = require('../moderationUtils');
+const { logModerationAction } = require('../utils/moderationUtils');
 
 module.exports = {
-  name: 'unban',
-  description: 'Desbane um membro do servidor.',
+  name: 'ban',
+  description: 'Bane um membro do servidor.',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
       const embedErroMinimo = new EmbedBuilder()
@@ -16,14 +16,25 @@ module.exports = {
   return message.reply({ embeds: [embedErroMinimo] });
     }
 
-    const userId = args[0];
+    const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
     const motivo = args.slice(1).join(' ') || 'Não especificado.';
 
-    if (!userId) {
+    if (!membro) {
       const embedErroMinimo = new EmbedBuilder()
       .setColor('#FF4C4C')
       .setAuthor({
-          name: 'Você precisa fornecer o ID do usuário para desbanir.',
+          name: 'Mencione um usuário para executar esta ação.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
+    }
+
+    if (!membro.bannable) {
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Este usuário não pode ser banido devido às suas permissões.',
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
@@ -31,36 +42,18 @@ module.exports = {
     }
 
     try {
-      const user = await message.guild.bans.fetch(userId).catch(() => null);
+      await membro.ban({ reason: motivo });
 
-      if (!user) {
-        const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Não há registro de banimento para este usuário.',
-          iconURL: 'http://bit.ly/4aIyY9j'
-      });
-
-  return message.reply({ embeds: [embedErroMinimo] });
-      }
-
-      await message.guild.members.unban(userId, motivo);
-
-      logModerationAction(
-        message.guild.id,
-        message.author.id,
-        'Unban',
-        userId,
-        motivo
-      );
+      logModerationAction(message.guild.id, message.author.id, 'Ban', membro.id, motivo);
 
       const embed = new EmbedBuilder()
-        .setTitle('<:emoji_48:1207522369426423808> Punição revogada')
-        .setColor('Green')
-        .setDescription(`<@${userId}> (\`${userId}\`) foi desbanido(a)!`)
+        .setTitle('<:emoji_49:1207525971884900373> Punição aplicada')
+        .setColor('Red')
+        .setDescription(`${membro} (\`${membro.id}\`) foi banido(a)!`)
         .addFields(
           { name: 'Motivo', value: motivo, inline: false }
         )
+        .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
         .setFooter({
           text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
@@ -73,7 +66,7 @@ module.exports = {
       const embedErroMinimo = new EmbedBuilder()
       .setColor('#FF4C4C')
       .setAuthor({
-          name: 'Não foi possível desbanir o usuário devido a um erro.',
+          name: 'Não foi possível banir o usuário devido a um erro.',
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 

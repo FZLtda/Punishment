@@ -1,7 +1,7 @@
 const { EmbedBuilder, PermissionsBitField, AttachmentBuilder } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const { logModerationAction } = require('../moderationUtils');
+const { logModerationAction } = require('../utils/moderationUtils');
 
 function serializeBigInt(key, value) {
   return typeof value === 'bigint' ? value.toString() : value;

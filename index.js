@@ -41,7 +41,7 @@ const setPrefix = (guildId, newPrefix) => {
   fs.writeFileSync(prefixesPath, JSON.stringify(prefixes, null, 4));
 };
 
-const commandsPath = path.join(__dirname, 'commands');
+const commandsPath = path.join(__dirname, 'src/commands');
 const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -53,7 +53,7 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 
-const slashCommandsPath = path.join(__dirname, 'slashCommands');
+const slashCommandsPath = path.join(__dirname, 'src/slashCommands');
 const slashCommandFiles = fs.readdirSync(slashCommandsPath).filter((file) => file.endsWith('.js'));
 const slashCommands = [];
 
@@ -82,51 +82,7 @@ const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
   }
 })();
 
-
-
-
-client.once('ready', async () => {
-  console.log(`Bot online como ${client.user.tag}`);
-
-  // Atualiza a presença básica
-  client.user.setPresence({
-    status: 'online',
-    activities: [
-      {
-        name: '.help | .doar | .report',
-        type: 0, // Jogando (Playing)
-      },
-    ],
-  });
-
-  // Força o envio do status "mobile" diretamente ao WebSocket
-  try {
-    client.ws.connection.send(JSON.stringify({
-      op: 3, // Opcode para Update Presence
-      d: {
-        since: null,
-        status: 'online', // Define o status como online
-        afk: false,
-        activities: [
-          {
-            name: '.help | .doar | .report',
-            type: 0, // Jogando
-          },
-        ],
-        client_status: {
-          mobile: 'online', // Configura explicitamente como mobile
-        },
-      },
-    }));
-
-    console.log('Status de celular enviado diretamente ao WebSocket.');
-  } catch (error) {
-    console.error('Erro ao enviar status de celular diretamente ao WebSocket:', error);
-  }
-});
   
-          
-
 
 client.on('messageCreate', async (message) => {
   if (message.author.bot || !message.guild) return;
@@ -212,7 +168,7 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
-const verifyCommand = require('./commands/verify');
+const verifyCommand = require('./src/commands/verify');
 
 client.on('interactionCreate', async (interaction) => {
   if (interaction.isButton()) {

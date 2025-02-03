@@ -1,11 +1,11 @@
-const { PermissionsBitField, EmbedBuilder } = require('discord.js');
-const { logModerationAction } = require('../moderationUtils');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { logModerationAction } = require('../utils/moderationUtils');
 
 module.exports = {
-  name: 'kick',
-  description: 'Expulsa um membro do servidor.',
+  name: 'unban',
+  description: 'Desbane um membro do servidor.',
   async execute(message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
       const embedErroMinimo = new EmbedBuilder()
       .setColor('#FF4C4C')
       .setAuthor({
@@ -16,25 +16,14 @@ module.exports = {
   return message.reply({ embeds: [embedErroMinimo] });
     }
 
-    const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+    const userId = args[0];
     const motivo = args.slice(1).join(' ') || 'Não especificado.';
 
-    if (!membro) {
+    if (!userId) {
       const embedErroMinimo = new EmbedBuilder()
       .setColor('#FF4C4C')
       .setAuthor({
-          name: 'Mencione um usuário para executar esta ação.',
-          iconURL: 'http://bit.ly/4aIyY9j'
-      });
-
-  return message.reply({ embeds: [embedErroMinimo] });
-    }
-
-    if (!membro.kickable) {
-      const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Este usuário não pode ser expulso devido às suas permissões.',
+          name: 'Você precisa fornecer o ID do usuário para desbanir.',
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
@@ -42,31 +31,49 @@ module.exports = {
     }
 
     try {
-      await membro.kick(motivo);
+      const user = await message.guild.bans.fetch(userId).catch(() => null);
 
-      logModerationAction(message.guild.id, message.author.id, 'Kick', membro.id, motivo);
+      if (!user) {
+        const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não há registro de banimento para este usuário.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
 
-      const kickEmbed = new EmbedBuilder()
-        .setTitle('<:emoji_23:1216481209153224745> Membro Expulso')
-        .setColor('Red')
-        .setDescription(`${membro} (\`${membro.id}\`) foi expulso(a) do servidor!`)
+  return message.reply({ embeds: [embedErroMinimo] });
+      }
+
+      await message.guild.members.unban(userId, motivo);
+
+      logModerationAction(
+        message.guild.id,
+        message.author.id,
+        'Unban',
+        userId,
+        motivo
+      );
+
+      const embed = new EmbedBuilder()
+        .setTitle('<:emoji_48:1207522369426423808> Punição revogada')
+        .setColor('Green')
+        .setDescription(`<@${userId}> (\`${userId}\`) foi desbanido(a)!`)
         .addFields(
           { name: 'Motivo', value: motivo, inline: false }
         )
-        .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
         .setFooter({
           text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
 
-      await message.channel.send({ embeds: [kickEmbed] });
+      return message.channel.send({ embeds: [embed] });
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
       .setColor('#FF4C4C')
       .setAuthor({
-          name: 'Não foi possível expulsar o usuário devido a um erro.',
+          name: 'Não foi possível desbanir o usuário devido a um erro.',
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
