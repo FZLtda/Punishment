@@ -4,11 +4,9 @@ module.exports = {
   name: 'help',
   description: 'Mostra a lista completa de comandos',
   execute: async (message) => {
-    
     const pages = [
-     
       new EmbedBuilder()
-        .setColor(0xff0000) 
+        .setColor(0xff0000)
         .setTitle('<:1000042770:1335945568136069233> Comandos principais')
         .addFields(
           { name: 'help', value: 'Mostra a lista completa de comandos', inline: true },
@@ -24,7 +22,6 @@ module.exports = {
         )
         .setFooter({ text: 'Punishment • Página 1/6' }),
 
-      
       new EmbedBuilder()
         .setColor(0xff0000)
         .setTitle('Comandos de moderação')
@@ -38,7 +35,6 @@ module.exports = {
         )
         .setFooter({ text: 'Punishment • Página 2/6' }),
 
-     
       new EmbedBuilder()
         .setColor(0xff0000)
         .setTitle('Comandos Utilitários')
@@ -51,7 +47,6 @@ module.exports = {
         )
         .setFooter({ text: 'Punishment • Página 3/6' }),
 
-      
       new EmbedBuilder()
         .setColor(0xff0000)
         .setTitle('Comandos Divertidos')
@@ -62,7 +57,6 @@ module.exports = {
         )
         .setFooter({ text: 'Punishment • Página 4/6' }),
 
-      
       new EmbedBuilder()
         .setColor(0xff0000)
         .setTitle('Em desenvolvimento')
@@ -72,7 +66,6 @@ module.exports = {
         )
         .setFooter({ text: 'Punishment • Página 5/6' }),
 
-     
       new EmbedBuilder()
         .setColor(0xff0000)
         .setTitle('Links & Suporte')
@@ -84,26 +77,25 @@ module.exports = {
         .setFooter({ text: 'Punishment • Página 6/6' }),
     ];
 
-    
     let page = 0;
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId('prev')
-        .setLabel('⬅️ Anterior')
+        .setLabel('Anterior')
+        .setEmoji('<:1000042899:1336059961796591697>')
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
         .setCustomId('next')
-        .setLabel('Próximo ➡️')
+        .setLabel('Próximo')
+        .setEmoji('<:1000042900:1336059917362135164>')
         .setStyle(ButtonStyle.Primary)
     );
 
-    
     const messageEmbed = await message.reply({
       embeds: [pages[page]],
       components: [row],
     });
 
-    
     const collector = messageEmbed.createMessageComponentCollector({
       time: 60000,
     });
@@ -116,7 +108,6 @@ module.exports = {
         });
       }
 
-      
       if (interaction.customId === 'next') {
         page = page + 1 < pages.length ? ++page : 0;
       } else if (interaction.customId === 'prev') {
@@ -133,12 +124,14 @@ module.exports = {
       const disabledRow = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
           .setCustomId('prev')
-          .setLabel('⬅️ Anterior')
+          .setLabel('Anterior')
+          .setEmoji('<:1000042899:1336059961796591697>')
           .setStyle(ButtonStyle.Primary)
           .setDisabled(true),
         new ButtonBuilder()
           .setCustomId('next')
-          .setLabel('Próximo ➡️')
+          .setLabel('Próximo')
+          .setEmoji('<:1000042900:1336059917362135164>')
           .setStyle(ButtonStyle.Primary)
           .setDisabled(true)
       );
