@@ -81,12 +81,12 @@ module.exports = {
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId('prev')
-        .setLabel('')
+        
         .setEmoji('<:1000042899:1336059961796591697>')
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
         .setCustomId('next')
-        .setLabel('')
+        
         .setEmoji('<:1000042900:1336059917362135164>')
         .setStyle(ButtonStyle.Primary)
     );
@@ -124,13 +124,13 @@ module.exports = {
       const disabledRow = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
           .setCustomId('prev')
-          .setLabel('')
+          
           .setEmoji('<:1000042899:1336059961796591697>')
           .setStyle(ButtonStyle.Primary)
           .setDisabled(true),
         new ButtonBuilder()
           .setCustomId('next')
-          .setLabel('')
+          
           .setEmoji('<:1000042900:1336059917362135164>')
           .setStyle(ButtonStyle.Primary)
           .setDisabled(true)
