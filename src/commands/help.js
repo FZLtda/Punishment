@@ -17,8 +17,8 @@ module.exports = {
           { name: 'undo', value: 'Desfazer o último comando', inline: true }
         )
         .addFields(
-          { name: '\u200b', value: '<:1000042773:1335945498212696085> Use `.help <command>` para exibir mais informações sobre um comando.' },
-          { name: '\u200b', value: '<:1000042771:1335945525601505351> Precisa de ajuda com mais alguma coisa? [Support Server](https://discord.gg/EXEMPLO)' }
+          { name: '<:1000042773:1335945498212696085>', value: 'Use `.help <command>` para exibir mais informações sobre um comando.' },
+          { name: '\u200b', value: '<:1000042771:1335945525601505351> Precisa de ajuda com mais alguma coisa? [Suporte](https://discord.gg/EXEMPLO)' }
         )
         .setFooter({ text: 'Punishment • Página 1/6' }),
 
@@ -97,7 +97,7 @@ module.exports = {
     });
 
     const collector = messageEmbed.createMessageComponentCollector({
-      time: 60000,
+      time: 180000,
     });
 
     collector.on('collect', async (interaction) => {
