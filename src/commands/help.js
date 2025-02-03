@@ -8,12 +8,12 @@ module.exports = {
       .setColor(0x00aaff)
       .setTitle('<:1000042770:1335945568136069233> Comandos Principais')
       .addFields(
-        { name: 'help', value: 'Mostra a lista completa de comandos ou informações detalhadas sobre um comando.', inline: true },
-        { name: 'ping', value: 'Exibe os detalhes da conexão do bot.', inline: true },
-        { name: 'privacy', value: 'Exibe a política de privacidade.', inline: true },
-        { name: 'shard', value: 'Informações sobre o shard.', inline: true },
-        { name: 'stats', value: 'Mostra as estatísticas do bot.', inline: true },
-        { name: 'undo', value: 'Desfaz o último comando executado.', inline: true }
+        { name: 'help', value: '`Mostra a lista completa de comandos ou informações detalhadas sobre um comando.`', inline: true },
+        { name: 'ping', value: '`Exibe os detalhes da conexão do bot.`', inline: true },
+        { name: 'privacy', value: '`Exibe a política de privacidade.`', inline: true },
+        { name: 'shard', value: '`Informações sobre o shard.`', inline: true },
+        { name: 'stats', value: '`Mostra as estatísticas do bot.`', inline: true },
+        { name: 'undo', value: '`Desfaz o último comando executado.`', inline: true }
       )
       .addFields(
         {
