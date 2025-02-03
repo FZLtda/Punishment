@@ -159,7 +159,7 @@ client.on('messageCreate', async (message) => {
 (async () => {
   try {
     await client.login(process.env.DISCORD_TOKEN);
-    console.log('[SUCESSO] Bot iniciado com sucesso!');
+    console.log('[INFO] Tentando inicializar o bot...');
   } catch (error) {
     console.error('[INFO] Erro ao inicializar o bot:', error);
   }
