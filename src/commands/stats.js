@@ -1,6 +1,16 @@
 const { EmbedBuilder } = require('discord.js');
-const axios = require('axios');
 const os = require('os');
+
+function formatUptime(seconds) {
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+
+  if (days > 0) return `${days}d ${hours}h ${minutes}m ${secs}s`;
+  if (hours > 0) return `${hours}h ${minutes}m ${secs}s`;
+  return `${minutes}m ${secs}s`;
+}
 
 module.exports = {
   name: 'stats',
@@ -9,25 +19,15 @@ module.exports = {
   permissions: 'Nenhuma',
   execute: async (message) => {
     try {
-     
-      const response = await axios.get(`https://discord.com/api/v10/applications/${process.env.CLIENT_ID}`, {
-        headers: {
-          Authorization: `Bot ${process.env.DISCORD_TOKEN}`,
-        },
-      });
-
-      const installCount = response.data.install_count || 0; // Contagem de instalações
+      
+      const installCount = message.client.application.approximateUserInstallCount || 'Indisponível';
 
       
-      const uptime = process.uptime();
-      const days = Math.floor(uptime / 86400);
-      const hours = Math.floor((uptime % 86400) / 3600);
-      const minutes = Math.floor((uptime % 3600) / 60);
-      const seconds = Math.floor(uptime % 60);
+      const uptime = formatUptime(process.uptime());
 
       
       const embed = new EmbedBuilder()
-        .setColor(0xfe3838)
+        .setColor(0x36393F)
         .setTitle(`${message.client.user.username} • Estatísticas`)
         .addFields(
           {
@@ -47,7 +47,7 @@ module.exports = {
           },
           {
             name: '<:1000043158:1336324199202947144> Uptime',
-            value: `ﾠ \`${days}d ${hours}h ${minutes}m ${seconds}s\``,
+            value: `ﾠ \`${uptime}\``,
             inline: true,
           },
           {
@@ -57,7 +57,7 @@ module.exports = {
           }
         )
         .setFooter({
-          text: message.client.user.username,
+          text: `${message.client.user.username}`,
           iconURL: message.client.user.displayAvatarURL(),
         });
 
