@@ -23,7 +23,7 @@ module.exports = {
           inline: true,
         },
         {
-          name: '<:1000042775:1335945455560818750> Usuários',
+          name: '<:1000043165:1336327290446942280> Instalações',
           value: `\`${message.client.users.cache.size}\``,
           inline: true,
         },
@@ -33,12 +33,12 @@ module.exports = {
           inline: true,
         },
         {
-          name: '<:1000042780:1335947560321421312> Uptime',
+          name: '<:1000043158:1336324199202947144> Uptime',
           value: `\`${days}d ${hours}h ${minutes}m ${seconds}s\``,
           inline: true,
         },
         {
-          name: '⚙️ Plataforma',
+          name: '<:1000043162:1336324401087512748> Plataforma',
           value: `\`${os.platform()}\``,
           inline: true,
         }
