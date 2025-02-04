@@ -8,15 +8,15 @@ module.exports = {
   execute: async (message, args) => {
     const commands = message.client.commands;
 
-    
+   
     if (!commands || commands.size === 0) {
       return message.reply({
-        content: '⚠️ Os comandos não foram carregados corretamente. Verifique a configuração do bot.',
+        content: '<:1000042883:1336044555354771638> Os comandos não foram carregados corretamente. Verifique a configuração do bot.',
         ephemeral: true,
       });
     }
 
-   
+    
     if (args.length > 0) {
       const commandName = args[0].toLowerCase();
       const command = commands.get(commandName);
@@ -30,7 +30,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor(0x00ff00)
-        .setTitle(<:1000042962:1336123387164098631> `${command.name}`)
+        .setTitle(`<:1000042962:1336123387164098631> Informações do comando: \`${command.name}\``)
         .setDescription(command.description || 'Nenhuma descrição disponível.')
         .addFields(
           { name: '<:1000042957:1336119362683408384> Uso', value: command.usage || 'Não especificado.', inline: false },
