@@ -18,7 +18,7 @@ module.exports = {
       .setTitle(`${message.client.user.username} • Estatísticas`)
       .addFields(
         {
-          name: '<:1000042770:1335945568136069233> Servidores',
+          name: '<:1000043167:1336329540502421576> Servidores',
           value: `\`${message.client.guilds.cache.size}\``,
           inline: true,
         },
@@ -28,7 +28,7 @@ module.exports = {
           inline: true,
         },
         {
-          name: '<:1000042782:1335948193795412000> Uso de Memória',
+          name: '<:1000043168:1336330133086273566> Uso de Memória',
           value: `\`${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB\``,
           inline: true,
         },
@@ -38,7 +38,7 @@ module.exports = {
           inline: true,
         },
         {
-          name: '<:1000043162:1336324401087512748> Plataforma',
+          name: '<:1000043169:1336330699682222121> Plataforma',
           value: `\`${os.platform()}\``,
           inline: true,
         }
