@@ -55,7 +55,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor('#FFD700')
-                .setTitle('<:1000043188:1336358026306912359> Doação Iniciada!')
+                .setTitle('Doação Iniciada')
                 .setDescription(
                     `<:1000043196:1336360581934088193> **Obrigado pelo apoio, ${message.author}!**\n\n` +
                     `<:1000043192:1336359444006703144> Você está ajudando o **Projeto Punishment** a se manter ativo e a crescer.\n\n` +
