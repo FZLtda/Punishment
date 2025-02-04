@@ -6,17 +6,28 @@ const fs = require('fs');
 module.exports = {
   name: 'translatefile',
   description: 'Traduz o conteúdo de um arquivo para o idioma especificado.',
+  usage: 'translatefile [idioma] [documento]',
   async execute(message, args) {
     if (!message.attachments.first()) {
-      return message.reply(
-        '<:no:1122370713932795997> Você precisa enviar um arquivo para tradução junto com este comando.'
-      );
+      const embedErro = new EmbedBuilder()
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Você precisa enviar um arquivo para tradução junto com este comando.',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+
+      return message.reply({ embeds: [embedErro] });
     }
 
     if (args.length === 0) {
-      return message.reply(
-        '<:no:1122370713932795997> Você precisa especificar o idioma de destino. Exemplo: `.translatefile en`'
-      );
+      const embedErro = new EmbedBuilder()
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Você precisa especificar o idioma de destino. Exemplo: `.translatefile en`',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+
+      return message.reply({ embeds: [embedErro] });
     }
 
     const targetLanguage = args[0].toUpperCase();
@@ -32,7 +43,7 @@ module.exports = {
       form.append('file', fileBuffer, attachment.name);
 
       const uploadResponse = await fetch(
-        'https://api-free.deepl.com/v2/document',
+        `${process.env.DEEPL_API_URL}/document`,
         {
           method: 'POST',
           body: form,
@@ -42,13 +53,20 @@ module.exports = {
       const uploadData = await uploadResponse.json();
 
       if (!uploadData.document_id || !uploadData.document_key) {
-        return message.reply('<:no:1122370713932795997> Ocorreu um erro ao enviar o arquivo para tradução.');
+        const embedErro = new EmbedBuilder()
+          .setColor('#FF4C4C')
+          .setAuthor({
+            name: 'Ocorreu um erro ao enviar o arquivo para tradução.',
+            iconURL: 'http://bit.ly/4aIyY9j',
+          });
+
+        return message.reply({ embeds: [embedErro] });
       }
 
       let translationStatus;
       do {
         const statusResponse = await fetch(
-          `https://api-free.deepl.com/v2/document/${uploadData.document_id}?auth_key=${process.env.DEEPL_API_KEY}&document_key=${uploadData.document_key}`
+          `${process.env.DEEPL_API_URL}/document/${uploadData.document_id}?auth_key=${process.env.DEEPL_API_KEY}&document_key=${uploadData.document_key}`
         );
         translationStatus = await statusResponse.json();
 
@@ -62,22 +80,37 @@ module.exports = {
       } while (translationStatus.status !== 'done');
 
       const translatedFileResponse = await fetch(
-        `https://api-free.deepl.com/v2/document/${uploadData.document_id}/result?auth_key=${process.env.DEEPL_API_KEY}&document_key=${uploadData.document_key}`
+        `${process.env.DEEPL_API_URL}/document/${uploadData.document_id}/result?auth_key=${process.env.DEEPL_API_KEY}&document_key=${uploadData.document_key}`
       );
       const translatedFileBuffer = await translatedFileResponse.buffer();
 
       const filePath = `./translated_${attachment.name}`;
       fs.writeFileSync(filePath, translatedFileBuffer);
 
+      const embedSucesso = new EmbedBuilder()
+        .setColor('#00FF00')
+        .setAuthor({
+          name: 'A tradução foi concluída! Aqui está o arquivo traduzido:',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+
       await message.reply({
-        content: '<:emoji_33:1219788320234803250> A tradução foi concluída! Aqui está o arquivo traduzido:',
+        embeds: [embedSucesso],
         files: [filePath],
       });
 
       fs.unlinkSync(filePath);
     } catch (error) {
       console.error('Erro ao traduzir o arquivo:', error);
-      return message.reply('<:no:1122370713932795997> Não foi possível traduzir o arquivo.');
+
+      const embedErro = new EmbedBuilder()
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Não foi possível traduzir o arquivo.',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+
+      return message.reply({ embeds: [embedErro] });
     }
   },
 };

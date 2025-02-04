@@ -4,6 +4,8 @@ const moment = require('moment-timezone');
 module.exports = {
   name: 'userinfo',
   description: 'Mostra informações sobre um usuário.',
+  usage: 'userinfo [usuário]',
+  permissions: 'Nenhuma',
   async execute(message, args) {
     const user = message.mentions.users.first() || message.author;
     const member = message.guild.members.cache.get(user.id);

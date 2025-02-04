@@ -17,6 +17,8 @@ let interactionAuthors = new Map();
 module.exports = {
   name: 'verify',
   description: 'Configura e gerencia o sistema de verificação no servidor.',
+  usage: 'verify',
+  permissions: 'Administrador',
   async execute(message) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
       const embedErro = new EmbedBuilder()

@@ -4,24 +4,29 @@ const fetch = require('node-fetch');
 module.exports = {
   name: 'translate',
   description: 'Traduz um texto para o idioma especificado.',
-  usage: '.translate [idioma_destino] [texto]',
+  usage: 'translate [idioma] [texto]',
   async execute(message, args) {
     if (args.length < 2) {
-      return message.reply(
-        '<:no:1122370713932795997> Uso incorreto! O comando correto é: `.translate [idioma_destino] [texto]`.\nExemplo: `.translate en Olá, como vai?`'
-      );
+      const embedErroMinimo = new EmbedBuilder()
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Uso incorreto! O comando correto é: `.translate [idioma] [texto]`.\nExemplo: `.translate en Olá, como vai?`',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+
+      return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const targetLanguage = args.shift().toLowerCase();
     const textToTranslate = args.join(' ');
 
     try {
+      
+      const apiUrl = process.env.DEEPL_API_URL;
       const apiKey = process.env.DEEPL_API_KEY;
 
       const response = await fetch(
-        `https://api-free.deepl.com/v2/translate?auth_key=${apiKey}&text=${encodeURIComponent(
-          textToTranslate
-        )}&target_lang=${targetLanguage}`
+        `${apiUrl}?auth_key=${apiKey}&text=${encodeURIComponent(textToTranslate)}&target_lang=${targetLanguage}`
       );
 
       const data = await response.json();
@@ -53,9 +58,15 @@ module.exports = {
       }
     } catch (error) {
       console.error('Erro ao traduzir o texto:', error);
-      await message.reply(
-        '<:no:1122370713932795997> Não foi possível traduzir o texto.'
-      );
+
+      const embedErro = new EmbedBuilder()
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Não foi possível traduzir o texto devido a um erro.',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+
+      return message.reply({ embeds: [embedErro] });
     }
   },
 };

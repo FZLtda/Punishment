@@ -1,33 +1,75 @@
 const { EmbedBuilder } = require('discord.js');
+const os = require('os');
+
+function formatUptime(seconds) {
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+
+  if (days > 0) return `${days}d ${hours}h ${minutes}m ${secs}s`;
+  if (hours > 0) return `${hours}h ${minutes}m ${secs}s`;
+  return `${minutes}m ${secs}s`;
+}
 
 module.exports = {
-    name: 'uptime',
-    description: 'Exibe há quanto tempo o bot está online.',
-    async execute(message) {
-        const totalSeconds = process.uptime();
-        const days = Math.floor(totalSeconds / (3600 * 24));
-        const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = Math.floor(totalSeconds % 60);
+  name: 'stats',
+  description: 'Exibe as estatísticas do bot.',
+  usage: 'stats',
+  permissions: 'Nenhuma',
+  execute: async (message) => {
+    try {
+      
+      const installCount = message.client.application?.approximateUserInstallCount || 'Indisponível';
+      const serverCount = message.client.guilds.cache.size;
+      const uptime = formatUptime(process.uptime());
 
-        const uptimeString = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      const embed = new EmbedBuilder()
+        .setColor(0x36393F)
+        .setTitle(`${message.client.user.username} • Estatísticas`)
+        .addFields(
+          {
+            name: '<:1000043167:1336329540502421576> Servidores',
+            value: `ﾠ \`${serverCount}\``,
+            inline: true,
+          },
+          {
+            name: '<:1000043165:1336327290446942280> Instalações',
+            value: `ﾠ \`${installCount}\``,
+            inline: true,
+          },
+          {
+            name: '<:1000043168:1336330133086273566> Uso de Memória',
+            value: `ﾠ \`${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB\``,
+            inline: true,
+          },
+          {
+            name: '<:1000043158:1336324199202947144> Uptime',
+            value: `ﾠ \`${uptime}\``,
+            inline: true,
+          },
+          {
+            name: '<:1000043170:1336333421412225045> Plataforma',
+            value: `ﾠ \`${os.platform()}\``,
+            inline: true,
+          }
+        )
+        .setFooter({
+          text: `${message.client.user.username}`,
+          iconURL: message.client.user.displayAvatarURL(),
+        });
 
-        const memoryUsage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
-        const nodeVersion = process.version;
-        const discordJsVersion = require('discord.js').version;
+      return message.reply({ embeds: [embed] });
+    } catch (error) {
+      console.error('[ERROR] Não foi possível obter as estatísticas:', error);
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível recuperar as estatísticas do bot devido a um erro.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
 
-        const embed = new EmbedBuilder()
-            .setTitle('Tempo de Atividade do Bot')
-            .setColor('#00FF00')
-            .addFields(
-                { name: '🕒 Uptime', value: uptimeString, inline: true },
-                { name: '💻 Uso de Memória', value: `${memoryUsage} MB`, inline: true },
-                { name: '⚙️ Node.js', value: nodeVersion, inline: true },
-                { name: '📚 Discord.js', value: `v${discordJsVersion}`, inline: true },
-            )
-            .setFooter({ text: `${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
-            .setTimestamp();
-
-        return message.channel.send({ embeds: [embed] });
-    },
+  return message.reply({ embeds: [embedErroMinimo] });
+    }
+  },
 };
