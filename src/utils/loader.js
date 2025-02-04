@@ -7,7 +7,7 @@ const path = require('path');
  */
 const loadCommands = async (client) => {
   const commandFiles = fs
-    .readdirSync(path.join(__dirname, '../src/commands')) // Caminho ajustado para refletir a estrutura do projeto
+    .readdirSync(path.join(__dirname, '../src/commands'))
     .filter((file) => file.endsWith('.js'));
 
   for (const file of commandFiles) {
@@ -27,11 +27,11 @@ const loadCommands = async (client) => {
  */
 const loadEvents = async (client) => {
   const eventFiles = fs
-    .readdirSync(path.join(__dirname, '../src/events')) // Caminho ajustado para refletir a estrutura do projeto
+    .readdirSync(path.join(__dirname, '../src/events'))
     .filter((file) => file.endsWith('.js'));
 
   for (const file of eventFiles) {
-    const event = require(`../src/events/${file}`); // Caminho ajustado
+    const event = require(`../src/events/${file}`);
     if (!event.name || !event.execute) {
       console.warn(`[WARN] O arquivo "${file}" não possui as propriedades "name" ou "execute". Ignorado.`);
       continue;
