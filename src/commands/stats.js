@@ -38,7 +38,7 @@ module.exports = {
           inline: true,
         },
         {
-          name: '<:1000043169:1336330699682222121> Plataforma',
+          name: '<:1000043170:1336333421412225045> Plataforma',
           value: `\`${os.platform()}\``,
           inline: true,
         }
