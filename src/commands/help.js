@@ -60,7 +60,7 @@ module.exports = {
         },
         {
           name: '<:1000043160:1336324162482081945> Suporte',
-          value: 'Precisa de mais ajuda? [Clique aqui](https://discord.gg/SW4zKzAhQa)',
+          value: '[Visite nossa comunidade](https://discord.gg/SW4zKzAhQa)',
         }
       )
       .setFooter({
