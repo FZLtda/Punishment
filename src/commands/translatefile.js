@@ -67,7 +67,7 @@ module.exports = {
         .setColor('#00FF00')
         .setAuthor({
           name: 'A tradução foi iniciada! Estamos processando seu arquivo.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://tenor.com/b0Zjq.gif',
         });
 
       await message.reply({ embeds: [embedSucesso] });
@@ -106,15 +106,15 @@ module.exports = {
       const filePath = `./translated_${attachment.name}`;
       fs.writeFileSync(filePath, translatedFileBuffer);
 
-      const embedFinal = new EmbedBuilder()
-        .setColor('#2ecc71')
+      const embedArquivo = new EmbedBuilder()
+        .setColor('#00FF00')
         .setAuthor({
           name: 'A tradução foi concluída! Aqui está o arquivo traduzido:',
-          iconURL: 'https://bit.ly/42CxADe',
+          iconURL: 'https://bit.ly/42BEKHU',
         });
 
       await message.channel.send({
-        embeds: [embedFinal],
+        embeds: [embedArquivo],
         files: [filePath],
       });
 
