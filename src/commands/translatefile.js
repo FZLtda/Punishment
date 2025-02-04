@@ -99,7 +99,7 @@ module.exports = {
 
       
       const embedSucesso = new EmbedBuilder()
-        .setColor('#00FF00')
+        .setColor('#2ecc71')
         .setAuthor({
           name: 'A tradução foi concluída! Enviando o arquivo traduzido...',
           iconURL: 'https://bit.ly/3Q2Q8F1',
