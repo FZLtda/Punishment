@@ -4,6 +4,8 @@ const { logModerationAction } = require('../utils/moderationUtils');
 module.exports = {
   name: 'unmute',
   description: 'Remove o mute (timeout) de um membro.',
+  usage: 'unmute <@usuário> [motivo]',
+  permissions: 'Moderar Membros',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
       const embedErroMinimo = new EmbedBuilder()

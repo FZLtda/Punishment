@@ -2,17 +2,21 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
   name: 'help',
-  description: 'Mostra informações sobre os comandos disponíveis ou detalhes de um comando específico.',
+  description: 'Exibe informações detalhadas sobre os comandos.',
   usage: '`.help [comando]`',
   permissions: '`Nenhuma`',
   execute: async (message, args) => {
     const commands = message.client.commands;
 
     if (!commands || commands.size === 0) {
-      return message.reply({
-        content: '<:1000042883:1336044555354771638> Os comandos não foram carregados corretamente. Verifique a configuração do bot.',
-        ephemeral: true,
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Parece que os comandos não foram carregados.',
+          iconURL: 'http://bit.ly/4aIyY9j'
       });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     if (args.length > 0) {
@@ -20,10 +24,14 @@ module.exports = {
       const command = commands.get(commandName);
 
       if (!command) {
-        return message.reply({
-          content: '<:1000042883:1336044555354771638> Não encontrei esse comando no sistema.',
-          ephemeral: true,
-        });
+        const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Não encontrei esse comando no sistema.',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
       }
 
       const embed = new EmbedBuilder()

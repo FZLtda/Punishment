@@ -5,6 +5,8 @@ const { logModerationAction } = require('../utils/moderationUtils');
 module.exports = {
   name: 'restore',
   description: 'Restaura o estado do servidor a partir de um arquivo de backup.',
+  usage: 'restore <arquivo>',
+  permissions: 'Administrador',
   async execute(message) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
       const embedErroMinimo = new EmbedBuilder()

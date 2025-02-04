@@ -11,6 +11,8 @@ const {
 module.exports = {
   name: 'report',
   description: 'Reporte um problema enviando informações para o servidor de suporte principal.',
+  usage: 'report',
+  permissions: 'Nenhuma',
   async execute(message) {
     try {
       const forumChannelId = '1277353794874900520';

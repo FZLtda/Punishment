@@ -4,6 +4,8 @@ const { logModerationAction } = require('../utils/moderationUtils');
 module.exports = {
   name: 'unlock',
   description: 'Desbloqueia o envio de mensagens em um canal.',
+  usage: 'unlock [canal]',
+  permissions: 'Gerenciar Canais',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
       const embedErroMinimo = new EmbedBuilder()

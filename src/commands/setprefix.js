@@ -3,6 +3,8 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = {
     name: 'setprefix',
     description: 'Altera o prefixo do bot no servidor.',
+    usage: 'setprefix <prefixo>',
+    permissions: 'Gerenciar Servidor',
     async execute(message, args, { setPrefix }) {
         if (!message.member.permissions.has('ManageGuild')) {
             return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');

@@ -4,14 +4,31 @@ const { logModerationAction } = require('../utils/moderationUtils');
 module.exports = {
   name: 'slowmode',
   description: 'Configura o modo lento em um canal.',
+  usage: 'slowmode <tempo>',
+  permissions: 'Gerenciar Canais',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
-      return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Você não possui permissão para usar este comando.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
 
     const tempo = parseInt(args[0], 10);
     if (isNaN(tempo) || tempo < 0 || tempo > 21600) {
-      return message.reply('<:no:1122370713932795997> Por favor, forneça um tempo válido (0-21600 segundos).');
+      const embedErroMinimo = new EmbedBuilder()
+            .setColor('#FF4C4C')
+            .setAuthor({
+                name: 'Por favor, forneça um tempo válido (0-21600 segundos).',
+                iconURL: 'http://bit.ly/4aIyY9j'
+            });
+      
+        return message.reply({ embeds: [embedErroMinimo] });
+      
     }
 
     try {
@@ -38,7 +55,14 @@ module.exports = {
       return message.channel.send({ embeds: [embed] });
     } catch (error) {
       console.error(error);
-      return message.reply('<:no:1122370713932795997> Ocorreu um erro ao tentar configurar o modo lento.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível configurar o modo lento devido a um erro.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };

@@ -15,11 +15,11 @@ function formatUptime(seconds) {
 module.exports = {
   name: 'stats',
   description: 'Exibe as estatísticas do bot.',
-  usage: '.stats',
+  usage: 'stats',
   permissions: 'Nenhuma',
   execute: async (message) => {
     try {
-      // Obtém o número de instalações diretas do bot
+      
       const installCount = message.client.application?.approximateUserInstallCount || 'Indisponível';
       const serverCount = message.client.guilds.cache.size;
       const uptime = formatUptime(process.uptime());
@@ -62,7 +62,14 @@ module.exports = {
       return message.reply({ embeds: [embed] });
     } catch (error) {
       console.error('[ERROR] Não foi possível obter as estatísticas:', error);
-      return message.reply(':x: Não foi possível recuperar as estatísticas do bot.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível recuperar as estatísticas do bot devido a um erro.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };
