@@ -33,7 +33,7 @@ module.exports = {
         .setTitle(`<:1000042962:1336123387164098631> ${command.name}`)
         .setDescription(command.description || 'Nenhuma descrição disponível.')
         .addFields(
-          { name: '<:1000042957:1336119362683408384> Uso', value: command.usage || 'Não especificado.', inline: false },
+          { name: '<:1000042956:1336119347973849180> Uso', value: command.usage || 'Não especificado.', inline: false },
           { name: '<:1000042960:1336120845881442365> Permissões Necessárias', value: command.permissions || 'Nenhuma', inline: false }
         )
         .setFooter({
