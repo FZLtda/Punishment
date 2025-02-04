@@ -63,12 +63,12 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('Estatísticas de Moderação')
-        .setColor('Blue')
+        .setColor('0xfe3838')
         .addFields(
-          { name: '<:1000043480:1336455409904517151> Total de Ações', value: `ﾠ ${totalActions.count || 0}`, inline: true },
-          { name: '<:1000043157:1336324220770062497> Ações por Tipo', value: typeStats || 'ﾠ Nenhuma ação registrada.', inline: true },
-          { name: '<:1000043165:1336327290446942280> Top Moderadores', value: moderatorStats || 'ﾠ Nenhuma ação registrada.', inline: false },
-          { name: '<:1000043158:1336324199202947144> Ações Recentes', value: recentStats || 'ﾠ Nenhuma ação registrada.', inline: false }
+          { name: '<:1000043480:1336455409904517151> Total de Ações', value: `${totalActions.count || 0}`, inline: true },
+          { name: '<:1000043157:1336324220770062497> Ações por Tipo', value: typeStats || 'Nenhuma ação registrada.', inline: true },
+          { name: '<:1000043165:1336327290446942280> Top Moderadores', value: moderatorStats || 'Nenhuma ação registrada.', inline: false },
+          { name: '<:1000043158:1336324199202947144> Ações Recentes', value: recentStats || 'Nenhuma ação registrada.', inline: false }
         )
         .setFooter({
           text: `${message.author.username}`,
