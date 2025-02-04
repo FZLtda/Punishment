@@ -12,11 +12,20 @@ if (!fs.existsSync(acceptedUsersPath)) {
 module.exports = {
   name: 'messageCreate',
   async execute(message, client) {
-    
     if (message.author.bot || !message.guild) return;
 
-    
+    const prefix = getPrefix(message.guild.id);
+    if (!message.content.startsWith(prefix)) return;
+
+    const args = message.content.slice(prefix.length).trim().split(/ +/);
+    const commandName = args.shift().toLowerCase();
+
+    const command = client.commands.get(commandName);
+    if (!command) return; 
+
     const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
+
+    
     if (!acceptedUsers.includes(message.author.id)) {
       const embed = {
         color: 0xfe3838,
@@ -50,19 +59,8 @@ module.exports = {
       return;
     }
 
-    
-    const prefix = getPrefix(message.guild.id);
-    if (!message.content.startsWith(prefix)) return;
-
    
-    const args = message.content.slice(prefix.length).trim().split(/ +/);
-    const commandName = args.shift().toLowerCase();
-
-    const command = client.commands.get(commandName);
-    if (!command) return;
-
     try {
-      
       await command.execute(message, args, { setPrefix, getPrefix });
     } catch (error) {
       console.error(`[ERROR] Erro ao executar o comando "${commandName}":`, error);
