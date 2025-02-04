@@ -11,7 +11,7 @@ module.exports = {
     const apiLatency = Math.round(message.client.ws.ping);
 
     const embed = new EmbedBuilder()
-      .setColor(0x00aaff)
+      .setColor(0xfe3838)
       .setTitle('🏓 Pong!')
       .setDescription(
         `<:1000042776:1335945378029240412> **Latência:** \`${latency}ms\`\n` +
