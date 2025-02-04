@@ -30,7 +30,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor(0x00ff00)
-        .setTitle(`<:1000042962:1336123387164098631> ${command.name}`)
+        .setTitle(`<:1000042965:1336131844718202942> ${command.name}`)
         .setDescription(command.description || 'Nenhuma descrição disponível.')
         .addFields(
           { name: '<:1000042956:1336119347973849180> Uso', value: command.usage || 'Não especificado.', inline: false },
