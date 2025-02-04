@@ -21,11 +21,10 @@ module.exports = {
     const commandName = args.shift().toLowerCase();
 
     const command = client.commands.get(commandName);
-    if (!command) return; 
+    if (!command) return;
 
     const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
 
-    
     if (!acceptedUsers.includes(message.author.id)) {
       const embed = {
         color: 0xfe3838,
@@ -55,11 +54,20 @@ module.exports = {
         ],
       };
 
-      await message.reply({ embeds: [embed], components: [row] });
+      const replyMessage = await message.reply({ embeds: [embed], components: [row] });
+
+      client.on('interactionCreate', async (interaction) => {
+        if (!interaction.isButton()) return;
+        if (interaction.customId === 'accept_terms' && interaction.user.id === message.author.id) {
+          setTimeout(() => {
+            replyMessage.delete().catch(() => null);
+          }, 5000);
+        }
+      });
+
       return;
     }
 
-   
     try {
       await command.execute(message, args, { setPrefix, getPrefix });
     } catch (error) {
