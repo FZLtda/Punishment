@@ -12,7 +12,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0xfe3838)
-      .setTitle('🏓 Pong!')
+      .setTitle('Pong!')
       .setDescription(
         `<:1000042776:1335945378029240412> **Latência:** \`${latency}ms\`\n` +
         `<:1000042776:1335945378029240412> **Latência da API:** \`${apiLatency}ms\``
