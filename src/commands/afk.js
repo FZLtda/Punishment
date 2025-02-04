@@ -5,7 +5,7 @@ module.exports = {
     name: 'afk',
     description: 'Define seu status como AFK (Away From Keyboard).',
     usage: 'afk [motivo]',
-    permissions: '[SendMessages]',
+    permissions: 'SendMessages',
     async execute(message, args) {
         const reason = args.join(' ') || 'Sem motivo especificado.';
 
