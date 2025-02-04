@@ -1,25 +1,30 @@
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
-    name: 'ping',
-    description: 'Mostra a latência do bot e a latência da API do Discord.',
-    async execute(message) {
-        const msg = await message.channel.send('Calculando...');
+  name: 'ping',
+  description: 'Exibe detalhes da conexão do bot com o Discord.',
+  usage: '.ping',
+  permissions: 'Nenhuma',
+  execute: async (message) => {
+    const msg = await message.reply('Calculando...');
+    const latency = msg.createdTimestamp - message.createdTimestamp;
+    const apiLatency = Math.round(message.client.ws.ping);
 
-        const botLatency = msg.createdTimestamp - message.createdTimestamp;
+    const embed = new EmbedBuilder()
+      .setColor(0x00aaff)
+      .setTitle('🏓 Pong!')
+      .setDescription(
+        `<:1000042776:1335945378029240412> **Latência:** \`${latency}ms\`\n` +
+        `<:1000042776:1335945378029240412> **Latência da API:** \`${apiLatency}ms\``
+      )
+      .setFooter({
+        text: `${message.client.user.username}`,
+        iconURL: message.client.user.displayAvatarURL(),
+      });
 
-        const apiLatency = message.client.ws.ping;
-
-        const embed = new EmbedBuilder()
-            .setTitle('🏓 Pong!')
-            .setColor('#00FF00')
-            .addFields(
-                { name: '📡 Latência do Bot', value: `${botLatency}ms`, inline: true },
-                { name: '🌐 Latência da API', value: `${apiLatency}ms`, inline: true },
-            )
-            .setFooter({ text: `${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
-            .setTimestamp();
-
-        await msg.edit({ content: '', embeds: [embed] });
-    },
+    return msg.edit({
+      content: null,
+      embeds: [embed],
+    });
+  },
 };
