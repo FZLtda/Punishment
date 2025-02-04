@@ -11,7 +11,7 @@ const loadCommands = async (client) => {
     .filter((file) => file.endsWith('.js'));
 
   for (const file of commandFiles) {
-    const command = require(`../src/commands/${file}`); // Caminho ajustado
+    const command = require(`../src/commands/${file}`);
     if (!command.name || !command.execute) {
       console.warn(`[WARN] O arquivo "${file}" não possui as propriedades "name" ou "execute". Ignorado.`);
       continue;

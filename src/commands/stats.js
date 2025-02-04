@@ -19,20 +19,18 @@ module.exports = {
   permissions: 'Nenhuma',
   execute: async (message) => {
     try {
-      
-      const installCount = message.client.application.approximateUserInstallCount || 'Indisponível';
-
-      
+      // Obtém o número de instalações diretas do bot
+      const installCount = message.client.application?.approximateUserInstallCount || 'Indisponível';
+      const serverCount = message.client.guilds.cache.size;
       const uptime = formatUptime(process.uptime());
 
-      
       const embed = new EmbedBuilder()
         .setColor(0x36393F)
         .setTitle(`${message.client.user.username} • Estatísticas`)
         .addFields(
           {
             name: '<:1000043167:1336329540502421576> Servidores',
-            value: `ﾠ \`${message.client.guilds.cache.size}\``,
+            value: `ﾠ \`${serverCount}\``,
             inline: true,
           },
           {
@@ -61,7 +59,6 @@ module.exports = {
           iconURL: message.client.user.displayAvatarURL(),
         });
 
-      
       return message.reply({ embeds: [embed] });
     } catch (error) {
       console.error('[ERROR] Não foi possível obter as estatísticas:', error);
