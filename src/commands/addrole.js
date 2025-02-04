@@ -4,7 +4,7 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: 'addrole',
   description: 'Adiciona um cargo a um membro.',
-  usage: '.addrole <@membro> <@cargo>',
+  usage: 'addrole <@membro> <@cargo>',
   permissions: ['ManageRoles'],
   async execute(message, args) {
     if (!message.member.permissions.has('ManageRoles')) {
