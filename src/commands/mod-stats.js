@@ -8,13 +8,13 @@ module.exports = {
   async execute(message) {
     if (!message.member.permissions.has('ManageGuild')) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'http://bit.ly/4aIyY9j'
-      });
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply({ embeds: [embedErroMinimo] });
     }
 
     try {
@@ -76,17 +76,17 @@ module.exports = {
         })
         .setTimestamp();
 
-      return message.channel.send({ embeds: [embed] });
+      return message.reply({ embeds: [embed] });
     } catch (error) {
       console.error(`[ERROR] Falha ao gerar estatísticas:`, error);
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não foi possível gerar as estatísticas de moderação devido a um erro.',
-          iconURL: 'http://bit.ly/4aIyY9j'
-      });
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply({ embeds: [embedErroMinimo] });
     }
   },
 };
