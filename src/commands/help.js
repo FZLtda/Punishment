@@ -29,7 +29,7 @@ module.exports = {
       }
 
       const embed = new EmbedBuilder()
-        .setColor(0x00ff00)
+        .setColor(0x36393F)
         .setTitle(`<:1000042965:1336131844718202942> ${command.name}`)
         .setDescription(command.description || 'Nenhuma descrição disponível.')
         .addFields(
@@ -46,7 +46,7 @@ module.exports = {
 
     
     const embed = new EmbedBuilder()
-      .setColor(0x00aaff)
+      .setColor(0x36393F)
       .setTitle('<:1000042770:1335945568136069233> Comandos Principais')
       .setDescription('Veja abaixo a lista de comandos disponíveis. Use `.help <comando>` para obter mais detalhes sobre um comando específico.')
       .addFields(
