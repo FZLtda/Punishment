@@ -67,7 +67,7 @@ module.exports = {
         .setColor('#00FF00')
         .setAuthor({
           name: 'A tradução foi iniciada! Estamos processando seu arquivo.',
-          iconURL: 'https://tenor.com/b0Zjq.gif',
+          iconURL: 'http://bit.ly/4aIyY9j',
         });
 
       await message.reply({ embeds: [embedSucesso] });
@@ -106,19 +106,21 @@ module.exports = {
       const filePath = `./translated_${attachment.name}`;
       fs.writeFileSync(filePath, translatedFileBuffer);
 
-      const embedArquivo = new EmbedBuilder()
-        .setColor('#00FF00')
-        .setAuthor({
-          name: 'A tradução foi concluída! Aqui está o arquivo traduzido:',
-          iconURL: 'https://bit.ly/42BEKHU',
+      setTimeout(async () => {
+        const embedArquivo = new EmbedBuilder()
+          .setColor('#00FF00')
+          .setAuthor({
+            name: 'A tradução foi concluída! Aqui está o arquivo traduzido:',
+            iconURL: 'http://bit.ly/4aIyY9j',
+          });
+
+        await message.channel.send({
+          embeds: [embedArquivo],
+          files: [filePath],
         });
 
-      await message.channel.send({
-        embeds: [embedArquivo],
-        files: [filePath],
-      });
-
-      fs.unlinkSync(filePath);
+        fs.unlinkSync(filePath);
+      }, 2000);
     } catch (error) {
       console.error('Erro ao traduzir o arquivo:', error);
 
