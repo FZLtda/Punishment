@@ -65,7 +65,7 @@ module.exports = {
         .setTitle('Estatísticas de Moderação')
         .setColor('Blue')
         .addFields(
-          { name: '<:1000042957:1336119362683408384> Total de Ações', value: `${totalActions.count || 0}`, inline: true },
+          { name: '<:1000043480:1336455409904517151> Total de Ações', value: `${totalActions.count || 0}`, inline: true },
           { name: '<:1000043157:1336324220770062497> Ações por Tipo', value: typeStats || 'Nenhuma ação registrada.', inline: true },
           { name: '<:1000043165:1336327290446942280> Top Moderadores', value: moderatorStats || 'Nenhuma ação registrada.', inline: false },
           { name: '<:1000043158:1336324199202947144> Ações Recentes', value: recentStats || 'Nenhuma ação registrada.', inline: false }
