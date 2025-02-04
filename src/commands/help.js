@@ -31,7 +31,7 @@ module.exports = {
         .setTitle(`<:1000042965:1336131844718202942> ${command.name}`)
         .setDescription(command.description || '`Nenhuma descrição disponível.`')
         .addFields(
-          { name: '<:1000042956:1336119347973849180> Uso', value: `\`${command.usage || 'Não especificado.'}\``, inline: false },
+          { name: '<:1000043157:1336324220770062497> Uso', value: `\`${command.usage || 'Não especificado.'}\``, inline: false },
           { name: '<:1000042960:1336120845881442365> Permissões Necessárias', value: `\`${command.permissions || 'Nenhuma'}\``, inline: false }
         )
         .setFooter({
@@ -44,7 +44,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0x36393F)
-      .setTitle('<:1000042770:1335945568136069233> Comandos Principais')
+      .setTitle('<:1000043167:1336329540502421576> Comandos Principais')
       .addFields(
         { name: 'help', value: '`Mostra a lista completa de comandos ou informações detalhadas sobre um comando.`', inline: true },
         { name: 'ping', value: '`Exibe os detalhes da conexão do bot.`', inline: true },
@@ -55,11 +55,11 @@ module.exports = {
       )
       .addFields(
         {
-          name: '<:1000042773:1335945498212696085> Ajuda',
+          name: '<:1000043159:1336324177900077076> Ajuda',
           value: 'Use `.help <comando>` para exibir mais informações sobre um comando.',
         },
         {
-          name: '<:1000042771:1335945525601505351> Suporte',
+          name: '<:1000043160:1336324162482081945> Suporte',
           value: 'Precisa de mais ajuda? [Clique aqui](https://discord.gg/SW4zKzAhQa)',
         }
       )
