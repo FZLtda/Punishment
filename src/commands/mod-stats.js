@@ -63,7 +63,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('Estatísticas de Moderação')
-        .setColor('0xfe3838')
+        .setColor('#fe3838')
         .addFields(
           { name: '<:1000043480:1336455409904517151> Total de Ações', value: `${totalActions.count || 0}`, inline: true },
           { name: '<:1000043157:1336324220770062497> Ações por Tipo', value: typeStats || 'Nenhuma ação registrada.', inline: true },
