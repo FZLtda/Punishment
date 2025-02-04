@@ -63,6 +63,15 @@ module.exports = {
         return message.reply({ embeds: [embedErro] });
       }
 
+      const embedSucesso = new EmbedBuilder()
+        .setColor('#00FF00')
+        .setAuthor({
+          name: 'A tradução foi iniciada! Estamos processando seu arquivo.',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+
+      await message.reply({ embeds: [embedSucesso] });
+
       let translationStatus;
       do {
         const statusResponse = await fetch(
@@ -97,15 +106,15 @@ module.exports = {
       const filePath = `./translated_${attachment.name}`;
       fs.writeFileSync(filePath, translatedFileBuffer);
 
-      const embedSucesso = new EmbedBuilder()
-        .setColor('#00FF00')
+      const embedFinal = new EmbedBuilder()
+        .setColor('#2ecc71')
         .setAuthor({
           name: 'A tradução foi concluída! Aqui está o arquivo traduzido:',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/42CxADe',
         });
 
-      await message.reply({
-        embeds: [embedSucesso],
+      await message.channel.send({
+        embeds: [embedFinal],
         files: [filePath],
       });
 
