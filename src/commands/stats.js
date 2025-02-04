@@ -19,27 +19,27 @@ module.exports = {
       .addFields(
         {
           name: '<:1000043167:1336329540502421576> Servidores',
-          value: `\`${message.client.guilds.cache.size}\``,
+          value: `ﾠ \`${message.client.guilds.cache.size}\``,
           inline: true,
         },
         {
           name: '<:1000043165:1336327290446942280> Instalações',
-          value: `\`${message.client.users.cache.size}\``,
+          value: `ﾠ \`${message.client.users.cache.size}\``,
           inline: true,
         },
         {
           name: '<:1000043168:1336330133086273566> Uso de Memória',
-          value: `\`${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB\``,
+          value: `ﾠ \`${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB\``,
           inline: true,
         },
         {
           name: '<:1000043158:1336324199202947144> Uptime',
-          value: `\`${days}d ${hours}h ${minutes}m ${seconds}s\``,
+          value: `ﾠ \`${days}d ${hours}h ${minutes}m ${seconds}s\``,
           inline: true,
         },
         {
           name: '<:1000043170:1336333421412225045> Plataforma',
-          value: `\`${os.platform()}\``,
+          value: `ﾠ \`${os.platform()}\``,
           inline: true,
         }
       )
