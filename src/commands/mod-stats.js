@@ -3,8 +3,9 @@ const db = require('../data/database');
 
 module.exports = {
   name: 'mod-stats',
-  description: 'Exibe estatísticas detalhadas de moderação no servidor.',
-  usage: '.mod-stats',
+  description: 'Exibe estatísticas da moderação no servidor.',
+  usage: 'mod-stats',
+  permissions: 'Gerenciar Servidor',
   async execute(message) {
     if (!message.member.permissions.has('ManageGuild')) {
       const embedErroMinimo = new EmbedBuilder()

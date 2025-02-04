@@ -54,11 +54,11 @@ module.exports = {
       .setColor(0x36393F)
       .setTitle('<:1000043167:1336329540502421576> Comandos Principais')
       .addFields(
-        { name: 'help', value: '`Mostra a lista completa de comandos ou informações detalhadas sobre um comando.`', inline: true },
+        { name: 'help', value: '`Exibe informações detalhadas sobre os comandos.`', inline: true },
         { name: 'ping', value: '`Exibe os detalhes da conexão do bot.`', inline: true },
         { name: 'privacy', value: '`Exibe a política de privacidade.`', inline: true },
-        { name: 'shard', value: '`Informações sobre o shard.`', inline: true },
-        { name: 'stats', value: '`Mostra as estatísticas do bot.`', inline: true },
+        { name: 'mod-stats', value: '`Exibe estatísticas da moderação no servidor.`', inline: true },
+        { name: 'stats', value: '`Exibe as estatísticas do bot.`', inline: true },
         { name: 'undo', value: '`Desfaz o último comando executado.`', inline: true }
       )
       .addFields(
