@@ -45,7 +45,6 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(0x36393F)
       .setTitle('<:1000042770:1335945568136069233> Comandos Principais')
-      .setDescription('Veja abaixo a lista de comandos disponíveis. Use `.help <comando>` para obter mais detalhes sobre um comando específico.')
       .addFields(
         { name: 'help', value: '`Mostra a lista completa de comandos ou informações detalhadas sobre um comando.`', inline: true },
         { name: 'ping', value: '`Exibe os detalhes da conexão do bot.`', inline: true },
@@ -57,11 +56,11 @@ module.exports = {
       .addFields(
         {
           name: '<:1000042773:1335945498212696085> Ajuda',
-          value: 'Use `.help <comando>` para obter mais informações sobre um comando específico.',
+          value: 'Use `.help <comando>` para exibir mais informações sobre um comando.',
         },
         {
           name: '<:1000042771:1335945525601505351> Suporte',
-          value: 'Precisa de mais ajuda? [Clique aqui](https://discord.gg/exemplo)',
+          value: 'Precisa de mais ajuda? [Clique aqui](https://discord.gg/SW4zKzAhQa)',
         }
       )
       .setFooter({
