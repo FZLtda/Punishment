@@ -19,7 +19,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0x00aaff)
-      .setTitle('<:1000043032:1336188046533591062> Política de Privacidade')
+      .setTitle('Política de Privacidade')
       .setDescription(
         '**Ao utilizar o Punishment, você concorda com os seguintes termos:**\n\n' +
           '**1. Informações Coletadas:**\n' +
