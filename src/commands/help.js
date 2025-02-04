@@ -8,15 +8,15 @@ module.exports = {
   execute: async (message, args) => {
     const commands = message.client.commands;
 
-    // Verifica se os comandos estão carregados corretamente
+    
     if (!commands || commands.size === 0) {
       return message.reply({
-        content: '⚠️ Os comandos não foram carregados corretamente. Verifique a configuração do bot.',
+        content: '<:1000042883:1336044555354771638> Os comandos não foram carregados corretamente. Verifique a configuração do bot.',
         ephemeral: true,
       });
     }
 
-    // Verifica se o usuário solicitou detalhes de um comando específico
+    
     if (args.length > 0) {
       const commandName = args[0].toLowerCase();
       const command = commands.get(commandName);
