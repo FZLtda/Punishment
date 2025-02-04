@@ -6,7 +6,6 @@ const fs = require('fs');
 module.exports = {
   name: 'translatefile',
   description: 'Traduz o conteúdo de um arquivo para o idioma especificado.',
-  usage: 'translatefile [idioma] [documento]',
   async execute(message, args) {
     if (!message.attachments.first()) {
       const embedErro = new EmbedBuilder()
@@ -15,7 +14,6 @@ module.exports = {
           name: 'Você precisa enviar um arquivo para tradução junto com este comando.',
           iconURL: 'http://bit.ly/4aIyY9j',
         });
-
       return message.reply({ embeds: [embedErro] });
     }
 
@@ -26,7 +24,6 @@ module.exports = {
           name: 'Você precisa especificar o idioma de destino. Exemplo: `.translatefile en`',
           iconURL: 'http://bit.ly/4aIyY9j',
         });
-
       return message.reply({ embeds: [embedErro] });
     }
 
@@ -37,18 +34,22 @@ module.exports = {
       const fileResponse = await fetch(attachment.url);
       const fileBuffer = await fileResponse.buffer();
 
+      const apiUrl = process.env.API_URL_DOCUMENT;
+      const apiKey = process.env.DEEPL_API_KEY;
+
       const form = new FormData();
-      form.append('auth_key', process.env.DEEPL_API_KEY);
+      form.append('auth_key', apiKey);
       form.append('target_lang', targetLanguage);
       form.append('file', fileBuffer, attachment.name);
 
-      const uploadResponse = await fetch(
-        `${process.env.DEEPL_API_URL}/document`,
-        {
-          method: 'POST',
-          body: form,
-        }
-      );
+      const uploadResponse = await fetch(`${apiUrl}/v2/document`, {
+        method: 'POST',
+        body: form,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error(`Erro na solicitação: ${uploadResponse.statusText}`);
+      }
 
       const uploadData = await uploadResponse.json();
 
@@ -59,15 +60,19 @@ module.exports = {
             name: 'Ocorreu um erro ao enviar o arquivo para tradução.',
             iconURL: 'http://bit.ly/4aIyY9j',
           });
-
         return message.reply({ embeds: [embedErro] });
       }
 
       let translationStatus;
       do {
         const statusResponse = await fetch(
-          `${process.env.DEEPL_API_URL}/document/${uploadData.document_id}?auth_key=${process.env.DEEPL_API_KEY}&document_key=${uploadData.document_key}`
+          `${apiUrl}/v2/document/${uploadData.document_id}?auth_key=${apiKey}&document_key=${uploadData.document_key}`
         );
+
+        if (!statusResponse.ok) {
+          throw new Error(`Erro ao verificar status: ${statusResponse.statusText}`);
+        }
+
         translationStatus = await statusResponse.json();
 
         if (translationStatus.status === 'error') {
@@ -80,8 +85,13 @@ module.exports = {
       } while (translationStatus.status !== 'done');
 
       const translatedFileResponse = await fetch(
-        `${process.env.DEEPL_API_URL}/document/${uploadData.document_id}/result?auth_key=${process.env.DEEPL_API_KEY}&document_key=${uploadData.document_key}`
+        `${apiUrl}/v2/document/${uploadData.document_id}/result?auth_key=${apiKey}&document_key=${uploadData.document_key}`
       );
+
+      if (!translatedFileResponse.ok) {
+        throw new Error(`Erro ao baixar arquivo traduzido: ${translatedFileResponse.statusText}`);
+      }
+
       const translatedFileBuffer = await translatedFileResponse.buffer();
 
       const filePath = `./translated_${attachment.name}`;
@@ -106,7 +116,7 @@ module.exports = {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
-          name: 'Não foi possível traduzir o arquivo.',
+          name: 'Não foi possível traduzir o arquivo. Verifique se o arquivo é suportado.',
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 

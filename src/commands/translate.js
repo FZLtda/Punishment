@@ -4,13 +4,13 @@ const fetch = require('node-fetch');
 module.exports = {
   name: 'translate',
   description: 'Traduz um texto para o idioma especificado.',
-  usage: 'translate [idioma] [texto]',
+  usage: 'translate [idioma_destino] [texto]',
   async execute(message, args) {
     if (args.length < 2) {
       const embedErroMinimo = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
-          name: 'Uso incorreto! O comando correto é: `.translate [idioma] [texto]`.\nExemplo: `.translate en Olá, como vai?`',
+          name: 'Uso incorreto! O comando correto é: `.translate [idioma_destino] [texto]`.\nExemplo: `.translate en Olá, como vai?`',
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
@@ -21,12 +21,11 @@ module.exports = {
     const textToTranslate = args.join(' ');
 
     try {
-      
-      const apiUrl = process.env.DEEPL_API_URL;
+      const apiUrl = process.env.API_URL_TRANSLATE;
       const apiKey = process.env.DEEPL_API_KEY;
 
       const response = await fetch(
-        `${apiUrl}?auth_key=${apiKey}&text=${encodeURIComponent(textToTranslate)}&target_lang=${targetLanguage}`
+        `${apiUrl}/v2/translate?auth_key=${apiKey}&text=${encodeURIComponent(textToTranslate)}&target_lang=${targetLanguage}`
       );
 
       const data = await response.json();
