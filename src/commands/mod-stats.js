@@ -62,13 +62,13 @@ module.exports = {
       }
 
       const embed = new EmbedBuilder()
-        .setTitle('<:emoji_48:1332357299339005974> Estatísticas de Moderação')
+        .setTitle('Estatísticas de Moderação')
         .setColor('Blue')
         .addFields(
-          { name: '<:emoji_49:1332357944888524850> | Total de Ações', value: `${totalActions.count || 0}`, inline: true },
-          { name: '<:emoji_49:1332356624869757058> | Ações por Tipo', value: typeStats || 'Nenhuma ação registrada.', inline: true },
-          { name: '<:emoji_47:1323358397684387900> | Top Moderadores', value: moderatorStats || 'Nenhuma ação registrada.', inline: false },
-          { name: '<:recente:1332355743592091780> | Ações Recentes', value: recentStats || 'Nenhuma ação registrada.', inline: false }
+          { name: '<:1000042957:1336119362683408384> Total de Ações', value: `${totalActions.count || 0}`, inline: true },
+          { name: '<:1000043157:1336324220770062497> Ações por Tipo', value: typeStats || 'Nenhuma ação registrada.', inline: true },
+          { name: '<:1000043165:1336327290446942280> Top Moderadores', value: moderatorStats || 'Nenhuma ação registrada.', inline: false },
+          { name: '<:1000043158:1336324199202947144> Ações Recentes', value: recentStats || 'Nenhuma ação registrada.', inline: false }
         )
         .setFooter({
           text: `${message.author.username}`,
