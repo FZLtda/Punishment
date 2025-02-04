@@ -61,7 +61,7 @@ module.exports = {
         if (interaction.customId === 'accept_terms' && interaction.user.id === message.author.id) {
           setTimeout(() => {
             replyMessage.delete().catch(() => null);
-          }, 5000);
+          }, 2000);
         }
       });
 
