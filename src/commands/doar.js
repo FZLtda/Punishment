@@ -55,17 +55,22 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setColor('#FFD700')
-                .setTitle('💖 Doação Iniciada!')
+                .setTitle('<:1000043188:1336358026306912359> Doação Iniciada!')
                 .setDescription(
-                    `✨ **Obrigado pelo apoio, ${message.author}!**\n\n` +
-                    `🎉 Você está ajudando o **Projeto Punishment** a se manter ativo e a crescer.\n\n` +
-                    `💸 **Valor da Doação:** R$${(valor / 100).toFixed(2)}\n\n` +
-                    `🔗 **Finalize sua doação clicando no botão abaixo:**\n` +
-                    `Seu apoio faz toda a diferença! 🙌`
+                    `<:1000043196:1336360581934088193> **Obrigado pelo apoio, ${message.author}!**\n\n` +
+                    `<:1000043192:1336359444006703144> Você está ajudando o **Projeto Punishment** a se manter ativo e a crescer.\n\n` +
+                    `<:1000043188:1336358026306912359> **Valor da Doação:** R$${(valor / 100).toFixed(2)}\n\n` +
+                    `<:1000043190:1336358527899406369> **Finalize sua doação clicando no botão abaixo:**\n` +
+                    `Seu apoio faz toda a diferença!`
                 )
                 .setFooter({ text: 'Seu apoio ajuda a me manter ativo!' });
 
-            await message.reply({ embeds: [embed], components: [row] });
+            const donationMessage = await message.reply({ embeds: [embed], components: [row] });
+
+            
+            setTimeout(() => {
+                donationMessage.delete().catch(console.error);
+            }, 120000); // 120000ms = 2 minutos
 
         } catch (error) {
             console.error('Erro ao criar a sessão de pagamento:', error);
