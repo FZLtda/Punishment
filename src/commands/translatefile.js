@@ -63,15 +63,6 @@ module.exports = {
         return message.reply({ embeds: [embedErro] });
       }
 
-      const embedSucesso = new EmbedBuilder()
-        .setColor('#00FF00')
-        .setAuthor({
-          name: 'A tradução foi iniciada! Estamos processando seu arquivo.',
-          iconURL: 'http://bit.ly/4aIyY9j',
-        });
-
-      await message.reply({ embeds: [embedSucesso] });
-
       let translationStatus;
       do {
         const statusResponse = await fetch(
@@ -106,21 +97,22 @@ module.exports = {
       const filePath = `./translated_${attachment.name}`;
       fs.writeFileSync(filePath, translatedFileBuffer);
 
-      setTimeout(async () => {
-        const embedArquivo = new EmbedBuilder()
-          .setColor('#00FF00')
-          .setAuthor({
-            name: 'A tradução foi concluída! Aqui está o arquivo traduzido:',
-            iconURL: 'http://bit.ly/4aIyY9j',
-          });
-
-        await message.channel.send({
-          embeds: [embedArquivo],
-          files: [filePath],
+      
+      const embedSucesso = new EmbedBuilder()
+        .setColor('#00FF00')
+        .setAuthor({
+          name: 'A tradução foi concluída! Enviando o arquivo traduzido...',
+          iconURL: 'https://bit.ly/3Q2Q8F1',
         });
 
-        fs.unlinkSync(filePath);
-      }, 2000);
+      await message.reply({ embeds: [embedSucesso] });
+
+      
+      await message.channel.send({
+        files: [filePath],
+      });
+
+      fs.unlinkSync(filePath);
     } catch (error) {
       console.error('Erro ao traduzir o arquivo:', error);
 
