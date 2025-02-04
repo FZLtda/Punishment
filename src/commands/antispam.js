@@ -11,7 +11,8 @@ const messageCounts = new Map();
 module.exports = {
   name: 'antispam',
   description: 'Ativa ou desativa o sistema de bloqueio de spam no servidor.',
-  usage: '.antispam [on/off]',
+  usage: 'antispam [on/off]',
+  permissions: 'ManageMessages',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
       const embedErroMinimo = new EmbedBuilder()

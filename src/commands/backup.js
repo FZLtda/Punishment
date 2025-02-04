@@ -10,6 +10,8 @@ function serializeBigInt(key, value) {
 module.exports = {
   name: 'backup',
   description: 'Cria um backup completo do servidor, incluindo canais, cargos e permissões.',
+  usage: 'backup',
+  permissions: 'ADMINISTRATOR',
   async execute(message) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
       const embedErroMinimo = new EmbedBuilder()

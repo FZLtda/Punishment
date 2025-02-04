@@ -3,6 +3,8 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: 'avatar',
   description: 'Exibe o avatar de um usuário.',
+  usage: 'avatar [<@usuário>]',
+  permissions: 'SendMessages',
   async execute(message, args) {
     const usuario = message.mentions.users.first() || message.author;
 

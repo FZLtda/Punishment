@@ -9,7 +9,8 @@ if (!fs.existsSync(path)) {
 module.exports = {
   name: 'antilink',
   description: 'Ativa ou desativa o sistema de bloqueio de links no servidor.',
-  usage: '.antilink [on/off]',
+  usage: 'antilink [on/off]',
+  permissions: 'ManageMessages',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
       const embedErroMinimo = new EmbedBuilder()
