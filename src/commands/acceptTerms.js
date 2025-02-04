@@ -16,7 +16,7 @@ module.exports = {
 
     if (acceptedUsers.includes(interaction.user.id)) {
       return interaction.reply({
-        content: 'Você já aceitou os termos anteriormente.',
+        content: '<:1000042883:1336044555354771638> Você já aceitou os termos anteriormente.',
         ephemeral: true,
       });
     }
@@ -25,7 +25,7 @@ module.exports = {
     fs.writeFileSync(acceptedUsersPath, JSON.stringify(acceptedUsers, null, 4));
 
     return interaction.reply({
-      content: '✅ Obrigado por aceitar nossos termos! Agora você pode usar o Punishment.',
+      content: '<:1000042885:1336044571125354496> Termos aceitos! Agora você pode usar o Punishment.',
       ephemeral: true,
     });
   },
