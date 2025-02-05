@@ -5,7 +5,7 @@ module.exports = {
   name: 'ban',
   description: 'Bane um membro do servidor.',
   usage: 'ban <@usuário> [motivo]',
-  permissions: 'BanMembers',
+  permissions: 'Banir Membros',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
       const embedErroMinimo = new EmbedBuilder()

@@ -16,6 +16,8 @@ const colorMapping = {
 module.exports = {
     name: 'createrole',
     description: 'Cria um cargo no servidor com configurações personalizadas.',
+    usage: 'createrole <nome> [cor] [permissões]',
+    permissions: 'Gerenciar Cargos',
     async execute(message, args) {
         if (!message.member.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
             const embedErroMinimo = new EmbedBuilder()

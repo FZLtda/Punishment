@@ -3,6 +3,8 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = {
     name: 'getprefix',
     description: 'Exibe o prefixo atual do bot neste servidor.',
+    usage: 'getprefix',
+    permissions: 'Gerenciar Servidor',
     async execute(message, args, { getPrefix }) {
         const currentPrefix = getPrefix(message.guild.id);
 

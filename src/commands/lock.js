@@ -4,6 +4,8 @@ const { logModerationAction } = require('../utils/moderationUtils');
 module.exports = {
   name: 'lock',
   description: 'Bloqueia o envio de mensagens em um canal.',
+  usage: 'lock [canal]',
+  permissions: 'Gerenciar Canais',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
       const embedErroMinimo = new EmbedBuilder()

@@ -4,6 +4,8 @@ const { logModerationAction } = require('../utils/moderationUtils');
 module.exports = {
   name: 'kick',
   description: 'Expulsa um membro do servidor.',
+  usage: 'kick <@usuário> [motivo]',
+  permissions: 'Expulsar Membros',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
       const embedErroMinimo = new EmbedBuilder()

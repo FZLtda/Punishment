@@ -4,6 +4,8 @@ const fetch = require('node-fetch');
 module.exports = {
   name: 'correct',
   description: 'Corrige erros em um texto utilizando a inteligência da DeepL.',
+  usage: 'correct <texto>',
+  permissions: 'Nenhuma',
   async execute(message, args) {
     if (args.length === 0) {
       const embedErroMinimo = new EmbedBuilder()

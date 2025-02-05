@@ -5,7 +5,8 @@ require('dotenv').config();
 module.exports = {
   name: 'gif',
   description: 'Busca e envia um GIF relacionado ao termo fornecido.',
-  usage: '!gif [termo]',
+  usage: 'gif <termo>',
+  permissions: 'Nenhuma',
   execute: async (message, args) => {
     const query = args.join(' ');
 

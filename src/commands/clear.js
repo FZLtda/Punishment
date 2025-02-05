@@ -4,6 +4,8 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: 'clear',
   description: 'Apaga mensagens do chat, com suporte para apagar mensagens de um usuário específico.',
+  usage: 'clear <quantidade>',
+  permissions: 'Gerenciar Mensagens',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
       const embedErroMinimo = new EmbedBuilder()

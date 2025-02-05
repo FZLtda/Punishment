@@ -6,6 +6,8 @@ const fs = require('fs');
 module.exports = {
   name: 'translatefile',
   description: 'Traduz o conteúdo de um arquivo para o idioma especificado.',
+  usage: 'translatefile <idioma_destino> <arquivo>',
+  permissions: 'Nenhuma',
   async execute(message, args) {
     if (!message.attachments.first()) {
       const embedErro = new EmbedBuilder()

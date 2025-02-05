@@ -6,8 +6,9 @@ module.exports = {
   name: 'emoji',
   description: 'Adiciona ou copia emojis para o servidor.',
   usage: '<add|copy> <emoji/link> [nome]',
+  permissions: 'Gerenciar Servidor',
   async execute(message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageEmojisAndStickers)) {
+    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageGuildExpressions)) {
       const embedErroMinimo = new EmbedBuilder()
       .setColor('#FF4C4C')
       .setAuthor({

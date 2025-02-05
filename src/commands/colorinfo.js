@@ -4,7 +4,8 @@ const Color = require('color');
 module.exports = {
   name: 'colorinfo',
   description: 'Exibe informações sobre uma cor (nome ou código hexadecimal).',
-  usage: '.colorinfo [nome da cor | código hexadecimal]',
+  usage: 'colorinfo <nome da cor | código hexadecimal>',
+  permissions: 'Nenhuma',
   async execute(message, args) {
     if (!args[0]) {
       const embedErroMinimo = new EmbedBuilder()
