@@ -11,9 +11,8 @@ module.exports = {
     try {
       const avatarEmbed = new EmbedBuilder()
         .setTitle(`Avatar de ${usuario.displayName}`)
-        .setDescription(`[Clique aqui para baixar o avatar](${usuario.displayAvatarURL({ dynamic: true, size: 1024 })})`)
         .setImage(usuario.displayAvatarURL({ dynamic: true, size: 1024 }))
-        .setColor('Blue')
+        .setColor('#f33838')
         .setFooter({
           text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
