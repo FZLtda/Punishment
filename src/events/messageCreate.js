@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { getPrefix, setPrefix } = require('../utils/prefixes');
 
-const acceptedUsersPath = path.resolve(__dirname, '../../data/acceptedUsers.json');
+const acceptedUsersPath = path.resolve(__dirname, '../data/acceptedUsers.json');
 
 if (!fs.existsSync(acceptedUsersPath)) {
   fs.mkdirSync(path.dirname(acceptedUsersPath), { recursive: true });
