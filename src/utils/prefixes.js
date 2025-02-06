@@ -8,15 +8,16 @@ if (!fs.existsSync(prefixesPath)) {
   fs.writeFileSync(prefixesPath, JSON.stringify({}));
 }
 
-const getPrefix = (guildId) => {
+function getPrefix(guildId) {
   const prefixes = JSON.parse(fs.readFileSync(prefixesPath, 'utf8'));
   return prefixes[guildId] || '.';
-};
+}
 
-const setPrefix = (guildId, newPrefix) => {
+function setPrefix(guildId, newPrefix) {
   const prefixes = JSON.parse(fs.readFileSync(prefixesPath, 'utf8'));
   prefixes[guildId] = newPrefix;
   fs.writeFileSync(prefixesPath, JSON.stringify(prefixes, null, 4));
-};
+  console.log(`[INFO] Prefixo atualizado para o servidor ${guildId}: ${newPrefix}`);
+}
 
 module.exports = { getPrefix, setPrefix };

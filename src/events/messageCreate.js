@@ -2,10 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const { getPrefix, setPrefix } = require('../utils/prefixes');
 
-// Verifica apenas se o arquivo acceptedUsers.json existe e o cria, caso contrário
+
 const acceptedUsersPath = path.resolve(__dirname, '../data/acceptedUsers.json');
 if (!fs.existsSync(acceptedUsersPath)) {
-  fs.writeFileSync(acceptedUsersPath, JSON.stringify([]), { flag: 'wx' }); // Cria apenas se não existir
+  fs.writeFileSync(acceptedUsersPath, JSON.stringify([]), { flag: 'wx' });
 }
 
 module.exports = {
@@ -55,12 +55,12 @@ module.exports = {
 
       const replyMessage = await message.reply({ embeds: [embed], components: [row] });
 
-      // Listener para interação do botão
+      
       client.on('interactionCreate', async (interaction) => {
         if (!interaction.isButton()) return;
         if (interaction.customId === 'accept_terms' && interaction.user.id === message.author.id) {
           setTimeout(() => {
-            replyMessage.delete().catch(() => null); // Apaga a mensagem após 2 segundos
+            replyMessage.delete().catch(() => null);
           }, 2000);
         }
       });

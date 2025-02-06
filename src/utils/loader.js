@@ -1,48 +1,54 @@
 const fs = require('fs');
 const path = require('path');
+const logger = require('./logger.js');
 
-/**
- * Carrega os comandos da pasta "commands" e os registra no client.
- * @param {Client} client
- */
-const loadCommands = async (client) => {
-  const commandFiles = fs
-    .readdirSync(path.join(__dirname, '../src/commands'))
-    .filter((file) => file.endsWith('.js'));
+function loadCommands(client) {
+  const commandsPath = path.join(__dirname, '../commands');
+  if (!fs.existsSync(commandsPath)) {
+    logger.warn(`[WARNING] Diretório 'commands' não encontrado em ${commandsPath}.`);
+    return;
+  }
 
+  const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
   for (const file of commandFiles) {
-    const command = require(`../src/commands/${file}`);
+    const command = require(path.join(commandsPath, file));
     if (!command.name || !command.execute) {
-      console.warn(`[WARN] O arquivo "${file}" não possui as propriedades "name" ou "execute". Ignorado.`);
+      logger.warn(`[WARNING] Comando ignorado: ${file} (ausência de 'name' ou 'execute').`);
       continue;
     }
     client.commands.set(command.name, command);
-    console.log(`[INFO] Comando "${command.name}" carregado com sucesso.`);
+    logger.info(`[INFO] Comando carregado: ${command.name}`);
   }
-};
+}
 
-/**
- * Carrega os eventos da pasta "events" e os registra no client.
- * @param {Client} client - O cliente do bot do Discord.
- */
-const loadEvents = async (client) => {
-  const eventFiles = fs
-    .readdirSync(path.join(__dirname, '../src/events'))
-    .filter((file) => file.endsWith('.js'));
+function loadEvents(client) {
+  const eventsPath = path.join(__dirname, '../events');
+  if (!fs.existsSync(eventsPath)) {
+    logger.warn(`[WARNING] Diretório 'events' não encontrado em ${eventsPath}.`);
+    return;
+  }
 
+  const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
   for (const file of eventFiles) {
-    const event = require(`../src/events/${file}`);
+    const event = require(path.join(eventsPath, file));
     if (!event.name || !event.execute) {
-      console.warn(`[WARN] O arquivo "${file}" não possui as propriedades "name" ou "execute". Ignorado.`);
+      logger.warn(`[WARNING] Evento ignorado: ${file} (ausência de 'name' ou 'execute').`);
       continue;
     }
+
     if (event.once) {
-      client.once(event.name, (...args) => event.execute(...args, client));
+      client.once(event.name, (...args) => {
+        logger.info(`[EVENTO ONCE] Evento '${event.name}' disparado.`);
+        event.execute(...args, client);
+      });
     } else {
-      client.on(event.name, (...args) => event.execute(...args, client));
+      client.on(event.name, (...args) => {
+        logger.info(`[EVENTO] Evento '${event.name}' disparado.`);
+        event.execute(...args, client);
+      });
     }
-    console.log(`[INFO] Evento "${event.name}" carregado com sucesso.`);
+    logger.info(`[INFO] Evento carregado: ${event.name}`);
   }
-};
+}
 
 module.exports = { loadCommands, loadEvents };
