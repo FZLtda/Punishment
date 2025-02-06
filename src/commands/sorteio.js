@@ -1,61 +1,108 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const db = require('../data/sorteios');
-const { v4: uuidv4 } = require('uuid');
-const { finalizarSorteio } = require('../utils/finalizarSorteio');
 
 module.exports = {
-    name: 'sorteio',
-    description: 'Gerencia sorteios no servidor.',
-    usage: '.sorteio iniciar <tempo> <prêmio>',
-    permissions: 'Gerenciar Servidor',
-    async execute(message, args) {
-        if (!message.member.permissions.has('ManageGuild')) {
-            const embedErro = new EmbedBuilder()
-                .setColor('#FF4C4C')
-                .setAuthor({
-                    name: 'Você não tem permissão para iniciar um sorteio.',
-                    iconURL: 'http://bit.ly/4aIyY9j',
-                });
+  name: 'sorteio',
+  description: 'Inicia um sorteio no servidor.',
+  async execute(message, args) {
+    if (!message.member.permissions.has('ManageGuild')) {
+      const embedErro = new EmbedBuilder()
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Você não tem permissão para iniciar sorteios.',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
 
-            return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro] });
+    }
+
+    const premio = args.join(' ');
+    if (!premio) {
+      const embedErro = new EmbedBuilder()
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Você precisa especificar um prêmio para o sorteio.',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+
+      return message.reply({ embeds: [embedErro] });
+    }
+
+    const sorteioId = `sorteio-${Date.now()}`;
+    db[sorteioId] = {
+      premio,
+      participantes: [],
+    };
+
+    const embed = new EmbedBuilder()
+      .setColor('#FFD700')
+      .setTitle('🎉 Novo Sorteio!')
+      .setDescription(`🎁 **Prêmio:** ${premio}\n🎟️ Clique no botão para participar do sorteio!`)
+      .setFooter({ text: `ID do Sorteio: ${sorteioId}` })
+      .setTimestamp();
+
+    const row = new ActionRowBuilder()
+      .addComponents(
+        new ButtonBuilder()
+          .setCustomId(`participar-${sorteioId}`)
+          .setLabel('Participar')
+          .setStyle(ButtonStyle.Success),
+        new ButtonBuilder()
+          .setCustomId(`ver-participantes-${sorteioId}`)
+          .setLabel('0 Participantes')
+          .setStyle(ButtonStyle.Secondary)
+          .setDisabled(true),
+      );
+
+    const sorteioMessage = await message.reply({ embeds: [embed], components: [row] });
+
+    const collector = sorteioMessage.createMessageComponentCollector({ time: 24 * 60 * 60 * 1000 });
+
+    collector.on('collect', async (interaction) => {
+      if (!interaction.isButton()) return;
+
+      const [action, id] = interaction.customId.split('-');
+
+      // Verifica se o sorteio existe
+      if (!db[id]) {
+        return interaction.reply({
+          content: 'Sorteio não encontrado. Pode ter sido finalizado.',
+          ephemeral: true,
+        });
+      }
+
+      if (action === 'participar') {
+        const participantes = db[id].participantes;
+
+        if (participantes.includes(interaction.user.id)) {
+          return interaction.reply({
+            content: 'Você já está participando deste sorteio!',
+            ephemeral: true,
+          });
         }
 
-        const action = args[0]?.toLowerCase();
-        if (action !== 'iniciar' || args.length < 3) {
-            const embedErro = new EmbedBuilder()
-                .setColor('#FF4C4C')
-                .setAuthor({
-                    name: 'Uso incorreto! Exemplo: `.sorteio iniciar 10 Gift Card R$50`',
-                    iconURL: 'http://bit.ly/4aIyY9j',
-                });
+        participantes.push(interaction.user.id);
 
-            return message.reply({ embeds: [embedErro] });
-        }
+        const updatedRow = new ActionRowBuilder()
+          .addComponents(
+            new ButtonBuilder()
+              .setCustomId(`participar-${id}`)
+              .setLabel('Participar')
+              .setStyle(ButtonStyle.Success),
+            new ButtonBuilder()
+              .setCustomId(`ver-participantes-${id}`)
+              .setLabel(`${participantes.length} Participantes`)
+              .setStyle(ButtonStyle.Secondary)
+              .setDisabled(true),
+          );
 
-        const tempo = parseInt(args[1]) * 60000;
-        const premio = args.slice(2).join(' ');
-        const sorteioID = uuidv4();
-        const criadoEm = Date.now();
-        const finalizaEm = criadoEm + tempo;
+        await sorteioMessage.edit({ components: [updatedRow] });
 
-        db.run(
-            `INSERT INTO sorteios (id, premio, criado_em, finaliza_em, participantes) VALUES (?, ?, ?, ?, ?)`,
-            [sorteioID, premio, criadoEm, finalizaEm, JSON.stringify([])]
-        );
-
-        const embed = new EmbedBuilder()
-            .setColor('#FFD700')
-            .setTitle('🎉 Novo Sorteio Iniciado!')
-            .setDescription(`🎁 **Prêmio:** \`${premio}\`\n⏳ **Termina em:** <t:${Math.floor(finalizaEm / 1000)}:R>`)
-            .setFooter({ text: 'Clique no botão abaixo para participar!' });
-
-        const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder().setCustomId(`participar_${sorteioID}`).setLabel('Participar').setStyle(ButtonStyle.Success),
-            new ButtonBuilder().setCustomId(`ver_${sorteioID}`).setLabel('👥 Participantes').setStyle(ButtonStyle.Secondary)
-        );
-
-        await message.reply({ embeds: [embed], components: [row] });
-
-        setTimeout(() => finalizarSorteio(sorteioID, message.channel), tempo);
-    },
+        return interaction.reply({
+          content: 'Você entrou no sorteio com sucesso!',
+          ephemeral: true,
+        });
+      }
+    });
+  },
 };
