@@ -3,7 +3,7 @@ const path = require('path');
 
 /**
  * Carrega os comandos da pasta "commands" e os registra no client.
- * @param {Client} client - O cliente do bot do Discord.
+ * @param {Client} client
  */
 const loadCommands = async (client) => {
   const commandFiles = fs
