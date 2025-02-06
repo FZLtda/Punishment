@@ -21,21 +21,26 @@ client.slashCommands = new Collection();
 
 console.log('[DEBUG] Coleções de comandos e slashCommands inicializadas.');
 
+const dataPath = path.resolve(__dirname, './src/data');
+const prefixesPath = path.join(dataPath, 'prefixes.json');
+const acceptedUsersPath = path.join(dataPath, 'acceptedUsers.json');
 
-const prefixesPath = path.resolve(__dirname, './data/prefixes.json');
-const acceptedUsersPath = path.resolve(__dirname, './data/acceptedUsers.json');
+const initializeFile = (filePath, defaultData) => {
 
-if (!fs.existsSync(prefixesPath)) {
-  fs.mkdirSync(path.dirname(prefixesPath), { recursive: true });
-  fs.writeFileSync(prefixesPath, JSON.stringify({}));
-  console.log('[INFO] Arquivo prefixes.json criado.');
-}
+  if (!fs.existsSync(filePath)) {
+  
+    const dirPath = path.dirname(filePath);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+      console.log(`[INFO] Pasta criada: ${dirPath}`);
+    }
+    fs.writeFileSync(filePath, JSON.stringify(defaultData, null, 4));
+    console.log(`[INFO] Arquivo criado: ${filePath}`);
+  }
+};
 
-if (!fs.existsSync(acceptedUsersPath)) {
-  fs.mkdirSync(path.dirname(acceptedUsersPath), { recursive: true });
-  fs.writeFileSync(acceptedUsersPath, JSON.stringify([]));
-  console.log('[INFO] Arquivo acceptedUsers.json criado.');
-}
+initializeFile(prefixesPath, {});
+initializeFile(acceptedUsersPath, []);
 
 const getPrefix = (guildId) => {
   const prefixes = JSON.parse(fs.readFileSync(prefixesPath, 'utf8'));
@@ -48,7 +53,6 @@ const setPrefix = (guildId, newPrefix) => {
   fs.writeFileSync(prefixesPath, JSON.stringify(prefixes, null, 4));
   console.log(`[INFO] Prefixo atualizado para o servidor ${guildId}: ${newPrefix}`);
 };
-
 
 const commandsPath = path.join(__dirname, 'src/commands');
 const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
@@ -63,7 +67,6 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
   console.log(`[INFO] Comando carregado: ${command.name}`);
 }
-
 
 const slashCommandsPath = path.join(__dirname, 'src/slashCommands');
 const slashCommandFiles = fs.readdirSync(slashCommandsPath).filter((file) => file.endsWith('.js'));
@@ -81,7 +84,6 @@ for (const file of slashCommandFiles) {
   }
 }
 
-
 const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
@@ -96,7 +98,6 @@ const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
     console.error('[ERROR] Erro ao registrar Slash Commands:', error);
   }
 })();
-
 
 const eventsPath = path.join(__dirname, 'src/events');
 const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
@@ -116,7 +117,6 @@ for (const file of eventFiles) {
     });
   }
 }
-
 
 (async () => {
   try {
