@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const { getPrefix, setPrefix } = require('../utils/prefixes');
 
-
 const acceptedUsersPath = path.resolve(__dirname, '../data/acceptedUsers.json');
 if (!fs.existsSync(acceptedUsersPath)) {
   fs.writeFileSync(acceptedUsersPath, JSON.stringify([]), { flag: 'wx' });
@@ -55,13 +54,31 @@ module.exports = {
 
       const replyMessage = await message.reply({ embeds: [embed], components: [row] });
 
-      
-      client.on('interactionCreate', async (interaction) => {
-        if (!interaction.isButton()) return;
-        if (interaction.customId === 'accept_terms' && interaction.user.id === message.author.id) {
-          setTimeout(() => {
+      const filter = (interaction) =>
+        interaction.isButton() &&
+        interaction.customId === 'accept_terms' &&
+        interaction.user.id === message.author.id;
+
+      const collector = message.channel.createMessageComponentCollector({
+        filter,
+        time: 60000,
+      });
+
+      collector.on('collect', async (interaction) => {
+        try {
+          if (!acceptedUsers.includes(interaction.user.id)) {
+            acceptedUsers.push(interaction.user.id);
+            fs.writeFileSync(acceptedUsersPath, JSON.stringify(acceptedUsers, null, 2));
+
+            await interaction.reply({
+              content: 'Você aceitou os Termos de Uso. Agora pode usar o bot!',
+              ephemeral: true,
+            });
+
             replyMessage.delete().catch(() => null);
-          }, 2000);
+          }
+        } catch (error) {
+          console.error('[ERROR] Erro ao aceitar os Termos de Uso:', error.message);
         }
       });
 
