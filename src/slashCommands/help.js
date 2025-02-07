@@ -3,81 +3,83 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('help')
-    .setDescription('Mostra informações sobre o bot e seus comandos.')
-    .addStringOption(option =>
-      option
-        .setName('comando')
-        .setDescription('Nome do comando para obter informações detalhadas.')
-        .setRequired(false)
-    ),
+    .setDescription('Exibe informações detalhadas sobre os comandos.')
+    .addStringOption(option => 
+      option.setName('comando')
+        .setDescription('O nome do comando que deseja detalhes.')
+        .setRequired(false)),
   async execute(interaction) {
-    const client = interaction.client;
-    const commands = client.commands;
+    const commands = interaction.client.commands;
+
+    if (!commands || commands.size === 0) {
+      const embedErroMinimo = new EmbedBuilder()
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Parece que os comandos não foram carregados.',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+
+      return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
+    }
+
     const commandName = interaction.options.getString('comando');
 
     if (commandName) {
-      const command = commands.get(commandName);
+      const command = commands.get(commandName.toLowerCase());
 
       if (!command) {
-        return interaction.reply({
-          content: `<:no:1122370713932795997> Comando \`${commandName}\` não encontrado.`,
-          ephemeral: true,
-        });
+        const embedErroMinimo = new EmbedBuilder()
+          .setColor('#FF4C4C')
+          .setAuthor({
+            name: 'Não encontrei esse comando no sistema.',
+            iconURL: 'http://bit.ly/4aIyY9j',
+          });
+
+        return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
       }
 
-      const commandEmbed = new EmbedBuilder()
-        .setColor('#fe3838')
-        .setTitle(`<:emoji_45:1323360352498618398> Informações do Comando: \`${command.name}\``)
+      const embed = new EmbedBuilder()
+        .setColor(0x36393F)
+        .setTitle(`:1000042965: ${command.name}`)
+        .setDescription(command.description || '`Nenhuma descrição disponível.`')
         .addFields(
-          { name: 'Descrição', value: command.description || 'Nenhuma descrição disponível.', inline: false },
-          { name: 'Uso', value: command.usage || 'Sem informações de uso.', inline: false }
+          { name: '<:1000043157:1336324220770062497> Uso', value: `\`${command.usage || 'Não especificado.'}\``, inline: false },
+          { name: '<:1000042960:1336120845881442365> Permissões Necessárias', value: `\`${command.permissions || 'Nenhuma'}\``, inline: false }
         )
         .setFooter({
-          text: `Solicitado por ${interaction.user.tag}`,
-          iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-        })
-        .setTimestamp();
+          text: 'Punishment',
+          iconURL: interaction.client.user.displayAvatarURL(),
+        });
 
-      return interaction.reply({ embeds: [commandEmbed] });
+      return interaction.reply({ embeds: [embed] });
     }
 
-    const botAvatar = client.user?.displayAvatarURL({ dynamic: true }) || null;
-
-    const helpEmbed = new EmbedBuilder()
-      .setColor('#fe3838')
-      .setTitle('<:emoji_45:1323360352498618398> Bem-vindo ao Punishment!')
-      .setDescription(
-        `Olá, **${interaction.user.displayName}**! Aqui estão algumas informações importantes para você começar.`
+    const embed = new EmbedBuilder()
+      .setColor(0x36393F)
+      .setTitle('<:1000043167:1336329540502421576> Comandos Principais')
+      .addFields(
+        { name: 'help', value: '`Exibe informações detalhadas sobre os comandos.`', inline: true },
+        { name: 'ping', value: '`Exibe os detalhes da conexão do bot.`', inline: true },
+        { name: 'privacy', value: '`Exibe a política de privacidade.`', inline: true },
+        { name: 'mod-stats', value: '`Exibe estatísticas da moderação no servidor.`', inline: true },
+        { name: 'stats', value: '`Exibe as estatísticas do bot.`', inline: true },
+        { name: 'undo', value: '`Desfaz o último comando executado.`', inline: true }
       )
       .addFields(
         {
-          name: 'Prefixo Padrão:',
-          value: '.',
-          inline: true,
+          name: '<:1000043159:1336324177900077076> Ajuda',
+          value: 'Use `/help comando:<nome_do_comando>` para exibir mais informações sobre um comando.',
         },
         {
-          name: 'Como usar:',
-          value: `Para obter informações detalhadas de um comando, use \`/help [comando]\`.`,
-          inline: true,
-        },
-        {
-          name: 'Exemplos de Uso:',
-          value: `/help ping - Mostra informações sobre o comando \`ping\`.\n/help uptime - Mostra informações sobre o comando \`uptime\`.\n/help ban - Mostra informações sobre o comando \`ban\`.`,
-          inline: false,
-        },
-        {
-          name: 'Sobre o Bot:',
-          value: `Eu sou o Punishment, um bot de moderação criado para tornar sua experiência no Discord mais segura e organizada.`,
-          inline: false,
+          name: '<:1000043160:1336324162482081945> Suporte',
+          value: '[Visite nossa comunidade](https://discord.gg/SW4zKzAhQa)',
         }
       )
       .setFooter({
-        text: `${interaction.user.tag} | Punishment`,
-        iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-      })
-      .setThumbnail(botAvatar)
-      .setTimestamp();
+        text: 'Punishment',
+        iconURL: interaction.client.user.displayAvatarURL(),
+      });
 
-    await interaction.reply({ embeds: [helpEmbed] });
+    return interaction.reply({ embeds: [embed] });
   },
 };
