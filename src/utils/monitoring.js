@@ -1,14 +1,9 @@
-const express = require('express');
+const logger = require('./logger.js');
 
 function monitorBot() {
-  const app = express();
-
-  app.get('/health', (req, res) => {
-    res.json({ status: 'ok', uptime: process.uptime(), memory: process.memoryUsage() });
-  });
-
-  const PORT = process.env.MONITOR_PORT || 3000;
-  app.listen(PORT, () => console.log(`[INFO] Monitoramento ativo na porta ${PORT}`));
+  setInterval(() => {
+    logger.info('Monitorando o estado do bot...');
+  }, 60000);
 }
 
-module.exports = { monitorBot };
+module.exports = monitorBot;
