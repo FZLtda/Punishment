@@ -11,7 +11,7 @@ if (!fs.existsSync(configPath)) {
 module.exports = {
   name: 'verify-setup',
   description: 'Configura o sistema de verificação no servidor.',
-  usage: '.verify-setup <cargo-verificado> [cargo-não-verificado] [mensagem]',
+  usage: 'verify-setup <cargo-verificado> [cargo-não-verificado] [mensagem]',
   permissions: 'Administrador',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
@@ -51,7 +51,7 @@ module.exports = {
 
     const embedSucesso = new EmbedBuilder()
       .setColor('#2ECC71')
-      .setTitle('✅ Sistema de Verificação Configurado!')
+      .setTitle('<:1000042885:1336044571125354496> Sistema de Verificação')
       .setDescription(`**Cargo de Verificado:** <@&${verifiedRole.id}>\n` +
                       `${unverifiedRole ? `**Cargo de Não Verificado:** <@&${unverifiedRole.id}>\n` : ''}` +
                       `**Mensagem Personalizada:** ${customMessage}`)
