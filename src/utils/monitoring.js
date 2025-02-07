@@ -3,6 +3,10 @@ const axios = require('axios');
 const WEBHOOK = process.env.WEBHOOK;
 
 function monitorBot(client) {
+  if (!client || typeof client.on !== 'function') {
+    throw new Error('O client não foi inicializado corretamente.');
+  }
+
   console.log('[INFO] Monitorando o bot...');
 
   client.on('ready', () => {
@@ -30,7 +34,7 @@ function monitorBot(client) {
 }
 
 async function sendWebhookNotification(title, description) {
-  if (!WEBHOOK) {
+  if (!WEBHOOKs) {
     console.warn('[WARN] URL do Webhook não configurada.');
     return;
   }
@@ -48,7 +52,7 @@ async function sendWebhookNotification(title, description) {
   try {
     await axios.post(WEBHOOK, {
       username: 'Bot Monitor',
-      avatar_url: 'https://bit.ly/3CSNQFw',
+      avatar_url: 'https://i.imgur.com/AfFp7pu.png',
       embeds: [embed],
     });
     console.log('[INFO] Notificação enviada via Webhook.');
