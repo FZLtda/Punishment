@@ -2,7 +2,7 @@ require('dotenv').config();
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const { loadCommands, loadEvents } = require('./src/utils/loader.js');
 const { setPresence } = require('./src/utils/presence.js');
-const { monitorBot } = require('./src/utils/monitoring.js');
+const monitorBot = require('./src/utils/monitoring.js');
 const logger = require('./src/utils/logger.js');
 const validateEnv = require('./src/utils/validateEnv.js');
 
