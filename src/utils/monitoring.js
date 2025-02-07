@@ -17,19 +17,19 @@ function monitorBot(client) {
   client.on('shardDisconnect', (event, shardId) => {
     console.error(`[ALERTA] Shard ${shardId} desconectada!`);
     sendWebhookNotification(
-      '⚠️ Bot desconectado!',
+      'Punishment desconectado!',
       `A shard ${shardId} foi desconectada. Verifique imediatamente.`
     );
   });
 
   client.on('error', (error) => {
     console.error(`[ERROR] Erro detectado: ${error.message}`);
-    sendWebhookNotification('❌ Erro no bot!', `Erro detectado: ${error.message}`);
+    sendWebhookNotification('Punishment erro!', `Erro detectado: ${error.message}`);
   });
 
   client.on('warn', (info) => {
     console.warn(`[WARN] Aviso: ${info}`);
-    sendWebhookNotification('⚠️ Aviso no bot!', `Aviso detectado: ${info}`);
+    sendWebhookNotification('Punishment aviso!', `Aviso detectado: ${info}`);
   });
 }
 
@@ -45,13 +45,13 @@ async function sendWebhookNotification(title, description) {
     description,
     timestamp: new Date().toISOString(),
     footer: {
-      text: 'Monitoramento do Bot',
+      text: 'Punishment Monitoramento',
     },
   };
 
   try {
     await axios.post(WEBHOOK, {
-      username: 'Bot Monitor',
+      username: 'Punishment Status',
       avatar_url: 'https://bit.ly/3CSNQFw',
       embeds: [embed],
     });
