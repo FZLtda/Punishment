@@ -69,7 +69,7 @@ module.exports = {
         .setColor('#2ECC71')
         .setAuthor({
           name: welcomeMessage,
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/3Q2Q8F1',
         });
 
       return message.reply({ embeds: [embedSucesso] });
