@@ -10,7 +10,7 @@ module.exports = {
 
     try {
       const avatarEmbed = new EmbedBuilder()
-        .setTitle(`Avatar de ${usuario.username}`)
+        .setTitle(`Avatar de ${usuario.displayName}`)
         .setImage(usuario.displayAvatarURL({ dynamic: true, size: 1024 }))
         .setColor('#f33838')
         .setFooter({
