@@ -1,171 +1,88 @@
-const {
-  EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  PermissionsBitField,
-} = require('discord.js');
 const fs = require('fs');
-const path = './data/verifyConfig.json';
+const path = require('path');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 
-if (!fs.existsSync(path)) {
-  fs.writeFileSync(path, JSON.stringify({}));
-}
-
-let interactionAuthors = new Map();
+const configPath = path.resolve(__dirname, '../../data/verifyConfig.json');
 
 module.exports = {
   name: 'verify',
-  description: 'Configura e gerencia o sistema de verificação no servidor.',
-  usage: 'verify',
-  permissions: 'Administrador',
+  description: 'Verifica o usuário e adiciona o cargo de Verificado.',
+  usage: '.verify',
+  permissions: 'SendMessages',
   async execute(message) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+    const guild = message.guild;
+    const member = message.member;
+
+    if (!fs.existsSync(configPath)) {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
-          name: 'Você não tem permissão para usar este comando.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          name: 'O sistema de verificação não está configurado neste servidor!',
+          iconURL: 'http://bit.ly/4aIyY9j',
         });
-
       return message.reply({ embeds: [embedErro] });
     }
 
-    const settings = JSON.parse(fs.readFileSync(path, 'utf8'));
-    const guildId = message.guild.id;
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'))[guild.id];
 
-    const defaultConfig = {
-      title: 'Verificação Necessária',
-      description: 'Clique no botão abaixo para se verificar e obter acesso ao servidor.',
-      color: '#fe3838',
-      buttonText: 'Verificar',
-      buttonEmoji: '<:emoji_34:1219815388921991259>',
-      roleId: null,
-      channelId: null,
-      messageId: null,
-    };
+    if (!config || !config.verifiedRole) {
+      const embedErro = new EmbedBuilder()
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'O sistema de verificação não foi configurado ainda. Peça para um administrador usar `.verify-setup`.',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+      return message.reply({ embeds: [embedErro] });
+    }
 
-    const guildConfig = settings[guildId] || defaultConfig;
+    const verifiedRole = guild.roles.cache.get(config.verifiedRole);
+    const unverifiedRole = config.unverifiedRole ? guild.roles.cache.get(config.unverifiedRole) : null;
 
-    const embed = new EmbedBuilder()
-      .setColor(guildConfig.color)
-      .setTitle(guildConfig.title)
-      .setDescription(
-        `**Descrição Atual:**\n${guildConfig.description}\n\n**Cor Atual:**\n${guildConfig.color}\n\n**Botão Atual:**\n${guildConfig.buttonEmoji} ${guildConfig.buttonText}\n\n**Cargo Atual:**\n${
-          guildConfig.roleId ? `<@&${guildConfig.roleId}>` : 'Nenhum cargo configurado'
-        }\n\n**Canal Atual:**\n${
-          guildConfig.channelId ? `<#${guildConfig.channelId}>` : 'Nenhum canal configurado'
-        }\n\nUse os botões abaixo para personalizar o sistema ou postar no canal de verificação.`
-      )
-      .setFooter({
-        text: `${message.author.tag}`,
-        iconURL: message.author.displayAvatarURL({ dynamic: true }),
-      })
-      .setTimestamp();
+    if (!verifiedRole) {
+      const embedErro = new EmbedBuilder()
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'O cargo de verificado não foi encontrado. Peça para um administrador configurar novamente.',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+      return message.reply({ embeds: [embedErro] });
+    }
 
-    const row1 = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId('set_title')
-        .setLabel('Título')
-        .setStyle(ButtonStyle.Secondary)
-        .setEmoji('<:emoji_29:1217939003626492026>'),
-      new ButtonBuilder()
-        .setCustomId('set_description')
-        .setLabel('Descrição')
-        .setStyle(ButtonStyle.Secondary)
-        .setEmoji('<:emoji_29:1217939003626492026>'),
-      new ButtonBuilder()
-        .setCustomId('set_color')
-        .setLabel('Cor')
-        .setStyle(ButtonStyle.Secondary)
-        .setEmoji('<:emoji_29:1217939003626492026>')
-    );
+    if (member.roles.cache.has(verifiedRole.id)) {
+      const embedJaVerificado = new EmbedBuilder()
+        .setColor('#FFCC00')
+        .setAuthor({
+          name: 'Você já está verificado!',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+      return message.reply({ embeds: [embedJaVerificado] });
+    }
 
-    const row2 = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId('set_button')
-        .setLabel('Botão')
-        .setStyle(ButtonStyle.Secondary)
-        .setEmoji('<:emoji_29:1217939003626492026>'),
-      new ButtonBuilder()
-        .setCustomId('set_role')
-        .setLabel('Cargo')
-        .setStyle(ButtonStyle.Secondary)
-        .setEmoji('<:emoji_29:1217939003626492026>'),
-      new ButtonBuilder()
-        .setCustomId('set_channel')
-        .setLabel('Canal')
-        .setStyle(ButtonStyle.Secondary)
-        .setEmoji('<:emoji_29:1217939003626492026>')
-    );
+    try {
+      await member.roles.add(verifiedRole);
+      if (unverifiedRole) {
+        await member.roles.remove(unverifiedRole);
+      }
 
-    const row3 = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId('post_system')
-        .setLabel('Postar Sistema')
-        .setStyle(ButtonStyle.Success)
-        .setEmoji('<:emoji_34:1219815388921991259>')
-    );
+      const welcomeMessage = config.welcomeMessage.replace('{user}', message.author.username);
+      const embedSucesso = new EmbedBuilder()
+        .setColor('#2ECC71')
+        .setAuthor({
+          name: welcomeMessage,
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
 
-    const sentMessage = await message.channel.send({ embeds: [embed], components: [row1, row2, row3] });
-    guildConfig.messageId = sentMessage.id;
-    settings[guildId] = guildConfig;
-    fs.writeFileSync(path, JSON.stringify(settings, null, 4));
+      return message.reply({ embeds: [embedSucesso] });
 
-    interactionAuthors.set(sentMessage.id, message.author.id);
+    } catch (error) {
+      console.error('[ERROR] Erro ao verificar usuário:', error);
+      const embedErro = new EmbedBuilder()
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Ocorreu um erro ao tentar verificar você.',
+          iconURL: 'http://bit.ly/4aIyY9j',
+        });
+      return message.reply({ embeds: [embedErro] });
+    }
   },
-
-  async handleInteraction(interaction) {
-    if (!interaction.isButton()) return;
-
-    const settings = JSON.parse(fs.readFileSync(path, 'utf8'));
-    const guildId = interaction.guild.id;
-
-    if (!settings[guildId]) return;
-
-    const interactionAuthor = interactionAuthors.get(interaction.message.id);
-
-    if (interactionAuthor && interaction.user.id !== interactionAuthor) {
-      const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({
-          name: 'Você não pode interagir com isso.',
-          iconURL: 'http://bit.ly/4aIyY9j'
-        });
-
-      return interaction.reply({ embeds: [embedErro], ephemeral: true });
-    }
-  }
 };
-
-async function collectUserInput(interaction, updateCallback) {
-  const filter = (m) => m.author.id === interaction.user.id;
-  try {
-    const collected = await interaction.channel.awaitMessages({ filter, max: 1, time: 30000 });
-    if (!collected.size) {
-      const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({
-          name: 'Tempo esgotado para enviar a entrada.',
-          iconURL: 'http://bit.ly/4aIyY9j'
-        });
-
-      return interaction.followUp({ embeds: [embedErro], ephemeral: true });
-    }
-
-    const newValue = collected.first().content;
-    updateCallback(newValue);
-    collected.first().delete().catch(() => null);
-  } catch (error) {
-    console.error('Erro no coletor:', error);
-
-    const embedErro = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-        name: 'Ocorreu um erro ao processar sua entrada.',
-        iconURL: 'http://bit.ly/4aIyY9j'
-      });
-
-    return interaction.followUp({ embeds: [embedErro], ephemeral: true });
-  }
-}
