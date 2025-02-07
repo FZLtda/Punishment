@@ -26,7 +26,7 @@ client.slashCommands = new Collection();
     await loadCommands(client);
     await loadEvents(client);
     setPresence(client);
-    monitorBot();
+    monitorBot(client);
     await client.login(process.env.TOKEN);
     logger.info('Bot inicializado com sucesso!');
   } catch (error) {
