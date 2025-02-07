@@ -43,8 +43,8 @@ module.exports = {
             embeds: [new EmbedBuilder()
                 .setColor('#00FF00')
                 .setAuthor({
-                    name: 'Sistema de verificação configurado com sucesso!',
-                    iconURL: 'http://bit.ly/4aIyY9j'
+                    name: 'Sistema de verificação configurado com sucesso.',
+                    iconURL: 'https://bit.ly/3Q2Q8F1'
                 })]
         });
     }
