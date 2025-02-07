@@ -10,7 +10,7 @@ module.exports = {
 
     try {
       const avatarEmbed = new EmbedBuilder()
-        .setTitle(`Avatar de ${usuario.displayName}`)
+        .setTitle(`Avatar de ${usuario.username}`)
         .setImage(usuario.displayAvatarURL({ dynamic: true, size: 1024 }))
         .setColor('#f33838')
         .setFooter({
@@ -19,7 +19,7 @@ module.exports = {
         })
         .setTimestamp();
 
-      await message.channel.send({ embeds: [avatarEmbed] });
+      await message.reply({ embeds: [avatarEmbed] });
     } catch (error) {
       console.error(error);
       message.reply('<:no:1122370713932795997> Ocorreu um erro ao tentar exibir o avatar.');
