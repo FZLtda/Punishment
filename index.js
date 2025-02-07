@@ -29,7 +29,7 @@ client.slashCommands = new Collection();
     await loadEvents(client);
     setPresence(client);
     monitorBot();
-    await client.login(process.env.DISCORD_TOKEN);
+    await client.login(process.env.TOKEN);
     logger.info('Bot inicializado com sucesso!');
   } catch (error) {
     logger.error(`Erro ao iniciar o bot: ${error.message}`);
