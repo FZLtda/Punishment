@@ -34,7 +34,7 @@ function monitorBot(client) {
 }
 
 async function sendWebhookNotification(title, description) {
-  if (!WEBHOOKs) {
+  if (!WEBHOOK) {
     console.warn('[WARN] URL do Webhook não configurada.');
     return;
   }
