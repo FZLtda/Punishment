@@ -41,7 +41,7 @@ module.exports = {
           '© 2025 FuncZero. Todos os direitos reservados.'
       )
       .addFields({
-        name: '<:1000043034:1336188926813147158> Última Atualização',
+        name: '<:1000043158:1336324199202947144> Última Atualização',
         value: `Esta política foi atualizada em: **${formattedDate}**`,
       })
       .setFooter({
