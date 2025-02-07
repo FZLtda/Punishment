@@ -21,8 +21,9 @@ module.exports = {
     }
 
     try {
+      
       const guildCount = client.guilds.cache.size;
-      const userCount = client.users.cache.size;
+      const userCount = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);
 
       console.log(`[INFO] Atualmente em ${guildCount} servidores, com um total de ${userCount} usuários.`);
     } catch (error) {
