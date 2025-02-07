@@ -10,8 +10,8 @@ function monitorBot(client) {
   console.log('[INFO] Monitorando o bot...');
 
   client.on('ready', () => {
-    console.log(`[INFO] Bot está online: ${client.user.tag}`);
-    sendWebhookNotification('✅ O bot está online!', 'O bot está funcionando normalmente.');
+    console.log(`[INFO] Punishment está online: ${client.user.tag}`);
+    sendWebhookNotification('Punishment está online!', 'O bot está funcionando normalmente.');
   });
 
   client.on('shardDisconnect', (event, shardId) => {
@@ -52,7 +52,7 @@ async function sendWebhookNotification(title, description) {
   try {
     await axios.post(WEBHOOK, {
       username: 'Bot Monitor',
-      avatar_url: 'https://i.imgur.com/AfFp7pu.png',
+      avatar_url: 'https://bit.ly/3CSNQFw',
       embeds: [embed],
     });
     console.log('[INFO] Notificação enviada via Webhook.');
