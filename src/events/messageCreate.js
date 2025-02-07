@@ -71,7 +71,7 @@ module.exports = {
             fs.writeFileSync(acceptedUsersPath, JSON.stringify(acceptedUsers, null, 2));
 
             await interaction.reply({
-              content: 'Você aceitou os Termos de Uso. Agora pode usar o bot!',
+              content: '<:1000042885:1336044571125354496> Você aceitou os Termos de Uso. Agora pode usar o Punishment!',
               ephemeral: true,
             });
 
