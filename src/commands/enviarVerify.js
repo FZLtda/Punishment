@@ -1,41 +1,32 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { getVerifyConfig } = require('../utils/verifyUtils');
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
+const fs = require('fs');
+const path = require('path');
+
+const configPath = path.resolve(__dirname, '../data/verificationConfig.json');
 
 module.exports = {
-    name: 'enviar-verificação',
-    description: 'Envia o sistema de verificação configurado.',
-    usage: '.enviar-verificação',
-    permissions: 'Administrator',
-    async execute(message) {
-        const config = getVerifyConfig(message.guild.id);
-        if (!config) {
-            return message.reply({
-                embeds: [new EmbedBuilder()
-                    .setColor('#FF4C4C')
-                    .setAuthor({
-                        name: 'Nenhuma configuração de verificação encontrada.',
-                        iconURL: 'http://bit.ly/4aIyY9j'
-                    })]
-            });
-        }
-
-        const embed = new EmbedBuilder()
-            .setColor('#3498db')
-            .setTitle('🔹 Verificação')
-            .setDescription(config.message)
-            .setFooter({
-                text: 'Punishment',
-                iconURL: message.client.user.displayAvatarURL(),
-            });
-
-        const row = new ActionRowBuilder()
-            .addComponents(
-                new ButtonBuilder()
-                    .setCustomId('verify_button')
-                    .setLabel(config.buttonText)
-                    .setStyle(ButtonStyle.Success)
-            );
-
-        message.channel.send({ embeds: [embed], components: [row] });
+  name: 'enviar-verificação',
+  description: 'Envia a mensagem de verificação configurada.',
+  async execute(message) {
+    if (!fs.existsSync(configPath)) {
+      return message.reply('O sistema de verificação não foi configurado ainda.');
     }
+
+    const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+
+    const embed = new EmbedBuilder()
+      .setTitle('Verificação')
+      .setDescription(config.message || 'Clique no botão abaixo para verificar sua conta.')
+      .setColor(config.color || '#00FF00');
+
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId('verify_button')
+        .setLabel(config.button?.text || 'Verificar')
+        .setEmoji(config.button?.emoji || '')
+        .setStyle(ButtonStyle.Primary)
+    );
+
+    await message.channel.send({ embeds: [embed], components: [row] });
+  },
 };
