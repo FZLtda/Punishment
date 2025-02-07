@@ -24,4 +24,4 @@ const deleteVerifyConfig = (guildId) => {
     fs.writeFileSync(configPath, JSON.stringify(config, null, 4));
 };
 
-module.exports = { getVerifyConfig, setVerifyConfig, deleteVerifyConfig };s
+module.exports = { getVerifyConfig, setVerifyConfig, deleteVerifyConfig };
