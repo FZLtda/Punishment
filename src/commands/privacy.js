@@ -3,8 +3,8 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: 'privacy',
   description: 'Exibe a Política de Privacidade do Punishment.',
-  usage: 'privacy',
-  permissions: 'Nenhuma',
+  usage: '${currentPrefix}privacy',
+  permissions: 'Enviar Mensagens',
   execute: async (message) => {
     const updatedDate = new Date();
     const formattedDate = updatedDate.toLocaleString('pt-BR', {
