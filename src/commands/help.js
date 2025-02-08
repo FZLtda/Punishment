@@ -5,18 +5,18 @@ module.exports = {
   description: 'Exibe informações detalhadas sobre os comandos.',
   usage: '`.help [comando]`',
   permissions: '`Nenhuma`',
-  execute: async (message, args) => {
+  execute: async (message, args, { getPrefix }) => {
     const commands = message.client.commands;
 
     if (!commands || commands.size === 0) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Parece que os comandos não foram carregados.',
           iconURL: 'http://bit.ly/4aIyY9j'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply({ embeds: [embedErroMinimo] });
     }
 
     if (args.length > 0) {
@@ -25,21 +25,24 @@ module.exports = {
 
       if (!command) {
         const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'Não encontrei esse comando no sistema.',
-                iconURL: 'http://bit.ly/4aIyY9j'
-            });
-      
+          .setColor('#FF4C4C')
+          .setAuthor({
+            name: 'Não encontrei esse comando no sistema.',
+            iconURL: 'http://bit.ly/4aIyY9j'
+          });
+
         return message.reply({ embeds: [embedErroMinimo] });
       }
+
+      const currentPrefix = getPrefix(message.guild.id);
+      const usage = command.usage?.replace('${currentPrefix}', currentPrefix) || 'Não especificado.';
 
       const embed = new EmbedBuilder()
         .setColor(0x36393F)
         .setTitle(`<:1000042965:1336131844718202942> ${command.name}`)
         .setDescription(command.description || '`Nenhuma descrição disponível.`')
         .addFields(
-          { name: '<:1000043157:1336324220770062497> Uso', value: `\`${command.usage || 'Não especificado.'}\``, inline: false },
+          { name: '<:1000043157:1336324220770062497> Uso', value: `\`${usage}\``, inline: false },
           { name: '<:1000042960:1336120845881442365> Permissões Necessárias', value: `\`${command.permissions || 'Nenhuma'}\``, inline: false }
         )
         .setFooter({
@@ -64,7 +67,7 @@ module.exports = {
       .addFields(
         {
           name: '<:1000043159:1336324177900077076> Ajuda',
-          value: 'Use `.help <comando>` para exibir mais informações sobre um comando.',
+          value: `Use \`${getPrefix(message.guild.id)}help <comando>\` para exibir mais informações sobre um comando.`,
         },
         {
           name: '<:1000043160:1336324162482081945> Suporte',
