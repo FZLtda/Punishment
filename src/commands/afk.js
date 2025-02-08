@@ -4,8 +4,8 @@ const afkUsers = new Map();
 module.exports = {
     name: 'afk',
     description: 'Define seu status como AFK (Away From Keyboard).',
-    usage: 'afk [motivo]',
-    permissions: 'SendMessages',
+    usage: '${currentPrefix}afk [motivo]',
+    permissions: 'Enviar Mensagens',
     async execute(message, args) {
         const reason = args.join(' ') || 'Sem motivo especificado.';
 
