@@ -15,8 +15,8 @@ function formatUptime(seconds) {
 module.exports = {
   name: 'uptime',
   description: 'Exibe as estatísticas do bot.',
-  usage: 'uptime',
-  permissions: 'Nenhuma',
+  usage: '${currentPrefix}uptime',
+  permissions: 'Enviar Mensagens',
   execute: async (message) => {
     try {
       
