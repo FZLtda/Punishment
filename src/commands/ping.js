@@ -3,8 +3,8 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: 'ping',
   description: 'Exibe detalhes da conexão do bot com o Discord.',
-  usage: 'ping',
-  permissions: 'Nenhuma',
+  usage: '${currentPrefix}ping',
+  permissions: 'Enviar Mensagens',
   execute: async (message) => {
     const msg = await message.reply('Calculando...');
     const latency = msg.createdTimestamp - message.createdTimestamp;
