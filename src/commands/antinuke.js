@@ -9,8 +9,8 @@ if (!fs.existsSync(path)) {
 module.exports = {
   name: 'antinuke',
   description: 'Ativa ou desativa o sistema Anti-Nuke no servidor.',
-  usage: 'antinuke [on/off]',
-  permissions: 'ADMINISTRATOR',
+  usage: '${currentPrefix}antinuke [on/off]',
+  permissions: 'Administrador',
   async execute(message, args) {
     if (!message.member.permissions.has('ADMINISTRATOR')) {
       const embedErroMinimo = new EmbedBuilder()
