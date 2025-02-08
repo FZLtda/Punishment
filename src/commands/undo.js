@@ -3,7 +3,7 @@ const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: 'undo',
   description: 'Desfaz o último comando executado.',
-  usage: 'undo [quantidade (1-5)]',
+  usage: '${currentPrefix}undo [quantidade (1-5)]',
   permissions: 'Gerenciar Mensagens',
   execute: async (message, args) => {
     try {
