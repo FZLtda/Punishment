@@ -4,8 +4,8 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 module.exports = {
     name: 'doar',
     description: 'Faça uma doação para apoiar o Punishment!',
-    usage: 'doar <valor>',
-    permissions: 'Nenhuma',
+    usage: '${currentPrefix}doar <valor>',
+    permissions: 'Enviar Mensagens',
     async execute(message, args) {
         if (!args[0] || isNaN(args[0])) {
             const embedErro = new EmbedBuilder()
