@@ -2,10 +2,10 @@ const { EmbedBuilder } = require('discord.js');
 const Color = require('color');
 
 module.exports = {
-  name: 'colorinfo',
+  name: '${currentPrefix}colorinfo',
   description: 'Exibe informações sobre uma cor (nome ou código hexadecimal).',
   usage: 'colorinfo <nome da cor | código hexadecimal>',
-  permissions: 'Nenhuma',
+  permissions: 'Enviar Mensagens',
   async execute(message, args) {
     if (!args[0]) {
       const embedErroMinimo = new EmbedBuilder()
