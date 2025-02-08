@@ -5,7 +5,7 @@ const { logModerationAction } = require('../utils/moderationUtils');
 module.exports = {
   name: 'emoji',
   description: 'Adiciona ou copia emojis para o servidor.',
-  usage: '<add|copy> <emoji/link> [nome]',
+  usage: '${currentPrefix}emoji add/copy <emoji/link> [nome]',
   permissions: 'Gerenciar Servidor',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageGuildExpressions)) {
