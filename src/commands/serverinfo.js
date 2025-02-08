@@ -4,8 +4,8 @@ const moment = require('moment-timezone');
 module.exports = {
   name: 'serverinfo',
   description: 'Mostra informações sobre o servidor.',
-  usage: 'serverinfo',
-  permissions: 'Nenhuma',
+  usage: '${currentPrefix}serverinfo',
+  permissions: 'Enviar Mensagens',
   async execute(message) {
     const guild = message.guild;
 
