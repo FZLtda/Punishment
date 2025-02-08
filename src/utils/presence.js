@@ -1,11 +1,15 @@
 function setPresence(client) {
-    client.on('ready', () => {
+  client.on('ready', () => {
       client.user.setPresence({
-        activities: [{ name: '.help', type: 'PLAYING' }],
-        status: 'dnd',
+          status: 'dnd',
+          activities: [{ 
+              name: '.help', 
+              type: 'PLAYING'
+          }]
       });
+
       console.log(`[INFO] Bot conectado como ${client.user.tag}`);
-    });
-  }
-  
-  module.exports = { setPresence };
+  });
+}
+
+module.exports = { setPresence };
