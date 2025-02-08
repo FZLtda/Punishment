@@ -4,7 +4,7 @@ const { logModerationAction } = require('../utils/moderationUtils');
 module.exports = {
   name: 'slowmode',
   description: 'Configura o modo lento em um canal.',
-  usage: 'slowmode <tempo>',
+  usage: '${currentPrefix}slowmode <tempo>',
   permissions: 'Gerenciar Canais',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
