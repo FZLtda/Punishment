@@ -16,7 +16,7 @@ module.exports = {
       : 'Não disponível';
 
     const embed = new EmbedBuilder()
-      .setTitle(`Informações de ${user.displayName}`)
+      .setTitle(`Informações de ${user.username}`)
       .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
       .setColor('Blue')
       .addFields(
@@ -39,6 +39,6 @@ module.exports = {
       })
       .setTimestamp();
 
-    return message.channel.send({ embeds: [embed] });
+    return message.reply({ embeds: [embed] });
   },
 };
