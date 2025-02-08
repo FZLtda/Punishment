@@ -4,7 +4,7 @@ const { logModerationAction } = require('../utils/moderationUtils');
 module.exports = {
   name: 'removerole',
   description: 'Remove um cargo de um membro.',
-  usage: 'removerole <@membro> <@cargo>',
+  usage: '${currentPrefix}removerole <@membro> <@cargo>',
   permissions: ['Gerenciar Cargos'],
   async execute(message, args) {
     if (!message.member.permissions.has('ManageRoles')) {
