@@ -4,7 +4,7 @@ function setPresence(client) {
           status: 'dnd',
           activities: [{ 
               name: '.help', 
-              type: 'PLAYING'
+              type: 0
           }]
       });
 
