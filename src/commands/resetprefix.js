@@ -3,7 +3,7 @@ const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 module.exports = {
     name: 'resetprefix',
     description: 'Redefine o prefixo do bot para o padrão no servidor.',
-    usage: 'resetprefix',
+    usage: '${currentPrefix}resetprefix',
     permissions: 'Gerenciar Servidor',
     async execute(message, args, { setPrefix }) {
         
