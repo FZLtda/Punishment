@@ -4,7 +4,7 @@ const db = require('../data/database');
 module.exports = {
   name: 'mod-stats',
   description: 'Exibe estatísticas da moderação no servidor.',
-  usage: 'mod-stats',
+  usage: '${currentPrefix}mod-stats',
   permissions: 'Gerenciar Servidor',
   async execute(message) {
     if (!message.member.permissions.has('ManageGuild')) {
