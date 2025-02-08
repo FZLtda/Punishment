@@ -17,7 +17,7 @@
   "license": "MIT",
   "dependencies": {
     "@discordjs/builders": "^1.10.0",
-    "@discordjs/rest": "^2.4.2",
+    "@discordjs/rest": "^2.2.0",
     "@discordjs/voice": "^0.18.0",
     "@types/node": "^22.10.10",
     "axios": "^1.7.9",
@@ -28,7 +28,7 @@
     "discord-api-types": "^0.37.119",
     "discord-player": "^7.1.0",
     "discord-rpc": "^4.0.1",
-    "discord.js": "^14.17.3",
+    "discord.js": "^14.14.1",
     "dotenv": "^16.4.7",
     "esm": "^3.2.25",
     "express": "^4.21.2",
