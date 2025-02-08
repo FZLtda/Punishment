@@ -9,8 +9,8 @@ const TOPIC_TIMEOUT = 10 * 60 * 1000;
 module.exports = {
   name: 'ai',
   description: 'Converse com a IA do ChatGPT em um tópico dedicado.',
-  usage: 'ai [pergunta]',
-  permissions: 'SendMessages',
+  usage: '${currentPrefix}ai [pergunta]',
+  permissions: 'Enviar Mensagens',
   async execute(message, args) {
     const userId = message.author.id;
     const apiKey = process.env.OPENAI_API_KEY;
