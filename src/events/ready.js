@@ -5,15 +5,15 @@ module.exports = {
     try {
       console.log(`[SUCESSO] Bot iniciado como ${client.user.tag}`);
 
-      // Configurando a presença do bot
+      
       client.user.setPresence({
         activities: [
           {
             name: '.help', 
-            type: '0',
+            type: 0, 
           },
         ],
-        status: 'dnd',
+        status: 'dnd', 
       });
 
       console.log('[INFO] Presença configurada com sucesso: Jogando .help');
@@ -22,7 +22,7 @@ module.exports = {
     }
 
     try {
-     
+    
       const guildCount = client.guilds.cache.size;
       const userCount = client.guilds.cache.reduce(
         (acc, guild) => acc + (guild.memberCount || 0),
