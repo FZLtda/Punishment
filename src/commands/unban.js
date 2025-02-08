@@ -4,7 +4,7 @@ const { logModerationAction } = require('../utils/moderationUtils');
 module.exports = {
   name: 'unban',
   description: 'Desbane um membro do servidor.',
-  usage: 'unban <ID>',
+  usage: '${currentPrefix}unban <ID>',
   permissions: 'Banir Membros',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
