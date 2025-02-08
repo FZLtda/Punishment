@@ -10,7 +10,7 @@ module.exports = {
         activities: [
           {
             name: '.help',
-            type: 0,
+            type: 'PLAYING',
           },
         ],
       });
@@ -21,7 +21,7 @@ module.exports = {
     }
 
     try {
-      
+
       const guildCount = client.guilds.cache.size;
       const userCount = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);
 
