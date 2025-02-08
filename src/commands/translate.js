@@ -4,8 +4,8 @@ const fetch = require('node-fetch');
 module.exports = {
   name: 'translate',
   description: 'Traduz um texto para o idioma especificado.',
-  usage: 'translate <idioma_destino> <texto>',
-  permissions: 'Nenhuma',
+  usage: '${currentPrefix}translate <idioma_destino> <texto>',
+  permissions: 'Enviar Mensagens',
   async execute(message, args) {
     if (args.length < 2) {
       const embedErroMinimo = new EmbedBuilder()
