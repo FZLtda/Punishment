@@ -5,8 +5,8 @@ require('dotenv').config();
 module.exports = {
   name: 'github',
   description: 'Busca informações detalhadas sobre um repositório do GitHub.',
-  usage: 'github <usuário/repositório>',
-  permissions: 'Nenhuma',
+  usage: '${currentPrefix}github <usuário/repositório>',
+  permissions: 'Enviar Mensagens',
   async execute(message, args) {
     if (!args[0] || typeof args[0] !== 'string') {
       const embedErroMinimo = new EmbedBuilder()
