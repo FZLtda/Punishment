@@ -4,7 +4,7 @@ const { logModerationAction } = require('../utils/moderationUtils');
 module.exports = {
   name: 'mute',
   description: 'Aplica um timeout (mute) em um membro.',
-  usage: 'mute <@usuário> <duração> [motivo]',
+  usage: '${currentPrefix}mute <@usuário> <duração> [motivo]',
   permissions: 'Moderar Membros',
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
