@@ -1,0 +1,18 @@
+const Database = require('better-sqlite3');
+const path = require('path');
+
+const dbPath = path.resolve(__dirname, '../data/database.sqlite');
+const db = new Database(dbPath);
+
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS warnings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    guild_id TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    moderator_id TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    timestamp INTEGER NOT NULL
+  )
+`).run();
+
+console.log('Tabela warnings criada/verificada com sucesso.');
