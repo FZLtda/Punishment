@@ -43,8 +43,9 @@ module.exports = {
 
     const reason = args.slice(1).join(' ') || 'Sem motivo especificado';
 
+    // Usar timestamp em segundos (dividido por 1000)
     db.prepare('INSERT INTO warnings (guild_id, user_id, moderator_id, reason, timestamp) VALUES (?, ?, ?, ?, ?)')
-      .run(message.guild.id, user.id, message.author.id, reason, Date.now());
+      .run(message.guild.id, user.id, message.author.id, reason, Math.floor(Date.now() / 1000));
 
     const embedSucesso = new EmbedBuilder()
       .setColor('#f5a623')
