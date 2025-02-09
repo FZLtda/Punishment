@@ -1,6 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 const { getPrefix, setPrefix } = require('../utils/prefixes');
+const { Configuration, OpenAIApi } = require('openai');
+
+// 🔹 Configuração da OpenAI para moderação automática
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
 
 const acceptedUsersPath = path.resolve(__dirname, '../data/acceptedUsers.json');
 if (!fs.existsSync(acceptedUsersPath)) {
@@ -13,12 +20,40 @@ module.exports = {
     if (message.author.bot || !message.guild) return;
 
     const prefix = getPrefix(message.guild.id);
-    if (!message.content.startsWith(prefix)) return;
+    if (!message.content.startsWith(prefix)) {
+      // 🔹 Moderação automática com ChatGPT
+      try {
+        const response = await openai.createChatCompletion({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            {
+              role: 'system',
+              content:
+                'Você é um moderador de mensagens no Discord. Se a mensagem contém linguagem ofensiva, spam ou links não permitidos, responda "Inapropriado". Caso contrário, responda "Apropriado".',
+            },
+            { role: 'user', content: message.content },
+          ],
+        });
+
+        const result = response.data.choices[0].message.content.trim();
+
+        if (result === 'Inapropriado') {
+          await message.delete();
+          await message.channel.send(
+            `<@${message.author.id}>, sua mensagem foi removida por violar as regras.`
+          );
+          console.log(`[MODERAÇÃO] Mensagem deletada: "${message.content}"`);
+          return;
+        }
+      } catch (error) {
+        console.error('[ERROR] Falha ao analisar mensagem:', error);
+      }
+    }
 
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
-
     const command = client.commands.get(commandName);
+
     if (!command) return;
 
     const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
@@ -71,7 +106,7 @@ module.exports = {
             fs.writeFileSync(acceptedUsersPath, JSON.stringify(acceptedUsers, null, 2));
 
             await interaction.reply({
-              content: '<:1000042885:1336044571125354496> Você aceitou os Termos de Uso. Agora pode usar o Punishment!',
+              content: ':1000042885: Você aceitou os Termos de Uso. Agora pode usar o Punishment!',
               ephemeral: true,
             });
 
