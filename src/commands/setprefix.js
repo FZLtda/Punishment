@@ -11,7 +11,14 @@ module.exports = {
         }
 
         if (!args[0] || args[0].length > 5) {
-            return message.reply('<:no:1122370713932795997> Por favor, forneça um prefixo válido (máximo de 5 caracteres).');
+            const embedErroMinimo = new EmbedBuilder()
+                .setColor('#FF4C4C')
+                .setAuthor({
+                    name: 'Digite um novo prefixo respeitando o limite de 5 caracteres.',
+                    iconURL: 'http://bit.ly/4aIyY9j',
+                });
+
+            return message.reply({ embeds: [embedErroMinimo] });
         }
 
         const newPrefix = args[0];
@@ -27,7 +34,14 @@ module.exports = {
             return message.channel.send({ embeds: [embed] });
         } catch (error) {
             console.error('Erro ao alterar o prefixo:', error);
-            return message.reply('<:no:1122370713932795997> Não foi possível alterar o prefixo.');
+            const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível alterar o prefixo devido a um erro.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+        return message.reply({ embeds: [embedErroMinimo] });
         }
     },
 };
