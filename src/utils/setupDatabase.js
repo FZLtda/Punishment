@@ -2,7 +2,6 @@ const Database = require('better-sqlite3');
 const path = require('path');
 
 const dbPath = path.resolve(__dirname, '../data/database.sqlite');
-
 const db = new Database(dbPath);
 
 db.prepare(`
@@ -12,9 +11,8 @@ db.prepare(`
     guild_id TEXT NOT NULL,
     reason TEXT NOT NULL,
     moderator_id TEXT NOT NULL,
-    timestamp TEXT NOT NULL
+    timestamp INTEGER NOT NULL
   )
 `).run();
 
-console.log('Tabela warnings criada ou já existente.');
-db.close();
+console.log('Tabela warnings recriada com sucesso.');
