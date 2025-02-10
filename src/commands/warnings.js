@@ -28,7 +28,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setColor('#00FF00')
         .setTitle('Sem Avisos')
-        .setDescription(`O usuário ${user} não possui avisos.`)
+        .setDescription(`${user} não possui avisos.`)
         .setFooter({
           text: message.author.username,
           iconURL: message.author.displayAvatarURL(),
@@ -40,7 +40,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor('#FFA500')
-      .setTitle(`Avisos para ${user.user.tag}`)
+      .setTitle(`Avisos para ${user.displayName}`)
       .setDescription(
         warnings
           .map(
