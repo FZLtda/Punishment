@@ -6,7 +6,7 @@ module.exports = {
   description: 'Gerencia sorteios no servidor.',
   usage: '${currentPrefix}giveaway start <tempo> <ganhadores> <prêmio>',
   permissions: 'Gerenciar Servidor',
-  
+
   async execute(message, args) {
     if (!message.member.permissions.has('ManageGuild')) {
       const embedErro = new EmbedBuilder()
@@ -45,7 +45,7 @@ module.exports = {
 
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder().setCustomId('participar').setLabel('Participar 🎟').setStyle(ButtonStyle.Primary),
-      new ButtonBuilder().setCustomId('ver_participantes').setLabel('👥 Participantes').setStyle(ButtonStyle.Secondary)
+      new ButtonBuilder().setCustomId('ver_participantes').setLabel('👥 Participantes: 0').setStyle(ButtonStyle.Secondary).setDisabled(true)
     );
 
     const giveawayMessage = await message.channel.send({ embeds: [embed], components: [row] });
@@ -64,7 +64,6 @@ module.exports = {
       JSON.stringify([])
     );
 
-    
     message.delete().catch(() => null);
   },
 };
