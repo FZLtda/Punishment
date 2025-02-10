@@ -1,86 +1,121 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const db = require('../data/database');
+const ms = require('ms');
+
+const giveaways = new Map();
 
 module.exports = {
   name: 'giveaway',
   description: 'Gerencia sorteios no servidor.',
-  usage: '${currentPrefix}giveaway start <tempo> <ganhadores> <prêmio>',
+  usage: '.giveaway <start|end> <tempo> <vencedores> <prêmio>',
   permissions: 'Gerenciar Servidor',
-  
   async execute(message, args) {
-    if (!message.member.permissions.has('ManageGuild')) {
-      const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({ name: 'Você não tem permissão para iniciar um sorteio!',
-        iconURL: 'http://bit.ly/4aIyY9j' });
-
-      return message.reply({ embeds: [embedErro] });
+    if (!message.member.permissions.has('MANAGE_GUILD')) {
+      return message.reply({ content: 'Você não tem permissão para gerenciar sorteios.', ephemeral: true });
     }
 
-    if (args[0] !== 'start') return;
-
-    const timeInput = args[1];
-    const winnerCount = parseInt(args[2]);
-    const prize = args.slice(3).join(' ');
-
-    if (!timeInput || !winnerCount || !prize) {
-      const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({ name: 'Uso correto: .giveaway start <tempo> <ganhadores> <prêmio>',
-        iconURL: 'http://bit.ly/4aIyY9j' });
-
-      return message.reply({ embeds: [embedErro] });
+    if (!args.length) {
+      return message.reply('Uso correto: `.giveaway <start|end> <tempo> <vencedores> <prêmio>`');
     }
 
-    const durationMs = convertTimeToMs(timeInput);
-    if (!durationMs) {
-      return message.reply({ content: 'Formato de tempo inválido! Use `1m`, `1h`, `1d`.' });
+    const subcommand = args.shift().toLowerCase();
+
+    if (subcommand === 'start') {
+      if (args.length < 3) {
+        return message.reply('Uso correto: `.giveaway start <tempo> <vencedores> <prêmio>`');
+      }
+
+      const duration = ms(args[0]);
+      const winnersCount = parseInt(args[1]);
+      const prize = args.slice(2).join(' ');
+
+      if (isNaN(duration) || duration <= 0) {
+        return message.reply('O tempo do sorteio deve ser válido, ex: `1h`, `30m`, `2d`.');
+      }
+      if (isNaN(winnersCount) || winnersCount < 1) {
+        return message.reply('O número de vencedores deve ser pelo menos `1`.');
+      }
+
+      
+      const embed = new EmbedBuilder()
+        .setTitle('🎉 Sorteio Iniciado!')
+        .setDescription(`🎁 **Prêmio:** ${prize}\n⏳ **Duração:** ${args[0]}\n🏆 **Vencedores:** ${winnersCount}\n\nClique no botão para participar!`)
+        .setColor('#FFD700')
+        .setFooter({ text: `Iniciado por ${message.author.tag}` })
+        .setTimestamp(Date.now() + duration);
+
+      
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setCustomId('join_giveaway')
+          .setLabel('🎟️ Participar')
+          .setStyle(ButtonStyle.Success)
+      );
+
+      const giveawayMessage = await message.channel.send({ embeds: [embed], components: [row] });
+
+      
+      giveaways.set(giveawayMessage.id, {
+        messageId: giveawayMessage.id,
+        channelId: message.channel.id,
+        guildId: message.guild.id,
+        prize,
+        winnersCount,
+        endTime: Date.now() + duration,
+        participants: [],
+      });
+
+      
+      message.delete().catch(() => null);
+
+      
+      setTimeout(() => finalizeGiveaway(giveawayMessage.id, message.client), duration);
     }
 
-    const endTime = Date.now() + durationMs;
+    if (subcommand === 'end') {
+      if (!args.length) {
+        return message.reply('Uso correto: `.giveaway end <ID da mensagem>`');
+      }
 
-    const embed = new EmbedBuilder()
-      .setTitle('🎉 Novo Sorteio!')
-      .setDescription(`🔹 **Prêmio:** ${prize}\n🎟 **Vencedores:** ${winnerCount}\n⏳ **Termina em:** <t:${Math.floor(endTime / 1000)}:R>`)
-      .setColor('#00FF00')
-      .setFooter({ text: 'Clique no botão para participar!' });
+      const messageId = args[0];
+      const giveaway = giveaways.get(messageId);
 
-    const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setCustomId('participar').setLabel('Participar 🎟').setStyle(ButtonStyle.Primary),
-      new ButtonBuilder().setCustomId('ver_participantes').setLabel('👥 Participantes').setStyle(ButtonStyle.Secondary)
-    );
+      if (!giveaway) {
+        return message.reply('Nenhum sorteio encontrado com esse ID.');
+      }
 
-    const giveawayMessage = await message.channel.send({ embeds: [embed], components: [row] });
+      finalizeGiveaway(messageId, message.client);
 
-    db.prepare(`
-      INSERT INTO giveaways (guild_id, channel_id, message_id, prize, duration, winners, end_time, participants)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(
-      message.guild.id,
-      message.channel.id,
-      giveawayMessage.id,
-      prize,
-      durationMs,
-      winnerCount,
-      endTime,
-      JSON.stringify([])
-    );
+      
+      message.delete().catch(() => null);
+    }
   },
 };
 
-function convertTimeToMs(time) {
-  const regex = /^(\d+)([smhd])$/;
-  const match = time.match(regex);
-  if (!match) return null;
 
-  const value = parseInt(match[1]);
-  const unit = match[2];
+async function finalizeGiveaway(messageId, client) {
+  const giveaway = giveaways.get(messageId);
+  if (!giveaway) return;
 
-  switch (unit) {
-    case 's': return value * 1000;
-    case 'm': return value * 60000;
-    case 'h': return value * 3600000;
-    case 'd': return value * 86400000;
-    default: return null;
+  const channel = await client.channels.fetch(giveaway.channelId);
+  if (!channel) return;
+
+  const giveawayMessage = await channel.messages.fetch(giveaway.messageId);
+  if (!giveawayMessage) return;
+
+  const winners = giveaway.participants.sort(() => Math.random() - 0.5).slice(0, giveaway.winnersCount);
+
+  const embed = EmbedBuilder.from(giveawayMessage.embeds[0])
+    .setTitle('🎉 Sorteio Encerrado!')
+    .setColor('#FF5733')
+    .setDescription(`🎁 **Prêmio:** ${giveaway.prize}\n🏆 **Vencedores:** ${winners.length ? winners.map((w) => `<@${w}>`).join(', ') : 'Nenhum vencedor'}`);
+
+  giveawayMessage.edit({ embeds: [embed], components: [] });
+
+  giveaways.delete(messageId);
+
+  if (winners.length) {
+    channel.send(`🎊 Parabéns ${winners.map((w) => `<@${w}>`).join(', ')}! Vocês ganharam **${giveaway.prize}**!`);
+  } else {
+    channel.send('😢 Nenhum vencedor foi selecionado.');
   }
 }
