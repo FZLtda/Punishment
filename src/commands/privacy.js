@@ -6,16 +6,8 @@ module.exports = {
   usage: '${currentPrefix}privacy',
   permissions: 'Enviar Mensagens',
   execute: async (message) => {
-    const updatedDate = new Date();
-    const formattedDate = updatedDate.toLocaleString('pt-BR', {
-      timeZone: 'America/Sao_Paulo',
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+   
+    const lastUpdated = 'segunda-feira, 5 de fevereiro de 2025, 15:30';
 
     const embed = new EmbedBuilder()
       .setColor(0x00aaff)
@@ -42,7 +34,7 @@ module.exports = {
       )
       .addFields({
         name: '<:1000043158:1336324199202947144> Última Atualização',
-        value: `Esta política foi atualizada em: **${formattedDate}**`,
+        value: `Esta política foi atualizada em: **${lastUpdated}**`,
       })
       .setFooter({
         text: 'Punishment',
