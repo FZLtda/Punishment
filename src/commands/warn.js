@@ -1,5 +1,5 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const db = require('../utils/database');
+const db = require('../data/database');
 
 module.exports = {
   name: 'warn',
