@@ -4,7 +4,7 @@ const db = require('../data/database');
 module.exports = {
   name: 'warnings',
   description: 'Lista os avisos de um usuário no servidor.',
-  usage: '<prefix>warnings <@usuário>',
+  usage: '${currentPrefix}warnings <@usuário>',
   permissions: 'Gerenciar Mensagens',
   async execute(message, args) {
     
@@ -38,7 +38,6 @@ module.exports = {
       return message.reply({ embeds: [embed] });
     }
 
-    // Exibe os avisos em uma embed
     const embed = new EmbedBuilder()
       .setColor('#FFA500')
       .setTitle(`Avisos para ${user.user.tag}`)

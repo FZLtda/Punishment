@@ -4,7 +4,7 @@ const db = require('../data/database');
 module.exports = {
   name: 'warn',
   description: 'Adiciona um aviso a um usuário no servidor.',
-  usage: '<prefix>warn <@usuário> [motivo]',
+  usage: '${currentPrefix}warn <@usuário> [motivo]',
   permissions: 'Gerenciar Mensagens',
   async execute(message, args) {
   
