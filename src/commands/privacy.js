@@ -7,7 +7,7 @@ module.exports = {
   permissions: 'Enviar Mensagens',
   execute: async (message) => {
    
-    const lastUpdated = '<t:1739150460:f>';
+    const lastUpdated = '<t:1725585840:f>';
 
     const embed = new EmbedBuilder()
       .setColor(0x00aaff)
