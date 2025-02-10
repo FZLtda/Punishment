@@ -26,4 +26,19 @@ db.prepare(`
   )
 `).run();
 
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS giveaways (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    guild_id TEXT NOT NULL,
+    channel_id TEXT NOT NULL,
+    message_id TEXT NOT NULL,
+    prize TEXT NOT NULL,
+    duration INTEGER NOT NULL,
+    winners INTEGER NOT NULL,
+    end_time INTEGER NOT NULL,
+    participants TEXT DEFAULT '[]'
+  )
+`).run();
+
+
 module.exports = db;
