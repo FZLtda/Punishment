@@ -30,7 +30,7 @@ module.exports = {
       
       const updatedRow = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('participar').setLabel('Participar 🎟').setStyle(ButtonStyle.Primary),
-        new ButtonBuilder().setCustomId('ver_participantes').setLabel(`👥 Participantes: ${participants.length}`).setStyle(ButtonStyle.Secondary.setDisabled(true)
+        new ButtonBuilder().setCustomId('ver_participantes').setLabel('👥 Participantes: 0').setStyle(ButtonStyle.Secondary).setDisabled(true)
       );
 
       await interaction.message.edit({ components: [updatedRow] });
