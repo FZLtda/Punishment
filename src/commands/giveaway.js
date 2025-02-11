@@ -39,7 +39,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setTitle('Novo Sorteio')
-      .setDescription(`**Prêmio:** \`${prize}\`\n**Ganhadores:** \`${winnerCount}\`\n**Termina:** <t:${Math.floor(endTime / 1000)}:R>`)
+      .setDescription(`**Prêmio:** \`${prize}\`\n**Ganhadores:** \`${winnerCount}\`\n**Termina:** <t:${Math.floor(endTime / 1000)}:f> (<t:${Math.floor(endTime / 1000)}:R>)`)
       .setColor('#FE3838')
       .setFooter({ text: 'Clique no botão para participar!' });
 
