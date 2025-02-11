@@ -33,6 +33,7 @@ module.exports = {
       );
 
       await interaction.message.edit({ components: [updatedRow] });
+      return interaction.reply({ content: 'Você agora está participando do sorteio.', ephemeral: true });
     }
 
     if (interaction.customId === 'ver_participantes') {
