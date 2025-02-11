@@ -15,7 +15,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const member = message.mentions.members.first();
@@ -29,7 +29,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (role.position >= message.guild.members.me.roles.highest.position) {
@@ -40,7 +40,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (member.roles.cache.has(role.id)) {
@@ -51,7 +51,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -68,8 +68,7 @@ module.exports = {
             .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
             .setFooter({ text: `${message.author.tag}`, iconURL: message.author.displayAvatarURL() })
             .setTimestamp()
-        ]
-      });
+        ], allowedMentions: { repliedUser: false } });
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
@@ -79,7 +78,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   }
 };
