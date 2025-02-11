@@ -21,19 +21,19 @@ module.exports = {
 
     if (interaction.customId === 'participar') {
       if (participants.includes(interaction.user.id)) {
-        return interaction.reply({ content: 'Você já está participando!', ephemeral: true });
+        return interaction.reply({ content: '<:1000042883:1336044555354771638> Você já está concorrendo neste sorteio!', ephemeral: true });
       }
 
       participants.push(interaction.user.id);
       db.prepare('UPDATE giveaways SET participants = ? WHERE message_id = ?').run(JSON.stringify(participants), interaction.message.id);
 
       const updatedRow = new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId('participar').setLabel('Participar 🎟').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('participar').setLabel('🎟 Participar').setStyle(ButtonStyle.Primary),
         new ButtonBuilder().setCustomId('ver_participantes').setLabel(`👥 Participantes: ${participants.length}`).setStyle(ButtonStyle.Secondary).setDisabled(true) // 🔒 Botão desativado
       );
 
       await interaction.message.edit({ components: [updatedRow] });
-      return interaction.reply({ content: 'Você agora está participando do sorteio.', ephemeral: true });
+      return interaction.reply({ content: '<:1000042885:1336044571125354496> Sua entrada no sorteio foi registrada!', ephemeral: true });
     }
 
     if (interaction.customId === 'ver_participantes') {

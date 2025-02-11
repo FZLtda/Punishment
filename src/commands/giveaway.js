@@ -11,7 +11,7 @@ module.exports = {
     if (!message.member.permissions.has('ManageGuild')) {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
-        .setAuthor({ name: 'Você não tem permissão para iniciar um sorteio!', iconURL: 'http://bit.ly/4aIyY9j' });
+        .setAuthor({ name: 'Você não possui permissão para usar este comando.', iconURL: 'http://bit.ly/4aIyY9j' });
 
       return message.reply({ embeds: [embedErro] });
     }
@@ -38,13 +38,13 @@ module.exports = {
     const endTime = Date.now() + durationMs;
 
     const embed = new EmbedBuilder()
-      .setTitle('🎉 Novo Sorteio!')
-      .setDescription(`🔹 **Prêmio:** ${prize}\n🎟 **Vencedores:** ${winnerCount}\n⏳ **Termina em:** <t:${Math.floor(endTime / 1000)}:R>`)
+      .setTitle('Novo Sorteio!')
+      .setDescription(`🔹 **Prêmio:** ${prize}\n🎟 **Ganhadores:** ${winnerCount}\n⏳ **Termina:** <t:${Math.floor(endTime / 1000)}:R>`)
       .setColor('#00FF00')
       .setFooter({ text: 'Clique no botão para participar!' });
 
     const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setCustomId('participar').setLabel('Participar 🎟').setStyle(ButtonStyle.Primary),
+      new ButtonBuilder().setCustomId('participar').setLabel('🎟 Participar').setStyle(ButtonStyle.Primary),
       new ButtonBuilder().setCustomId('ver_participantes').setLabel('👥 Participantes: 0').setStyle(ButtonStyle.Secondary).setDisabled(true)
     );
 
