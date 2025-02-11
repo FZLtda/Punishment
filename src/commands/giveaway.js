@@ -65,6 +65,10 @@ module.exports = {
     );
 
     message.delete().catch(() => null);
+
+    setTimeout(() => {
+      finalizeGiveaway(giveawayMessage.id, message.guild.id);
+    }, durationMs);
   },
 };
 
@@ -83,4 +87,47 @@ function convertTimeToMs(time) {
     case 'd': return value * 86400000;
     default: return null;
   }
+}
+
+async function finalizeGiveaway(messageId, guildId) {
+  const giveaway = db.prepare('SELECT * FROM giveaways WHERE message_id = ?').get(messageId);
+  if (!giveaway) return;
+
+  let participants = JSON.parse(giveaway.participants);
+  let winnerCount = giveaway.winners;
+
+  const channel = await client.channels.fetch(giveaway.channel_id);
+  if (!channel) return;
+
+  const message = await channel.messages.fetch(giveaway.message_id);
+  if (!message) return;
+
+  let winners = [];
+  if (participants.length > 0) {
+    for (let i = 0; i < winnerCount && participants.length > 0; i++) {
+      const randomIndex = Math.floor(Math.random() * participants.length);
+      winners.push(`<@${participants[randomIndex]}>`);
+      participants.splice(randomIndex, 1);
+    }
+  }
+
+  const embed = new EmbedBuilder()
+    .setTitle('🎉 Sorteio Finalizado!')
+    .setDescription(
+      `🔹 **Prêmio:** ${giveaway.prize}\n` +
+      `🎟 **Participantes:** ${participants.length}\n` +
+      `🏆 **Vencedores:** ${winners.length > 0 ? winners.join(', ') : 'Nenhum vencedor'}`
+    )
+    .setColor('#FFD700')
+    .setFooter({ text: 'Sorteio encerrado!' });
+
+  await message.edit({ embeds: [embed], components: [] });
+
+  if (winners.length > 0) {
+    await channel.send(`🎉 Parabéns ${winners.join(', ')}! Vocês ganharam **${giveaway.prize}**!`);
+  } else {
+    await channel.send('😢 Nenhum vencedor foi escolhido porque ninguém participou.');
+  }
+
+  db.prepare('DELETE FROM giveaways WHERE message_id = ?').run(messageId);
 }
