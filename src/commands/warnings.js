@@ -16,7 +16,7 @@ module.exports = {
           name: 'Mencione um usuário para visualizar os avisos.',
           iconURL: 'http://bit.ly/4aIyY9j',
         });
-      return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     
@@ -35,7 +35,7 @@ module.exports = {
         })
         .setTimestamp();
 
-      return message.reply({ embeds: [embed] });
+      return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
     const embed = new EmbedBuilder()
@@ -58,6 +58,6 @@ module.exports = {
       })
       .setTimestamp();
 
-    message.reply({ embeds: [embed] });
+    message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
   },
 };

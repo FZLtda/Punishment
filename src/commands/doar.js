@@ -15,7 +15,7 @@ module.exports = {
                     iconURL: 'http://bit.ly/4aIyY9j'
                 });
 
-            return message.reply({ embeds: [embedErro] });
+            return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
         }
 
         const valor = parseFloat(args[0]) * 100;
@@ -27,7 +27,7 @@ module.exports = {
                     iconURL: 'http://bit.ly/4aIyY9j'
                 });
 
-            return message.reply({ embeds: [embedErroMinimo] });
+            return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
         }
 
         try {
@@ -67,12 +67,12 @@ module.exports = {
                 )
                 .setFooter({ text: 'Seu apoio ajuda a me manter ativo!' });
 
-            const donationMessage = await message.reply({ embeds: [embed], components: [row] });
+            const donationMessage = await message.reply({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
 
             
             setTimeout(() => {
                 donationMessage.delete().catch(console.error);
-            }, 120000); // 120000ms = 2 minutos
+            }, 120000);
 
         } catch (error) {
             console.error('Erro ao criar a sessão de pagamento:', error);
@@ -84,7 +84,7 @@ module.exports = {
                     iconURL: 'http://bit.ly/4aIyY9j'
                 });
 
-            await message.reply({ embeds: [embedErro] });
+            await message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
         }
     }
 };

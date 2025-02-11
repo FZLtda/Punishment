@@ -69,7 +69,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

@@ -18,7 +18,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -32,7 +32,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       const response = await fetch(
@@ -48,7 +48,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       const gifUrl = data.data[0].images.original.url;
@@ -69,7 +69,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

@@ -21,7 +21,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
         });
 
-      return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -44,7 +44,7 @@ module.exports = {
               iconURL: 'http://bit.ly/4aIyY9j'
             });
 
-          return message.reply({ embeds: [embedErroMinimo] });
+          return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
         } else {
           const embedErroMinimo = new EmbedBuilder()
             .setColor('#FF4C4C')
@@ -53,7 +53,7 @@ module.exports = {
               iconURL: 'http://bit.ly/4aIyY9j'
             });
 
-          return message.reply({ embeds: [embedErroMinimo] });
+          return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
         }
       } else {
         const embedErroMinimo = new EmbedBuilder()
@@ -63,7 +63,7 @@ module.exports = {
             iconURL: 'http://bit.ly/4aIyY9j'
           });
 
-        return message.reply({ embeds: [embedErroMinimo] });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
     }
   },

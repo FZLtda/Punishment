@@ -24,7 +24,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
-      return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (!args.length) {
@@ -35,7 +35,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
-      return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const question = args.join(' ');
@@ -48,7 +48,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
-      return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -66,7 +66,7 @@ module.exports = {
             iconURL: 'http://bit.ly/4aIyY9j',
           });
 
-        return message.reply({ embeds: [embedErroMinimo] });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       const thinkingMessage = await thread.send(
@@ -118,7 +118,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
-      return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

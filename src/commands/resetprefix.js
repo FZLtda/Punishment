@@ -15,7 +15,7 @@ module.exports = {
                     iconURL: 'http://bit.ly/4aIyY9j',
                 });
 
-            return message.reply({ embeds: [embedErroMinimo] });
+            return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
         }
 
         try {
@@ -24,7 +24,7 @@ module.exports = {
 
             const embed = new EmbedBuilder()
                 .setTitle('Prefixo Redefinido')
-                .setDescription('<:emoji_33:1219788320234803250> Prefixo redefinido para o padrão: `.`')
+                .setDescription('<:1000042885:1336044571125354496> Prefixo redefinido para o padrão: `.`')
                 .setColor('#00FF00');
 
             message.channel.send({ embeds: [embed] });
@@ -34,11 +34,11 @@ module.exports = {
             const embedErro = new EmbedBuilder()
                 .setColor('#FF4C4C')
                 .setAuthor({
-                    name: 'Não foi possível redefinir o prefixo.',
+                    name: 'Não foi possível redefinir o prefixo para o padrão devido a um erro.',
                     iconURL: 'http://bit.ly/4aIyY9j',
                 });
 
-            return message.reply({ embeds: [embedErro] });
+            return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
         }
     },
 };

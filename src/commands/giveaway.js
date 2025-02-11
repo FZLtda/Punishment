@@ -13,7 +13,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({ name: 'Você não possui permissão para usar este comando.', iconURL: 'http://bit.ly/4aIyY9j' });
 
-      return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     if (args[0] !== 'start') return;
@@ -27,7 +27,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({ name: 'Uso correto: .giveaway start <tempo> <ganhadores> <prêmio>', iconURL: 'http://bit.ly/4aIyY9j' });
 
-      return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     const durationMs = convertTimeToMs(timeInput);

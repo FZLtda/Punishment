@@ -21,7 +21,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -70,7 +70,7 @@ module.exports = {
       logModerationAction(message.guild.id,message.author.id, 'Backup', guild.id, 'Backup completo do servidor criado');
 
       const embed = new EmbedBuilder()
-        .setTitle('<:1000042902:1336071814761152702> Backup Criado com Sucesso')
+        .setTitle('<:1000042885:1336044571125354496> Backup Criado com Sucesso')
         .setColor('Green')
         .setDescription('As informações do servidor foram salvas com sucesso!')
         .addFields({ name: 'Servidor', value: `${guild.name}`, inline: true })
@@ -94,7 +94,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

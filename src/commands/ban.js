@@ -15,7 +15,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
@@ -29,7 +29,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (!membro.bannable) {
@@ -40,7 +40,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -62,7 +62,7 @@ module.exports = {
         })
         .setTimestamp();
 
-      return message.channel.send({ embeds: [embed] });
+      return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
@@ -72,7 +72,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

@@ -16,7 +16,7 @@ module.exports = {
                 iconURL: 'http://bit.ly/4aIyY9j'
             });
       
-        return message.reply({ embeds: [embedErroMinimo] });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const attachment = message.attachments.first();
@@ -28,7 +28,7 @@ module.exports = {
                 iconURL: 'http://bit.ly/4aIyY9j'
             });
       
-        return message.reply({ embeds: [embedErroMinimo] });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -43,7 +43,7 @@ module.exports = {
                 iconURL: 'http://bit.ly/4aIyY9j'
             });
       
-        return message.reply({ embeds: [embedErroMinimo] });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       const guild = message.guild;
@@ -133,7 +133,7 @@ module.exports = {
       );
 
       const embed = new EmbedBuilder()
-        .setTitle('<:emoji_48:1324013629884076083> Restauração Completa')
+        .setTitle('<:1000042885:1336044571125354496> Restauração Completa')
         .setColor('Green')
         .setDescription('O estado do servidor foi restaurado com sucesso a partir do backup fornecido!')
         .addFields(
@@ -156,7 +156,7 @@ module.exports = {
                 iconURL: 'http://bit.ly/4aIyY9j'
             });
       
-        return message.reply({ embeds: [embedErroMinimo] });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

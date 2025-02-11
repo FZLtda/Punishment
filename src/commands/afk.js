@@ -36,8 +36,8 @@ module.exports = {
                             .setDescription('Seu status **AFK** foi removido.')
                             .setFooter({ text: `${msg.author.tag}`, iconURL: msg.author.displayAvatarURL() })
                             .setTimestamp()
-                    ]
-                });
+                    ], allowedMentions: { repliedUser: false } });
+
             }
         });
 
@@ -54,8 +54,8 @@ module.exports = {
                                     .setDescription(`**${mentionedUser.displayName}** está atualmente **AFK**.\n**Motivo:** ${reason}`)
                                     .setThumbnail(mentionedUser.user.displayAvatarURL({ dynamic: true }))
                                     .setTimestamp()
-                            ]
-                        });
+                            ], allowedMentions: { repliedUser: false } });
+                        
                     }
                 });
             }

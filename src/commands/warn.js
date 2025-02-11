@@ -15,7 +15,7 @@ module.exports = {
           name: 'Você não tem permissão para usar este comando.',
           iconURL: 'http://bit.ly/4aIyY9j',
         });
-      return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     const user = message.mentions.members.first();
@@ -26,7 +26,7 @@ module.exports = {
           name: 'Mencione um usuário para aplicar o aviso.',
           iconURL: 'http://bit.ly/4aIyY9j',
         });
-      return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     const reason = args.slice(1).join(' ') || 'Nenhum motivo especificado';
@@ -50,6 +50,6 @@ module.exports = {
       })
       .setTimestamp();
 
-    message.reply({ embeds: [embed] });
+    message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
   },
 };

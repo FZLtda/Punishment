@@ -15,7 +15,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
-      return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const targetLanguage = args.shift().toLowerCase();
@@ -66,7 +66,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
-      return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
   },
 };

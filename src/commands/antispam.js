@@ -22,7 +22,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const option = args[0]?.toLowerCase();
@@ -36,7 +36,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const settings = JSON.parse(fs.readFileSync(path, 'utf8'));
@@ -55,7 +55,7 @@ module.exports = {
         })
         .setTimestamp();
 
-      return message.channel.send({ embeds: [embed] });
+      return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
     if (option === 'off') {
@@ -72,7 +72,7 @@ module.exports = {
         })
         .setTimestamp();
 
-      return message.channel.send({ embeds: [embed] });
+      return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
   },
 
@@ -129,7 +129,7 @@ module.exports = {
             })
             .setTimestamp();
 
-          message.channel.send({ embeds: [embed] });
+          message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
         } catch (error) {
           console.error('Erro ao processar antispam:', error);
         }

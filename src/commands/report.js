@@ -43,7 +43,7 @@ module.exports = {
           .setStyle('Danger')
       );
 
-      await message.reply({ embeds: [embed], components: [buttonRow] });
+      await message.reply({ embeds: [embed], components: [buttonRow], allowedMentions: { repliedUser: false } });
 
       message.client.on('interactionCreate', async (interaction) => {
         if (interaction.isButton() && interaction.customId === 'open-report-modal') {
@@ -90,17 +90,17 @@ module.exports = {
             message: {
               embeds: [threadEmbed],
             },
-            reason: `Problema reportado por ${interaction.user.tag} do servidor ${interaction.guild.name}`,
+            reason: `Problema reportado por ${interaction.user.tag}`,
           });
 
           await interaction.reply({
-            content: `<:emoji_33:1219788320234803250> Problema reportado com sucesso no servidor de suporte principal. Obrigado por nos avisar!`,
+            content: `<:1000042885:1336044571125354496> Problema reportado com sucesso no servidor de suporte principal. Obrigado por nos avisar!`,
             ephemeral: true,
           });
         }
       });
     } catch (error) {
-      console.error(`<:no:1122370713932795997> Erro ao executar o comando report: ${error.message}`);
+      console.error(`Erro ao executar o comando report: ${error.message}`);
       const embedErro = new EmbedBuilder()
                 .setColor('#FF4C4C')
                 .setAuthor({
@@ -108,7 +108,7 @@ module.exports = {
                     iconURL: 'http://bit.ly/4aIyY9j'
                 });
 
-            return message.reply({ embeds: [embedErro] });
+            return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
   },
 };

@@ -27,7 +27,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
         }
 
         if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
@@ -38,7 +38,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
         }
 
         if (!args[0]) {
@@ -49,7 +49,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
         }
         
         const roleName = args[0];
@@ -75,7 +75,7 @@ module.exports = {
                 name: roleName,
                 color: roleColor,
                 permissions: resolvedPermissions.bitfield,
-                reason: `Criado por ${message.author.tag} usando o comando !createrole`,
+                reason: `Criado por ${message.author.displayName}`,
             });
 
             const embed = new EmbedBuilder()
@@ -99,7 +99,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
         }
     },
 };

@@ -22,7 +22,14 @@ module.exports = {
       await message.reply({ embeds: [avatarEmbed] });
     } catch (error) {
       console.error(error);
-      message.reply('<:no:1122370713932795997> Ocorreu um erro ao tentar exibir o avatar.');
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível obter o avatar do usuário devido a um erro.',
+          iconURL: 'http://bit.ly/4aIyY9j'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

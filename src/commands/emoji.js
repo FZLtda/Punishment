@@ -16,7 +16,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
-      return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     const action = args[0]?.toLowerCase();
@@ -28,7 +28,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
-      return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     const emojiInput = args[1];
@@ -40,7 +40,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
-      return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     let emojiName = args[2] || null;
@@ -55,7 +55,7 @@ module.exports = {
               iconURL: 'http://bit.ly/4aIyY9j',
             });
 
-          return message.reply({ embeds: [embedErro] });
+          return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
         }
 
         if (!emojiName) {
@@ -66,7 +66,7 @@ module.exports = {
               iconURL: 'http://bit.ly/4aIyY9j',
             });
 
-          return message.reply({ embeds: [embedErro] });
+          return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
         }
 
         const response = await fetch(emojiInput);
@@ -80,7 +80,7 @@ module.exports = {
               iconURL: 'http://bit.ly/4aIyY9j',
             });
 
-          return message.reply({ embeds: [embedErro] });
+          return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
         }
 
         const addedEmoji = await message.guild.emojis.create({
@@ -111,7 +111,7 @@ module.exports = {
           })
           .setTimestamp();
 
-        return message.reply({ embeds: [embed] }); 
+        return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
       } else if (action === 'copy') {
         const emojiMatch = emojiInput.match(/<a?:\w+:(\d+)>/);
         if (!emojiMatch) {
@@ -122,7 +122,7 @@ module.exports = {
               iconURL: 'http://bit.ly/4aIyY9j',
             });
 
-          return message.reply({ embeds: [embedErro] });
+          return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
         }
 
         const emojiId = emojiMatch[1];
@@ -145,7 +145,7 @@ module.exports = {
               iconURL: 'http://bit.ly/4aIyY9j',
             });
 
-          return message.reply({ embeds: [embedErro] });
+          return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
         }
 
         const copiedEmoji = await message.guild.emojis.create({
@@ -176,7 +176,7 @@ module.exports = {
           })
           .setTimestamp();
 
-        return message.reply({ embeds: [embed] });
+        return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
       }
     } catch (error) {
       console.error(error);
@@ -187,7 +187,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
-      return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
   },
 };

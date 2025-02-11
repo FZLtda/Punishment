@@ -16,7 +16,7 @@ module.exports = {
           name: 'Você precisa enviar um arquivo para tradução junto com este comando.',
           iconURL: 'http://bit.ly/4aIyY9j',
         });
-      return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     if (args.length === 0) {
@@ -26,7 +26,7 @@ module.exports = {
           name: 'Você precisa especificar o idioma de destino. Exemplo: `.translatefile en`',
           iconURL: 'http://bit.ly/4aIyY9j',
         });
-      return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     const targetLanguage = args[0].toUpperCase();
@@ -62,7 +62,7 @@ module.exports = {
             name: 'Ocorreu um erro ao enviar o arquivo para tradução.',
             iconURL: 'http://bit.ly/4aIyY9j',
           });
-        return message.reply({ embeds: [embedErro] });
+        return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
       }
 
       let translationStatus;
@@ -107,7 +107,7 @@ module.exports = {
           iconURL: 'https://bit.ly/3Q2Q8F1',
         });
 
-      await message.reply({ embeds: [embedSucesso] });
+      await message.reply({ embeds: [embedSucesso], allowedMentions: { repliedUser: false } });
 
       
       await message.channel.send({
@@ -125,7 +125,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
-      return message.reply({ embeds: [embedErro] });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
   },
 };

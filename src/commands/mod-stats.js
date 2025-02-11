@@ -15,7 +15,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
-      return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -77,7 +77,7 @@ module.exports = {
         })
         .setTimestamp();
 
-      return message.reply({ embeds: [embed] });
+      return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
     } catch (error) {
       console.error(`[ERROR] Falha ao gerar estatísticas:`, error);
       const embedErroMinimo = new EmbedBuilder()
@@ -87,7 +87,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j',
         });
 
-      return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

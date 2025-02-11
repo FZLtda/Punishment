@@ -59,7 +59,7 @@ module.exports = {
           iconURL: message.client.user.displayAvatarURL(),
         });
 
-      return message.reply({ embeds: [embed] });
+      return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
     } catch (error) {
       console.error('[ERROR] Não foi possível obter as estatísticas:', error);
       const embedErroMinimo = new EmbedBuilder()
@@ -69,7 +69,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo] });
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };
