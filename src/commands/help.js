@@ -16,7 +16,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
         });
 
-      return message.reply({ embeds: [embedErroMinimo] });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (args.length > 0) {
@@ -31,7 +31,7 @@ module.exports = {
             iconURL: 'http://bit.ly/4aIyY9j'
           });
 
-        return message.reply({ embeds: [embedErroMinimo] });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       const currentPrefix = getPrefix(message.guild.id);
@@ -50,7 +50,7 @@ module.exports = {
           iconURL: message.client.user.displayAvatarURL(),
         });
 
-      return message.reply({ embeds: [embed] });
+      return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
     const embed = new EmbedBuilder()
@@ -79,6 +79,6 @@ module.exports = {
         iconURL: message.client.user.displayAvatarURL(),
       });
 
-    return message.reply({ embeds: [embed] });
+    return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
   },
 };
