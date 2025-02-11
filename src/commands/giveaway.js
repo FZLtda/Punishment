@@ -126,9 +126,9 @@ async function finalizeGiveaway(messageId, guildId, client) {
     const embed = new EmbedBuilder()
       .setTitle('Sorteio Finalizado!')
       .setDescription(
-        `**Prêmio:** \`${giveaway.prize}\n` +
-        `**Participantes:** ${totalParticipants}\n` +
-        `**Ganhadores:** ${winners.length > 0 ? winners.join(', ') : 'Nenhum vencedor'}`
+        `**Prêmio:** \`${giveaway.prize}\`\n` +
+        `**Participantes:** \`${totalParticipants}\`\n` +
+        `**Ganhadores:** \`${winners.length > 0 ? winners.join(', ') : 'Nenhum vencedor'}\``
       )
       .setColor('#FE3838')
       .setFooter({ text: 'Sorteio encerrado!' });
