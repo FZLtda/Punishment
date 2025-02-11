@@ -15,7 +15,7 @@ module.exports = {
     }
 
     const giveaway = db.prepare('SELECT * FROM giveaways WHERE message_id = ?').get(interaction.message.id);
-    if (!giveaway) return; 
+    if (!giveaway) return;
 
     let participants = JSON.parse(giveaway.participants);
 
@@ -27,10 +27,9 @@ module.exports = {
       participants.push(interaction.user.id);
       db.prepare('UPDATE giveaways SET participants = ? WHERE message_id = ?').run(JSON.stringify(participants), interaction.message.id);
 
-      
       const updatedRow = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('participar').setLabel('Participar 🎟').setStyle(ButtonStyle.Primary),
-        new ButtonBuilder().setCustomId('ver_participantes').setLabel('👥 Participantes: 0').setStyle(ButtonStyle.Secondary).setDisabled(true)
+        new ButtonBuilder().setCustomId('ver_participantes').setLabel(`👥 Participantes: ${participants.length}`).setStyle(ButtonStyle.Secondary).setDisabled(true) // 🔒 Botão desativado
       );
 
       await interaction.message.edit({ components: [updatedRow] });
