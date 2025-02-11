@@ -104,7 +104,9 @@ async function finalizeGiveaway(messageId, guildId, client) {
     if (!message) return;
 
     let winners = [];
-    if (participants.length > 0) {
+    let totalParticipants = participants.length;
+
+    if (totalParticipants > 0) {
       for (let i = 0; i < winnerCount && participants.length > 0; i++) {
         const randomIndex = Math.floor(Math.random() * participants.length);
         winners.push(`<@${participants[randomIndex]}>`);
@@ -112,11 +114,20 @@ async function finalizeGiveaway(messageId, guildId, client) {
       }
     }
 
+    let winnerMessage;
+    if (winners.length === 1) {
+      winnerMessage = `🎉 Parabéns ${winners[0]}! Você ganhou **${giveaway.prize}**!`;
+    } else if (winners.length > 1) {
+      winnerMessage = `🎉 Parabéns ${winners.join(', ')}! Vocês ganharam **${giveaway.prize}**!`;
+    } else {
+      winnerMessage = '😢 Nenhum vencedor foi escolhido porque ninguém participou.';
+    }
+
     const embed = new EmbedBuilder()
       .setTitle('🎉 Sorteio Finalizado!')
       .setDescription(
         `🔹 **Prêmio:** ${giveaway.prize}\n` +
-        `🎟 **Participantes:** ${giveaway.participants.length}\n` +
+        `🎟 **Participantes:** ${totalParticipants}\n` +
         `🏆 **Vencedores:** ${winners.length > 0 ? winners.join(', ') : 'Nenhum vencedor'}`
       )
       .setColor('#FFD700')
@@ -124,14 +135,11 @@ async function finalizeGiveaway(messageId, guildId, client) {
 
     await message.edit({ embeds: [embed], components: [] });
 
-    if (winners.length > 0) {
-      await channel.send(`🎉 Parabéns ${winners.join(', ')}! Vocês ganharam **${giveaway.prize}**!`);
-    } else {
-      await channel.send('😢 Nenhum vencedor foi escolhido porque ninguém participou.');
-    }
+    await channel.send(winnerMessage);
 
     db.prepare('DELETE FROM giveaways WHERE message_id = ?').run(messageId);
   } catch (error) {
     console.error(`[ERROR] Erro ao finalizar o sorteio: ${error}`);
   }
 }
+
