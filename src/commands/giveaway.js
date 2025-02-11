@@ -39,7 +39,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setTitle('Novo Sorteio!')
-      .setDescription(`<:1000043188:1336358026306912359> **Prêmio:** ${prize}\n<:1000043165:1336327290446942280> **Ganhadores:** ${winnerCount}\n<:1000043158:1336324199202947144> **Termina:** <t:${Math.floor(endTime / 1000)}:R>`)
+      .setDescription(`**Prêmio:** ${prize}\n**Ganhadores:** ${winnerCount}\n**Termina:** <t:${Math.floor(endTime / 1000)}:R>`)
       .setColor('#FE3838')
       .setFooter({ text: 'Clique no botão para participar!' });
 
@@ -116,9 +116,9 @@ async function finalizeGiveaway(messageId, guildId, client) {
 
     let winnerMessage;
     if (winners.length === 1) {
-      winnerMessage = `<:1000042885:1336044571125354496> Parabéns ${winners[0]}! Você ganhou **${giveaway.prize}**!`;
+      winnerMessage = `<:1000042885:1336044571125354496> Parabéns ${winners[0]}! Você ganhou o **${giveaway.prize}**!`;
     } else if (winners.length > 1) {
-      winnerMessage = `<:1000042885:1336044571125354496> Parabéns ${winners.join(', ')}! Vocês ganharam **${giveaway.prize}**!`;
+      winnerMessage = `<:1000042885:1336044571125354496> Parabéns ${winners.join(', ')}! Vocês ganharam o **${giveaway.prize}**!`;
     } else {
       winnerMessage = '<:1000042883:1336044555354771638> Nenhum vencedor foi escolhido porque ninguém participou.';
     }
@@ -126,9 +126,9 @@ async function finalizeGiveaway(messageId, guildId, client) {
     const embed = new EmbedBuilder()
       .setTitle('Sorteio Finalizado!')
       .setDescription(
-        `<:1000043188:1336358026306912359> **Prêmio:** ${giveaway.prize}\n` +
-        `<:1000043165:1336327290446942280> **Participantes:** ${totalParticipants}\n` +
-        `<:1000043165:1336327290446942280> **Ganhadores:** ${winners.length > 0 ? winners.join(', ') : 'Nenhum vencedor'}`
+        `**Prêmio:** \`${giveaway.prize}\`n` +
+        `**Participantes:** ${totalParticipants}\n` +
+        `**Ganhadores:** ${winners.length > 0 ? winners.join(', ') : 'Nenhum vencedor'}`
       )
       .setColor('#FE3838')
       .setFooter({ text: 'Sorteio encerrado!' });
