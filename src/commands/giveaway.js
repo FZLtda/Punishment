@@ -38,7 +38,7 @@ module.exports = {
     const endTime = Date.now() + durationMs;
 
     const embed = new EmbedBuilder()
-      .setTitle('Novo Sorteio!')
+      .setTitle('Novo Sorteio')
       .setDescription(`**Prêmio:** \`${prize}\`\n**Ganhadores:** \`${winnerCount}\`\n**Termina:** <t:${Math.floor(endTime / 1000)}:R>`)
       .setColor('#FE3838')
       .setFooter({ text: 'Clique no botão para participar!' });
@@ -124,7 +124,7 @@ async function finalizeGiveaway(messageId, guildId, client) {
     }
 
     const embed = new EmbedBuilder()
-      .setTitle('Sorteio Finalizado!')
+      .setTitle('Sorteio Finalizado')
       .setDescription(
         `**Prêmio:** \`${giveaway.prize}\`\n` +
         `**Participantes:** \`${totalParticipants}\`\n` +
