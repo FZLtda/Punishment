@@ -1,3 +1,4 @@
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const db = require('../data/database');
 
 module.exports = {
@@ -13,7 +14,6 @@ module.exports = {
       return interaction.reply({ content: 'Erro ao processar os Termos de Uso.', ephemeral: true });
     }
 
-    
     const giveaway = db.prepare('SELECT * FROM giveaways WHERE message_id = ?').get(interaction.message.id);
     if (!giveaway) return; 
 
@@ -26,6 +26,14 @@ module.exports = {
 
       participants.push(interaction.user.id);
       db.prepare('UPDATE giveaways SET participants = ? WHERE message_id = ?').run(JSON.stringify(participants), interaction.message.id);
+
+      
+      const updatedRow = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId('participar').setLabel('Participar 🎟').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('ver_participantes').setLabel(`👥 Participantes: ${participants.length}`).setStyle(ButtonStyle.Secondary)
+      );
+
+      await interaction.message.edit({ components: [updatedRow] });
 
       return interaction.reply({ content: '🎟 Você entrou no sorteio!', ephemeral: true });
     }
