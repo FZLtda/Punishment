@@ -29,11 +29,15 @@ module.exports = {
 
       const updatedRow = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId('participar').setLabel('🎟 Participar').setStyle(ButtonStyle.Primary),
-        new ButtonBuilder().setCustomId('ver_participantes').setLabel(`👥 Participantes: ${participants.length}`).setStyle(ButtonStyle.Secondary).setDisabled(true) // 🔒 Botão desativado
+        new ButtonBuilder()
+          .setCustomId('ver_participantes')
+          .setLabel(`👥 Participantes: ${participants.length}`)
+          .setStyle(ButtonStyle.Secondary)
+          .setDisabled(true)
       );
 
-      await interaction.message.edit({ components: [updatedRow] });
-      return interaction.reply({ content: '<:1000042885:1336044571125354496> Sua entrada no sorteio foi registrada!', ephemeral: true });
+      await interaction.update({ components: [updatedRow] });
+      return interaction.followUp({ content: '<:1000042885:1336044571125354496> Sua entrada no sorteio foi registrada!', ephemeral: true });
     }
 
     if (interaction.customId === 'ver_participantes') {
