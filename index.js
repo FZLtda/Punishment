@@ -5,6 +5,7 @@ const { setPresence } = require('./src/utils/presence.js');
 const monitorBot = require('./src/utils/monitoring.js');
 const logger = require('./src/utils/logger.js');
 const validateEnv = require('./src/utils/validateEnv.js');
+const registerSlashCommands = require('./src/utils/registerSlashCommands.js');
 
 validateEnv();
 
@@ -27,6 +28,7 @@ client.slashCommands = new Collection();
     await loadEvents(client);
     setPresence(client);
     monitorBot(client);
+    await registerSlashCommands(client);
     await client.login(process.env.TOKEN);
     logger.info('Bot inicializado com sucesso!');
   } catch (error) {
