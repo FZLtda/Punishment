@@ -1,11 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+const db = require('../data/database');
 const { getPrefix, setPrefix } = require('../utils/prefixes');
-
-const acceptedUsersPath = path.resolve(__dirname, '../data/acceptedUsers.json');
-if (!fs.existsSync(acceptedUsersPath)) {
-  fs.writeFileSync(acceptedUsersPath, JSON.stringify([]), { flag: 'wx' });
-}
 
 module.exports = {
   name: 'messageCreate',
@@ -21,9 +15,9 @@ module.exports = {
     const command = client.commands.get(commandName);
     if (!command) return;
 
-    const acceptedUsers = JSON.parse(fs.readFileSync(acceptedUsersPath, 'utf8'));
+    const userAccepted = db.prepare('SELECT user_id FROM accepted_users WHERE user_id = ?').get(message.author.id);
 
-    if (!acceptedUsers.includes(message.author.id)) {
+    if (!userAccepted) {
       const embed = {
         color: 0xfe3838,
         title: 'Termos de Uso',
@@ -52,7 +46,7 @@ module.exports = {
         ],
       };
 
-      const replyMessage = await message.reply({ embeds: [embed], components: [row] });
+      const replyMessage = await message.reply({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
 
       const collector = message.channel.createMessageComponentCollector({
         filter: (interaction) =>
@@ -64,17 +58,15 @@ module.exports = {
 
       collector.on('collect', async (interaction) => {
         try {
-          if (!acceptedUsers.includes(interaction.user.id)) {
-            acceptedUsers.push(interaction.user.id);
-            fs.writeFileSync(acceptedUsersPath, JSON.stringify(acceptedUsers, null, 2));
+          
+          db.prepare('INSERT INTO accepted_users (user_id) VALUES (?)').run(interaction.user.id);
 
-            await interaction.reply({
-              content: ':1000042885: Você aceitou os Termos de Uso. Agora pode usar o Punishment!',
-              ephemeral: true,
-            });
+          await interaction.reply({
+            content: '<:1000042885:1336044571125354496> Você aceitou os Termos de Uso. Agora pode usar o Punishment!',
+            ephemeral: true,
+          });
 
-            replyMessage.delete().catch(() => null);
-          }
+          replyMessage.delete().catch(() => null);
         } catch (error) {
           console.error('[ERROR] Erro ao aceitar os Termos de Uso:', error.message);
         }
@@ -96,7 +88,7 @@ module.exports = {
         },
       };
 
-      await message.reply({ embeds: [embedErro] });
+      await message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
   },
 };
