@@ -71,7 +71,7 @@ module.exports = {
       setTimeout(async () => {
         if (thread && !thread.archived && !thread.locked) {
           await thread.setLocked(true);
-          await thread.send('**Este bate-papo foi encerrado devido à inatividade.**');
+          await thread.send('**<:1000045601:1339317172081786930> Este bate-papo foi encerrado devido à inatividade.**');
         }
       }, TOPIC_TIMEOUT);
 
