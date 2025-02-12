@@ -10,7 +10,7 @@ module.exports = {
     const lastUpdated = '<t:1725585840:f>';
 
     const embed = new EmbedBuilder()
-      .setColor(0x00aaff)
+      .setColor(0xfe3838)
       .setTitle('Política de Privacidade')
       .setDescription(
         '**Ao utilizar o Punishment, você concorda com os seguintes termos:**\n\n' +
