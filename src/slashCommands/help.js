@@ -1,57 +1,75 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('help')
     .setDescription('Exibe informações detalhadas sobre os comandos.')
-    .addStringOption(option => 
+    .addStringOption(option =>
       option.setName('comando')
-        .setDescription('O nome do comando que deseja detalhes.')
-        .setRequired(false)),
-  async execute(interaction) {
-    const commands = interaction.client.commands;
+        .setDescription('Nome do comando para obter informações detalhadas.')
+        .setRequired(false)
+    ),
+
+  name: 'help',
+  description: 'Exibe informações detalhadas sobre os comandos.',
+  usage: '${currentPrefix}help [comando]',
+  permissions: 'Enviar Mensagens',
+
+  async execute(interactionOrMessage, args, { getPrefix }) {
+    const isSlash = interactionOrMessage.isChatInputCommand?.();
+    const commands = interactionOrMessage.client.commands;
+    const currentPrefix = getPrefix(interactionOrMessage.guild.id);
 
     if (!commands || commands.size === 0) {
       const embedErroMinimo = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Parece que os comandos não foram carregados.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'http://bit.ly/4aIyY9j'
         });
 
-      return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
+      return isSlash
+        ? interactionOrMessage.reply({ embeds: [embedErroMinimo], ephemeral: true })
+        : interactionOrMessage.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
-    const commandName = interaction.options.getString('comando');
+    const commandName = isSlash
+      ? interactionOrMessage.options.getString('comando')
+      : args.length > 0 ? args[0].toLowerCase() : null;
 
     if (commandName) {
-      const command = commands.get(commandName.toLowerCase());
-
+      const command = commands.get(commandName);
       if (!command) {
         const embedErroMinimo = new EmbedBuilder()
           .setColor('#FF4C4C')
           .setAuthor({
             name: 'Não encontrei esse comando no sistema.',
-            iconURL: 'http://bit.ly/4aIyY9j',
+            iconURL: 'http://bit.ly/4aIyY9j'
           });
 
-        return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
+        return isSlash
+          ? interactionOrMessage.reply({ embeds: [embedErroMinimo], ephemeral: true })
+          : interactionOrMessage.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
+
+      const usage = command.usage?.replace('${currentPrefix}', currentPrefix) || 'Não especificado.';
 
       const embed = new EmbedBuilder()
         .setColor(0x36393F)
-        .setTitle(`:1000042965: ${command.name}`)
+        .setTitle(`<:1000042965:1336131844718202942> ${command.name}`)
         .setDescription(command.description || '`Nenhuma descrição disponível.`')
         .addFields(
-          { name: '<:1000043157:1336324220770062497> Uso', value: `\`${command.usage || 'Não especificado.'}\``, inline: false },
+          { name: '<:1000043157:1336324220770062497> Uso', value: `\`${usage}\``, inline: false },
           { name: '<:1000042960:1336120845881442365> Permissões Necessárias', value: `\`${command.permissions || 'Nenhuma'}\``, inline: false }
         )
         .setFooter({
           text: 'Punishment',
-          iconURL: interaction.client.user.displayAvatarURL(),
+          iconURL: interactionOrMessage.client.user.displayAvatarURL(),
         });
 
-      return interaction.reply({ embeds: [embed] });
+      return isSlash
+        ? interactionOrMessage.reply({ embeds: [embed], ephemeral: false })
+        : interactionOrMessage.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
     const embed = new EmbedBuilder()
@@ -68,7 +86,7 @@ module.exports = {
       .addFields(
         {
           name: '<:1000043159:1336324177900077076> Ajuda',
-          value: 'Use `/help comando:<nome_do_comando>` para exibir mais informações sobre um comando.',
+          value: `Use \`${currentPrefix}help <comando>\` para exibir mais informações sobre um comando.`,
         },
         {
           name: '<:1000043160:1336324162482081945> Suporte',
@@ -77,9 +95,11 @@ module.exports = {
       )
       .setFooter({
         text: 'Punishment',
-        iconURL: interaction.client.user.displayAvatarURL(),
+        iconURL: interactionOrMessage.client.user.displayAvatarURL(),
       });
 
-    return interaction.reply({ embeds: [embed] });
-  },
+    return isSlash
+      ? interactionOrMessage.reply({ embeds: [embed], ephemeral: false })
+      : interactionOrMessage.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
+  }
 };
