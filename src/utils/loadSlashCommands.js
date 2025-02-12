@@ -7,7 +7,7 @@ const logger = require('./logger.js');
 async function registerSlashCommands(client) {
   try {
     const slashCommands = [];
-    const commandsPath = path.join(__dirname, './slashCommands');
+    const commandsPath = path.join(__dirname, '../slashCommands');
     const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
     for (const file of commandFiles) {
