@@ -1,10 +1,34 @@
 const db = require('../data/database');
 const { getPrefix, setPrefix } = require('../utils/prefixes');
+const { conversationHistory, fetchAIResponse } = require('../utils/aiHandler');
 
 module.exports = {
   name: 'messageCreate',
   async execute(message, client) {
     if (message.author.bot || !message.guild) return;
+
+    if (message.channel.isThread() && message.channel.name.startsWith('Punishment -')) {
+      const userId = message.author.id;
+      const apiKey = process.env.OPENAI_API_KEY;
+      if (!apiKey) return;
+
+      if (!conversationHistory[userId]) {
+        conversationHistory[userId] = [];
+      }
+
+      conversationHistory[userId].push({ role: 'user', content: message.content });
+
+      try {
+        const response = await fetchAIResponse(conversationHistory[userId], apiKey);
+        conversationHistory[userId].push({ role: 'assistant', content: response });
+
+        await message.channel.send(`🤖 **Resposta:**\n${response}`);
+      } catch (error) {
+        console.error('Erro ao consultar a IA:', error);
+        await message.channel.send('❌ **Erro ao processar a resposta. Tente novamente mais tarde.**');
+      }
+      return;
+    }
 
     const prefix = getPrefix(message.guild.id);
     if (!message.content.startsWith(prefix)) return;
@@ -58,7 +82,6 @@ module.exports = {
 
       collector.on('collect', async (interaction) => {
         try {
-          
           db.prepare('INSERT INTO accepted_users (user_id) VALUES (?)').run(interaction.user.id);
 
           await interaction.reply({
