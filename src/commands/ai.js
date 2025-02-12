@@ -4,15 +4,15 @@ require('dotenv').config();
 
 const MAX_CHARACTERS = 1500;
 const conversationHistory = {};
-const userThreads = {};
-const TOPIC_TIMEOUT = 10 * 60 * 1000;
+const userThreads = {}; // Armazena os tópicos ativos de cada usuário
+const TOPIC_TIMEOUT = 10 * 60 * 1000; // 10 minutos
 
 module.exports = {
   name: 'ai',
   description: 'Converse com a IA do ChatGPT em um tópico dedicado.',
   usage: '${currentPrefix}ai [pergunta]',
   permissions: 'Enviar Mensagens',
-  
+
   async execute(message, args) {
     const userId = message.author.id;
     const apiKey = process.env.OPENAI_API_KEY;
@@ -30,10 +30,11 @@ module.exports = {
       return message.reply({ embeds: [errorEmbed(`A pergunta é muito longa! Limite de ${MAX_CHARACTERS} caracteres.`)], allowedMentions: { repliedUser: false } });
     }
 
+    // Verifica se o usuário já tem um tópico ativo
     if (userThreads[userId]) {
       try {
         const thread = await message.channel.threads.fetch(userThreads[userId]);
-        if (thread) {
+        if (thread && !thread.archived) {
           return thread.send(`${message.author}, você já tem um tópico aberto! Continue a conversa lá.`);
         }
       } catch (error) {
@@ -41,6 +42,7 @@ module.exports = {
       }
     }
 
+    // Criar um novo tópico para o usuário
     try {
       if (!message.channel || !message.channel.threads) {
         return message.reply({ embeds: [errorEmbed('Não foi possível criar um tópico. Verifique as permissões do bot.')], allowedMentions: { repliedUser: false } });
@@ -68,6 +70,7 @@ module.exports = {
 
       await thinkingMessage.edit(`\n${response}`);
 
+      // Configura um timeout para fechar o tópico após 10 minutos de inatividade
       setTimeout(async () => {
         if (thread && !thread.archived && !thread.locked) {
           await thread.setLocked(true);
@@ -82,11 +85,15 @@ module.exports = {
   },
 };
 
+// Evento para monitorar mensagens dentro do tópico e responder automaticamente
 module.exports.monitorThreadMessages = async (message) => {
   if (message.author.bot) return;
+  if (!message.channel.isThread()) return; // Garante que só roda dentro de tópicos
 
   const userId = message.author.id;
-  if (userThreads[userId] && message.channel.id === userThreads[userId]) {
+  const threadId = message.channel.id;
+
+  if (userThreads[userId] && threadId === userThreads[userId]) {
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) return;
 
@@ -107,6 +114,7 @@ module.exports.monitorThreadMessages = async (message) => {
   }
 };
 
+// Função para consultar a OpenAI
 async function fetchAIResponse(conversation, apiKey) {
   const response = await axios.post(
     'https://api.openai.com/v1/chat/completions',
@@ -125,8 +133,9 @@ async function fetchAIResponse(conversation, apiKey) {
   return response.data.choices[0].message.content;
 }
 
+// Função para mensagens de erro padronizadas
 function errorEmbed(text) {
   return new EmbedBuilder()
     .setColor('#FF4C4C')
     .setAuthor({ name: text, iconURL: 'http://bit.ly/4aIyY9j' });
-}
+        }
