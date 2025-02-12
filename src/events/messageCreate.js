@@ -100,6 +100,10 @@ module.exports = {
 
     try {
       await command.execute(message, args, { setPrefix, getPrefix });
+
+      setTimeout(() => {
+        message.delete().catch(() => {});
+      }, 1000);
     } catch (error) {
       console.error(`[ERROR] Erro ao executar o comando "${commandName}":`, error);
 
