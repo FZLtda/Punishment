@@ -22,7 +22,7 @@ async function fetchAIResponse(history, apiKey) {
         return response.data.choices[0].message.content;
     } catch (error) {
         console.error('Erro ao consultar a OpenAI:', error);
-        return '❌ Erro ao processar a resposta. Tente novamente mais tarde.';
+        return '<:1000042883:1336044555354771638> Erro ao processar a resposta. Tente novamente mais tarde.';
     }
 }
 

@@ -22,10 +22,10 @@ module.exports = {
         const response = await fetchAIResponse(conversationHistory[userId], apiKey);
         conversationHistory[userId].push({ role: 'assistant', content: response });
 
-        await message.channel.send(`🤖 **Resposta:**\n${response}`);
+        await message.channel.send(`\n${response}`);
       } catch (error) {
         console.error('Erro ao consultar a IA:', error);
-        await message.channel.send('❌ **Erro ao processar a resposta. Tente novamente mais tarde.**');
+        await message.channel.send('<:1000042883:1336044555354771638> Erro ao processar a resposta. Tente novamente mais tarde.');
       }
       return;
     }

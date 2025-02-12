@@ -4,8 +4,8 @@ require('dotenv').config();
 
 const MAX_CHARACTERS = 1500;
 const conversationHistory = {};
-const userThreads = {}; // Armazena os tópicos ativos de cada usuário
-const TOPIC_TIMEOUT = 10 * 60 * 1000; // 10 minutos
+const userThreads = {};
+const TOPIC_TIMEOUT = 10 * 60 * 1000;
 
 module.exports = {
   name: 'ai',
@@ -30,7 +30,6 @@ module.exports = {
       return message.reply({ embeds: [errorEmbed(`A pergunta é muito longa! Limite de ${MAX_CHARACTERS} caracteres.`)], allowedMentions: { repliedUser: false } });
     }
 
-    // Verifica se o usuário já tem um tópico ativo
     if (userThreads[userId]) {
       try {
         const thread = await message.channel.threads.fetch(userThreads[userId]);
@@ -42,7 +41,6 @@ module.exports = {
       }
     }
 
-    // Criar um novo tópico para o usuário
     try {
       if (!message.channel || !message.channel.threads) {
         return message.reply({ embeds: [errorEmbed('Não foi possível criar um tópico. Verifique as permissões do bot.')], allowedMentions: { repliedUser: false } });
@@ -70,11 +68,10 @@ module.exports = {
 
       await thinkingMessage.edit(`\n${response}`);
 
-      // Configura um timeout para fechar o tópico após 10 minutos de inatividade
       setTimeout(async () => {
         if (thread && !thread.archived && !thread.locked) {
           await thread.setLocked(true);
-          await thread.send('🔒 **Este tópico foi fechado devido à inatividade.**');
+          await thread.send('**Este bate-papo foi encerrado devido à inatividade.**');
         }
       }, TOPIC_TIMEOUT);
 
@@ -85,10 +82,9 @@ module.exports = {
   },
 };
 
-// Evento para monitorar mensagens dentro do tópico e responder automaticamente
 module.exports.monitorThreadMessages = async (message) => {
   if (message.author.bot) return;
-  if (!message.channel.isThread()) return; // Garante que só roda dentro de tópicos
+  if (!message.channel.isThread()) return;
 
   const userId = message.author.id;
   const threadId = message.channel.id;
@@ -114,7 +110,6 @@ module.exports.monitorThreadMessages = async (message) => {
   }
 };
 
-// Função para consultar a OpenAI
 async function fetchAIResponse(conversation, apiKey) {
   const response = await axios.post(
     'https://api.openai.com/v1/chat/completions',
@@ -133,7 +128,6 @@ async function fetchAIResponse(conversation, apiKey) {
   return response.data.choices[0].message.content;
 }
 
-// Função para mensagens de erro padronizadas
 function errorEmbed(text) {
   return new EmbedBuilder()
     .setColor('#FF4C4C')
