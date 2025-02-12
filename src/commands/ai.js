@@ -61,7 +61,7 @@ module.exports = {
       userThreads[userId] = thread.id;
       conversationHistory[userId] = [];
 
-      const thinkingMessage = await thread.send(`🤖 **${message.author.username} perguntou:**\n> ${question}\n\n⏳ **Aguarde...**`);
+      const thinkingMessage = await thread.send(`**${message.author.displayName} perguntou:**\n> ${question}\n\n**Aguarde...**`);
 
       conversationHistory[userId].push({ role: 'user', content: question });
 
@@ -105,7 +105,7 @@ module.exports.monitorThreadMessages = async (message) => {
       const response = await fetchAIResponse(conversationHistory[userId], apiKey);
       conversationHistory[userId].push({ role: 'assistant', content: response });
 
-      await message.channel.send(`🤖 **Resposta:**\n${response}`);
+      await message.channel.send(`\n${response}`);
 
     } catch (error) {
       console.error('Erro ao consultar a IA:', error);
