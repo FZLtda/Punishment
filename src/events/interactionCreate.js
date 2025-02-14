@@ -12,7 +12,7 @@ module.exports = {
         await command.execute(interaction);
       } catch (error) {
         console.error(`[ERROR] Erro ao executar Slash Command: ${error.message}`);
-        await interaction.reply({ content: '❌ Ocorreu um erro ao executar este comando.', ephemeral: true });
+        await interaction.reply({ content: '<:1000042883:1336044555354771638> Ocorreu um erro ao executar este comando.', ephemeral: true });
       }
     }
 

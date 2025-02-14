@@ -26,7 +26,6 @@ module.exports = {
 
     const commandName = interaction.options.getString('comando');
     if (commandName) {
-      // Garantir que o nome do comando esteja em minúsculas
       const command = commands.get(commandName.toLowerCase());
 
       if (!command) {
