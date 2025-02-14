@@ -8,7 +8,6 @@ function setPresence(client) {
           }]
       });
 
-      console.log(`[INFO] Bot conectado como ${client.user.tag}`);
   });
 }
 
