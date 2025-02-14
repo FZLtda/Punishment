@@ -1,5 +1,5 @@
 require('dotenv').config();
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const { Client, GatewayIntentBits, Collection, ShardingManager } = require('discord.js');
 const { loadCommands, loadEvents } = require('./src/utils/loader.js');
 const { setPresence } = require('./src/utils/presence.js');
 const monitorBot = require('./src/utils/monitoring.js');
@@ -9,36 +9,54 @@ const registerSlashCommands = require('./src/utils/loadSlashCommands.js');
 
 validateEnv();
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers,
-  ],
+const manager = new ShardingManager('./bot.js', {
+  token: process.env.TOKEN,
+  totalShards: 'auto',
+  respawn: true,
 });
 
-client.commands = new Collection();
-client.slashCommands = new Collection();
+manager.on('shardCreate', (shard) => {
+  logger.info(`Shard ${shard.id} iniciada com sucesso.`);
+});
 
-(async () => {
+manager.spawn();
+
+const initializeBot = async () => {
   try {
-    logger.info('Inicializando o bot...');
+    logger.info('🔹 Iniciando o bot...');
+    
+    const client = new Client({
+      intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMembers,
+      ],
+    });
+
+    client.commands = new Collection();
+    client.slashCommands = new Collection();
+
     await loadCommands(client);
     await loadEvents(client);
     setPresence(client);
     monitorBot(client);
     await registerSlashCommands(client);
+
     await client.login(process.env.TOKEN);
     logger.info('Bot inicializado com sucesso!');
+    
+    return client;
   } catch (error) {
-    logger.error(`Erro ao iniciar o bot: ${error.message}`);
+    logger.error(`Erro crítico ao iniciar o bot: ${error.stack || error.message}`);
     process.exit(1);
   }
-})();
+};
+
+initializeBot();
 
 process.on('uncaughtException', (error) => {
-  logger.error(`Exceção não tratada: ${error.message}`);
+  logger.error(`Exceção não tratada: ${error.stack || error.message}`);
   process.exit(1);
 });
 
