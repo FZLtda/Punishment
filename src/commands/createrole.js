@@ -45,7 +45,7 @@ module.exports = {
             const embedErroMinimo = new EmbedBuilder()
       .setColor('#FF4C4C')
       .setAuthor({
-          name: 'Você precisa fornecer um nome para o cargo. \n**Uso:** `!createrole <nome> [cor] [permissões]`',
+          name: 'Você precisa fornecer um nome para o cargo.',
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
