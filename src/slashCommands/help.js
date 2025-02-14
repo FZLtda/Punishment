@@ -26,6 +26,7 @@ module.exports = {
 
     const commandName = interaction.options.getString('comando');
     if (commandName) {
+      // Garantir que o nome do comando esteja em minúsculas
       const command = commands.get(commandName.toLowerCase());
 
       if (!command) {
@@ -43,11 +44,11 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor(0x36393F)
-        .setTitle(`:1000042965: ${command.data.name}`)
+        .setTitle(`<:1000042965:1336131844718202942> ${command.data.name}`)
         .setDescription(command.data.description || '`Nenhuma descrição disponível.`')
         .addFields(
-          { name: ':1000043157: Uso', value: `\`${usage}\``, inline: false },
-          { name: ':1000042960: Permissões Necessárias', value: `\`${command.permissions || 'Nenhuma'}\``, inline: false }
+          { name: '<:1000043157:1336324220770062497> Uso', value: `\`${usage}\``, inline: false },
+          { name: '<:1000042960:1336120845881442365> Permissões Necessárias', value: `\`${command.permissions || 'Nenhuma'}\``, inline: false }
         )
         .setFooter({
           text: 'Punishment',
@@ -59,7 +60,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0x36393F)
-      .setTitle(':1000043167: Comandos Principais')
+      .setTitle('<:1000043167:1336329540502421576> Comandos Principais')
       .addFields(
         { name: 'help', value: '`Exibe informações detalhadas sobre os comandos.`', inline: true },
         { name: 'ping', value: '`Exibe os detalhes da conexão do bot.`', inline: true },
@@ -70,11 +71,11 @@ module.exports = {
       )
       .addFields(
         {
-          name: ':1000043159: Ajuda',
+          name: '<:1000043159:1336324177900077076> Ajuda',
           value: `Use \`/help <comando>\` para exibir mais informações sobre um comando.`,
         },
         {
-          name: ':1000043160: Suporte',
+          name: '<:1000043160:1336324162482081945> Suporte',
           value: '[Visite nossa comunidade](https://discord.gg/SW4zKzAhQa)',
         }
       )
