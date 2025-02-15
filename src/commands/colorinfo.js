@@ -39,7 +39,7 @@ module.exports = {
     const hslCode = color.hsl().array().map(value => value.toFixed(1)).join(', ');
 
     const colorEmbed = new EmbedBuilder()
-      .setTitle('🎨 Informações da Cor')
+      .setTitle('<:1000046537:1340437979193413823> Informações da Cor')
       .setDescription(`Aqui estão os detalhes da cor fornecida: **${colorInput}**`)
       .addFields(
         { name: 'Hexadecimal', value: `\`${hexCode}\``, inline: true },
