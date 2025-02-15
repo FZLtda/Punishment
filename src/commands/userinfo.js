@@ -23,7 +23,7 @@ module.exports = {
         { name: 'Usuário', value: user.tag, inline: true },
         { name: 'ID', value: user.id, inline: true },
         { name: 'Conta criada', value: createdAt, inline: true },
-        { name: 'Ingressou no servidor', value: joinedAt, inline: true },
+        { name: 'Entrou no servidor', value: joinedAt, inline: true },
         {
           name: 'Cargos',
           value: member.roles.cache
