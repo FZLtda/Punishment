@@ -20,10 +20,10 @@ module.exports = {
       .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
       .setColor('fe3838')
       .addFields(
-        { name: 'Nome de Usuário', value: user.tag, inline: true },
-        { name: 'ID do Usuário', value: user.id, inline: true },
-        { name: 'Criado em', value: createdAt, inline: true },
-        { name: 'Entrou no Servidor em', value: joinedAt, inline: true },
+        { name: 'Usuário', value: user.tag, inline: true },
+        { name: 'ID', value: user.id, inline: true },
+        { name: 'Conta criada', value: createdAt, inline: true },
+        { name: 'Ingressou no servidor', value: joinedAt, inline: true },
         {
           name: 'Cargos',
           value: member.roles.cache
