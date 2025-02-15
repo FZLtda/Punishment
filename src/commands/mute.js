@@ -73,12 +73,12 @@ module.exports = {
       logModerationAction(message.guild.id, message.author.id, 'Mute', membro.id, motivo);
 
       const embed = new EmbedBuilder()
-        .setTitle('<:mute:1207381613185339473> Punição aplicada')
+        .setTitle('<:1000046494:1340401256392298536> Punição aplicada')
         .setColor('Red')
         .setDescription(`${membro} (\`${membro.id}\`) foi mutado(a)!`)
         .addFields(
           { name: 'Duração', value: tempo, inline: true },
-          { name: 'Motivo', value: motivo, inline: false }
+          { name: 'Motivo', value: motivo, inline: true }
         )
         .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
         .setFooter({

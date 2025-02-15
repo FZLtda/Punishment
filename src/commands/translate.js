@@ -36,7 +36,7 @@ module.exports = {
 
         const translateEmbed = new EmbedBuilder()
           .setColor('#fe3838')
-          .setTitle('<:emoji_26:1209288012979245157> Tradução')
+          .setTitle('<:1000046512:1340411258427408444> Tradução')
           .setDescription(`\`\`\`\n${translatedText}\n\`\`\``)
           .setFooter({
             text: `${message.author.tag}`,

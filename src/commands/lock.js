@@ -28,7 +28,7 @@ module.exports = {
       logModerationAction(message.guild.id, message.author.id, 'Lock', channel.id, 'Canal bloqueado');
 
       const embed = new EmbedBuilder()
-        .setTitle('<:emoji_48:1322515129144705045> Canal Bloqueado')
+        .setTitle('<:1000046499:1340402896642117724> Canal Bloqueado')
         .setDescription(`O canal ${channel} foi bloqueado para envio de mensagens.`)
         .setColor('Red')
         .setFooter({

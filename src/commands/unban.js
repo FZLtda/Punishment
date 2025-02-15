@@ -57,7 +57,7 @@ module.exports = {
       );
 
       const embed = new EmbedBuilder()
-        .setTitle('<:emoji_48:1207522369426423808> Punição revogada')
+        .setTitle('<:1000046504:1340405565012049941> Punição revogada')
         .setColor('Green')
         .setDescription(`<@${userId}> (\`${userId}\`) foi desbanido(a)!`)
         .addFields(

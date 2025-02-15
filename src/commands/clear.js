@@ -55,7 +55,7 @@ module.exports = {
       );
 
       const feedbackMessage = await message.channel.send(
-        `<:emoji_33:1219788320234803250> ${apagadas.size} mensagens foram apagadas ${
+        `<:1000042885:1336044571125354496> ${apagadas.size} mensagens foram apagadas ${
           usuario ? `de ${usuario}` : ''
         }.`
       );

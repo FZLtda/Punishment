@@ -63,7 +63,7 @@ module.exports = {
         embeds: [
           new EmbedBuilder()
             .setColor('Green')
-            .setTitle('<:emoji_46:1236675567496069120> Cargo Adicionado')
+            .setTitle('<:1000046490:1340398629713739859> Cargo Adicionado')
             .setDescription(`O cargo ${role} foi adicionado a ${member}.`)
             .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
             .setFooter({ text: `${message.author.tag}`, iconURL: message.author.displayAvatarURL() })

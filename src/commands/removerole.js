@@ -58,7 +58,7 @@ module.exports = {
         embeds: [
           new EmbedBuilder()
             .setColor('Red')
-            .setTitle('<:emoji_31:1218690412802216039> Cargo Removido')
+            .setTitle('<:1000046491:1340398652635742360> Cargo Removido')
             .setDescription(`O cargo ${role} foi removido de ${member}.`)
             .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
             .setFooter({ text: `${message.author.tag}`, iconURL: message.author.displayAvatarURL() })

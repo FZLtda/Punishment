@@ -34,7 +34,7 @@ module.exports = {
       );
 
       const embed = new EmbedBuilder()
-        .setTitle('<:emoji_49:1322515171578744915> Canal Desbloqueado')
+        .setTitle('<:1000046500:1340402911985008832> Canal Desbloqueado')
         .setDescription(`O canal ${channel} foi desbloqueado para envio de mensagens.`)
         .setColor('Green')
         .setFooter({
