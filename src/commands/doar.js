@@ -56,7 +56,7 @@ module.exports = {
                 );
 
             const embed = new EmbedBuilder()
-                .setColor('#FFD700')
+                .setColor('#fe3838')
                 .setTitle('Doação Iniciada')
                 .setDescription(
                     `<:1000043196:1336360581934088193> **Obrigado pelo apoio, ${message.author}!**\n\n` +
