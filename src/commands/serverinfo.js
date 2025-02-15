@@ -32,7 +32,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle(`Informações do Servidor: ${guild.name}`)
       .setThumbnail(guild.iconURL({ dynamic: true, size: 1024 }))
-      .setColor('Green')
+      .setColor('0xfe3838')
       .addFields(
         { name: 'Nome do Servidor', value: guild.name, inline: true },
         { name: 'ID do Servidor', value: guild.id, inline: true },

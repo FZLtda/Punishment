@@ -18,7 +18,9 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle(`Informações de ${user.displayName}`)
       .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
-      .setColor('Blue')
+      .setColor('0xfe3838git add .
+git commit -m "Atualização automática"
+git push origin main')
       .addFields(
         { name: 'Nome de Usuário', value: user.tag, inline: true },
         { name: 'ID do Usuário', value: user.id, inline: true },
