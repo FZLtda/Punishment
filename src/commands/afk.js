@@ -11,7 +11,7 @@ module.exports = {
 
         afkUsers.set(message.author.id, reason);
 
-        await message.reply({
+        await message.channel.send({
             embeds: [
                 new EmbedBuilder()
                     .setColor('Red')
@@ -28,7 +28,7 @@ module.exports = {
         collector.on('collect', (msg) => {
             if (afkUsers.has(msg.author.id)) {
                 afkUsers.delete(msg.author.id);
-                msg.reply({
+                msg.channel.send({
                     embeds: [
                         new EmbedBuilder()
                             .setColor('Green')

@@ -50,7 +50,7 @@ module.exports = {
           iconURL: message.client.user.displayAvatarURL(),
         });
 
-      return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
     const embed = new EmbedBuilder()
@@ -79,6 +79,6 @@ module.exports = {
         iconURL: message.client.user.displayAvatarURL(),
       });
 
-    return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
+    return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
   },
 };

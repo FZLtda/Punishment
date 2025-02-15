@@ -43,7 +43,7 @@ module.exports = {
           .setStyle('Danger')
       );
 
-      await message.reply({ embeds: [embed], components: [buttonRow], allowedMentions: { repliedUser: false } });
+      await message.channel.send({ embeds: [embed], components: [buttonRow], allowedMentions: { repliedUser: false } });
 
       message.client.on('interactionCreate', async (interaction) => {
         if (interaction.isButton() && interaction.customId === 'open-report-modal') {

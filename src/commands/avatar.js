@@ -19,7 +19,7 @@ module.exports = {
         })
         .setTimestamp();
 
-      await message.reply({ embeds: [avatarEmbed], allowedMentions: { repliedUser: false } });
+      await message.channel.send({ embeds: [avatarEmbed], allowedMentions: { repliedUser: false } });
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()

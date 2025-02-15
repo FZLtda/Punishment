@@ -39,6 +39,6 @@ module.exports = {
       })
       .setTimestamp();
 
-    return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
+    return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
   },
 };

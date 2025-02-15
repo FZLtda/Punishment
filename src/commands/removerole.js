@@ -54,7 +54,7 @@ module.exports = {
         `Cargo removido: ${role.name}`
       );
 
-      return message.reply({
+      return message.channel.send({
         embeds: [
           new EmbedBuilder()
             .setColor('Red')

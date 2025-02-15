@@ -6,7 +6,7 @@ module.exports = {
   usage: '${currentPrefix}ping',
   permissions: 'Enviar Mensagens',
   execute: async (message) => {
-    const msg = await message.reply('Calculando...');
+    const msg = await message.channel.send('Calculando...');
     const latency = msg.createdTimestamp - message.createdTimestamp;
     const apiLatency = Math.round(message.client.ws.ping);
 

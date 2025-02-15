@@ -107,7 +107,7 @@ module.exports = {
           iconURL: 'https://bit.ly/3Q2Q8F1',
         });
 
-      await message.reply({ embeds: [embedSucesso], allowedMentions: { repliedUser: false } });
+      await message.channel.send({ embeds: [embedSucesso], allowedMentions: { repliedUser: false } });
 
       
       await message.channel.send({

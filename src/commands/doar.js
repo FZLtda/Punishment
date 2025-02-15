@@ -67,7 +67,7 @@ module.exports = {
                 )
                 .setFooter({ text: 'Seu apoio ajuda a me manter ativo!' });
 
-            const donationMessage = await message.reply({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
+            const donationMessage = await message.channel.send({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
 
             
             setTimeout(() => {

@@ -77,7 +77,7 @@ module.exports = {
         })
         .setTimestamp();
 
-      return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     } catch (error) {
       console.error(`[ERROR] Falha ao gerar estatísticas:`, error);
       const embedErroMinimo = new EmbedBuilder()

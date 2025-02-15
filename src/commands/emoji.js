@@ -111,7 +111,7 @@ module.exports = {
           })
           .setTimestamp();
 
-        return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
+        return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
       } else if (action === 'copy') {
         const emojiMatch = emojiInput.match(/<a?:\w+:(\d+)>/);
         if (!emojiMatch) {
@@ -176,7 +176,7 @@ module.exports = {
           })
           .setTimestamp();
 
-        return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
+        return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
       }
     } catch (error) {
       console.error(error);

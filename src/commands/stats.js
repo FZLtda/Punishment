@@ -59,7 +59,7 @@ module.exports = {
           iconURL: message.client.user.displayAvatarURL(),
         });
 
-      return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     } catch (error) {
       console.error('[ERROR] Não foi possível obter as estatísticas:', error);
       const embedErroMinimo = new EmbedBuilder()

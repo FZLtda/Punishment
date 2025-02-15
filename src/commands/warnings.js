@@ -58,6 +58,6 @@ module.exports = {
       })
       .setTimestamp();
 
-    message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
+      message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
   },
 };
