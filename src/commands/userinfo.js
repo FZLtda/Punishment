@@ -16,7 +16,7 @@ module.exports = {
       : 'Não disponível';
 
     const embed = new EmbedBuilder()
-      .setTitle(`Informações de ${user.displayName}`)
+      .setTitle(`<:1000046547:1340465282568945675> Informações de ${user.displayName}`)
       .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
       .setColor('fe3838')
       .addFields(
@@ -30,7 +30,7 @@ module.exports = {
             .filter((role) => role.name !== '@everyone')
             .map((role) => role)
             .join(', ') || 'Sem cargos',
-          inline: false,
+          inline: true,
         }
       )
       .setFooter({

@@ -30,7 +30,7 @@ module.exports = {
     const verificationLevel = verificationLevels[guild.verificationLevel];
 
     const embed = new EmbedBuilder()
-      .setTitle(`Informações do Servidor: ${guild.name}`)
+      .setTitle(`<:1000046551:1340466667779784777> Informações do Servidor: ${guild.name}`)
       .setThumbnail(guild.iconURL({ dynamic: true, size: 1024 }))
       .setColor('fe3838')
       .addFields(
