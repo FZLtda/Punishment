@@ -59,7 +59,7 @@ module.exports = {
 
       logModerationAction(message.guild.id,message.author.id, 'AddRole', member.id, `Cargo adicionado: ${role.name}`);
 
-      return message.reply({
+      return message.channel.send({
         embeds: [
           new EmbedBuilder()
             .setColor('Green')
