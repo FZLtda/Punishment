@@ -38,7 +38,7 @@ module.exports = {
       const usage = command.usage?.replace('${currentPrefix}', currentPrefix) || 'Não especificado.';
 
       const embed = new EmbedBuilder()
-        .setColor(0x36393F)
+        .setColor(0xfe3838)
         .setTitle(`<:1000042965:1336131844718202942> ${command.name}`)
         .setDescription(command.description || '`Nenhuma descrição disponível.`')
         .addFields(
@@ -54,7 +54,7 @@ module.exports = {
     }
 
     const embed = new EmbedBuilder()
-      .setColor(0x36393F)
+      .setColor(0xfe3838)
       .setTitle('<:1000043167:1336329540502421576> Comandos Principais')
       .addFields(
         { name: 'help', value: '`Exibe informações detalhadas sobre os comandos.`', inline: true },
