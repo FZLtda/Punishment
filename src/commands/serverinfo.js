@@ -30,23 +30,22 @@ module.exports = {
     const verificationLevel = verificationLevels[guild.verificationLevel];
 
     const embed = new EmbedBuilder()
-      .setTitle(`<:1000046551:1340466667779784777> Informações do Servidor: ${guild.name}`)
+      .setTitle(`<:1000046551:1340466667779784777> Informações de ${guild.name}`)
       .setThumbnail(guild.iconURL({ dynamic: true, size: 1024 }))
       .setColor('fe3838')
       .addFields(
-        { name: 'Nome do Servidor', value: guild.name, inline: true },
-        { name: 'ID do Servidor', value: guild.id, inline: true },
-        { name: 'Dono do Servidor', value: `${owner.displayName} (${owner.user.id})`, inline: true },
+        { name: 'Nome', value: guild.name, inline: true },
+        { name: 'ID', value: guild.id, inline: true },
+        { name: 'Dono', value: `${owner.displayName} (${owner.user.id})`, inline: true },
         { name: 'Criado em', value: createdAt, inline: true },
-        { name: 'Total de Membros', value: `${memberCount}`, inline: true },
-        { name: 'Membros Humanos', value: `${humansCount}`, inline: true },
+        { name: 'Membros', value: `${memberCount}`, inline: true },
         { name: 'Bots', value: `${botsCount}`, inline: true },
-        { name: 'Canais de Texto', value: `${textChannels}`, inline: true },
-        { name: 'Canais de Voz', value: `${voiceChannels}`, inline: true },
+        { name: 'Canais de texto', value: `${textChannels}`, inline: true },
+        { name: 'Canais de voz', value: `${voiceChannels}`, inline: true },
         { name: 'Categorias', value: `${categories}`, inline: true },
-        { name: 'Nível de Verificação', value: verificationLevel, inline: true },
+        { name: 'Verificação', value: verificationLevel, inline: true },
         {
-          name: 'Canal de Regras',
+          name: 'Canal de regras',
           value: guild.rulesChannel ? guild.rulesChannel.name : 'Não definido',
           inline: true,
         },
