@@ -59,7 +59,7 @@ module.exports = {
             type: 2,
             label: 'Ler Termos',
             style: 5,
-            url: 'https://bit.ly/3WMYa93',
+            url: 'https://docs.google.com/document/d/12-nG-vY0bhgIzsaO2moSHjh7QeCrQLSGd7W2XYDMXsk/mobilebasic',
           },
           {
             type: 2,
