@@ -25,7 +25,7 @@ module.exports = {
 
       const buttonRow = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-          .setCustomId('open-report-modal')
+          .setCustomId('report-modal')
           .setLabel('Reportar Problema')
           .setStyle('Danger')
       );
