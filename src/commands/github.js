@@ -36,18 +36,18 @@ module.exports = {
       const data = response.data;
 
       const embed = new EmbedBuilder()
-        .setTitle(`📂 Repositório: ${data.full_name}`)
+        .setTitle(`Repositório: ${data.full_name}`)
         .setURL(data.html_url)
-        .setColor('Blue')
+        .setColor('#FE3838')
         .setDescription(data.description || 'Sem descrição disponível.')
         .addFields(
-          { name: '👤 Autor', value: `[${data.owner.login}](${data.owner.html_url})`, inline: true },
-          { name: '⭐ Estrelas', value: `${data.stargazers_count}`, inline: true },
-          { name: '🍴 Forks', value: `${data.forks_count}`, inline: true },
-          { name: '🐛 Issues Abertas', value: `${data.open_issues_count}`, inline: true },
-          { name: '🔖 Linguagem', value: data.language || 'Não especificada', inline: true },
-          { name: '📅 Criado em', value: new Date(data.created_at).toLocaleDateString('pt-BR'), inline: true },
-          { name: '📅 Última Atualização', value: new Date(data.updated_at).toLocaleDateString('pt-BR'), inline: true }
+          { name: 'Autor', value: `[${data.owner.login}](${data.owner.html_url})`, inline: true },
+          { name: 'Estrelas', value: `${data.stargazers_count}`, inline: true },
+          { name: 'Forks', value: `${data.forks_count}`, inline: true },
+          { name: 'Issues Abertas', value: `${data.open_issues_count}`, inline: true },
+          { name: 'Linguagem', value: data.language || 'Não especificada', inline: true },
+          { name: 'Criado em', value: new Date(data.created_at).toLocaleDateString('pt-BR'), inline: true },
+          { name: 'Última Atualização', value: new Date(data.updated_at).toLocaleDateString('pt-BR'), inline: true }
         )
         .setThumbnail(data.owner.avatar_url)
         .setFooter({
