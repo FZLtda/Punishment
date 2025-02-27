@@ -25,7 +25,7 @@ module.exports = {
       const uptime = formatUptime(process.uptime());
 
       const embed = new EmbedBuilder()
-        .setColor(0x36393F)
+        .setColor(0xFE3838)
         .setTitle(`${message.client.user.username} • Estatísticas`)
         .addFields(
           {
