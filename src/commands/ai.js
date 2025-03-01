@@ -18,32 +18,49 @@ module.exports = {
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
-      return message.reply({ embeds: [errorEmbed('Erro interno: chave da API não configurada.')], allowedMentions: { repliedUser: false } });
+      console.error('Erro: OPENAI_API_KEY não configurada.');
+      return message.reply({
+        embeds: [errorEmbed('Erro interno: chave da API não configurada.')],
+        allowedMentions: { repliedUser: false },
+      });
     }
 
     if (!args.length) {
-      return message.reply({ embeds: [errorEmbed('Você precisa fornecer uma pergunta!')], allowedMentions: { repliedUser: false } });
+      return message.reply({
+        embeds: [errorEmbed('Você precisa fornecer uma pergunta!')],
+        allowedMentions: { repliedUser: false },
+      });
     }
 
     const question = args.join(' ');
     if (question.length > MAX_CHARACTERS) {
-      return message.reply({ embeds: [errorEmbed(`A pergunta é muito longa! Limite de ${MAX_CHARACTERS} caracteres.`)], allowedMentions: { repliedUser: false } });
+      return message.reply({
+        embeds: [errorEmbed(`A pergunta é muito longa! Limite de ${MAX_CHARACTERS} caracteres.`)],
+        allowedMentions: { repliedUser: false },
+      });
     }
 
     if (userThreads[userId]) {
       try {
         const thread = await message.channel.threads.fetch(userThreads[userId]);
+
         if (thread && !thread.archived) {
           return message.channel.send(`${message.author}, você já tem um tópico aberto! Continue a conversa lá: ${thread}`);
+        } else {
+          delete userThreads[userId];
         }
       } catch (error) {
         console.error('Erro ao buscar o tópico:', error);
+        delete userThreads[userId];
       }
     }
 
     try {
       if (!message.channel || !message.channel.threads) {
-        return message.reply({ embeds: [errorEmbed('Não foi possível criar um tópico. Verifique as permissões do bot.')], allowedMentions: { repliedUser: false } });
+        return message.reply({
+          embeds: [errorEmbed('Não foi possível criar um tópico. Verifique as permissões do bot.')],
+          allowedMentions: { repliedUser: false },
+        });
       }
 
       const thread = await message.channel.threads.create({
@@ -53,7 +70,10 @@ module.exports = {
       });
 
       if (!thread) {
-        return message.reply({ embeds: [errorEmbed('Não foi possível criar um tópico.')], allowedMentions: { repliedUser: false } });
+        return message.reply({
+          embeds: [errorEmbed('Não foi possível criar um tópico.')],
+          allowedMentions: { repliedUser: false },
+        });
       }
 
       userThreads[userId] = thread.id;
@@ -64,19 +84,29 @@ module.exports = {
       conversationHistory[userId].push({ role: 'user', content: question });
 
       const response = await fetchAIResponse(conversationHistory[userId], apiKey);
+
       conversationHistory[userId].push({ role: 'assistant', content: response });
 
       await thinkingMessage.edit(`\n${response}`);
 
       setTimeout(async () => {
-        if (thread && !thread.archived) {
-          await thread.delete().catch(console.error);
+        try {
+          const fetchedThread = await message.channel.threads.fetch(thread.id);
+          if (fetchedThread) {
+            await fetchedThread.delete();
+          }
+          delete userThreads[userId];
+        } catch (error) {
+          console.error('Erro ao excluir o tópico:', error);
         }
       }, TOPIC_TIMEOUT);
 
     } catch (error) {
       console.error('Erro ao criar o tópico:', error);
-      return message.reply({ embeds: [errorEmbed('Erro ao criar o tópico. Verifique as permissões do bot e tente novamente.')], allowedMentions: { repliedUser: false } });
+      return message.reply({
+        embeds: [errorEmbed('Erro ao criar o tópico. Verifique as permissões do bot e tente novamente.')],
+        allowedMentions: { repliedUser: false },
+      });
     }
   },
 };
@@ -104,27 +134,38 @@ module.exports.monitorThreadMessages = async (message) => {
 
     } catch (error) {
       console.error('Erro ao consultar a IA:', error);
-      await message.channel.send({ embeds: [errorEmbed('Erro ao processar a resposta. Tente novamente mais tarde.')] });
+      await message.channel.send({
+        embeds: [errorEmbed('Erro ao processar a resposta. Tente novamente mais tarde.')],
+      });
     }
   }
 };
 
 async function fetchAIResponse(conversation, apiKey) {
-  const response = await axios.post(
-    'https://api.openai.com/v1/chat/completions',
-    {
-      model: 'gpt-3.5-turbo',
-      messages: conversation,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
+  try {
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-3.5-turbo',
+        messages: conversation,
       },
-    }
-  );
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-  return response.data.choices[0].message.content;
+    if (!response.data || !response.data.choices || response.data.choices.length === 0) {
+      throw new Error('Resposta inválida da API.');
+    }
+
+    return response.data.choices[0].message.content;
+  } catch (error) {
+    console.error('Erro na API OpenAI:', error);
+    return 'Houve um erro ao gerar a resposta. Tente novamente mais tarde.';
+  }
 }
 
 function errorEmbed(text) {
