@@ -5,7 +5,7 @@ require('dotenv').config();
 const MAX_CHARACTERS = 1500;
 const conversationHistory = {};
 const userThreads = {};
-const TOPIC_TIMEOUT = 10 * 60 * 1000;
+const TOPIC_TIMEOUT = 15 * 60 * 1000;
 
 module.exports = {
   name: 'ai',
@@ -34,7 +34,7 @@ module.exports = {
       try {
         const thread = await message.channel.threads.fetch(userThreads[userId]);
         if (thread && !thread.archived) {
-          return thread.send(`${message.author}, você já tem um tópico aberto! Continue a conversa lá.`);
+          return message.channel.send(`${message.author}, você já tem um tópico aberto! Continue a conversa lá: ${thread}`);
         }
       } catch (error) {
         console.error('Erro ao buscar o tópico:', error);
@@ -69,9 +69,8 @@ module.exports = {
       await thinkingMessage.edit(`\n${response}`);
 
       setTimeout(async () => {
-        if (thread && !thread.archived && !thread.locked) {
-          await thread.setLocked(true);
-          await thread.send('**<:1000045601:1339317172081786930> Este bate-papo foi encerrado devido à inatividade.**');
+        if (thread && !thread.archived) {
+          await thread.delete().catch(console.error);
         }
       }, TOPIC_TIMEOUT);
 
@@ -132,4 +131,4 @@ function errorEmbed(text) {
   return new EmbedBuilder()
     .setColor('#FF4C4C')
     .setAuthor({ name: text, iconURL: 'http://bit.ly/4aIyY9j' });
-        }
+}
