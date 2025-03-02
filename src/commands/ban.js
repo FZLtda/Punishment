@@ -53,7 +53,7 @@ module.exports = {
         .setColor('Red')
         .setDescription(`${membro} (\`${membro.id}\`) foi banido(a)!`)
         .addFields(
-          { name: 'Motivo', value: motivo, inline: false }
+          { name: 'Motivo', value: `\`${motivo}\``, inline: false }
         )
         .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
         .setFooter({
