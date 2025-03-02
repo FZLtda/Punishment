@@ -77,7 +77,7 @@ module.exports = {
         .setColor('Red')
         .setDescription(`${membro} (\`${membro.id}\`) foi mutado(a)!`)
         .addFields(
-          { name: 'Duração', value: tempo, inline: true },
+          { name: 'Duração', value: `\`${tempo}\``, inline: true },
           { name: 'Motivo', value: motivo, inline: true }
         )
         .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
