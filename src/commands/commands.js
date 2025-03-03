@@ -1,13 +1,13 @@
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
-  name: 'commands',
+  name: 'status',
   description: 'Mostra o status de todos os comandos do bot.',
-  usage: '${currentPrefix}commands',
+  usage: '${currentPrefix}status',
   permissions: 'Nenhuma',
   async execute(message, args) {
     // Obtém o prefixo atual do servidor (usando o mesmo método do comando de referência)
-    const currentPrefix = message.client.prefixDB[message.guild.id] || '!';
+    const currentPrefix = message.client.prefixDB?.[message.guild.id] || '!';
 
     // Cria o embed para listar os comandos
     const embed = new EmbedBuilder()
