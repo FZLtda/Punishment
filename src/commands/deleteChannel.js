@@ -6,7 +6,7 @@ module.exports = {
   usage: '${currentPrefix}deletechannel [canal]',
   permissions: 'Gerenciar Canais',
   async execute(message, args) {
-    // Verifica se o membro tem permissão
+  
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
       const embedErroPerm = new EmbedBuilder()
         .setColor('#FF4C4C')
@@ -18,10 +18,8 @@ module.exports = {
       return message.reply({ embeds: [embedErroPerm], allowedMentions: { repliedUser: false } });
     }
 
-    // Obtém o canal a ser excluído
     const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[0]) || message.channel;
 
-    // Verifica se o canal existe
     if (!channel) {
       const embedErroCanal = new EmbedBuilder()
         .setColor('#FF4C4C')
@@ -33,7 +31,6 @@ module.exports = {
       return message.reply({ embeds: [embedErroCanal], allowedMentions: { repliedUser: false } });
     }
 
-    // Protege canais essenciais
     const canaisProtegidos = ["regras", "anúncios", "staff"];
     if (canaisProtegidos.includes(channel.name.toLowerCase())) {
       const embedProtegido = new EmbedBuilder()
@@ -46,7 +43,6 @@ module.exports = {
       return message.reply({ embeds: [embedProtegido], allowedMentions: { repliedUser: false } });
     }
 
-    // Verifica se o bot tem permissão para excluir canais
     if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
       const embedErroBot = new EmbedBuilder()
         .setColor('#FF4C4C')
@@ -58,7 +54,6 @@ module.exports = {
       return message.reply({ embeds: [embedErroBot], allowedMentions: { repliedUser: false } });
     }
 
-    // Confirmação antes da exclusão
     const embedConfirmacao = new EmbedBuilder()
       .setColor('Yellow')
       .setTitle('⚠️ Confirmação Necessária')
