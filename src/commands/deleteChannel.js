@@ -56,7 +56,7 @@ module.exports = {
 
     const embedConfirmacao = new EmbedBuilder()
       .setColor('Yellow')
-      .setTitle('⚠️ Confirmação Necessária')
+      .setTitle('<:1000050074:1345954801304731710> Confirmação Necessária')
       .setDescription(`Tem certeza que deseja excluir o canal **${channel.name}**? Responda com **sim** em até 10 segundos.`);
 
     await message.reply({ embeds: [embedConfirmacao], allowedMentions: { repliedUser: false } });
