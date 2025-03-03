@@ -75,7 +75,7 @@ module.exports = {
 
         const embedSucesso = new EmbedBuilder()
           .setColor('Green')
-          .setTitle('✅ Canal Excluído')
+          .setTitle('<:1000042885:1336044571125354496> Canal Excluído')
           .setDescription(`O canal **${channel.name}** foi excluído com sucesso!`);
 
         await message.channel.send({ embeds: [embedSucesso] });
