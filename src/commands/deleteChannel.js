@@ -1,7 +1,7 @@
 const { PermissionFlagsBits } = require('discord.js');
 
 module.exports = {
-    name: "excluircanal",
+    name: "deleteChannel",
     description: "Exclui um canal do servidor.",
     execute: async (client, message, args) => {
         try {
