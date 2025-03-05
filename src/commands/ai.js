@@ -68,16 +68,6 @@ module.exports = {
         autoArchiveDuration: 60,
         reason: 'Conversa iniciada com a IA',
       });
-       // bloco teste
-  setTimeout(async () => {
-    const messages = await thread.messages.fetch({ limit: 1 });
-    const firstMessage = messages.first();
-  if (firstMessage && firstMessage.system) {
-    await firstMessage.delete().catch(console.error);
-    }
-  }, 1000);
-
-      //teste
 
       if (!thread) {
         return message.reply({
