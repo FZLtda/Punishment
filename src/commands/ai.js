@@ -67,6 +67,7 @@ module.exports = {
         name: `Punishment - ${message.author.displayName}`,
         autoArchiveDuration: 60,
         reason: 'Conversa iniciada com a IA',
+        invitable: false
       });
 
       if (!thread) {
