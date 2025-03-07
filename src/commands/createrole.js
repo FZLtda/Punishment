@@ -61,17 +61,18 @@ module.exports = {
             const resolvedPermissions = new PermissionsBitField();  
 
             if (rolePermissions) {  
-                rolePermissions  
-                    .toUpperCase()  
-                    .split(',')  
-                    .map(perm => perm.trim())  
-                    .forEach(perm => {  
-                        if (PermissionsBitField.Flags[perm]) {  
-                            resolvedPermissions.add(PermissionsBitField.Flags[perm]);  
-                        } else {
-                            console.log(`Permissão inválida: ${perm}`);
-                        }
-                    });  
+                const permissionsArray = rolePermissions  
+                    .toUpperCase()
+                    .split(',')
+                    .map(perm => perm.trim());
+
+                permissionsArray.forEach(perm => {
+                    if (PermissionsBitField.Flags[perm]) {
+                        resolvedPermissions.add(PermissionsBitField.Flags[perm]);
+                    } else {
+                        console.log(`Permissão inválida: ${perm}`);
+                    }
+                });  
             }  
 
             const newRole = await message.guild.roles.create({  
