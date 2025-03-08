@@ -104,7 +104,7 @@ module.exports = {
         .setColor('#2ecc71')
         .setAuthor({
           name: 'A tradução foi concluída! Enviando o arquivo traduzido...',
-          iconURL: 'https://bit.ly/3Q2Q8F1',
+          iconURL: 'https://bit.ly/3FeqqLT',
         });
 
       await message.channel.send({ embeds: [embedSucesso], allowedMentions: { repliedUser: false } });
