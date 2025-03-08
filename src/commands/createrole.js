@@ -55,28 +55,31 @@ module.exports = {
         const roleName = args[0];  
         const colorInput = args[1] ? args[1].toUpperCase() : '#FFFFFF';  
         const roleColor = colorMapping[colorInput] || colorInput;  
-        const rolePermissions = args.slice(2);  
+        const rolePermissions = args.slice(2).join(' ');  
 
         try {  
             let resolvedPermissions = new PermissionsBitField();  
 
-            if (rolePermissions.length > 0) {  
-                rolePermissions.forEach(perm => {
-                    const formattedPerm = perm.toUpperCase();
-                    if (PermissionsBitField.Flags[formattedPerm]) {
-                        resolvedPermissions = resolvedPermissions.add(PermissionsBitField.Flags[formattedPerm]);
-                    } else {
-                        console.log(`Permissão inválida: ${formattedPerm}`);
-                    }
-                });  
-            }  
+            if (rolePermissions) {  
+                const permissionsArray = rolePermissions  
+                    .toUpperCase()
+                    .replace(/,/g, ' ')
+                    .split(/\s+/)
+                    .map(perm => perm.trim());
 
-            console.log(`Permissões finais: ${resolvedPermissions.bitfield}`); // Debugging
+                console.log(`Permissões recebidas: ${permissionsArray}`);
+
+                resolvedPermissions = PermissionsBitField.resolve(
+                    permissionsArray.filter(perm => PermissionsBitField.Flags[perm])
+                );
+
+                console.log(`Permissões finais (bitfield): ${resolvedPermissions}`);
+            }  
 
             const newRole = await message.guild.roles.create({  
                 name: roleName,  
                 color: roleColor,  
-                permissions: resolvedPermissions.bitfield,  
+                permissions: resolvedPermissions,  
                 reason: `Criado por ${message.author.tag}`,  
             });  
 
@@ -86,7 +89,7 @@ module.exports = {
                 .addFields(  
                     { name: 'Nome do Cargo', value: newRole.name, inline: true },  
                     { name: 'Cor', value: newRole.hexColor.toUpperCase(), inline: true },  
-                    { name: 'Permissões', value: resolvedPermissions.toArray().join(', ') || 'Nenhuma', inline: false }  
+                    { name: 'Permissões', value: newRole.permissions.toArray().join(', ') || 'Nenhuma', inline: false }  
                 )  
                 .setFooter({ text: `Criado por ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })  
                 .setTimestamp();  
