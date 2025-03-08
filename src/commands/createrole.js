@@ -64,17 +64,19 @@ module.exports = {
                 rolePermissions.forEach(perm => {
                     const formattedPerm = perm.toUpperCase();
                     if (PermissionsBitField.Flags[formattedPerm]) {
-                        resolvedPermissions.add(PermissionsBitField.Flags[formattedPerm]);
+                        resolvedPermissions = resolvedPermissions.add(PermissionsBitField.Flags[formattedPerm]);
                     } else {
                         console.log(`Permissão inválida: ${formattedPerm}`);
                     }
                 });  
             }  
 
+            console.log(`Permissões finais: ${resolvedPermissions.bitfield}`); // Debugging
+
             const newRole = await message.guild.roles.create({  
                 name: roleName,  
                 color: roleColor,  
-                permissions: resolvedPermissions,  
+                permissions: resolvedPermissions.bitfield,  
                 reason: `Criado por ${message.author.tag}`,  
             });  
 
