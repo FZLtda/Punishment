@@ -24,7 +24,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#FF4C4C')
-                        .setAuthor({ name: 'Você não possui permissão para usar este comando.', iconURL: 'http://bit.ly/4aIyY9j' })
+                        .setAuthor({ name: 'Você não tem permissão para usar este comando.', iconURL: 'http://bit.ly/4aIyY9j' })
                 ],
                 allowedMentions: { repliedUser: false }
             });
@@ -35,7 +35,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#FF4C4C')
-                        .setAuthor({ name: 'Não tenho permissão para criar cargos no servidor.', iconURL: 'http://bit.ly/4aIyY9j' })
+                        .setAuthor({ name: 'Não tenho permissão para criar cargos.', iconURL: 'http://bit.ly/4aIyY9j' })
                 ],
                 allowedMentions: { repliedUser: false }
             });
@@ -70,7 +70,7 @@ module.exports = {
 
                 permissionsArray.forEach(perm => {
                     const formattedPerm = perm.toUpperCase().replace(/ /g, '_'); // Corrige nomes errados
-                    if (PermissionsBitField.Flags[formattedPerm]) {
+                    if (Object.keys(PermissionsBitField.Flags).includes(formattedPerm)) {
                         resolvedPermissions.add(PermissionsBitField.Flags[formattedPerm]);
                     } else {
                         invalidPermissions.push(perm);
