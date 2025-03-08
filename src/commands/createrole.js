@@ -71,7 +71,7 @@ module.exports = {
                 permissionsArray.forEach(perm => {
                     const formattedPerm = perm.toUpperCase().replace(/ /g, '_'); // Corrige nomes errados
                     if (Object.keys(PermissionsBitField.Flags).includes(formattedPerm)) {
-                        resolvedPermissions = resolvedPermissions.add(PermissionsBitField.Flags[formattedPerm]);
+                        resolvedPermissions.add(PermissionsBitField.Flags[formattedPerm]);
                     } else {
                         invalidPermissions.push(perm);
                     }
@@ -93,7 +93,7 @@ module.exports = {
             const newRole = await message.guild.roles.create({  
                 name: roleName,  
                 color: roleColor,  
-                permissions: resolvedPermissions.bitfield,  
+                permissions: resolvedPermissions,  
                 reason: `Criado por ${message.author.tag}`,  
             });  
 
