@@ -19,6 +19,7 @@ module.exports = {
     usage: '${currentPrefix}createrole <nome> [cor] [permissões]',
     permissions: 'Gerenciar Cargos',
     async execute(message, args) {
+        // Verifica se o usuário tem permissão para gerenciar cargos
         if (!message.member.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
             return message.reply({
                 embeds: [
@@ -33,6 +34,7 @@ module.exports = {
             });
         }
 
+        // Verifica se o bot tem permissão para criar cargos
         if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
             return message.reply({
                 embeds: [
@@ -47,6 +49,7 @@ module.exports = {
             });
         }
 
+        // Verifica se foi informado um nome para o cargo
         if (!args[0]) {
             return message.reply({
                 embeds: [
@@ -68,24 +71,44 @@ module.exports = {
 
         try {  
             let resolvedPermissions = new PermissionsBitField();  
+            let invalidPermissions = [];  
 
             if (permissionsInput) {  
                 const permissionsArray = permissionsInput
                     .toUpperCase()
-                    .replace(/,/g, ' ')
-                    .split(/\s+/)
+                    .replace(/,/g, ' ') // Substitui vírgulas por espaços
+                    .split(/\s+/) // Divide por espaços
                     .map(perm => perm.trim());
 
-                resolvedPermissions = new PermissionsBitField(
-                    permissionsArray.filter(perm => PermissionsBitField.Flags[perm])
-                        .map(perm => PermissionsBitField.Flags[perm])
-                );
+                permissionsArray.forEach(perm => {
+                    if (PermissionsBitField.Flags[perm]) {
+                        resolvedPermissions.add(PermissionsBitField.Flags[perm]);
+                    } else {
+                        invalidPermissions.push(perm);
+                    }
+                });
             }  
+
+            // Se houver permissões inválidas, retorna um erro
+            if (invalidPermissions.length > 0) {
+                return message.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor('#FF4C4C')
+                            .setAuthor({ 
+                                name: 'As seguintes permissões são inválidas:', 
+                                iconURL: 'http://bit.ly/4aIyY9j' 
+                            })
+                            .setDescription(`\`${invalidPermissions.join(', ')}\``)
+                    ],
+                    allowedMentions: { repliedUser: false }
+                });
+            }
 
             const newRole = await message.guild.roles.create({  
                 name: roleName,  
                 color: roleColor,  
-                permissions: resolvedPermissions,  
+                permissions: resolvedPermissions.bitfield,  
                 reason: `Criado por ${message.author.tag}`,  
             });  
 
