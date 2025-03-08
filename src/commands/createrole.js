@@ -19,46 +19,34 @@ module.exports = {
     usage: '${currentPrefix}createrole <nome> [cor] [permissões]',
     permissions: 'Gerenciar Cargos',
     async execute(message, args) {
-        // Verifica se o usuário tem permissão para gerenciar cargos
         if (!message.member.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
             return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#FF4C4C')
-                        .setAuthor({ 
-                            name: 'Você não possui permissão para usar este comando.', 
-                            iconURL: 'http://bit.ly/4aIyY9j' 
-                        })
+                        .setAuthor({ name: 'Você não possui permissão para usar este comando.', iconURL: 'http://bit.ly/4aIyY9j' })
                 ],
                 allowedMentions: { repliedUser: false }
             });
         }
 
-        // Verifica se o bot tem permissão para criar cargos
         if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
             return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#FF4C4C')
-                        .setAuthor({ 
-                            name: 'Não tenho permissão para criar cargos no servidor.', 
-                            iconURL: 'http://bit.ly/4aIyY9j' 
-                        })
+                        .setAuthor({ name: 'Não tenho permissão para criar cargos no servidor.', iconURL: 'http://bit.ly/4aIyY9j' })
                 ],
                 allowedMentions: { repliedUser: false }
             });
         }
 
-        // Verifica se foi informado um nome para o cargo
         if (!args[0]) {
             return message.reply({
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#FF4C4C')
-                        .setAuthor({ 
-                            name: 'Você precisa fornecer um nome para o cargo.', 
-                            iconURL: 'http://bit.ly/4aIyY9j' 
-                        })
+                        .setAuthor({ name: 'Você precisa fornecer um nome para o cargo.', iconURL: 'http://bit.ly/4aIyY9j' })
                 ],
                 allowedMentions: { repliedUser: false }
             });
@@ -81,24 +69,21 @@ module.exports = {
                     .map(perm => perm.trim());
 
                 permissionsArray.forEach(perm => {
-                    if (PermissionsBitField.Flags[perm]) {
-                        resolvedPermissions.add(PermissionsBitField.Flags[perm]);
+                    const formattedPerm = perm.toUpperCase().replace(/ /g, '_'); // Corrige nomes errados
+                    if (PermissionsBitField.Flags[formattedPerm]) {
+                        resolvedPermissions.add(PermissionsBitField.Flags[formattedPerm]);
                     } else {
                         invalidPermissions.push(perm);
                     }
                 });
             }  
 
-            // Se houver permissões inválidas, retorna um erro
             if (invalidPermissions.length > 0) {
                 return message.reply({
                     embeds: [
                         new EmbedBuilder()
                             .setColor('#FF4C4C')
-                            .setAuthor({ 
-                                name: 'As seguintes permissões são inválidas:', 
-                                iconURL: 'http://bit.ly/4aIyY9j' 
-                            })
+                            .setAuthor({ name: 'As seguintes permissões são inválidas:', iconURL: 'http://bit.ly/4aIyY9j' })
                             .setDescription(`\`${invalidPermissions.join(', ')}\``)
                     ],
                     allowedMentions: { repliedUser: false }
@@ -108,7 +93,7 @@ module.exports = {
             const newRole = await message.guild.roles.create({  
                 name: roleName,  
                 color: roleColor,  
-                permissions: resolvedPermissions.bitfield,  
+                permissions: resolvedPermissions,  
                 reason: `Criado por ${message.author.tag}`,  
             });  
 
@@ -130,10 +115,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#FF4C4C')
-                        .setAuthor({ 
-                            name: 'Não foi possível criar o cargo.', 
-                            iconURL: 'http://bit.ly/4aIyY9j' 
-                        })
+                        .setAuthor({ name: 'Não foi possível criar o cargo.', iconURL: 'http://bit.ly/4aIyY9j' })
                 ],
                 allowedMentions: { repliedUser: false }
             });
