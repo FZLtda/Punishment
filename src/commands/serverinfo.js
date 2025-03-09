@@ -8,8 +8,9 @@ module.exports = {
   permissions: 'Enviar Mensagens',
   async execute(message) {
     const guild = message.guild;
-
-    const createdAt = moment(guild.createdAt).tz('America/Sao_Paulo').format('DD/MM/YYYY [às] HH:mm:ss');
+    const createdAt = moment(guild.createdAt)
+      .tz('America/Sao_Paulo')
+      .format('DD/MM/YYYY [às] HH:mm:ss');
     const owner = await guild.fetchOwner();
 
     const memberCount = guild.memberCount;
@@ -20,15 +21,6 @@ module.exports = {
     const voiceChannels = guild.channels.cache.filter((channel) => channel.type === 2).size;
     const categories = guild.channels.cache.filter((channel) => channel.type === 4).size;
 
-    const verificationLevels = [
-      'Nenhum',
-      'Baixo',
-      'Médio',
-      'Alto',
-      'Muito Alto (Extreme)',
-    ];
-    const verificationLevel = verificationLevels[guild.verificationLevel];
-
     const embed = new EmbedBuilder()
       .setTitle(`<:1000046551:1340466667779784777> Informações de ${guild.name}`)
       .setThumbnail(guild.iconURL({ dynamic: true, size: 1024 }))
@@ -38,27 +30,9 @@ module.exports = {
         { name: 'ID', value: guild.id, inline: true },
         { name: 'Dono', value: `${owner.displayName} (${owner.user.id})`, inline: true },
         { name: 'Criado em', value: createdAt, inline: true },
-        { name: 'Membros', value: `${memberCount}`, inline: true },
-        { name: 'Bots', value: `${botsCount}`, inline: true },
-        { name: 'Canais de texto', value: `${textChannels}`, inline: true },
-        { name: 'Canais de voz', value: `${voiceChannels}`, inline: true },
-        { name: 'Categorias', value: `${categories}`, inline: true },
-        { name: 'Verificação', value: verificationLevel, inline: true },
-        {
-          name: 'Canal de regras',
-          value: guild.rulesChannel ? guild.rulesChannel.name : 'Não definido',
-          inline: true,
-        },
-        {
-          name: 'Emojis',
-          value: `${guild.emojis.cache.size} emojis`,
-          inline: true,
-        },
-        {
-          name: 'Boosts',
-          value: `${guild.premiumSubscriptionCount || 0} (Nível ${guild.premiumTier || 0})`,
-          inline: true,
-        }
+        { name: 'Membros', value: `${memberCount} (Humanos: ${humansCount}, Bots: ${botsCount})`, inline: true },
+        { name: 'Canais', value: `Texto: ${textChannels} | Voz: ${voiceChannels} | Categorias: ${categories}`, inline: true },
+        { name: 'Emojis', value: `${guild.emojis.cache.size} emojis`, inline: true }
       )
       .setFooter({
         text: `${message.author.username}`,
