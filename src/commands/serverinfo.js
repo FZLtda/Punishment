@@ -28,7 +28,7 @@ module.exports = {
       .addFields(
         { name: 'Nome', value: guild.name, inline: true },
         { name: 'ID', value: guild.id, inline: true },
-        { name: 'Dono', value: `${owner.displayName} (${owner.user.id})`, inline: true },
+        { name: 'Dono', value: ${owner.displayName} (${owner.user.id})`, inline: true },
         { name: 'Criado em', value: createdAt, inline: true },
         { name: 'Membros', value: `${memberCount} (Humanos: ${humansCount}, Bots: ${botsCount})`, inline: true },
         { name: 'Canais', value: `Texto: ${textChannels} | Voz: ${voiceChannels} | Categorias: ${categories}`, inline: true },
