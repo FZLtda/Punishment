@@ -12,7 +12,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://imgur.com/ovJKL2f'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -26,7 +26,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Argumentos inválidos. O formato correto do comando é: addrole @membro @cargo',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://imgur.com/ovJKL2f'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -37,7 +37,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Não tenho permissão para adicionar este cargo, pois ele está acima do meu cargo mais alto.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://imgur.com/ovJKL2f'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -48,7 +48,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Este usuário já possui este cargo.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://imgur.com/ovJKL2f'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -75,7 +75,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Não foi possível adicionar o cargo.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://imgur.com/ovJKL2f'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
