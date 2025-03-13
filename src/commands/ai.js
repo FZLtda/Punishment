@@ -171,5 +171,5 @@ async function fetchAIResponse(conversation, apiKey) {
 function errorEmbed(text) {
   return new EmbedBuilder()
     .setColor('#FF4C4C')
-    .setAuthor({ name: text, iconURL: 'http://bit.ly/4aIyY9j' });
+    .setAuthor({ name: text, iconURL: 'https://imgur.com/ovJKL2f' });
 }
