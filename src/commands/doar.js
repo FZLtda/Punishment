@@ -59,11 +59,7 @@ module.exports = {
                 .setColor('#fe3838')
                 .setTitle('Doação Iniciada')
                 .setDescription(
-                    `<:1000043196:1336360581934088193> **Obrigado pelo apoio, ${message.author}!**\n\n` +
-                    `<:1000043192:1336359444006703144> Você está ajudando o **Projeto Punishment** a se manter ativo e a crescer.\n\n` +
-                    `<:1000043188:1336358026306912359> **Valor da Doação:** R$${(valor / 100).toFixed(2)}\n\n` +
-                    `<:1000043190:1336358527899406369> **Finalize sua doação clicando no botão abaixo:**\n` +
-                    `Seu apoio faz toda a diferença!`
+                    `<:1000043196:1336360581934088193> Obrigado, ${message.author}, por apoiar o **Punishment** com **R$${(valor / 100).toFixed(2)}**!`
                 )
                 .setFooter({ text: 'Seu apoio ajuda a me manter ativo!' });
 
