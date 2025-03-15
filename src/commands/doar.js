@@ -59,9 +59,9 @@ module.exports = {
                 .setColor('#fe3838')
                 .setTitle('Doação Iniciada')
                 .setDescription(
-                    `<:1000043196:1336360581934088193> Obrigado, ${message.author}, por apoiar o **Punishment** com **R$${(valor / 100).toFixed(2)}**!`
+                    `<:1000043196:1336360581934088193> ${message.author}, você está doando **R$${(valor / 100).toFixed(2)}** para o **Punishment**`
                 )
-                .setFooter({ text: 'Seu apoio ajuda a me manter ativo!' });
+                .setFooter({ text: 'Finalize sua doação clicando no botão abaixo.' });
 
             const donationMessage = await message.channel.send({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
 
