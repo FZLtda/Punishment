@@ -42,7 +42,7 @@ module.exports = {
                     quantity: 1
                 }],
                 mode: 'payment',
-                success_url: 'https://discord.com/channels/1006910950286299246/1324125694984323078',
+                success_url: 'https://funczero.xyz',
                 cancel_url: 'https://funczero.xyz/cancelado',
                 metadata: { userId: message.author.id }
             });
