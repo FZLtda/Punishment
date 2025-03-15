@@ -42,7 +42,7 @@ module.exports = {
                     quantity: 1
                 }],
                 mode: 'payment',
-                success_url: 'https://funczero.xyz',
+                success_url: 'https://discord.com/channels/1006910950286299246/1324125694984323078',
                 cancel_url: 'https://funczero.xyz/cancelado',
                 metadata: { userId: message.author.id }
             });
@@ -59,7 +59,7 @@ module.exports = {
                 .setColor('#fe3838')
                 .setTitle('Doação Iniciada')
                 .setDescription(
-                    `<:1000043196:1336360581934088193> ${message.author}, você está doando **R$${(valor / 100).toFixed(2)}** para o **Punishment**`
+                    `<:1000052556:1350579529604665384> ${message.author}, você está doando **R$${(valor / 100).toFixed(2)}** para o **Punishment**`
                 )
                 .setFooter({ text: 'Finalize sua doação clicando no botão abaixo.' });
 
