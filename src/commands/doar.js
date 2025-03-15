@@ -59,7 +59,7 @@ module.exports = {
                 .setColor('#fe3838')
                 .setTitle('Doação Iniciada')
                 .setDescription(
-                    `<:1000052556:1350579529604665384> ${message.author}, você está doando **R$${(valor / 100).toFixed(2)}** para o **Punishment**`
+                    `<:1000052556:1350579529604665384> ${message.author}, você está doando **R$${(valor / 100).toFixed(2)}** para o **Punishment**.`
                 )
                 .setFooter({ text: 'Finalize sua doação clicando no botão abaixo.' });
 
