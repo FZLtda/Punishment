@@ -24,9 +24,8 @@ module.exports = {
       return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
     }
 
-    // Obtendo o prefixo do servidor corretamente
     const getPrefix = interaction.client.getPrefix;
-    const currentPrefix = getPrefix ? getPrefix(interaction.guild.id) : '.'; // Usa "!" se getPrefix não existir
+    const currentPrefix = getPrefix ? getPrefix(interaction.guild.id) : '.';
 
     const commandName = interaction.options.getString('comando');
 
@@ -44,7 +43,6 @@ module.exports = {
         return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
       }
 
-      // Substituindo corretamente `${currentPrefix}` pelo prefixo real
       const usage = command.usage ? command.usage.replace('${currentPrefix}', currentPrefix) : 'Não especificado.';
 
       const embed = new EmbedBuilder()
