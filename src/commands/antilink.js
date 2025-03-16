@@ -1,6 +1,6 @@
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField, Client } = require('discord.js');
 const fs = require('fs');
-const path = '../data/antilink.json';
+const path = './data/antilink.json';
 
 if (!fs.existsSync(path)) {
   fs.writeFileSync(path, JSON.stringify({}));
@@ -104,3 +104,6 @@ module.exports = {
     });
   },
 };
+
+const client = new Client({ intents: [] }); 
+module.exports.startAntilinkListener(client);
