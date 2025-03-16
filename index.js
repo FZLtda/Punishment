@@ -7,10 +7,12 @@ const logger = require('./src/utils/logger.js');
 const validateEnv = require('./src/utils/validateEnv.js');
 const registerSlashCommands = require('./src/utils/loadSlashCommands.js');
 
+// Valida as variáveis de ambiente
 validateEnv();
 
 const startTime = Date.now();
 
+// Configuração do cliente Discord com as intenções necessárias
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -27,16 +29,18 @@ client.slashCommands = new Collection();
   logger.info(`[${process.env.HOSTNAME || 'Punishment'}] Iniciando o bot...`);
 
   try {
-  
+    // Carrega comandos, eventos e registra comandos de barra
     await Promise.all([
       loadCommands(client),
       loadEvents(client),
       registerSlashCommands(client),
     ]);
 
+    // Configura a presença do bot e inicia o monitoramento
     setPresence(client);
     monitorBot(client);
 
+    // Loga no Discord com o token do bot
     await client.login(process.env.TOKEN);
 
     logger.info(
@@ -46,15 +50,18 @@ client.slashCommands = new Collection();
     );
   } catch (error) {
     logger.error(
-      `[${process.env.HOSTNAME || 'Punishment'}] Falha ao iniciar: ${error.message}`
+      `[${process.env.HOSTNAME || 'Punishment'}] Falha ao iniciar: ${error.message}`,
+      { stack: error.stack }
     );
     process.exit(1);
   }
 })();
 
+// Função para lidar com erros e promessas rejeitadas não tratadas
 const handleError = (type, error) => {
   logger.error(
-    `[${process.env.HOSTNAME || 'Punishment'}] ${type}: ${error.message}`
+    `[${process.env.HOSTNAME || 'Punishment'}] ${type}: ${error.message}`,
+    { stack: error.stack }
   );
   process.exit(1);
 };
