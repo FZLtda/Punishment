@@ -25,7 +25,7 @@ module.exports = {
     }
 
     const getPrefix = interaction.client.getPrefix;
-    const currentPrefix = getPrefix ? getPrefix(interaction.guild.id) : '.';
+    const currentPrefix = getPrefix ? getPrefix(interaction.guild.id);
 
     const commandName = interaction.options.getString('comando');
 
