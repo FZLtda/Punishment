@@ -2,8 +2,8 @@
 
 Um bot de moderação avançado e completo para Discord.
 
-[Adicionar Punishment](https://discord.com/oauth2/authorize?client_id=1155843839932764253&permissions=8&integration_type=0&scope=bot+applications.commands)  
-[Suporte](https://discord.gg/p4ANxp5TKf)
+[Adicionar Punishment](https://discord.com/oauth2/authorize?client_id=1155843839932764253&permissions=8&integration_type=0&scope=bot+applications.commands) | [Suporte](https://discord.gg/p4ANxp5TKf)
+
 
 ---
 
