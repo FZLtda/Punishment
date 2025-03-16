@@ -3,16 +3,16 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('help')
-    .setDescription('Exibe informações detalhadas sobre os comandos.')
+    .setDescription('Exibe informações detalhadas sobre os comandos de prefixo.')
     .addStringOption(option =>
       option
         .setName('comando')
-        .setDescription('Nome do comando para obter informações detalhadas')
+        .setDescription('Nome do comando de prefixo para obter informações detalhadas')
         .setRequired(false)
     ),
 
   async execute(interaction) {
-    const commands = interaction.client.commands;
+    const commands = interaction.client.commands; // Pegando os comandos de prefixo
 
     if (!commands || commands.size === 0) {
       const embedErro = new EmbedBuilder()
@@ -28,13 +28,14 @@ module.exports = {
     const commandName = interaction.options.getString('comando');
 
     if (commandName) {
+      // Buscar o comando entre os comandos de prefixo
       const command = commands.get(commandName.toLowerCase());
 
       if (!command) {
         const embedErro = new EmbedBuilder()
           .setColor('#FF4C4C')
           .setAuthor({
-            name: 'Não encontrei esse comando no sistema.',
+            name: 'Não encontrei esse comando de prefixo no sistema.',
             iconURL: 'http://bit.ly/4aIyY9j',
           });
 
@@ -65,14 +66,14 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0x36393F)
-      .setTitle('<:1000043167:1336329540502421576> Comandos Principais')
+      .setTitle('<:1000043167:1336329540502421576> Comandos de Prefixo Disponíveis')
       .addFields(
-        { name: 'help', value: '`Exibe informações detalhadas sobre os comandos.`', inline: true },
-        { name: 'ping', value: '`Exibe os detalhes da conexão do bot.`', inline: true },
-        { name: 'privacy', value: '`Exibe a política de privacidade.`', inline: true },
-        { name: 'mod-stats', value: '`Exibe estatísticas da moderação no servidor.`', inline: true },
-        { name: 'stats', value: '`Exibe as estatísticas do bot.`', inline: true },
-        { name: 'undo', value: '`Desfaz o último comando executado.`', inline: true }
+        { name: `${currentPrefix}help`, value: '`Exibe informações detalhadas sobre os comandos.`', inline: true },
+        { name: `${currentPrefix}ping`, value: '`Exibe os detalhes da conexão do bot.`', inline: true },
+        { name: `${currentPrefix}privacy`, value: '`Exibe a política de privacidade.`', inline: true },
+        { name: `${currentPrefix}mod-stats`, value: '`Exibe estatísticas da moderação no servidor.`', inline: true },
+        { name: `${currentPrefix}stats`, value: '`Exibe as estatísticas do bot.`', inline: true },
+        { name: `${currentPrefix}undo`, value: '`Desfaz o último comando executado.`', inline: true }
       )
       .addFields(
         {
