@@ -7,7 +7,7 @@ module.exports = {
     .addStringOption(option =>
       option
         .setName('comando')
-        .setDescription('Nome do comando para obter informações detalhadas')
+        .setDescription('Nome do comando para obter informações')
         .setRequired(false)
     ),
   async execute(interaction) {
