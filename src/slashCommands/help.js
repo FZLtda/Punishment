@@ -26,9 +26,13 @@ module.exports = {
     }
 
     const commandName = interaction.options.getString('comando');
-    
+
     if (commandName) {
-      const command = commands.get(commandName.toLowerCase());
+      let command = commands.get(commandName.toLowerCase());
+
+      if (!command) {
+        command = commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName.toLowerCase()));
+      }
 
       if (!command) {
         const embedErro = new EmbedBuilder()
@@ -41,7 +45,7 @@ module.exports = {
         return interaction.reply({ embeds: [embedErro], ephemeral: true });
       }
 
-      const usage = command.usage ? `\`/${command.data.name} ${command.usage}\`` : '`Não especificado.`';
+      const usage = command.usage ? `\`${command.usage}\`` : '`Não especificado.`';
       const permissions = command.permissions ? `\`${command.permissions}\`` : '`Nenhuma`';
 
       const embed = new EmbedBuilder()
@@ -64,12 +68,12 @@ module.exports = {
       .setColor(0x36393F)
       .setTitle('<:1000043167:1336329540502421576> Comandos Principais')
       .addFields(
-        { name: '/help', value: '`Exibe informações detalhadas sobre os comandos.`', inline: true },
-        { name: '/ping', value: '`Exibe os detalhes da conexão do bot.`', inline: true },
-        { name: '/privacy', value: '`Exibe a política de privacidade.`', inline: true },
-        { name: '/mod-stats', value: '`Exibe estatísticas da moderação no servidor.`', inline: true },
-        { name: '/stats', value: '`Exibe as estatísticas do bot.`', inline: true },
-        { name: '/undo', value: '`Desfaz o último comando executado.`', inline: true }
+        { name: 'help', value: '`Exibe informações detalhadas sobre os comandos.`', inline: true },
+        { name: 'ping', value: '`Exibe os detalhes da conexão do bot.`', inline: true },
+        { name: 'privacy', value: '`Exibe a política de privacidade.`', inline: true },
+        { name: 'mod-stats', value: '`Exibe estatísticas da moderação no servidor.`', inline: true },
+        { name: 'stats', value: '`Exibe as estatísticas do bot.`', inline: true },
+        { name: 'undo', value: '`Desfaz o último comando executado.`', inline: true }
       )
       .addFields(
         {
