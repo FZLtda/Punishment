@@ -20,7 +20,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const option = args[0]?.toLowerCase();
@@ -34,7 +34,7 @@ module.exports = {
           iconURL: 'http://bit.ly/4aIyY9j'
       });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const settings = JSON.parse(fs.readFileSync(path, 'utf8'));
