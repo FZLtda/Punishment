@@ -28,11 +28,7 @@ module.exports = {
     const commandName = interaction.options.getString('comando');
 
     if (commandName) {
-      let command = commands.get(commandName.toLowerCase());
-
-      if (!command) {
-        command = commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName.toLowerCase()));
-      }
+      let command = commands.find(cmd => cmd.data.name.toLowerCase() === commandName.toLowerCase());
 
       if (!command) {
         const embedErro = new EmbedBuilder()
