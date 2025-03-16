@@ -7,6 +7,7 @@ module.exports = {
   async execute(message, client) {
     if (message.author.bot || !message.guild) return;
 
+    
     if (message.channel.isThread() && message.channel.name.startsWith('Punishment -')) {
       const userId = message.author.id;
       const apiKey = process.env.OPENAI_API_KEY;
@@ -39,7 +40,9 @@ module.exports = {
     const command = client.commands.get(commandName);
     if (!command) return;
 
+    
     const userAccepted = db.prepare('SELECT user_id FROM accepted_users WHERE user_id = ?').get(message.author.id);
+    console.log(`[DEBUG] Verificando usuário: ${message.author.id}, Resultado:`, userAccepted);
 
     if (!userAccepted) {
       const embed = {
@@ -70,8 +73,14 @@ module.exports = {
         ],
       };
 
-      const replyMessage = await message.reply({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
+      
+      const replyMessage = await message.reply({ 
+        embeds: [embed], 
+        components: [row], 
+        allowedMentions: { repliedUser: false } 
+      });
 
+      
       const collector = message.channel.createMessageComponentCollector({
         filter: (interaction) =>
           interaction.isButton() &&
@@ -82,14 +91,20 @@ module.exports = {
 
       collector.on('collect', async (interaction) => {
         try {
-          db.prepare('INSERT INTO accepted_users (user_id) VALUES (?)').run(interaction.user.id);
+          
+          db.prepare('INSERT OR IGNORE INTO accepted_users (user_id) VALUES (?)').run(interaction.user.id);
+
+          
+          const checkUser = db.prepare('SELECT user_id FROM accepted_users WHERE user_id = ?').get(interaction.user.id);
+          console.log(`[DEBUG] Usuário aceitou os termos:`, checkUser);
 
           await interaction.reply({
             content: '<:1000042885:1336044571125354496> Você aceitou os Termos de Uso. Agora pode usar o Punishment!',
             ephemeral: true,
           });
 
-          replyMessage.delete().catch(() => null);
+          
+          await replyMessage.delete();
         } catch (error) {
           console.error('[ERROR] Erro ao aceitar os Termos de Uso:', error.message);
         }
@@ -98,9 +113,11 @@ module.exports = {
       return;
     }
 
+    
     try {
       await command.execute(message, args, { setPrefix, getPrefix });
 
+      
       setTimeout(() => {
         message.delete().catch(() => {});
       }, 10);
