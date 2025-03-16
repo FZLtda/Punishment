@@ -4,7 +4,7 @@ const logger = require('./logger.js');
 
 async function loadCommands(client) {
   const commandsPath = path.join(__dirname, '../commands');
-  const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.js'));
+  const commandFiles = fs.readdirSync(commandsPath).filter((file) => file.endsWith('.js') || file.endsWith('.ts'));
 
   for (const file of commandFiles) {
     const command = require(path.join(commandsPath, file));
@@ -19,7 +19,7 @@ async function loadCommands(client) {
 
 async function loadEvents(client) {
   const eventsPath = path.join(__dirname, '../events');
-  const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.js'));
+  const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith('.js') || file.endsWith('.ts'));
 
   for (const file of eventFiles) {
     const event = require(path.join(eventsPath, file));
