@@ -24,8 +24,8 @@ module.exports = {
       return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
     }
 
-    const getPrefix = interaction.client.getPrefix;
-    const currentPrefix = getPrefix ? getPrefix(interaction.guild.id) : `${currentPrefix}`;
+      const currentPrefix = getPrefix(message.guild.id);
+      const usage = command.usage?.replace('${currentPrefix}', currentPrefix) || 'Não especificado.';
 
     const commandName = interaction.options.getString('comando');
 
