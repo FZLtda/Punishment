@@ -24,10 +24,12 @@ module.exports = {
       return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
     }
 
+    const getPrefix = interaction.client.getPrefix;
+    const currentPrefix = getPrefix ? getPrefix(interaction.guild.id) : '.';
+
     const commandName = interaction.options.getString('comando');
 
     if (commandName) {
-      // Correção: Buscar o comando entre os comandos de prefixo corretamente
       const command = commands.find(cmd => cmd.name.toLowerCase() === commandName.toLowerCase());
 
       if (!command) {
@@ -41,7 +43,7 @@ module.exports = {
         return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
       }
 
-      const usage = command.usage || 'Não especificado.';
+      const usage = command.usage ? command.usage.replace('${currentPrefix}', currentPrefix) : 'Não especificado.';
 
       const embed = new EmbedBuilder()
         .setColor(0x36393F)
@@ -73,7 +75,7 @@ module.exports = {
       .addFields(
         {
           name: '<:1000043159:1336324177900077076> Ajuda',
-          value: `Use \`/help <comando>\` para exibir mais informações sobre um comando.`,
+          value: `Use \`${currentPrefix}help <comando>\` para exibir mais informações sobre um comando.`,
         },
         {
           name: '<:1000043160:1336324162482081945> Suporte',
