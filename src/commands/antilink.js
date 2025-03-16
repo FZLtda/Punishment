@@ -104,3 +104,5 @@ module.exports = {
     });
   },
 };
+
+module.exports.startAntilinkListener(require('discord.js').Client.prototype);
