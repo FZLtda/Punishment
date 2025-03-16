@@ -8,3 +8,5 @@ client.user.setPresence({
   ],
   status: 'online'
 });
+
+module.exports = { setPresence };
