@@ -1,12 +1,14 @@
-client.user.setPresence({
-  activities: [
-    {
+client.once('ready', () => {
+  client.user.setPresence({
+    activities: [{
       name: `.help  •  Punishment`,
       type: 0,
-      emoji: '🔨',
-    }
-  ],
-  status: 'online'
+      emoji: { name: '🔨' }
+    }],
+    status: 'online',
+  });
 });
 
 module.exports = { setPresence };
+
+
