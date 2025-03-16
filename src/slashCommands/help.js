@@ -28,7 +28,7 @@ module.exports = {
     const commandName = interaction.options.getString('comando');
 
     if (commandName) {
-      let command = commands.find(cmd => cmd.data.name.toLowerCase() === commandName.toLowerCase());
+      const command = commands.get(commandName.toLowerCase());
 
       if (!command) {
         const embedErro = new EmbedBuilder()
@@ -41,16 +41,17 @@ module.exports = {
         return interaction.reply({ embeds: [embedErro], ephemeral: true });
       }
 
-      const usage = command.usage ? `\`${command.usage}\`` : '`Não especificado.`';
-      const permissions = command.permissions ? `\`${command.permissions}\`` : '`Nenhuma`';
+      const currentPrefix = interaction.client.getPrefix(interaction.guild.id);
+      const usage = command.usage?.replace('${currentPrefix}', currentPrefix) || 'Não especificado.';
+      const permissions = command.permissions || 'Nenhuma';
 
       const embed = new EmbedBuilder()
         .setColor(0x36393F)
-        .setTitle(`<:1000042965:1336131844718202942> ${command.data.name}`)
-        .setDescription(command.data.description || '`Nenhuma descrição disponível.`')
+        .setTitle(`<:1000042965:1336131844718202942> ${command.name}`)
+        .setDescription(command.description || '`Nenhuma descrição disponível.`')
         .addFields(
-          { name: '<:1000043157:1336324220770062497> Uso', value: usage, inline: false },
-          { name: '<:1000042960:1336120845881442365> Permissões Necessárias', value: permissions, inline: false }
+          { name: '<:1000043157:1336324220770062497> Uso', value: `\`${usage}\``, inline: false },
+          { name: '<:1000042960:1336120845881442365> Permissões Necessárias', value: `\`${permissions}\``, inline: false }
         )
         .setFooter({
           text: 'Punishment',
@@ -59,6 +60,8 @@ module.exports = {
 
       return interaction.reply({ embeds: [embed], ephemeral: true });
     }
+
+    const currentPrefix = interaction.client.getPrefix(interaction.guild.id);
 
     const embed = new EmbedBuilder()
       .setColor(0x36393F)
@@ -74,7 +77,7 @@ module.exports = {
       .addFields(
         {
           name: '<:1000043159:1336324177900077076> Ajuda',
-          value: `Use \`/help <comando>\` para exibir mais informações sobre um comando.`,
+          value: `Use \`${currentPrefix}help <comando>\` para exibir mais informações sobre um comando.`,
         },
         {
           name: '<:1000043160:1336324162482081945> Suporte',
