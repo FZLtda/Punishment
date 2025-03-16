@@ -25,12 +25,12 @@ module.exports = {
     }
 
     const getPrefix = interaction.client.getPrefix;
-    const currentPrefix = getPrefix ? getPrefix(interaction.guild.id);
+    const currentPrefix = getPrefix ? getPrefix(interaction.guild.id) : '!';
 
     const commandName = interaction.options.getString('comando');
 
     if (commandName) {
-      const command = commands.find(cmd => cmd.name.toLowerCase() === commandName.toLowerCase());
+      const command = commands.get(commandName.toLowerCase());
 
       if (!command) {
         const embedErroMinimo = new EmbedBuilder()
@@ -75,7 +75,7 @@ module.exports = {
       .addFields(
         {
           name: '<:1000043159:1336324177900077076> Ajuda',
-          value: `Use \`${currentPrefix}help <comando>\` para exibir mais informações sobre um comando.`,
+          value: `Use \`/help <comando>\` para exibir mais informações sobre um comando.`,
         },
         {
           name: '<:1000043160:1336324162482081945> Suporte',
