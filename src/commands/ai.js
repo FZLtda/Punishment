@@ -45,7 +45,7 @@ module.exports = {
       const embedErroMinimo = new EmbedBuilder()
       .setColor('#FF4C4C')
       .setAuthor({
-          name: 'A pergunta é muito longa! Limite de ${MAX_CHARACTERS} caracteres.',
+          name: 'A pergunta ultrapassa o limite permitido.',
           iconURL: 'https://bit.ly/43PItSI'
       });
 
