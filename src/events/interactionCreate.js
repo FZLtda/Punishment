@@ -14,10 +14,10 @@ module.exports = {
         await command.execute(interaction);
       } catch (error) {
         console.error(`[ERROR] Erro ao executar Slash Command: ${error.message}`);
-        // Evita erro caso já tenha sido respondido
-        if (!interaction.replied && !interaction.deferred) {
-          await interaction.reply({ content: '<:1000042883:1336044555354771638> Ocorreu um erro ao executar este comando.', ephemeral: true });
-        }
+        await interaction.reply({
+          content: '<:1000042883:1336044555354771638> Ocorreu um erro ao executar este comando.',
+          ephemeral: true
+        });
       }
     }
 
@@ -27,10 +27,8 @@ module.exports = {
       if (interaction.customId === 'accept_terms') {
         const command = client.commands.get('acceptTerms');
         if (command) {
-          // Executa o comando de aceitação dos Termos de Uso
           return await command.execute(interaction);
         }
-        // Caso não encontre o comando, responde com erro
         return interaction.reply({ content: 'Erro ao processar os Termos de Uso.', ephemeral: true });
       }
 
@@ -42,18 +40,24 @@ module.exports = {
 
       // Verifica se o usuário clicou para participar do sorteio
       if (interaction.customId === 'participar') {
-        // Verifica se o usuário já está participando
         if (participants.includes(interaction.user.id)) {
-          return interaction.reply({ content: '<:1000042883:1336044555354771638> Você já está concorrendo neste sorteio!', ephemeral: true });
+          return interaction.reply({
+            content: '<:1000042883:1336044555354771638> Você já está concorrendo neste sorteio!',
+            ephemeral: true
+          });
         }
 
         // Adiciona o usuário à lista de participantes
         participants.push(interaction.user.id);
-        db.prepare('UPDATE giveaways SET participants = ? WHERE message_id = ?').run(JSON.stringify(participants), interaction.message.id);
+        db.prepare('UPDATE giveaways SET participants = ? WHERE message_id = ?')
+          .run(JSON.stringify(participants), interaction.message.id);
 
         // Atualiza os botões do sorteio
         const updatedRow = new ActionRowBuilder().addComponents(
-          new ButtonBuilder().setCustomId('participar').setLabel('🎟 Participar').setStyle(ButtonStyle.Primary),
+          new ButtonBuilder()
+            .setCustomId('participar')
+            .setLabel('🎟 Participar')
+            .setStyle(ButtonStyle.Primary),
           new ButtonBuilder()
             .setCustomId('ver_participantes')
             .setLabel(`👥 Participantes: ${participants.length}`)
@@ -62,35 +66,23 @@ module.exports = {
         );
 
         // Responde ao usuário confirmando a participação e atualiza os botões
-        try {
-          await interaction.update({ components: [updatedRow] });
-          return interaction.followUp({ content: '<:1000042885:1336044571125354496> Sua entrada no sorteio foi registrada!', ephemeral: true });
-        } catch (error) {
-          console.error(`[ERROR] Erro ao atualizar sorteio: ${error.message}`);
-          return interaction.reply({ content: '<:1000042883:1336044555354771638> Erro ao atualizar a participação no sorteio.', ephemeral: true });
-        }
+        await interaction.update({ components: [updatedRow] });
+        return interaction.followUp({
+          content: '<:1000042885:1336044571125354496> Sua entrada no sorteio foi registrada!',
+          ephemeral: true
+        });
       }
 
       // Verifica se o usuário clicou para ver os participantes do sorteio
       if (interaction.customId === 'ver_participantes') {
-        return interaction.reply({ content: `👥 Participantes: ${participants.length}`, ephemeral: true });
-      }
-    }
-    
-    // Um teste 
-    if (!interaction.isChatInputCommand()) return;
-
-    const command = interaction.client.commands.get(interaction.commandName);
-    if (command) {
-      try {
-        await command.execute(interaction);
-      } catch (error) {
-        console.error(error);
-        if (!interaction.replied && !interaction.deferred) {
-          await interaction.reply({ content: '<:1000042883:1336044555354771638> Ocorreu um erro ao executar o comando.', ephemeral: true });
-        }
+        return interaction.reply({
+          content: `👥 Participantes: ${participants.length}`,
+          ephemeral: true
+        });
       }
     }
   }
 };
+
+
 
