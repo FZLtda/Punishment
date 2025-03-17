@@ -20,7 +20,25 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
   ],
+  
+//teste
+
+presence: {
+  activity: {
+    state: `.help  •  Punishment`,
+    name: `.help  •  Punishment`,
+    emoji: {
+      name: "🔨"
+    },
+    type: ActivityTypes.CUSTOM_STATUS,
+  },
+  status: PresenceStatuses.ONLINE,
+}
+  
+// teste
+  
 });
+
 
 client.commands = new Collection();
 client.slashCommands = new Collection();
