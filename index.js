@@ -22,7 +22,6 @@ const client = new Client({
   ],
 });
 
-
 client.commands = new Collection();
 client.slashCommands = new Collection();
 
@@ -45,9 +44,7 @@ client.slashCommands = new Collection();
     await client.login(process.env.TOKEN);
 
     logger.info(
-      `[${process.env.HOSTNAME || 'Punishment'}] Bot pronto em ${
-        Date.now() - startTime
-      }ms`
+      `[${process.env.HOSTNAME || 'Punishment'}] Bot pronto em ${Date.now() - startTime}ms`
     );
   } catch (error) {
     logger.error(
