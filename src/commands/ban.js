@@ -26,7 +26,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Mencione um usuário para executar esta ação.',
-          iconURL: 'https://cdn.discordapp.com/attachments/1351001911893037139/1351311911265894502/Picsart_25-03-17_18-50-57-056.png?ex=67d9eac9&is=67d89949&hm=c4c6c7e78062dbf8a040338fa562fb70beefb4f168bcc00778bfe76f752de201&'
+          iconURL: 'https://imgur.com/paZ05UY'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
