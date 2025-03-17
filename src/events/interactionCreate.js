@@ -69,5 +69,19 @@ module.exports = {
         return interaction.reply({ content: `👥 Participantes: ${participants.length}`, ephemeral: true });
       }
     }
-  },
+  
+// teste
+
+        if (!interaction.isChatInputCommand()) return;
+
+        const command = interaction.client.commands.get(interaction.commandName);
+        if (command) {
+            try {
+                await command.execute(interaction);
+            } catch (error) {
+                console.error(error);
+                await interaction.reply({ content: "❌ Ocorreu um erro ao executar o comando.", ephemeral: true });
+            }
+        }
+    }
 };
