@@ -18,26 +18,38 @@ module.exports = {
     const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
-      console.error('Erro: OPENAI_API_KEY não configurada.');
-      return message.reply({
-        embeds: [errorEmbed('Erro interno: chave da API não configurada.')],
-        allowedMentions: { repliedUser: false },
+      console.error('ERRO: OPENAI_API_KEY não configurada.');
+     const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível obter resposta da API.',
+          iconURL: 'https://bit.ly/43PItSI'
       });
+
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (!args.length) {
-      return message.reply({
-        embeds: [errorEmbed('Você precisa fornecer uma pergunta!')],
-        allowedMentions: { repliedUser: false },
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Forneça uma pergunta para obter uma resposta.',
+          iconURL: 'https://bit.ly/43PItSI'
       });
+
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const question = args.join(' ');
     if (question.length > MAX_CHARACTERS) {
-      return message.reply({
-        embeds: [errorEmbed(`A pergunta é muito longa! Limite de ${MAX_CHARACTERS} caracteres.`)],
-        allowedMentions: { repliedUser: false },
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'A pergunta é muito longa! Limite de ${MAX_CHARACTERS} caracteres.',
+          iconURL: 'https://bit.ly/43PItSI'
       });
+
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (userThreads[userId]) {
@@ -57,10 +69,14 @@ module.exports = {
 
     try {
       if (!message.channel || !message.channel.threads) {
-        return message.reply({
-          embeds: [errorEmbed('Não foi possível criar um tópico. Verifique as permissões do bot.')],
-          allowedMentions: { repliedUser: false },
-        });
+        const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível completar a criação do tópico.',
+          iconURL: 'https://bit.ly/43PItSI'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       const thread = await message.channel.threads.create({
@@ -70,10 +86,14 @@ module.exports = {
       });
 
       if (!thread) {
-        return message.reply({
-          embeds: [errorEmbed('Não foi possível criar um tópico.')],
-          allowedMentions: { repliedUser: false },
-        });
+        const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível completar a criação do tópico.',
+          iconURL: 'https://bit.ly/43PItSI'
+      });
+
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       userThreads[userId] = thread.id;
@@ -103,10 +123,14 @@ module.exports = {
 
     } catch (error) {
       console.error('Erro ao criar o tópico:', error);
-      return message.reply({
-        embeds: [errorEmbed('Erro ao criar o tópico. Verifique as permissões do bot e tente novamente.')],
-        allowedMentions: { repliedUser: false },
+      const embedErroMinimo = new EmbedBuilder()
+      .setColor('#FF4C4C')
+      .setAuthor({
+          name: 'Não foi possível completar a criação do tópico.',
+          iconURL: 'https://bit.ly/43PItSI'
       });
+
+  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };
@@ -164,12 +188,12 @@ async function fetchAIResponse(conversation, apiKey) {
     return response.data.choices[0].message.content;
   } catch (error) {
     console.error('Erro na API OpenAI:', error);
-    return 'Houve um erro ao gerar a resposta. Tente novamente mais tarde.';
+    return 'Erro ao gerar a resposta. Tente novamente mais tarde.';
   }
 }
 
 function errorEmbed(text) {
   return new EmbedBuilder()
     .setColor('#FF4C4C')
-    .setAuthor({ name: text, iconURL: 'https://imgur.com/ovJKL2f' });
+    .setAuthor({ name: text, iconURL: 'https://bit.ly/43PItSI' });
 }
