@@ -1,13 +1,21 @@
-# Punishment
+<div align="center">
+  <img src="https://github.com/funczero/Punishment/raw/34b4d0886465860154577d6253a98f09957c83c9/src/d7f8c136f3cd378eaefe967bbea30110.png" width="100">
 
-Um bot de moderação avançado e completo para Discord.
+  <h1 style="color:#fe3838;">Punishment</h1>  
 
-[Adicionar Punishment](https://discord.com/oauth2/authorize?client_id=1155843839932764253&permissions=8&integration_type=0&scope=bot+applications.commands) | [Suporte](https://discord.gg/p4ANxp5TKf)
+  <p>Torne seu servidor mais seguro e organizado com Punishment, o bot de moderação avançado e completo para Discord.</p>
 
+  <p>
+    <a href="https://discord.com/oauth2/authorize?client_id=1155843839932764253&permissions=8&integration_type=0&scope=bot+applications.commands">Integrar</a> | 
+    <a href="https://discord.gg/p4ANxp5TKf">Suporte</a>
+  </p>
+</div>
 
 ---
 
-## Legal
+<div align="center">
+  <h1 style="color:#fe3838;">Legal</h1>
 
-Punishment © 2025 por FuncZero está licenciado sob a Creative Commons Atribuição-NãoComercial-CompartilhaIgual 4.0 Internacional.  
-Para mais informações, visite [Licença Creative Commons](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.pt).
+  <p>Punishment © 2025 por FuncZero está licenciado sob a Creative Commons Atribuição-NãoComercial-CompartilhaIgual 4.0 Internacional.</p>  
+  <p>Para mais informações, visite <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode.pt">Licença Creative Commons</a>.</p>
+</div>
