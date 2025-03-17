@@ -7,7 +7,7 @@ module.exports = {
   async execute(message, client) {
     if (message.author.bot || !message.guild) return;
 
-    
+    // Verifica se a mensagem foi enviada em um tópico que começa com 'Punishment -'
     if (message.channel.isThread() && message.channel.name.startsWith('Punishment -')) {
       const userId = message.author.id;
       const apiKey = process.env.OPENAI_API_KEY;
@@ -23,6 +23,7 @@ module.exports = {
         const response = await fetchAIResponse(conversationHistory[userId], apiKey);
         conversationHistory[userId].push({ role: 'assistant', content: response });
 
+        // Envia a resposta da IA no tópico
         await message.channel.send(`\n${response}`);
       } catch (error) {
         console.error('Erro ao consultar a IA:', error);
@@ -31,6 +32,7 @@ module.exports = {
       return;
     }
 
+    // Obtém o prefixo configurado para o servidor
     const prefix = getPrefix(message.guild.id);
     if (!message.content.startsWith(prefix)) return;
 
@@ -40,7 +42,7 @@ module.exports = {
     const command = client.commands.get(commandName);
     if (!command) return;
 
-    
+    // Verifica se o usuário aceitou os Termos de Uso
     const userAccepted = db.prepare('SELECT user_id FROM accepted_users WHERE user_id = ?').get(message.author.id);
     console.log(`[DEBUG] Verificando usuário: ${message.author.id}, Resultado:`, userAccepted);
 
@@ -73,14 +75,14 @@ module.exports = {
         ],
       };
 
-      
+      // Envia a mensagem para o usuário aceitar os Termos de Uso
       const replyMessage = await message.reply({ 
         embeds: [embed], 
         components: [row], 
         allowedMentions: { repliedUser: false } 
       });
 
-      
+      // Cria um coletor para o botão de Aceitar Termos
       const collector = message.channel.createMessageComponentCollector({
         filter: (interaction) =>
           interaction.isButton() &&
@@ -91,19 +93,19 @@ module.exports = {
 
       collector.on('collect', async (interaction) => {
         try {
-          
+          // Registra o usuário que aceitou os Termos de Uso no banco de dados
           db.prepare('INSERT OR IGNORE INTO accepted_users (user_id) VALUES (?)').run(interaction.user.id);
 
-          
           const checkUser = db.prepare('SELECT user_id FROM accepted_users WHERE user_id = ?').get(interaction.user.id);
           console.log(`[DEBUG] Usuário aceitou os termos:`, checkUser);
 
+          // Responde que os Termos foram aceitos
           await interaction.reply({
             content: '<:1000042885:1336044571125354496> Você aceitou os Termos de Uso. Agora pode usar o Punishment!',
             ephemeral: true,
           });
 
-          
+          // Apaga a mensagem original
           await replyMessage.delete();
         } catch (error) {
           console.error('[ERROR] Erro ao aceitar os Termos de Uso:', error.message);
@@ -113,17 +115,18 @@ module.exports = {
       return;
     }
 
-    
+    // Executa o comando, caso o usuário tenha aceitado os Termos de Uso
     try {
       await command.execute(message, args, { setPrefix, getPrefix });
 
-      
+      // Deleta a mensagem após 10ms
       setTimeout(() => {
         message.delete().catch(() => {});
       }, 10);
     } catch (error) {
       console.error(`[ERROR] Erro ao executar o comando "${commandName}":`, error);
 
+      // Envia uma mensagem de erro caso o comando falhe
       const embedErro = {
         color: 0xfe3838,
         author: {
