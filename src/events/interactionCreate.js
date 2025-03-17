@@ -10,13 +10,14 @@ module.exports = {
       if (!command) return;
 
       try {
-        // Executa o comando de barra
         await command.execute(interaction);
       } catch (error) {
         console.error(`[ERROR] Erro ao executar Slash Command: ${error.message}`);
-        // Responde ao usuário com um erro caso algo dê errado
-        await interaction.reply({ content: '<:1000042883:1336044555354771638> Ocorreu um erro ao executar este comando.', ephemeral: true });
+        if (!interaction.replied && !interaction.deferred) {
+          await interaction.reply({ content: '<:1000042883:1336044555354771638> Ocorreu um erro ao executar este comando.', ephemeral: true });
+        }
       }
+      return; // Evita processamento desnecessário
     }
 
     // Verifica se a interação é um clique em botão
@@ -25,10 +26,8 @@ module.exports = {
       if (interaction.customId === 'accept_terms') {
         const command = client.commands.get('acceptTerms');
         if (command) {
-          // Executa o comando de aceitação dos Termos de Uso
           return await command.execute(interaction);
         }
-        // Caso não encontre o comando, responde com erro
         return interaction.reply({ content: 'Erro ao processar os Termos de Uso.', ephemeral: true });
       }
 
@@ -69,19 +68,5 @@ module.exports = {
         return interaction.reply({ content: `👥 Participantes: ${participants.length}`, ephemeral: true });
       }
     }
-  
-// teste
-
-        if (!interaction.isChatInputCommand()) return;
-
-        const command = interaction.client.commands.get(interaction.commandName);
-        if (command) {
-            try {
-                await command.execute(interaction);
-            } catch (error) {
-                console.error(error);
-                await interaction.reply({ content: "❌ Ocorreu um erro ao executar o comando.", ephemeral: true });
-            }
-        }
-    }
+  }
 };
