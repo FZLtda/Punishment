@@ -4,7 +4,6 @@ const { loadCommands, loadEvents } = require('./src/utils/loader.js');
 const { setPresence } = require('./src/utils/presence.js');
 const monitorBot = require('./src/utils/monitoring.js');
 const logger = require('./src/utils/logger.js');
-const handleReactionAdd = require('./src/events/reactionRoleManager.js');
 const validateEnv = require('./src/utils/validateEnv.js');
 const registerSlashCommands = require('./src/utils/loadSlashCommands.js');
 
