@@ -17,4 +17,5 @@ function handleReactionAdd(reaction, user) {
   }
 }
 
-module.exports = {handleReactionAdd};
+module.exports = {
+  handleReactionAdd };
