@@ -17,7 +17,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -31,7 +31,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Uso incorreto! Use `.antinuke on` para ativar ou `.antinuke off` para desativar o sistema Anti-Nuke.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
