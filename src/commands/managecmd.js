@@ -1,4 +1,4 @@
-const db = require("../commandsDatabase.js");
+const db = require("../data/commandsDatabase.js");
 
 module.exports = {
   name: "cmd",
