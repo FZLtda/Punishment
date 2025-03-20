@@ -24,7 +24,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#FF4C4C')
-                        .setAuthor({ name: 'Você não tem permissão para usar este comando.', iconURL: 'http://bit.ly/4aIyY9j' })
+                        .setAuthor({ name: 'Você não tem permissão para usar este comando.', iconURL: 'https://bit.ly/43PItSI' })
                 ],
                 allowedMentions: { repliedUser: false }
             });
@@ -35,7 +35,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#FF4C4C')
-                        .setAuthor({ name: 'Não tenho permissão para criar cargos.', iconURL: 'http://bit.ly/4aIyY9j' })
+                        .setAuthor({ name: 'Não tenho permissão para criar cargos.', iconURL: 'https://bit.ly/43PItSI' })
                 ],
                 allowedMentions: { repliedUser: false }
             });
@@ -46,7 +46,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#FF4C4C')
-                        .setAuthor({ name: 'Você precisa fornecer um nome para o cargo.', iconURL: 'http://bit.ly/4aIyY9j' })
+                        .setAuthor({ name: 'Você precisa fornecer um nome para o cargo.', iconURL: 'https://bit.ly/43PItSI' })
                 ],
                 allowedMentions: { repliedUser: false }
             });
@@ -83,7 +83,7 @@ module.exports = {
                     embeds: [
                         new EmbedBuilder()
                             .setColor('#FF4C4C')
-                            .setAuthor({ name: 'As seguintes permissões são inválidas:', iconURL: 'http://bit.ly/4aIyY9j' })
+                            .setAuthor({ name: 'As seguintes permissões são inválidas:', iconURL: 'https://bit.ly/43PItSI' })
                             .setDescription(`\`${invalidPermissions.join(', ')}\``)
                     ],
                     allowedMentions: { repliedUser: false }
@@ -115,7 +115,7 @@ module.exports = {
                 embeds: [
                     new EmbedBuilder()
                         .setColor('#FF4C4C')
-                        .setAuthor({ name: 'Não foi possível criar o cargo.', iconURL: 'http://bit.ly/4aIyY9j' })
+                        .setAuthor({ name: 'Não foi possível criar o cargo.', iconURL: 'https://bit.ly/43PItSI' })
                 ],
                 allowedMentions: { repliedUser: false }
             });
