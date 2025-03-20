@@ -1,7 +1,7 @@
 const db = require('../data/database');
 const { getPrefix, setPrefix } = require('../utils/prefixes');
 const { conversationHistory, fetchAIResponse } = require('../utils/aiHandler');
-const customCommandHandler = require('../customCommandHandler');
+const customCommandHandler = require('../utils/customCommandHandler');
 
 module.exports = {
   name: 'messageCreate',
