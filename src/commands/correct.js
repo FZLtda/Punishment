@@ -11,7 +11,7 @@ module.exports = {
       const embedErroMinimo = new EmbedBuilder()
       .setColor('#FF4C4C')
       .setAuthor({
-          name: 'Você precisa fornecer um texto para corrigir.\nExemplo: `.correct Olá, como vai você?',
+          name: 'Você precisa fornecer um texto para corrigir.',
           iconURL: 'https://bit.ly/43PItSI'
       });
 
