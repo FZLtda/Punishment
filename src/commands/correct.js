@@ -12,7 +12,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Você precisa fornecer um texto para corrigir.\nExemplo: `.correct Olá, como vai você?',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -78,7 +78,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Não foi possível corrigir a mensagem fornecida.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
