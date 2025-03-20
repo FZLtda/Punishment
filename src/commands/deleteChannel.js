@@ -12,7 +12,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Você não tem permissão para excluir canais.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
 
       return message.reply({ embeds: [embedErroPerm], allowedMentions: { repliedUser: false } });
@@ -25,7 +25,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Canal não encontrado! Mencione um canal ou forneça um ID válido.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
 
       return message.reply({ embeds: [embedErroCanal], allowedMentions: { repliedUser: false } });
@@ -37,7 +37,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Este canal é protegido e não pode ser excluído.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
 
       return message.reply({ embeds: [embedProtegido], allowedMentions: { repliedUser: false } });
@@ -48,7 +48,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Eu não tenho permissão para excluir canais!',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
 
       return message.reply({ embeds: [embedErroBot], allowedMentions: { repliedUser: false } });
@@ -82,7 +82,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Tempo esgotado! Cancelando a exclusão.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
 
       await message.channel.send({ embeds: [embedTempoEsgotado] });
