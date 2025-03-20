@@ -12,7 +12,7 @@ module.exports = {
             .setColor('#FF4C4C')
             .setAuthor({
                 name: 'Você não possui permissão para usar este comando.',
-                iconURL: 'http://bit.ly/4aIyY9j'
+                iconURL: 'https://bit.ly/43PItSI'
             });
       
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -26,7 +26,7 @@ module.exports = {
             .setColor('#FF4C4C')
             .setAuthor({
                 name: 'Só é possível excluir de 1 a 100 mensagens por vez.',
-                iconURL: 'http://bit.ly/4aIyY9j'
+                iconURL: 'https://bit.ly/43PItSI'
             });
       
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -67,7 +67,7 @@ module.exports = {
             .setColor('#FF4C4C')
             .setAuthor({
                 name: 'Não foi possível apagar as mensagens devido a um erro.',
-                iconURL: 'http://bit.ly/4aIyY9j'
+                iconURL: 'https://bit.ly/43PItSI'
             });
       
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
