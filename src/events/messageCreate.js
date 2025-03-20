@@ -1,6 +1,7 @@
 const db = require('../data/database');
 const { getPrefix, setPrefix } = require('../utils/prefixes');
 const { conversationHistory, fetchAIResponse } = require('../utils/aiHandler');
+const customCommandHandler = require('../customCommandHandler');
 
 module.exports = {
   name: 'messageCreate',
@@ -40,7 +41,11 @@ module.exports = {
     const commandName = args.shift().toLowerCase();
 
     const command = client.commands.get(commandName);
-    if (!command) return;
+    if (!command) {
+      
+      await customCommandHandler(message, prefix);
+      return;
+    }
 
     // Verifica se o usuário aceitou os Termos de Uso
     const userAccepted = db.prepare('SELECT user_id FROM accepted_users WHERE user_id = ?').get(message.author.id);
