@@ -52,7 +52,7 @@ module.exports = {
         try {
           await message.delete();
           const reply = await message.channel.send(
-            `<:no:1122370713932795997> ${message.author}, links não são permitidos neste servidor.`
+            `<:1000042883:1336044555354771638> ${message.author}, links não são permitidos neste servidor.`
           );
 
           setTimeout(() => reply.delete().catch(() => null), 5000);
