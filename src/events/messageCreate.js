@@ -110,10 +110,10 @@ if (fs.existsSync(pathAntispam)) {
 
         const embed = {
           color: 0xfe3838,
-          title: 'Antispam: Usuário Mutado',
-          description: `**${message.author.tag}** foi mutado automaticamente por spam.`,
+          title: '<:1000046494:1340401256392298536> Punição aplicada',
+          description: `${message.author} (\`${message.author.id}\`) foi mutado automaticamente por spam.`,
           footer: {
-            text: `Detectado por: ${client.user.tag}`,
+            text: `${client.user.tag}`,
             icon_url: client.user.displayAvatarURL(),
           },
           timestamp: new Date(),
