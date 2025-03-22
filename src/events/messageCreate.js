@@ -67,61 +67,65 @@ module.exports = {
     }
 
     // Sistema de Antispam
-    if (fs.existsSync(pathAntispam)) {
-      const antispamSettings = JSON.parse(fs.readFileSync(pathAntispam, 'utf8'));
-      const isAntispamEnabled = antispamSettings[guildId]?.enabled;
+if (fs.existsSync(pathAntispam)) {
+  const antispamSettings = JSON.parse(fs.readFileSync(pathAntispam, 'utf8'));
+  const guildId = message.guild.id;
+  const authorId = message.author.id;
+  const member = message.member;
 
-      if (isAntispamEnabled) {
-        const key = `${guildId}-${authorId}`;
+  const isAntispamEnabled = antispamSettings[guildId]?.enabled;
 
-        if (!messageCounts.has(key)) {
-          messageCounts.set(key, { count: 0, timestamp: Date.now() });
-        }
+  if (isAntispamEnabled) {
+    const key = `${guildId}-${authorId}`;
 
-        const userData = messageCounts.get(key);
-        const timeSinceFirstMessage = Date.now() - userData.timestamp;
+    if (!messageCounts.has(key)) {
+      messageCounts.set(key, { count: 0, timestamp: Date.now() });
+    }
 
-        if (timeSinceFirstMessage > 10000) {
-          userData.count = 0;
-          userData.timestamp = Date.now();
-        }
+    const userData = messageCounts.get(key);
+    const timeSinceFirstMessage = Date.now() - userData.timestamp;
 
-        userData.count++;
+    if (timeSinceFirstMessage > 10000) {
+      userData.count = 0;
+      userData.timestamp = Date.now();
+    }
 
-        const SPAM_LIMIT = 5;
+    userData.count++;
 
-        if (userData.count > SPAM_LIMIT) {
-          if (member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) return;
+    const SPAM_LIMIT = 5;
 
-          try {
-            await message.delete();
+    if (userData.count > SPAM_LIMIT) {
+      if (member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) return;
 
-            const warning = await message.channel.send(
-              `<:no:1122370713932795997> ${message.author}, você está enviando mensagens muito rápido.`
-            );
+      try {
+        await message.delete();
 
-            setTimeout(() => warning.delete().catch(() => null), 5000);
+        const warning = await message.channel.send(
+          `<:no:1122370713932795997> ${message.author}, você está enviando mensagens muito rápido.`
+        );
 
-            await member.timeout(10 * 60 * 1000, 'Spam detectado pelo sistema de antispam.');
+        setTimeout(() => warning.delete().catch(() => null), 5000);
 
-            const embed = {
-              color: 0xfe3838,
-              title: 'Antispam: Usuário Mutado',
-              description: `**${message.author.tag}** foi mutado automaticamente por spam.`,
-              footer: {
-                text: `Detectado por: ${client.user.tag}`,
-                icon_url: client.user.displayAvatarURL(),
-              },
-              timestamp: new Date(),
-            };
+        await member.timeout(10 * 60 * 1000, 'Spam detectado pelo sistema de antispam.');
 
-            message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
-          } catch (error) {
-            console.error('Erro ao processar antispam:', error);
-          }
-        }
+        const embed = {
+          color: 0xfe3838,
+          title: 'Antispam: Usuário Mutado',
+          description: `**${message.author.tag}** foi mutado automaticamente por spam.`,
+          footer: {
+            text: `Detectado por: ${client.user.tag}`,
+            icon_url: client.user.displayAvatarURL(),
+          },
+          timestamp: new Date(),
+        };
+
+        message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
+      } catch (error) {
+        console.error('Erro ao processar antispam:', error);
       }
     }
+  }
+}
 
     // Sistema de Prefixo e Comandos
     const prefix = getPrefix(message.guild.id);
