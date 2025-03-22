@@ -1,12 +1,16 @@
 const db = require('../data/database');
+const fs = require('fs');
+const path = './data/antilink.json';
 const { getPrefix, setPrefix } = require('../utils/prefixes');
 const { conversationHistory, fetchAIResponse } = require('../utils/aiHandler');
+const { Events, PermissionsBitField } = require('discord.js');
 
 module.exports = {
-  name: 'messageCreate',
+  name: Events.MessageCreate,
   async execute(message, client) {
     if (message.author.bot || !message.guild) return;
 
+    // Sistema de Resposta da IA em Threads "Punishment -"
     if (message.channel.isThread() && message.channel.name.startsWith('Punishment -')) {
       const userId = message.author.id;
       const apiKey = process.env.OPENAI_API_KEY;
@@ -30,6 +34,36 @@ module.exports = {
       return;
     }
 
+    // Sistema de Antilink
+    let settings;
+    try {
+      settings = JSON.parse(fs.readFileSync(path, 'utf8'));
+    } catch (error) {
+      settings = {};
+      fs.writeFileSync(path, JSON.stringify({}, null, 4));
+    }
+
+    const isAntilinkEnabled = settings[message.guild.id]?.enabled;
+    if (isAntilinkEnabled) {
+      const linkRegex = /(https?:\/\/|www\.)\S+/gi;
+      if (linkRegex.test(message.content)) {
+        if (message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) return;
+
+        try {
+          await message.delete();
+          const reply = await message.channel.send(
+            `<:no:1122370713932795997> ${message.author}, links não são permitidos neste servidor.`
+          );
+
+          setTimeout(() => reply.delete().catch(() => null), 5000);
+        } catch (error) {
+          console.error('Erro ao excluir a mensagem:', error);
+        }
+        return;
+      }
+    }
+
+    // Sistema de Prefixo e Comandos
     const prefix = getPrefix(message.guild.id);
     if (!message.content.startsWith(prefix)) return;
 
