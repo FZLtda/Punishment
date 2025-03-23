@@ -1,13 +1,18 @@
 const { AuditLogEvent, PermissionsBitField, EmbedBuilder } = require('discord.js');
 
 module.exports = async (client) => {
+  
+  // Evita múltiplos listeners do mesmo evento
+  if (client.listenerCount('guildAuditLogEntryCreate') > 0) return;
+
   client.on('guildAuditLogEntryCreate', async (entry) => {
-    const { guild, targetType, action, executor } = entry;
+    const { guild, action, executor } = entry;
     if (!guild) return;
 
     // Verifica se o Anti-Nuke está ativado
     const fs = require('fs');
     const path = './data/antinuke.json';
+    if (!fs.existsSync(path)) return;
     const settings = JSON.parse(fs.readFileSync(path, 'utf8'));
     if (!settings[guild.id]?.enabled) return;
 
@@ -19,7 +24,6 @@ module.exports = async (client) => {
     if (member.permissions.has(PermissionsBitField.Flags.Administrator)) return;
 
     let actionName = '';
-
     switch (action) {
       case AuditLogEvent.ChannelDelete:
         actionName = 'Exclusão de Canal';
@@ -44,7 +48,7 @@ module.exports = async (client) => {
         embeds: [
           new EmbedBuilder()
             .setColor('#FE3838')
-            .setTitle('🚨 Tentativa de Nuke Bloqueada')
+            .setTitle('Tentativa de Nuke Bloqueada')
             .setDescription(`O usuário **${executor.tag}** tentou realizar **${actionName}** e foi punido automaticamente.`)
             .setFooter({ text: 'Sistema Anti-Nuke', iconURL: client.user.displayAvatarURL() })
             .setTimestamp(),
