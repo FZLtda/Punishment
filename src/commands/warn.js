@@ -37,7 +37,7 @@ module.exports = {
     `).run(user.id, message.guild.id, reason, message.author.id, Date.now());
 
     const embed = new EmbedBuilder()
-      .setColor('#FFA500')
+      .setColor('#FE3838')
       .setTitle('Usuário Avisado')
       .setDescription(
         `**Usuário:** ${user}\n` +
