@@ -13,20 +13,6 @@ module.exports = {
   name: Events.MessageCreate,
   async execute(message, client) {
     if (message.author.bot || !message.guild) return;
-
-    // Carregar configurações do Anti-Nuke
-    let antinukeSettings;
-    try {
-      antinukeSettings = JSON.parse(fs.readFileSync(pathAntinuke, 'utf8'));
-    } catch (error) {
-      antinukeSettings = {};
-      fs.writeFileSync(pathAntinuke, JSON.stringify({}, null, 4));
-    }
-
-    const isAntinukeEnabled = antinukeSettings[message.guild.id]?.enabled;
-    if (isAntinukeEnabled) {
-      require('../events/antinukeHandler')(client);
-    }
     
     // Sistema de Resposta da IA em Threads "Punishment -"
     if (message.channel.isThread() && message.channel.name.startsWith('Punishment -')) {
