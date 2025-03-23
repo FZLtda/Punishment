@@ -2,6 +2,7 @@ const db = require('../data/database');
 const fs = require('fs');
 const path = './data/antilink.json';
 const pathAntispam = './data/antispam.json';
+const pathAntinuke = './data/antinuke.json';
 const { getPrefix, setPrefix } = require('../utils/prefixes');
 const { conversationHistory, fetchAIResponse } = require('../utils/aiHandler');
 const { Events, PermissionsBitField } = require('discord.js');
@@ -13,6 +14,20 @@ module.exports = {
   async execute(message, client) {
     if (message.author.bot || !message.guild) return;
 
+    // Carregar configurações do Anti-Nuke
+    let antinukeSettings;
+    try {
+      antinukeSettings = JSON.parse(fs.readFileSync(pathAntinuke, 'utf8'));
+    } catch (error) {
+      antinukeSettings = {};
+      fs.writeFileSync(pathAntinuke, JSON.stringify({}, null, 4));
+    }
+
+    const isAntinukeEnabled = antinukeSettings[message.guild.id]?.enabled;
+    if (isAntinukeEnabled) {
+      require('../events/antinukeHandler')(client);
+    }
+    
     // Sistema de Resposta da IA em Threads "Punishment -"
     if (message.channel.isThread() && message.channel.name.startsWith('Punishment -')) {
       const userId = message.author.id;
@@ -67,65 +82,65 @@ module.exports = {
     }
 
     // Sistema de Antispam
-if (fs.existsSync(pathAntispam)) {
-  const antispamSettings = JSON.parse(fs.readFileSync(pathAntispam, 'utf8'));
-  const guildId = message.guild.id;
-  const authorId = message.author.id;
-  const member = message.member;
+    if (fs.existsSync(pathAntispam)) {
+      const antispamSettings = JSON.parse(fs.readFileSync(pathAntispam, 'utf8'));
+      const guildId = message.guild.id;
+      const authorId = message.author.id;
+      const member = message.member;
 
-  const isAntispamEnabled = antispamSettings[guildId]?.enabled;
+      const isAntispamEnabled = antispamSettings[guildId]?.enabled;
 
-  if (isAntispamEnabled) {
-    const key = `${guildId}-${authorId}`;
+      if (isAntispamEnabled) {
+        const key = `${guildId}-${authorId}`;
 
-    if (!messageCounts.has(key)) {
-      messageCounts.set(key, { count: 0, timestamp: Date.now() });
-    }
+        if (!messageCounts.has(key)) {
+          messageCounts.set(key, { count: 0, timestamp: Date.now() });
+        }
 
-    const userData = messageCounts.get(key);
-    const timeSinceFirstMessage = Date.now() - userData.timestamp;
+        const userData = messageCounts.get(key);
+        const timeSinceFirstMessage = Date.now() - userData.timestamp;
 
-    if (timeSinceFirstMessage > 10000) {
-      userData.count = 0;
-      userData.timestamp = Date.now();
-    }
+        if (timeSinceFirstMessage > 10000) {
+          userData.count = 0;
+          userData.timestamp = Date.now();
+        }
 
-    userData.count++;
+        userData.count++;
 
-    const SPAM_LIMIT = 5;
+        const SPAM_LIMIT = 5;
 
-    if (userData.count > SPAM_LIMIT) {
-      if (member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) return;
+        if (userData.count > SPAM_LIMIT) {
+          if (member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) return;
 
-      try {
-        await message.delete();
+          try {
+            await message.delete();
 
-        const warning = await message.channel.send(
-          `<:no:1122370713932795997> ${message.author}, você está enviando mensagens muito rápido.`
-        );
+            const warning = await message.channel.send(
+              `<:no:1122370713932795997> ${message.author}, você está enviando mensagens muito rápido.`
+            );
 
-        setTimeout(() => warning.delete().catch(() => null), 5000);
+            setTimeout(() => warning.delete().catch(() => null), 5000);
 
-        await member.timeout(10 * 60 * 1000, 'Spam detectado pelo sistema de antispam.');
+            await member.timeout(10 * 60 * 1000, 'Spam detectado pelo sistema de antispam.');
 
-        const embed = {
-          color: 0xfe3838,
-          title: '<:1000046494:1340401256392298536> Punição aplicada',
-          description: `${message.author} (\`${message.author.id}\`) foi mutado(a) automaticamente por spam.`,
-          footer: {
-            text: `${client.user.tag}`,
-            icon_url: client.user.displayAvatarURL(),
-          },
-          timestamp: new Date(),
-        };
+            const embed = {
+              color: 0xfe3838,
+              title: '<:1000046494:1340401256392298536> Punição aplicada',
+              description: `${message.author} (\`${message.author.id}\`) foi mutado(a) automaticamente por spam.`,
+              footer: {
+                text: `${client.user.tag}`,
+                icon_url: client.user.displayAvatarURL(),
+              },
+              timestamp: new Date(),
+            };
 
-        message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
-      } catch (error) {
-        console.error('Erro ao processar antispam:', error);
+            message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
+          } catch (error) {
+            console.error('Erro ao processar antispam:', error);
+          }
+        }
       }
     }
-  }
-}
 
     // Sistema de Prefixo e Comandos
     const prefix = getPrefix(message.guild.id);
