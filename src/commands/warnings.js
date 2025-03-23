@@ -26,7 +26,7 @@ module.exports = {
 
     if (warnings.length === 0) {
       const embed = new EmbedBuilder()
-        .setColor('#00FF00')
+        .setColor('#2ECC71')
         .setTitle('Sem Avisos')
         .setDescription(`${user} não possui avisos.`)
         .setFooter({
@@ -39,7 +39,7 @@ module.exports = {
     }
 
     const embed = new EmbedBuilder()
-      .setColor('#FFA500')
+      .setColor('#FE3838')
       .setTitle(`Avisos para ${user.displayName}`)
       .setDescription(
         warnings
