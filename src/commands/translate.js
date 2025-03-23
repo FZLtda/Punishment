@@ -12,7 +12,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Uso incorreto! O comando correto é: `.translate [idioma_destino] [texto]`.\nExemplo: `.translate en Olá, como vai?`',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -63,7 +63,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Não foi possível traduzir o texto devido a um erro.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });

@@ -13,7 +13,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Você não tem permissão para usar este comando.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -24,7 +24,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Mencione um usuário para aplicar o aviso.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }

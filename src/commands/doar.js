@@ -12,7 +12,7 @@ module.exports = {
                 .setColor('#FF4C4C')
                 .setAuthor({
                     name: 'Informe um valor válido! Exemplo: .doar 10',
-                    iconURL: 'http://bit.ly/4aIyY9j'
+                    iconURL: 'https://bit.ly/43PItSI'
                 });
 
             return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -24,7 +24,7 @@ module.exports = {
                 .setColor('#FF4C4C')
                 .setAuthor({
                     name: 'O valor mínimo para doação é R$1,00.',
-                    iconURL: 'http://bit.ly/4aIyY9j'
+                    iconURL: 'https://bit.ly/43PItSI'
                 });
 
             return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -77,7 +77,7 @@ module.exports = {
                 .setColor('#FF4C4C')
                 .setAuthor({
                     name: 'Algo deu errado. Tente novamente mais tarde.',
-                    iconURL: 'http://bit.ly/4aIyY9j'
+                    iconURL: 'https://bit.ly/43PItSI'
                 });
 
             await message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });

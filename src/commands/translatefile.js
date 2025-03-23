@@ -14,7 +14,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Você precisa enviar um arquivo para tradução junto com este comando.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -24,7 +24,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Você precisa especificar o idioma de destino. Exemplo: `.translatefile en`',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -60,7 +60,7 @@ module.exports = {
           .setColor('#FF4C4C')
           .setAuthor({
             name: 'Ocorreu um erro ao enviar o arquivo para tradução.',
-            iconURL: 'http://bit.ly/4aIyY9j',
+            iconURL: 'https://bit.ly/43PItSI',
           });
         return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
       }
@@ -104,7 +104,7 @@ module.exports = {
         .setColor('#2ecc71')
         .setAuthor({
           name: 'A tradução foi concluída! Enviando o arquivo traduzido...',
-          iconURL: 'https://bit.ly/3FeqqLT',
+          iconURL: 'https://bit.ly/4hygpGR',
         });
 
       await message.channel.send({ embeds: [embedSucesso], allowedMentions: { repliedUser: false } });
@@ -122,7 +122,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Não foi possível traduzir o arquivo. Verifique se o arquivo é suportado.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });

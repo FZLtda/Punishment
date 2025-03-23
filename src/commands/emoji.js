@@ -13,7 +13,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -25,7 +25,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Uso inválido! Use o comando corretamente: `emoji add <link> <nome>` ou `emoji copy <emoji> [nome opcional]`.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -37,7 +37,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Você precisa fornecer um link ou um emoji válido.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -52,7 +52,7 @@ module.exports = {
             .setColor('#FF4C4C')
             .setAuthor({
               name: 'O link fornecido não é válido.',
-              iconURL: 'http://bit.ly/4aIyY9j',
+              iconURL: 'https://bit.ly/43PItSI',
             });
 
           return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -63,7 +63,7 @@ module.exports = {
             .setColor('#FF4C4C')
             .setAuthor({
               name: 'Você precisa fornecer um nome para o emoji.',
-              iconURL: 'http://bit.ly/4aIyY9j',
+              iconURL: 'https://bit.ly/43PItSI',
             });
 
           return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -77,7 +77,7 @@ module.exports = {
             .setColor('#FF4C4C')
             .setAuthor({
               name: 'O arquivo excede o limite de 256 KB.',
-              iconURL: 'http://bit.ly/4aIyY9j',
+              iconURL: 'https://bit.ly/43PItSI',
             });
 
           return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -119,7 +119,7 @@ module.exports = {
             .setColor('#FF4C4C')
             .setAuthor({
               name: 'O emoji fornecido não é válido.',
-              iconURL: 'http://bit.ly/4aIyY9j',
+              iconURL: 'https://bit.ly/43PItSI',
             });
 
           return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -142,7 +142,7 @@ module.exports = {
             .setColor('#FF4C4C')
             .setAuthor({
               name: 'O arquivo excede o limite de 256 KB.',
-              iconURL: 'http://bit.ly/4aIyY9j',
+              iconURL: 'https://bit.ly/43PItSI',
             });
 
           return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -184,7 +184,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Não foi possível adicionar ou copiar o emoji devido a um erro.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });

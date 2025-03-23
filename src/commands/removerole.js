@@ -12,7 +12,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -26,7 +26,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Argumentos inválidos. O formato correto do comando é: removerole @membro @cargo',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -37,7 +37,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Este usuário não possui este cargo.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -71,7 +71,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Não foi possível remover o cargo.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });

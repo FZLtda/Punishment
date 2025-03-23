@@ -13,7 +13,7 @@ module.exports = {
             .setColor('#FF4C4C')
             .setAuthor({
                 name: 'Você não possui permissão para usar este comando.',
-                iconURL: 'http://bit.ly/4aIyY9j'
+                iconURL: 'https://bit.ly/43PItSI'
             });
       
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -25,7 +25,7 @@ module.exports = {
             .setColor('#FF4C4C')
             .setAuthor({
                 name: 'Para continuar, envie o arquivo de backup junto com o comando.',
-                iconURL: 'http://bit.ly/4aIyY9j'
+                iconURL: 'https://bit.ly/43PItSI'
             });
       
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -40,7 +40,7 @@ module.exports = {
             .setColor('#FF4C4C')
             .setAuthor({
                 name: 'Não foi possível processar o backup. O arquivo pode estar corrompido.',
-                iconURL: 'http://bit.ly/4aIyY9j'
+                iconURL: 'https://bit.ly/43PItSI'
             });
       
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -153,7 +153,7 @@ module.exports = {
             .setColor('#FF4C4C')
             .setAuthor({
                 name: 'Não foi possível processar o backup devido a um erro.',
-                iconURL: 'http://bit.ly/4aIyY9j'
+                iconURL: 'https://bit.ly/43PItSI'
             });
       
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });

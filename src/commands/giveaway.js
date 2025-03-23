@@ -11,7 +11,7 @@ module.exports = {
     if (!message.member.permissions.has('ManageGuild')) {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
-        .setAuthor({ name: 'Você não possui permissão para usar este comando.', iconURL: 'http://bit.ly/4aIyY9j' });
+        .setAuthor({ name: 'Você não possui permissão para usar este comando.', iconURL: 'https://bit.ly/43PItSI' });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -25,7 +25,7 @@ module.exports = {
     if (!timeInput || !winnerCount || !prize) {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
-        .setAuthor({ name: 'Uso correto: .giveaway start <tempo> <ganhadores> <prêmio>', iconURL: 'http://bit.ly/4aIyY9j' });
+        .setAuthor({ name: 'Uso correto: .giveaway start <tempo> <ganhadores> <prêmio>', iconURL: 'https://bit.ly/43PItSI' });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -44,7 +44,7 @@ module.exports = {
       .setFooter({ text: 'Clique no botão para participar!' });
 
     const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setCustomId('participar').setLabel('🎟 Participar').setStyle(ButtonStyle.Primary),
+      new ButtonBuilder().setCustomId('participar').setLabel(':tada: Participar').setStyle(ButtonStyle.Primary),
       new ButtonBuilder().setCustomId('ver_participantes').setLabel('👥 Participantes: 0').setStyle(ButtonStyle.Secondary).setDisabled(true)
     );
 

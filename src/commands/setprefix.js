@@ -7,7 +7,14 @@ module.exports = {
     permissions: 'Gerenciar Servidor',
     async execute(message, args, { setPrefix }) {
         if (!message.member.permissions.has('ManageGuild')) {
-            return message.reply('<:no:1122370713932795997> Você não tem permissão para usar este comando.');
+            const embedErroMinimo = new EmbedBuilder()
+                .setColor('#FF4C4C')
+                .setAuthor({
+                    name: 'Você não tem permissão para usar este comando.',
+                    iconURL: 'https://bit.ly/43PItSI',
+                });
+
+            return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
         }
 
         if (!args[0] || args[0].length > 5) {
@@ -15,7 +22,7 @@ module.exports = {
                 .setColor('#FF4C4C')
                 .setAuthor({
                     name: 'Digite um novo prefixo respeitando o limite de 5 caracteres.',
-                    iconURL: 'http://bit.ly/4aIyY9j',
+                    iconURL: 'https://bit.ly/43PItSI',
                 });
 
             return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -38,7 +45,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Não foi possível alterar o prefixo devido a um erro.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });

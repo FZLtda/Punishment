@@ -12,7 +12,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -25,7 +25,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Mencione um usuário para executar esta ação.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } }); 
@@ -36,7 +36,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Não é possível remover o mute, pois o usuário não está silenciado.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -71,7 +71,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Não foi possível remover o mute do usuário devido a um erro.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });

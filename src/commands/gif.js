@@ -15,7 +15,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Você precisa fornecer um termo para buscar o GIF!',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -29,7 +29,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'A chave da API do Giphy não foi configurada.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -45,7 +45,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Não encontrei nenhum GIF relacionado ao termo fornecido.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -66,7 +66,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Ocorreu um erro ao tentar buscar o GIF.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });

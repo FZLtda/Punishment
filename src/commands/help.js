@@ -13,7 +13,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Parece que os comandos não foram carregados.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -28,7 +28,7 @@ module.exports = {
           .setColor('#FF4C4C')
           .setAuthor({
             name: 'Não encontrei esse comando no sistema.',
-            iconURL: 'http://bit.ly/4aIyY9j'
+            iconURL: 'https://bit.ly/43PItSI'
           });
 
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });

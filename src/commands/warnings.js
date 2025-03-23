@@ -14,7 +14,7 @@ module.exports = {
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Mencione um usuário para visualizar os avisos.',
-          iconURL: 'http://bit.ly/4aIyY9j',
+          iconURL: 'https://bit.ly/43PItSI',
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }

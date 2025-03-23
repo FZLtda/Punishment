@@ -13,7 +13,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Você precisa fornecer o repositório no formato `usuário/repositório`',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -68,7 +68,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Repositório não encontrado. Verifique o nome e tente novamente.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -79,7 +79,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Limite de requisições da API do GitHub excedido. Tente novamente mais tarde.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -89,7 +89,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Ocorreu um erro ao buscar informações do repositório.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });

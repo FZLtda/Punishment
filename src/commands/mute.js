@@ -12,7 +12,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'https://imgur.com/ovJKL2f'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -27,7 +27,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Mencione um usuário para executar esta ação.',
-          iconURL: 'https://imgur.com/ovJKL2f'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -38,7 +38,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Defina um tempo de duração para prosseguir (ex.: 1m, 1h, 1d).',
-          iconURL: 'https://imgur.com/ovJKL2f'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -50,7 +50,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Duração inválida. Forneça um valor válido (ex.: 1m, 1h, 1d).',
-          iconURL: 'https://imgur.com/ovJKL2f'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -61,7 +61,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Este usuário não pode ser silenciado devido às suas permissões.',
-          iconURL: 'https://imgur.com/ovJKL2f'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -94,7 +94,7 @@ module.exports = {
       .setColor('#FF4C4C')
       .setAuthor({
           name: 'Não foi possível silenciar o usuário devido a um erro.',
-          iconURL: 'https://imgur.com/ovJKL2f'
+          iconURL: 'https://bit.ly/43PItSI'
       });
 
   return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
