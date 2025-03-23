@@ -28,7 +28,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setColor('#2ECC71')
         .setTitle('Sem Avisos')
-        .setDescription(`${user} /`(${user.id})/` não possui avisos.`)
+        .setDescription(`${user} (/`${user.id}/`) não possui avisos.`)
         .setFooter({
           text: message.author.username,
           iconURL: message.author.displayAvatarURL(),
