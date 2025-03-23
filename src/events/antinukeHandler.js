@@ -1,26 +1,19 @@
 const { AuditLogEvent, PermissionsBitField, EmbedBuilder } = require('discord.js');
+const fs = require('fs');
 
-module.exports = async (client) => {
-  
-  // Evita múltiplos listeners do mesmo evento
-  if (client.listenerCount('guildAuditLogEntryCreate') > 0) return;
-
-  client.on('guildAuditLogEntryCreate', async (entry) => {
+module.exports = {
+  name: 'guildAuditLogEntryCreate',
+  async execute(entry, client) {
     const { guild, action, executor } = entry;
     if (!guild) return;
 
-    // Verifica se o Anti-Nuke está ativado
-    const fs = require('fs');
     const path = './data/antinuke.json';
-    if (!fs.existsSync(path)) return;
     const settings = JSON.parse(fs.readFileSync(path, 'utf8'));
     if (!settings[guild.id]?.enabled) return;
 
-    // Obtém o executor
     const member = await guild.members.fetch(executor.id).catch(() => null);
     if (!member) return;
 
-    // Verifica se o usuário tem permissão
     if (member.permissions.has(PermissionsBitField.Flags.Administrator)) return;
 
     let actionName = '';
@@ -41,14 +34,13 @@ module.exports = async (client) => {
         return;
     }
 
-    // Punição automática: remover permissões ou banir
     try {
       await member.timeout(10 * 60 * 1000, `Detecção de ${actionName} pelo Anti-Nuke`);
       await guild.channels.cache.first()?.send({
         embeds: [
           new EmbedBuilder()
             .setColor('#FE3838')
-            .setTitle('Tentativa de Nuke Bloqueada')
+            .setTitle('🚨 Tentativa de Nuke Bloqueada')
             .setDescription(`O usuário **${executor.tag}** tentou realizar **${actionName}** e foi punido automaticamente.`)
             .setFooter({ text: 'Sistema Anti-Nuke', iconURL: client.user.displayAvatarURL() })
             .setTimestamp(),
@@ -57,5 +49,5 @@ module.exports = async (client) => {
     } catch (error) {
       console.error('Erro ao aplicar punição no Anti-Nuke:', error);
     }
-  });
+  },
 };
