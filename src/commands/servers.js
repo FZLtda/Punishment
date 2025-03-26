@@ -8,22 +8,26 @@ module.exports = {
     try {
       if (!message.guild) return;
 
-      const guilds = client.guilds.cache.map(guild => `🔹 **${guild.name}** (ID: \`${guild.id}\`)`);
+      if (!client.guilds || !client.guilds.cache) {
+        return message.channel.send("Não foi possível recuperar os servidores.");
+      }
+
+      const guilds = [...client.guilds.cache.values()];
       if (guilds.length === 0) {
         return message.channel.send("O bot não está em nenhum servidor.");
       }
 
       const embed = new EmbedBuilder()
         .setTitle("📋 Servidores onde estou:")
-        .setDescription(guilds.join("\n"))
+        .setDescription(guilds.map(guild => `🔹 **${guild.name}** (ID: \`${guild.id}\`)`).join("\n"))
         .setColor("Blue")
         .setFooter({ text: `Total: ${guilds.length} servidores` });
 
-      message.channel.send({ embeds: [embed] });
+      await message.channel.send({ embeds: [embed] });
 
     } catch (error) {
       console.error("[ERRO] Falha ao executar o comando 'servers':", error);
-      message.channel.send("Ocorreu um erro ao tentar listar os servidores.");
+      await message.channel.send("Ocorreu um erro ao tentar listar os servidores.");
     }
   }
 };
