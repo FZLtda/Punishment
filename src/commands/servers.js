@@ -1,3 +1,4 @@
+const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: "servers",
   description: "Lista os servidores onde o bot está e seus convites.",
