@@ -6,17 +6,18 @@ module.exports = {
   category: "utilidade",
   execute: async (client, message) => {
     try {
-      // Verifica se está sendo executado em um servidor
-      if (!message.guild) return message.channel.send("Esse comando só pode ser usado dentro de servidores.");
+      // Garante que message e channel existem
+      if (!message || !message.channel) return;
 
-      // Garante que o cache de servidores existe
-      if (!client.guilds || !client.guilds.cache.size) {
-        return message.channel.send("O bot não está em nenhum servidor no momento.");
+      // Verifica se há servidores no cache
+      if (!client.guilds.cache.size) {
+        return message.channel.send("❌ O bot não está em nenhum servidor.");
       }
 
+      // Obtém a lista de servidores
       const guilds = client.guilds.cache.map(guild => `🔹 **${guild.name}** \`(${guild.id})\` - 👥 ${guild.memberCount} membros`);
-      
-      // Divide a lista caso ultrapasse o limite de caracteres do Discord (4096)
+
+      // Divide a mensagem em partes menores para evitar limite do Discord
       const chunks = [];
       let currentChunk = "";
       for (const guildInfo of guilds) {
@@ -29,7 +30,7 @@ module.exports = {
       }
       chunks.push(currentChunk);
 
-      // Envia embeds em partes se necessário
+      // Envia os embeds com segurança
       for (const chunk of chunks) {
         const embed = new EmbedBuilder()
           .setTitle("📋 Servidores onde estou:")
@@ -42,7 +43,9 @@ module.exports = {
 
     } catch (error) {
       console.error("[ERRO] Falha ao executar o comando 'servers':", error);
-      return message.channel.send("Ocorreu um erro ao tentar listar os servidores.");
+      if (message.channel) {
+        message.channel.send("❌ Ocorreu um erro ao tentar listar os servidores.");
+      }
     }
   }
 };
