@@ -2,24 +2,20 @@ const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
   name: "servers",
-  description: "Lista todos os servidores onde o bot está e seus respectivos links de convite.",
+  description: "Lista todos os servidores onde o bot está.",
   category: "utilidade",
   execute: async (client, message, args) => {
     try {
       if (!message.guild) return;
 
-      const guilds = [...client.guilds.cache.values()];
+      const guilds = client.guilds.cache.map(guild => `🔹 **${guild.name}** (ID: \`${guild.id}\`)`);
       if (guilds.length === 0) {
         return message.channel.send("O bot não está em nenhum servidor.");
       }
 
-      let description = guilds
-        .map(guild => `**${guild.name}** (ID: \`${guild.id}\`)`)
-        .join("\n");
-
       const embed = new EmbedBuilder()
-        .setTitle("Servidores onde estou:")
-        .setDescription(description)
+        .setTitle("📋 Servidores onde estou:")
+        .setDescription(guilds.join("\n"))
         .setColor("Blue")
         .setFooter({ text: `Total: ${guilds.length} servidores` });
 
