@@ -1,28 +1,23 @@
 const { EmbedBuilder } = require('discord.js');
 module.exports = {
   name: "servers",
-  description: "Lista os servidores onde o bot está e seus convites.",
+  description: "Lista os servidores onde o bot está presente.",
   execute: async (client, message, args) => {
-    if (message.author.id !== client.application?.owner?.id) {
-      return message.reply("Only the bot owner can use this command!");
-    }
-
-    let serverList = [];
-
-    for (const guild of client.guilds.cache.values()) {
-      try {
-        const invites = await guild.invites.fetch();
-        const invite = invites.first() || "Sem convite disponível";
-        serverList.push(`**${guild.name}**: ${invite.url || invite}`);
-      } catch (error) {
-        serverList.push(`**${guild.name}**: Sem convite disponível`);
+    try {
+      if (!client.guilds.cache) {
+        return message.reply("Não foi possível obter os servidores.");
       }
+
+      const servers = client.guilds.cache.map(guild => `${guild.name} - [ID: ${guild.id}]`).join("\n");
+      
+      if (!servers) {
+        return message.reply("O bot não está em nenhum servidor ou não foi possível listar.");
+      }
+
+      message.reply(`O bot está nos seguintes servidores:\n\`\`\`\n${servers}\n\`\`\``);
+    } catch (error) {
+      console.error("[ERRO] Falha ao executar o comando 'servers':", error);
+      message.reply("Ocorreu um erro ao tentar listar os servidores.");
     }
-
-    const response = serverList.length
-      ? serverList.join("\n")
-      : "O bot não está em nenhum servidor.";
-
-    message.reply(response);
-  },
+  }
 };
