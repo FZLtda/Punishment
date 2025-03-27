@@ -1,7 +1,7 @@
 function setPresence(client) {
   client.on('ready', () => {
       client.user.setPresence({
-          status: 'online',
+          status: 'dnd',
           activities: [{ 
               name: '.help | .doar', 
               type: 0
