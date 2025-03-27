@@ -3,7 +3,7 @@ function setPresence(client) {
       client.user.setPresence({
           status: 'dnd',
           activities: [{ 
-              name: '.help', 
+              name: '.help • .doar', 
               type: 0
           }]
       });
