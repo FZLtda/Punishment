@@ -15,6 +15,7 @@ function setPresence(client) {
     index = (index + 1) % statusMessages.length;
   }, 5000);
 });
+}
 
 module.exports = { setPresence };
 
