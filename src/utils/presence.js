@@ -2,7 +2,7 @@ function setPresence(client) {
   client.on('ready', () => {
     
     const statusMessages = [
-      '.help,
+      '.help',
       '.doar',
       '.stats',
       '.privacy'
@@ -15,7 +15,7 @@ function setPresence(client) {
         status: 'dnd',
         activities: [{ 
           name: statusMessages[index],
-          type: 0
+          type: 0 
         }]
       });
       
