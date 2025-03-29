@@ -27,10 +27,9 @@ client.commands = new Collection();
 client.slashCommands = new Collection();
 
 const startBot = async () => {
-  logger.info(`[${BOT_NAME}] iniciando... (Tentativa ${retryCount + 1})`);
+  logger.info(`[${BOT_NAME}] Iniciando o bot... (Tentativa ${retryCount + 1})`);
 
   try {
-
     await Promise.all([
       loadCommands(client),
       loadEvents(client),
@@ -42,30 +41,30 @@ const startBot = async () => {
 
     await client.login(process.env.TOKEN);
 
-    logger.info(`[${BOT_NAME}] pronto em ${Date.now() - startTime}ms`);
+    logger.info(`[${BOT_NAME}] Bot pronto em ${Date.now() - startTime}ms`);
     retryCount = 0;
   } catch (error) {
-    logger.error(`[${BOT_NAME}] falha ao iniciar: ${error.message}`, { stack: error.stack });
+    logger.error(`[${BOT_NAME}] Falha ao iniciar: ${error.message}`, { stack: error.stack });
 
     retryCount++;
     if (retryCount < MAX_RETRIES) {
-      logger.warn(`[${BOT_NAME}] tentando reiniciar em ${RETRY_DELAY / 1000} segundos... (${retryCount}/${MAX_RETRIES})`);
+      logger.warn(`[${BOT_NAME}] Tentando reiniciar em ${RETRY_DELAY / 1000} segundos... (${retryCount}/${MAX_RETRIES})`);
       setTimeout(startBot, RETRY_DELAY);
     } else {
-      logger.error(`[${BOT_NAME}] número máximo de tentativas atingido. Encerrando.`);
+      logger.error(`[${BOT_NAME}] Número máximo de tentativas atingido. Encerrando.`);
       process.exit(1);
     }
   }
 };
 
-client.on('disconnect', () => logger.warn(`[${BOT_NAME}] desconectado! Tentando reconectar...`));
-client.on('reconnecting', () => logger.info(`[${BOT_NAME}] tentando reconectar...`));
-client.on('error', (error) => logger.error(`[${BOT_NAME}] erro no cliente: ${error.message}`, { stack: error.stack }));
+client.on('disconnect', () => logger.warn(`[${BOT_NAME}] Bot desconectado! Tentando reconectar...`));
+client.on('reconnecting', () => logger.info(`[${BOT_NAME}] Tentando reconectar...`));
+client.on('error', (error) => logger.error(`[${BOT_NAME}] Erro no cliente: ${error.message}`, { stack: error.stack }));
 
 const gracefulShutdown = async () => {
-  logger.warn(`[${BOT_NAME}] encerrando... Limpando recursos.`);
+  logger.warn(`[${BOT_NAME}] Encerrando... Limpando recursos.`);
   await client.destroy();
-  logger.info(`[${BOT_NAME}] foi encerrado com sucesso.`);
+  logger.info(`[${BOT_NAME}] Bot encerrado com sucesso.`);
   process.exit(0);
 };
 
