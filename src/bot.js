@@ -1,7 +1,6 @@
 const ExtendedClient = require('./structures/ExtendedClient.js');
 const logger = require('./utils/logger.js');
 const validateEnv = require('./utils/validateEnv.js');
-
 const { BOT_NAME, MAX_RETRIES, RETRY_DELAY } = require('./config/settings.json');
 
 validateEnv();
