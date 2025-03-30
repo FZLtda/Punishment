@@ -1,5 +1,6 @@
 const { PermissionsBitField } = require('discord.js');
-const { loadSettings } = require('../utils/loadSettings.js');
+const { loadSettings } = require('../utils/settingsLoader');
+const logger = require('../utils/logger');
 
 const ANTI_LINK_PATH = './data/antilink.json';
 
@@ -11,12 +12,12 @@ async function handleAntiLink(message) {
   if (linkRegex.test(message.content) && !message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
     try {
       await message.delete();
-      const reply = await message.channel.send(`<:1000042883:1336044555354771638> ${message.author}, links não são permitidos neste servidor.`);
+      const reply = await message.channel.send(`${message.author}, links não são permitidos neste servidor.`);
       setTimeout(() => reply.delete().catch(() => {}), 5000);
+      return true;
     } catch (error) {
-      console.error('Erro ao excluir mensagem com link:', error);
+      logger.error('Erro ao excluir mensagem com link:', error);
     }
-    return true;
   }
   return false;
 }
