@@ -1,7 +1,6 @@
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const { loadCommands, loadEvents } = require('../utils/loader.js');
 const { setPresence } = require('../utils/presence.js');
-const registerSlashCommands = require('../utils/loadSlashCommands.js');
 const monitorBot = require('../utils/monitoring.js');
 const logger = require('../utils/logger.js');
 
