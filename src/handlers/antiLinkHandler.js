@@ -1,5 +1,5 @@
 const { PermissionsBitField } = require('discord.js');
-const { loadSettings } = require('../utils/settingsLoader');
+const { loadSettings } = require('../utils/loadSettings');
 const logger = require('../utils/logger');
 
 const ANTI_LINK_PATH = './data/antilink.json';
