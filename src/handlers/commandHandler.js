@@ -14,7 +14,7 @@ async function handleCommands(message, client) {
     await command.execute(message, args, client, { getPrefix });
     
     await message.delete().catch((err) => {
-      logger.warn(`Não foi possível apagar a mensagem do comando: ${err.message}`);
+      logger.info(`Não foi possível apagar a mensagem do comando: ${err.message}`);
     });
 
     return true;
