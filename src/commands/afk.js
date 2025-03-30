@@ -11,6 +11,14 @@ module.exports = {
 
         afkUsers.set(message.author.id, reason);
 
+        if (message.member.manageable) {
+            try {
+                await message.member.setNickname(`[AFK] ${message.member.displayName}`);
+            } catch (error) {
+                console.error(`INFO: Erro ao alterar o apelido de ${message.author.tag}:`, error);
+            }
+        }
+
         await message.channel.send({
             embeds: [
                 new EmbedBuilder()
@@ -21,13 +29,22 @@ module.exports = {
                     .setTimestamp()
             ]
         });
-        
+
         const filter = (msg) => msg.author.id === message.author.id;
         const collector = message.channel.createMessageCollector({ filter, max: 1, time: 86400000 });
 
-        collector.on('collect', (msg) => {
+        collector.on('collect', async (msg) => {
             if (afkUsers.has(msg.author.id)) {
                 afkUsers.delete(msg.author.id);
+
+                if (message.member.manageable) {
+                    try {
+                        await message.member.setNickname(message.member.displayName.replace('[AFK] ', ''));
+                    } catch (error) {
+                        console.error(`INFO: Erro ao restaurar o apelido de ${message.author.tag}:`, error);
+                    }
+                }
+
                 msg.channel.send({
                     embeds: [
                         new EmbedBuilder()
@@ -36,8 +53,8 @@ module.exports = {
                             .setDescription('Seu status **AFK** foi removido.')
                             .setFooter({ text: `${msg.author.tag}`, iconURL: msg.author.displayAvatarURL() })
                             .setTimestamp()
-                    ], allowedMentions: { repliedUser: false } });
-
+                    ], allowedMentions: { repliedUser: false }
+                });
             }
         });
 
@@ -54,8 +71,8 @@ module.exports = {
                                     .setDescription(`**${mentionedUser.displayName}** está atualmente **AFK**.\n**Motivo:** ${reason}`)
                                     .setThumbnail(mentionedUser.user.displayAvatarURL({ dynamic: true }))
                                     .setTimestamp()
-                            ], allowedMentions: { repliedUser: false } });
-                        
+                            ], allowedMentions: { repliedUser: false }
+                        });
                     }
                 });
             }
