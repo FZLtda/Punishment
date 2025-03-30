@@ -10,13 +10,13 @@ function monitorBot(client) {
 
   client.on('ready', () => {
     console.log(`[INFO] ${BOT_NAME} está online como: ${client.user.tag}`);
-    sendWebhookNotification(`${BOT_NAME} está online!`, 'O bot está funcionando normalmente.');
+    sendWebhookNotification(`${BOT_NAME} está online!`, 'Tudo está funcionando perfeitamente.');
   });
 
   client.on('shardDisconnect', (event, shardId) => {
     console.error(`[ALERTA] Shard ${shardId} desconectada!`);
     sendWebhookNotification(
-      `[${BOT_NAME}] desconectado!`,
+      `${BOT_NAME} desconectado!`,
       `A shard ${shardId} foi desconectada. Verifique imediatamente.`
     );
   });
@@ -39,12 +39,12 @@ async function sendWebhookNotification(title, description) {
   }
 
   const embed = {
-    color: 0xff0000,
+    color: 0x2ecc71,
     title,
     description,
     timestamp: new Date().toISOString(),
     footer: {
-      text: `[${BOT_NAME}] Monitoramento`,
+      text: `${BOT_NAME} Monitoramento`,
     },
   };
 
