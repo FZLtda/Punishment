@@ -10,7 +10,7 @@ function monitorBot(client) {
 
   client.on('ready', () => {
     console.log(`INFO: [${BOT_NAME}] está online como: ${client.user.tag}`);
-    sendWebhookNotification(`[${BOT_NAME}] está online!`, 'Tudo está funcionando perfeitamente.');
+    sendWebhookNotification(`${BOT_NAME} está online!`, 'Tudo está funcionando perfeitamente.');
   });
 
   client.on('shardDisconnect', (event, shardId) => {
@@ -27,14 +27,14 @@ function monitorBot(client) {
   });
 
   client.on('warn', (info) => {
-    console.warn(`AVISO: ${info}`);
+    console.info(`AVISO: ${info}`);
     sendWebhookNotification(`${BOT_NAME} aviso!`, `Aviso detectado: ${info}`);
   });
 }
 
 async function sendWebhookNotification(title, description) {
   if (!WEBHOOK) {
-    console.warn('AVISO: URL do Webhook não configurada.');
+    console.info('AVISO: URL do Webhook não configurada.');
     return;
   }
 
