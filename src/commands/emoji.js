@@ -97,12 +97,11 @@ module.exports = {
         );
 
         const embed = new EmbedBuilder()
-          .setTitle('<:emoji_33:1219788320234803250> Emoji Adicionado com Sucesso!')
+          .setTitle('<:emoji_33:1219788320234803250> Emoji Adicionado')
           .setColor('Green')
           .addFields(
             { name: 'Nome', value: addedEmoji.name, inline: true },
             { name: 'ID', value: addedEmoji.id, inline: true },
-            { name: 'Pré-visualização', value: `[Clique Aqui](${addedEmoji.url})`, inline: true }
           )
           .setThumbnail(addedEmoji.url)
           .setFooter({
@@ -162,12 +161,11 @@ module.exports = {
         );
 
         const embed = new EmbedBuilder()
-          .setTitle('<:emoji_33:1219788320234803250> Emoji Copiado com Sucesso!')
+          .setTitle('<:emoji_33:1219788320234803250> Emoji Copiado')
           .setColor('Green')
           .addFields(
             { name: 'Nome', value: copiedEmoji.name, inline: true },
             { name: 'ID', value: copiedEmoji.id, inline: true },
-            { name: 'Pré-visualização', value: `[Clique Aqui](${copiedEmoji.url})`, inline: true }
           )
           .setThumbnail(copiedEmoji.url)
           .setFooter({
