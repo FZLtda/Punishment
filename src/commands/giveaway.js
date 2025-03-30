@@ -44,7 +44,7 @@ module.exports = {
       .setFooter({ text: 'Clique no botão para participar!' });
 
     const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setCustomId('participar').setLabel(':tada: Participar').setStyle(ButtonStyle.Primary),
+      new ButtonBuilder().setCustomId('participar').setLabel('🎟 Participar').setStyle(ButtonStyle.Primary),
       new ButtonBuilder().setCustomId('ver_participantes').setLabel('👥 Participantes: 0').setStyle(ButtonStyle.Secondary).setDisabled(true)
     );
 
