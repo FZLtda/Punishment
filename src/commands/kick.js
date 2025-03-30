@@ -49,7 +49,7 @@ module.exports = {
       logModerationAction(message.guild.id, message.author.id, 'Kick', membro.id, motivo);
 
       const kickEmbed = new EmbedBuilder()
-        .setTitle('<:1000046504:1340405565012049941> Membro Expulso')
+        .setTitle('<:Expulso:1355700922197606573> Punição aplicada')
         .setColor('Red')
         .setDescription(`${membro} (\`${membro.id}\`) foi expulso(a) do servidor!`)
         .addFields(

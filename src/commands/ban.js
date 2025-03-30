@@ -49,7 +49,7 @@ module.exports = {
       logModerationAction(message.guild.id, message.author.id, 'Ban', membro.id, motivo);
 
       const embed = new EmbedBuilder()
-        .setTitle('<:1000046502:1340405550453887007> Punição aplicada')
+        .setTitle('<:Banido:1355700878056751244> Punição aplicada')
         .setColor('Red')
         .setDescription(`${membro} (\`${membro.id}\`) foi banido(a)!`)
         .addFields(

@@ -34,7 +34,7 @@ module.exports = {
       );
 
       const embed = new EmbedBuilder()
-        .setTitle('<:1000046500:1340402911985008832> Canal Desbloqueado')
+        .setTitle('<:Desbloqueado:1355700557465125064> Canal Desbloqueado')
         .setDescription(`O canal ${channel} foi desbloqueado para envio de mensagens.`)
         .setColor('Green')
         .setFooter({

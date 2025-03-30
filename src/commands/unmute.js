@@ -54,7 +54,7 @@ module.exports = {
       );
 
       const embed = new EmbedBuilder()
-        .setTitle('<:1000046496:1340401276990787604> Punição removida')
+        .setTitle('<:Desmutado:1355700639681740880> Punição removida')
         .setColor('Green')
         .setDescription(`${membro} (\`${membro.id}\`) foi desmutado(a)!`)
         .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
