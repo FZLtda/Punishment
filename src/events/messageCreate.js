@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const { handleAIResponse } = require('../utils/aiHandler.js');
+const { handleAIResponse } = require('../handlers/aiHandler.js');
 const { handleAntiLink } = require('../handlers/antiLinkHandler.js');
 const { handleAntiSpam } = require('../handlers/antiSpamHandler.js');
 const { handleCommands } = require('../handlers/commandHandler.js');
