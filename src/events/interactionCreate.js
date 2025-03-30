@@ -17,15 +17,15 @@ module.exports = {
         return await handleButtonInteraction(interaction, client, db);
       }
     } catch (error) {
-      logger.error(`Erro no evento interactionCreate: ${error.message}`, { stack: error.stack });
+      logger.error(`ERRO: Erro no evento interactionCreate: ${error.message}`, { stack: error.stack });
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
-          content: 'Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.',
+          content: '<:Erro:1356016602994180266> Não foi possível processar essa ação.',
           ephemeral: true,
         });
       } else {
         await interaction.reply({
-          content: 'Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.',
+          content: '<:Erro:1356016602994180266> Não foi possível processar essa ação.',
           ephemeral: true,
         });
       }

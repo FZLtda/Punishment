@@ -16,7 +16,7 @@ async function handleAntiLink(message) {
       setTimeout(() => reply.delete().catch(() => {}), 5000);
       return true;
     } catch (error) {
-      logger.error('Erro ao excluir mensagem com link:', error);
+      logger.error('ERRO: Erro ao excluir mensagem com link:', error);
     }
   }
   return false;

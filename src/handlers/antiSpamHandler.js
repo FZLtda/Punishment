@@ -38,7 +38,7 @@ async function handleAntiSpam(message, client) {
       message.channel.send({ embeds: [embed] });
       return true;
     } catch (error) {
-      logger.error('Erro ao processar antispam:', error);
+      logger.error('ERRO: Erro ao processar antispam:', error);
     }
   }
   return false;

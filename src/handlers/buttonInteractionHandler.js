@@ -8,7 +8,8 @@ async function handleButtonInteraction(interaction, client, db) {
       if (command) {
         return await command.execute(interaction);
       }
-      return interaction.reply({ content: 'Erro ao processar os Termos de Uso.', ephemeral: true });
+      return interaction.reply({ content: '<:Erro:1356016602994180266> Não foi possível processar os Termos de Uso.',
+         ephemeral: true });
     }
 
     const giveaway = db.prepare('SELECT * FROM giveaways WHERE message_id = ?').get(interaction.message.id);
@@ -19,7 +20,7 @@ async function handleButtonInteraction(interaction, client, db) {
     if (interaction.customId === 'participar') {
       if (participants.includes(interaction.user.id)) {
         return interaction.reply({
-          content: 'Você já está concorrendo neste sorteio!',
+          content: '<:Erro:1356016602994180266> Você já está concorrendo neste sorteio!',
           ephemeral: true,
         });
       }
@@ -42,7 +43,7 @@ async function handleButtonInteraction(interaction, client, db) {
 
       await interaction.update({ components: [updatedRow] });
       return interaction.followUp({
-        content: 'Sua entrada no sorteio foi registrada!',
+        content: '<:Sucesso:1355720816129740918> Sua entrada no sorteio foi registrada!',
         ephemeral: true,
       });
     }
@@ -54,9 +55,9 @@ async function handleButtonInteraction(interaction, client, db) {
       });
     }
   } catch (error) {
-    logger.error(`Erro ao processar interação de botão "${interaction.customId}": ${error.message}`, { stack: error.stack });
+    logger.error(`ERRO: Erro ao processar interação de botão "${interaction.customId}": ${error.message}`, { stack: error.stack });
     return interaction.reply({
-      content: 'Ocorreu um erro ao processar sua interação.',
+      content: '<:Erro:1356016602994180266> Não foi possível processar sua interação.',
       ephemeral: true,
     });
   }

@@ -35,9 +35,9 @@ const startBot = async () => {
 };
 
 const gracefulShutdown = async () => {
-  logger.warn(`[${BOT_NAME}] encerrando... Limpando recursos.`);
+  logger.warn(`[${BOT_NAME}] está sendo encerrado... Limpando recursos...`);
   await client.destroy();
-  logger.info(`[${BOT_NAME}] encerrado com sucesso.`);
+  logger.info(`[${BOT_NAME}] foi encerrado com sucesso.`);
   process.exit(0);
 };
 

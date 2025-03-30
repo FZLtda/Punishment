@@ -19,7 +19,7 @@ module.exports = {
 
       await handleCommands(message, client);
     } catch (error) {
-      logger.error(`Erro no evento messageCreate: ${error.message}`, { stack: error.stack });
+      logger.error(`ERRO: Erro no evento messageCreate: ${error.message}`, { stack: error.stack });
     }
   },
 };

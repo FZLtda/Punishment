@@ -26,8 +26,8 @@ async function handleAIResponse(message) {
     await message.channel.send(response);
     return true;
   } catch (error) {
-    logger.error('Erro ao consultar a IA:', error);
-    await message.channel.send('Erro ao processar a resposta da IA.');
+    logger.error('ERRO: Erro ao consultar a IA:', error);
+    await message.channel.send('<:Erro:1356016602994180266> Não foi possível processar a resposta da IA.');
     return false;
   }
 }
