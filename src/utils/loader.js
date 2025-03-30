@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const logger = require('../utils/logger.js');
+const logger = require('./logger.js');
 
 async function loadCommands(client) {
   const commandsPath = path.join(__dirname, '../commands');
