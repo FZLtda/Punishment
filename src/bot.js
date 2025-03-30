@@ -1,43 +1,21 @@
-const { Client, GatewayIntentBits, Collection } = require('discord.js');
-const { loadCommands, loadEvents } = require('./utils/loader.js');
-const { setPresence } = require('./utils/presence.js');
-const monitorBot = require('./utils/monitoring.js');
+const ExtendedClient = require('./structures/ExtendedClient.js');
 const logger = require('./utils/logger.js');
 const validateEnv = require('./utils/validateEnv.js');
-const registerSlashCommands = require('./utils/loadSlashCommands.js');
 
-const { BOT_NAME, MAX_RETRIES, RETRY_DELAY } = require('../config.js');
+const { BOT_NAME, MAX_RETRIES, RETRY_DELAY } = require('./config/settings.json');
 
 validateEnv();
 
 let retryCount = 0;
 const startTime = Date.now();
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers,
-  ],
-  retryLimit: Infinity,
-});
-
-client.commands = new Collection();
-client.slashCommands = new Collection();
+const client = new ExtendedClient();
 
 const startBot = async () => {
   logger.info(`[${BOT_NAME}] Iniciando o bot... (Tentativa ${retryCount + 1})`);
 
   try {
-    await Promise.all([
-      loadCommands(client),
-      loadEvents(client),
-      registerSlashCommands(client),
-    ]);
-
-    setPresence(client);
-    monitorBot(client);
+    await client.init();
 
     await client.login(process.env.TOKEN);
 
@@ -56,10 +34,6 @@ const startBot = async () => {
     }
   }
 };
-
-client.on('disconnect', () => logger.warn(`[${BOT_NAME}] Bot desconectado! Tentando reconectar...`));
-client.on('reconnecting', () => logger.info(`[${BOT_NAME}] Tentando reconectar...`));
-client.on('error', (error) => logger.error(`[${BOT_NAME}] Erro no cliente: ${error.message}`, { stack: error.stack }));
 
 const gracefulShutdown = async () => {
   logger.warn(`[${BOT_NAME}] Encerrando... Limpando recursos.`);

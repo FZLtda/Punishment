@@ -1,0 +1,5 @@
+{
+  "BOT_NAME": "Punishment",
+  "MAX_RETRIES": 3,
+  "RETRY_DELAY": 5000
+}
