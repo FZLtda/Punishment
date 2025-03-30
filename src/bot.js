@@ -25,7 +25,7 @@ const startBot = async () => {
 
     retryCount++;
     if (retryCount < MAX_RETRIES) {
-      logger.warn(`[${BOT_NAME}] está tentando reiniciar em ${RETRY_DELAY / 1000} segundos... (${retryCount}/${MAX_RETRIES})`);
+      logger.info(`[${BOT_NAME}] está tentando reiniciar em ${RETRY_DELAY / 1000} segundos... (${retryCount}/${MAX_RETRIES})`);
       setTimeout(startBot, RETRY_DELAY);
     } else {
       logger.error(`[${BOT_NAME}] número máximo de tentativas atingido. Encerrando.`);
