@@ -31,13 +31,13 @@ class ExtendedClient extends Client {
       setPresence(this);
       monitorBot(this);
 
-      this.on('disconnect', () => logger.warn(`[${BOT_NAME}] desconectado! Tentando reconectar...`));
+      this.on('disconnect', () => logger.info(`[${BOT_NAME}] desconectado! Tentando reconectar...`));
       this.on('reconnecting', () => logger.info(`[${BOT_NAME}] tentando reconectar...`));
-      this.on('error', (error) => logger.error(`[${BOT_NAME}] erro: ${error.message}`, { stack: error.stack }));
+      this.on('error', (error) => logger.info(`[${BOT_NAME}] erro: ${error.message}`, { stack: error.stack }));
 
       logger.info(`[${BOT_NAME}] inicialização concluída.`);
     } catch (error) {
-      logger.error(`[${BOT_NAME}] erro ao iniciar: ${error.message}`, { stack: error.stack });
+      logger.info(`[${BOT_NAME}] erro ao iniciar: ${error.message}`, { stack: error.stack });
       throw error;
     }
   }
