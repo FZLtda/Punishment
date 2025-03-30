@@ -15,7 +15,7 @@ function validateEnv() {
     const missingVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
   
     if (missingVars.length > 0) {
-      console.error(`[ERROR] Variáveis de ambiente ausentes: ${missingVars.join(', ')}`);
+      console.error(`ERRO: Variáveis de ambiente ausentes: ${missingVars.join(', ')}`);
       process.exit(1);
     }
   
@@ -34,12 +34,12 @@ function validateEnv() {
   
     Object.entries(validations).forEach(([key, validate]) => {
       if (!validate(process.env[key])) {
-        console.error(`[ERROR] Variável de ambiente ${key} é inválida.`);
+        console.error(`ERRO: Variável de ambiente ${key} é inválida.`);
         process.exit(1);
       }
     });
   
-    console.log('[INFO] Todas as variáveis de ambiente foram validadas com sucesso.');
+    console.log('INFO: Todas as variáveis de ambiente foram validadas com sucesso.');
   }
   
   module.exports = validateEnv;
