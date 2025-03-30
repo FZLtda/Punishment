@@ -9,8 +9,8 @@ function monitorBot(client) {
   console.log('[INFO] Monitorando o bot...');
 
   client.on('ready', () => {
-    console.log(`[INFO] Punishment está online: ${client.user.tag}`);
-    sendWebhookNotification(`[${BOT_NAME}] está online!', 'O bot está funcionando normalmente.`);
+    console.log(`[INFO] ${BOT_NAME} está online como: ${client.user.tag}`);
+    sendWebhookNotification(`${BOT_NAME} está online!`, 'O bot está funcionando normalmente.');
   });
 
   client.on('shardDisconnect', (event, shardId) => {
@@ -23,12 +23,12 @@ function monitorBot(client) {
 
   client.on('error', (error) => {
     console.error(`[ERROR] Erro detectado: ${error.message}`);
-    sendWebhookNotification(`[${BOT_NAME}] erro!`, `Erro detectado: ${error.message}`);
+    sendWebhookNotification(`${BOT_NAME} erro!`, `Erro detectado: ${error.message}`);
   });
 
   client.on('warn', (info) => {
     console.warn(`[WARN] Aviso: ${info}`);
-    sendWebhookNotification(`[${BOT_NAME}] aviso!`, `Aviso detectado: ${info}`);
+    sendWebhookNotification(`${BOT_NAME} aviso!`, `Aviso detectado: ${info}`);
   });
 }
 
@@ -51,7 +51,7 @@ async function sendWebhookNotification(title, description) {
   try {
     await axios.post(WEBHOOK, {
       username: 'Punishment Status',
-      avatar_url: 'https://bit.ly/3CSNQFw',
+      avatar_url: 'https://bit.ly/3Ybrvul',
       embeds: [embed],
     });
     console.log('[INFO] Notificação enviada via Webhook.');
