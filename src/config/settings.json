@@ -1,5 +1,11 @@
 {
   "BOT_NAME": "Punishment",
   "MAX_RETRIES": 3,
-  "RETRY_DELAY": 5000
+  "RETRY_DELAY": 5000,
+  "PREFIX": ".",
+  "DEFAULT_LANGUAGE": "pt-BR",
+  "EMBED_COLOR": "#FE3838",
+  "OWNER_ID": "1006909671908585586",
+  "SUPPORT": "https://discord.gg/SW4zKzAhQa",
+  "LOG_CHANNEL": "1356022546654433492"
 }
