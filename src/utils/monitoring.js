@@ -6,15 +6,15 @@ function monitorBot(client) {
     throw new Error('O client não foi inicializado corretamente.');
   }
 
-  console.log('[INFO] Monitorando o bot...');
+  console.log('INFO: Monitorando o bot...');
 
   client.on('ready', () => {
-    console.log(`[INFO] ${BOT_NAME} está online como: ${client.user.tag}`);
-    sendWebhookNotification(`${BOT_NAME} está online!`, 'Tudo está funcionando perfeitamente.');
+    console.log(`INFO: [${BOT_NAME}] está online como: ${client.user.tag}`);
+    sendWebhookNotification(`[${BOT_NAME}] está online!`, 'Tudo está funcionando perfeitamente.');
   });
 
   client.on('shardDisconnect', (event, shardId) => {
-    console.error(`[ALERTA] Shard ${shardId} desconectada!`);
+    console.error(`ALERTA: Shard ${shardId} desconectada!`);
     sendWebhookNotification(
       `${BOT_NAME} desconectado!`,
       `A shard ${shardId} foi desconectada. Verifique imediatamente.`
@@ -22,19 +22,19 @@ function monitorBot(client) {
   });
 
   client.on('error', (error) => {
-    console.error(`[ERROR] Erro detectado: ${error.message}`);
+    console.error(`ERRO: Erro detectado: ${error.message}`);
     sendWebhookNotification(`${BOT_NAME} erro!`, `Erro detectado: ${error.message}`);
   });
 
   client.on('warn', (info) => {
-    console.warn(`[WARN] Aviso: ${info}`);
+    console.warn(`AVISO: ${info}`);
     sendWebhookNotification(`${BOT_NAME} aviso!`, `Aviso detectado: ${info}`);
   });
 }
 
 async function sendWebhookNotification(title, description) {
   if (!WEBHOOK) {
-    console.warn('[WARN] URL do Webhook não configurada.');
+    console.warn('AVISO: URL do Webhook não configurada.');
     return;
   }
 
@@ -54,9 +54,9 @@ async function sendWebhookNotification(title, description) {
       avatar_url: 'https://bit.ly/3Ybrvul',
       embeds: [embed],
     });
-    console.log('[INFO] Notificação enviada via Webhook.');
+    console.log('INFO: Notificação enviada via Webhook.');
   } catch (error) {
-    console.error('[ERROR] Falha ao enviar notificação via Webhook:', error.message);
+    console.error('ERRO: Falha ao enviar notificação via Webhook:', error.message);
   }
 }
 
