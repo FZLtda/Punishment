@@ -1,5 +1,4 @@
 const { EmbedBuilder } = require('discord.js');
-const { getPrefix } = require('../utils/prefixes');
 
 module.exports = {
   name: 'help',
@@ -20,6 +19,7 @@ module.exports = {
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
+    const currentPrefix = typeof getPrefix === 'function' ? getPrefix(message.guild.id) : '.'; // Valor padrão
     if (args.length > 0) {
       const commandName = args[0].toLowerCase();
       const command = commands.get(commandName);
@@ -35,7 +35,6 @@ module.exports = {
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
-      const currentPrefix = getPrefix(message.guild.id);
       const usage = command.usage?.replace('${currentPrefix}', currentPrefix) || 'Não especificado.';
 
       const embed = new EmbedBuilder()
@@ -68,7 +67,7 @@ module.exports = {
       .addFields(
         {
           name: '<:1000043159:1336324177900077076> Ajuda',
-          value: `Use \`${getPrefix(message.guild.id)}help <comando>\` para exibir mais informações sobre um comando.`,
+          value: `Use \`${currentPrefix}help <comando>\` para exibir mais informações sobre um comando.`,
         },
         {
           name: '<:1000043160:1336324162482081945> Suporte',
