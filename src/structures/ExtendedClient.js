@@ -3,6 +3,7 @@ const { loadCommands, loadEvents } = require('../utils/loader.js');
 const { setPresence } = require('../utils/presence.js');
 const monitorBot = require('../utils/monitoring.js');
 const logger = require('../utils/logger.js');
+const { BOT_NAME } = require('../config/settings.json');
 
 class ExtendedClient extends Client {
   constructor() {
@@ -30,13 +31,13 @@ class ExtendedClient extends Client {
       setPresence(this);
       monitorBot(this);
 
-      this.on('disconnect', () => logger.warn(`[BOT] Desconectado! Tentando reconectar...`));
-      this.on('reconnecting', () => logger.info(`[BOT] Tentando reconectar...`));
-      this.on('error', (error) => logger.error(`[BOT] Erro: ${error.message}`, { stack: error.stack }));
+      this.on('disconnect', () => logger.warn(`[${BOT_NAME}] desconectado! Tentando reconectar...`));
+      this.on('reconnecting', () => logger.info(`[${BOT_NAME}] tentando reconectar...`));
+      this.on('error', (error) => logger.error(`[${BOT_NAME}] erro: ${error.message}`, { stack: error.stack }));
 
-      logger.info('[BOT] Inicialização concluída.');
+      logger.info(`[${BOT_NAME}] inicialização concluída.`);
     } catch (error) {
-      logger.error(`[BOT] Erro ao iniciar: ${error.message}`, { stack: error.stack });
+      logger.error(`[${BOT_NAME}] erro ao iniciar: ${error.message}`, { stack: error.stack });
       throw error;
     }
   }
