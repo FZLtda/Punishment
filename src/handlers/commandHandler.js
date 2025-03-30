@@ -14,12 +14,12 @@ async function handleCommands(message, client) {
     await command.execute(message, args, client, { getPrefix });
     
     await message.delete().catch((err) => {
-      logger.warn(`ERRO: Não foi possível apagar a mensagem do comando: ${err.message}`);
+      logger.warn(`Não foi possível apagar a mensagem do comando: ${err.message}`);
     });
 
     return true;
   } catch (error) {
-    logger.error(`ERRO: Erro ao executar o comando "${commandName}":`, error);
+    logger.error(`Erro ao executar o comando "${commandName}":`, error);
     await message.reply('<:1000042883:1336044555354771638> Não foi possível processar o comando.');
     return false;
   }
