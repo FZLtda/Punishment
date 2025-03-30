@@ -1,7 +1,6 @@
 const axios = require('axios');
-
 const WEBHOOK = process.env.WEBHOOK;
-
+const { BOT_NAME } = require('../config/settings.json');
 function monitorBot(client) {
   if (!client || typeof client.on !== 'function') {
     throw new Error('O client não foi inicializado corretamente.');
@@ -11,25 +10,25 @@ function monitorBot(client) {
 
   client.on('ready', () => {
     console.log(`[INFO] Punishment está online: ${client.user.tag}`);
-    sendWebhookNotification('Punishment está online!', 'O bot está funcionando normalmente.');
+    sendWebhookNotification(`[${BOT_NAME}] está online!', 'O bot está funcionando normalmente.`);
   });
 
   client.on('shardDisconnect', (event, shardId) => {
     console.error(`[ALERTA] Shard ${shardId} desconectada!`);
     sendWebhookNotification(
-      'Punishment desconectado!',
+      `[${BOT_NAME}] desconectado!`,
       `A shard ${shardId} foi desconectada. Verifique imediatamente.`
     );
   });
 
   client.on('error', (error) => {
     console.error(`[ERROR] Erro detectado: ${error.message}`);
-    sendWebhookNotification('Punishment erro!', `Erro detectado: ${error.message}`);
+    sendWebhookNotification(`[${BOT_NAME}] erro!`, `Erro detectado: ${error.message}`);
   });
 
   client.on('warn', (info) => {
     console.warn(`[WARN] Aviso: ${info}`);
-    sendWebhookNotification('Punishment aviso!', `Aviso detectado: ${info}`);
+    sendWebhookNotification(`[${BOT_NAME}] aviso!`, `Aviso detectado: ${info}`);
   });
 }
 
@@ -45,7 +44,7 @@ async function sendWebhookNotification(title, description) {
     description,
     timestamp: new Date().toISOString(),
     footer: {
-      text: 'Punishment Monitoramento',
+      text: `[${BOT_NAME}] Monitoramento`,
     },
   };
 
