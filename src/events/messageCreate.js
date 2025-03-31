@@ -3,6 +3,7 @@ const { handleAIResponse } = require('../handlers/aiHandler');
 const { handleAntiLink } = require('../handlers/antiLinkHandler');
 const { handleAntiSpam } = require('../handlers/antiSpamHandler');
 const { handleCommands } = require('../handlers/commandHandler');
+const { checkTerms } = require('../handlers/termsHandler');
 const { getPrefix } = require('../utils/prefixes');
 const logger = require('../utils/logger');
 
@@ -11,6 +12,9 @@ module.exports = {
   async execute(message, client) {
     try {
       if (message.author.bot || !message.guild) return;
+
+      const termsAccepted = await checkTerms(message);
+      if (!termsAccepted) return;
 
       if (await handleAIResponse(message)) return;
 
