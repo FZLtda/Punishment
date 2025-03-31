@@ -1,8 +1,8 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const db = require('../data/database');
 
-async function checkTerms(interaction) {
-  const userId = interaction.user.id;
+async function checkTerms(message) {
+  const userId = message.author.id;
 
   const userAccepted = db.prepare('SELECT * FROM terms WHERE user_id = ?').get(userId);
   if (userAccepted) return true;
@@ -17,7 +17,7 @@ async function checkTerms(interaction) {
       '2. Você concorda que suas ações podem ser registradas para fins de moderação.\n\n' +
       'Clique no botão abaixo para aceitar os Termos de Uso.'
     )
-    .setFooter({ text: 'Punishment', iconURL: interaction.client.user.displayAvatarURL() });
+    .setFooter({ text: 'Punishment', iconURL: message.client.user.displayAvatarURL() });
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
@@ -30,7 +30,7 @@ async function checkTerms(interaction) {
       .setStyle(ButtonStyle.Danger)
   );
 
-  await interaction.reply({ embeds: [embed], components: [row], ephemeral: true });
+  await message.reply({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
   return false;
 }
 
@@ -38,6 +38,7 @@ async function handleTermsInteraction(interaction) {
   const userId = interaction.user.id;
 
   if (interaction.customId === 'accept_terms') {
+    
     db.prepare('INSERT INTO terms (user_id) VALUES (?)').run(userId);
 
     await interaction.update({
