@@ -9,7 +9,7 @@ module.exports = {
   async execute(interaction, client) {
     try {
       if (!interaction.isCommand() && !interaction.isButton()) {
-        logger.warn('Interação não suportada ou inválida.');
+        logger.info('Interação não suportada ou inválida.');
         return;
       }
 
@@ -20,16 +20,7 @@ module.exports = {
           db.prepare('INSERT OR IGNORE INTO terms (user_id) VALUES (?)').run(userId);
 
           await interaction.update({
-            content: '<:1000042885:1336044571125354496> Termos de Uso aceitos! O bot já está disponível para você.',
-            components: [],
-            embeds: [],
-          });
-          return;
-        }
-
-        if (interaction.customId === 'decline_terms') {
-          await interaction.update({
-            content: 'Você recusou os Termos de Uso. Não poderá usar o bot.',
+            content: '<:1000042885:1336044571125354496> Termos de Uso aceitos! O Punishment já está disponível para você.',
             components: [],
             embeds: [],
           });
