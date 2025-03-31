@@ -13,12 +13,8 @@ module.exports = {
         return;
       }
 
-      if (!interaction.user) {
-        logger.warn('Interação sem usuário associado.');
-        return;
-      }
-
-      if (!await checkTerms(interaction)) return;
+      const termsAccepted = await checkTerms(interaction);
+      if (!termsAccepted) return;
 
       if (interaction.isChatInputCommand()) {
         return await handleSlashCommand(interaction, client);
