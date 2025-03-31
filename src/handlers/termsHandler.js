@@ -5,7 +5,7 @@ async function checkTerms(context) {
   const user = context.author || context.user;
 
   if (!user) {
-    console.warn('Contexto sem usuário associado no checkTerms.');
+    console.warn('INFO: Contexto sem usuário associado no checkTerms.');
     return false;
   }
 
@@ -18,11 +18,7 @@ async function checkTerms(context) {
     .setColor('#FE3838')
     .setTitle('Termos de Uso')
     .setDescription(
-      'Para usar este bot, você precisa aceitar os Termos de Uso.\n\n' +
-      '**Termos:**\n' +
-      '1. Você concorda em não abusar das funcionalidades do bot.\n' +
-      '2. Você concorda que suas ações podem ser registradas para fins de moderação.\n\n' +
-      'Clique no botão abaixo para aceitar os Termos de Uso ou ler os Termos completos.'
+      'Antes de seguir, precisamos que você aceite nossos Termos de Uso. Leia-os clicando em **Ler Termos** e, se estiver de acordo, clique em **Aceitar Termos** para continuar aproveitando o Punishment!'
     )
     .setFooter({ text: 'Punishment', iconURL: context.client.user.displayAvatarURL() });
 
