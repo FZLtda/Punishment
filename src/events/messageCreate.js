@@ -13,6 +13,10 @@ module.exports = {
     try {
       if (message.author.bot || !message.guild) return;
 
+      const prefix = getPrefix(message.guild.id);
+
+      if (!message.content.startsWith(prefix)) return;
+
       const termsAccepted = await checkTerms(message);
       if (!termsAccepted) return;
 
