@@ -33,13 +33,13 @@ module.exports = {
     const region = guild.preferredLocale || 'Desconhecida';
 
     const embed = new EmbedBuilder()
-      .setTitle(`<:1000046551:1340466667779784777> Informações do Servidor: ${guild.name}`)
+      .setTitle(`<:1000046551:1340466667779784777> Informações de ${guild.name}`)
       .setThumbnail(guild.iconURL({ dynamic: true, size: 1024 }))
       .setColor('#FE3838')
       .addFields(
         { name: 'Nome', value: guild.name, inline: true },
         { name: 'ID', value: guild.id, inline: true },
-        { name: 'Dono', value: `${owner.user.tag} (\`${owner.user.id}\`)`, inline: true },
+        { name: 'Dono', value: `${owner.dispalayName} (\`${owner.user.id}\`)`, inline: true },
         { name: 'Criado em', value: createdAt, inline: true },
         { name: 'Região', value: region, inline: true },
         { name: 'Canal de Regras', value: rulesChannel, inline: true },
