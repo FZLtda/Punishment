@@ -8,6 +8,11 @@ module.exports = {
   name: 'interactionCreate',
   async execute(interaction, client) {
     try {
+      if (!interaction.isCommand() && !interaction.isButton()) {
+        logger.warn('Interação não suportada ou inválida.');
+        return;
+      }
+
       if (!interaction.user) {
         logger.warn('Interação sem usuário associado.');
         return;

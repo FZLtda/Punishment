@@ -3,7 +3,7 @@ const db = require('../data/database');
 
 async function checkTerms(interaction) {
   if (!interaction.user) {
-    console.warn('Interação sem usuário associado.');
+    console.warn('Interação sem usuário associado no checkTerms.');
     return false;
   }
 
