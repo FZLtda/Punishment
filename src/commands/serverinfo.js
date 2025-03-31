@@ -33,8 +33,10 @@ module.exports = {
     const region = guild.preferredLocale || 'Desconhecida';
 
     const embed = new EmbedBuilder()
-      .setTitle(`<:1000046551:1340466667779784777> Informações de ${guild.name}`)
-      .setThumbnail(guild.iconURL({ dynamic: true, size: 1024 }))
+      .setAuthor({
+        name: `${guild.name}`,
+        iconURL: guild.iconURL({ dynamic: true, size: 1024 }) || null,
+      })
       .setColor('#FE3838')
       .addFields(
         { name: 'Nome', value: guild.name, inline: true },
