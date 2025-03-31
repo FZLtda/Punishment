@@ -22,7 +22,7 @@ async function checkTerms(context) {
       '**Termos:**\n' +
       '1. Você concorda em não abusar das funcionalidades do bot.\n' +
       '2. Você concorda que suas ações podem ser registradas para fins de moderação.\n\n' +
-      'Clique no botão abaixo para aceitar os Termos de Uso.'
+      'Clique no botão abaixo para aceitar os Termos de Uso ou ler os Termos completos.'
     )
     .setFooter({ text: 'Punishment', iconURL: context.client.user.displayAvatarURL() });
 
@@ -32,9 +32,9 @@ async function checkTerms(context) {
       .setLabel('Aceitar Termos')
       .setStyle(ButtonStyle.Success),
     new ButtonBuilder()
-      .setCustomId('decline_terms')
-      .setLabel('Recusar Termos')
-      .setStyle(ButtonStyle.Danger)
+      .setLabel('Ler Termos')
+      .setStyle(ButtonStyle.Link)
+      .setURL('https://bit.ly/4c9U9lo')
   );
 
   if (context.reply) {
