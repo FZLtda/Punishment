@@ -40,7 +40,7 @@ db.prepare(`
 `).run();
 
 db.prepare(`
-  CREATE TABLE IF NOT EXISTS accepted_users (
+  CREATE TABLE IF NOT EXISTS terms (
     user_id TEXT PRIMARY KEY
   )
 `).run();

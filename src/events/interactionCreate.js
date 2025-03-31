@@ -1,20 +1,25 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const db = require('../data/database');
-const logger = require('../utils/logger');
 const { handleSlashCommand } = require('../handlers/slashCommandHandler');
 const { handleButtonInteraction } = require('../handlers/buttonInteractionHandler');
+const { checkTerms, handleTermsInteraction } = require('../handlers/termsHandler');
+const logger = require('../utils/logger');
 
 module.exports = {
   name: 'interactionCreate',
   async execute(interaction, client) {
     try {
       
+      if (!await checkTerms(interaction)) return;
+
       if (interaction.isChatInputCommand()) {
         return await handleSlashCommand(interaction, client);
       }
 
       if (interaction.isButton()) {
-        return await handleButtonInteraction(interaction, client, db);
+        if (interaction.customId === 'accept_terms' || interaction.customId === 'decline_terms') {
+          return await handleTermsInteraction(interaction);
+        }
+
+        return await handleButtonInteraction(interaction, client);
       }
     } catch (error) {
       logger.error(`ERRO: Erro no evento interactionCreate: ${error.message}`, { stack: error.stack });
@@ -32,7 +37,6 @@ module.exports = {
     }
   },
 };
-
 
 
 
