@@ -8,6 +8,10 @@ module.exports = {
   name: 'interactionCreate',
   async execute(interaction, client) {
     try {
+      if (!interaction.user) {
+        logger.warn('Interação sem usuário associado.');
+        return;
+      }
 
       if (!await checkTerms(interaction)) return;
 
@@ -16,7 +20,6 @@ module.exports = {
       }
 
       if (interaction.isButton()) {
-
         if (interaction.customId === 'accept_terms') {
           const userId = interaction.user.id;
 
