@@ -13,13 +13,6 @@ module.exports = {
         return;
       }
 
-      const termsAccepted = await checkTerms(interaction);
-      if (!termsAccepted) return;
-
-      if (interaction.isChatInputCommand()) {
-        return await handleSlashCommand(interaction, client);
-      }
-
       if (interaction.isButton()) {
         if (interaction.customId === 'accept_terms') {
           const userId = interaction.user.id;
@@ -44,6 +37,12 @@ module.exports = {
         }
 
         return await handleButtonInteraction(interaction, client);
+      }
+
+      if (!await checkTerms(interaction)) return;
+
+      if (interaction.isChatInputCommand()) {
+        return await handleSlashCommand(interaction, client);
       }
     } catch (error) {
       logger.error(`ERRO: Erro no evento interactionCreate: ${error.message}`, { stack: error.stack });
