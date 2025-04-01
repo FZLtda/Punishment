@@ -75,8 +75,8 @@ module.exports = {
             if (permissionsInput) {
                 const permissionsArray = permissionsInput
                     .toUpperCase()
-                    .replace(/,/g, ' ')
-                    .split(/\s+/) 
+                    .replace(/,/g, ' ') // Substitui vírgulas por espaços
+                    .split(/\s+/) // Divide por espaços
                     .map(perm => perm.trim());
 
                 permissionsArray.forEach(perm => {
@@ -96,6 +96,10 @@ module.exports = {
                             .setColor('#FF4C4C')
                             .setAuthor({ name: 'As seguintes permissões são inválidas:', iconURL: 'https://bit.ly/43PItSI' })
                             .setDescription(`\`${invalidPermissions.join(', ')}\``)
+                            .addFields({
+                                name: 'Permissões válidas',
+                                value: Object.keys(PermissionsBitField.Flags).join(', '),
+                            })
                     ],
                     allowedMentions: { repliedUser: false }
                 });
@@ -104,7 +108,7 @@ module.exports = {
             const newRole = await message.guild.roles.create({
                 name: roleName,
                 color: roleColor,
-                permissions: resolvedPermissions.bitfield,
+                permissions: resolvedPermissions.bitfield, // Certifique-se de passar o bitfield das permissões
                 reason: `Criado por ${message.author.tag}`,
             });
 
