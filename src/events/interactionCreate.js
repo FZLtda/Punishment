@@ -20,7 +20,7 @@ module.exports = {
           db.prepare('INSERT OR IGNORE INTO terms (user_id) VALUES (?)').run(userId);
 
           await interaction.update({
-            content: '<:1000042885:1336044571125354496> Termos de Uso aceitos! O Punishment já está disponível para você.',
+            content: '<:1000042885:1336044571125354496> **Termos de Uso** aceitos! O Punishment já está disponível para você.',
             components: [],
             embeds: [],
           });
