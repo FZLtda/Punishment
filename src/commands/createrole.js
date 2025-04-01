@@ -19,56 +19,62 @@ module.exports = {
     usage: '${currentPrefix}createrole <nome> [cor] [permissões]',
     permissions: 'Gerenciar Cargos',
     async execute(message, args) {
-        if (!message.member.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-            return message.reply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setColor('#FF4C4C')
-                        .setAuthor({ name: 'Você não tem permissão para usar este comando.', iconURL: 'https://bit.ly/43PItSI' })
-                ],
-                allowedMentions: { repliedUser: false }
-            });
-        }
-
-        if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
-            return message.reply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setColor('#FF4C4C')
-                        .setAuthor({ name: 'Não tenho permissão para criar cargos.', iconURL: 'https://bit.ly/43PItSI' })
-                ],
-                allowedMentions: { repliedUser: false }
-            });
-        }
-
-        if (!args[0]) {
-            return message.reply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setColor('#FF4C4C')
-                        .setAuthor({ name: 'Você precisa fornecer um nome para o cargo.', iconURL: 'https://bit.ly/43PItSI' })
-                ],
-                allowedMentions: { repliedUser: false }
-            });
-        }
-
-        const roleName = args[0];
-        const colorInput = args[1] ? args[1].toUpperCase() : 'WHITE';
-        const roleColor = colorMapping[colorInput] || (colorInput.startsWith('#') ? colorInput : null);
-        const permissionsInput = args.slice(2).join(' ');
-
-        if (!roleColor) {
-            return message.reply({
-                embeds: [
-                    new EmbedBuilder()
-                        .setColor('#FF4C4C')
-                        .setAuthor({ name: 'A cor fornecida é inválida. Use um nome de cor válido ou um código hexadecimal.', iconURL: 'https://bit.ly/43PItSI' })
-                ],
-                allowedMentions: { repliedUser: false }
-            });
-        }
-
         try {
+            // Verifica permissões do usuário
+            if (!message.member.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+                return message.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor('#FF4C4C')
+                            .setAuthor({ name: 'Você não tem permissão para usar este comando.', iconURL: 'https://bit.ly/43PItSI' })
+                    ],
+                    allowedMentions: { repliedUser: false }
+                });
+            }
+
+            // Verifica permissões do bot
+            if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageRoles)) {
+                return message.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor('#FF4C4C')
+                            .setAuthor({ name: 'Não tenho permissão para criar cargos.', iconURL: 'https://bit.ly/43PItSI' })
+                    ],
+                    allowedMentions: { repliedUser: false }
+                });
+            }
+
+            // Verifica se o nome do cargo foi fornecido
+            if (!args[0]) {
+                return message.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor('#FF4C4C')
+                            .setAuthor({ name: 'Você precisa fornecer um nome para o cargo.', iconURL: 'https://bit.ly/43PItSI' })
+                    ],
+                    allowedMentions: { repliedUser: false }
+                });
+            }
+
+            const roleName = args[0];
+            const colorInput = args[1] ? args[1].toUpperCase() : 'WHITE';
+            const roleColor = colorMapping[colorInput] || (colorInput.startsWith('#') ? colorInput : null);
+
+            // Valida a cor
+            if (!roleColor) {
+                return message.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor('#FF4C4C')
+                            .setAuthor({ name: 'A cor fornecida é inválida. Use um nome de cor válido ou um código hexadecimal.', iconURL: 'https://bit.ly/43PItSI' })
+                    ],
+                    allowedMentions: { repliedUser: false }
+                });
+            }
+
+            const permissionsInput = args.slice(2).join(' ');
+
+            // Resolve permissões
             let resolvedPermissions = new PermissionsBitField();
             let invalidPermissions = [];
 
@@ -89,6 +95,7 @@ module.exports = {
                 });
             }
 
+            // Verifica permissões inválidas
             if (invalidPermissions.length > 0) {
                 return message.reply({
                     embeds: [
@@ -105,6 +112,7 @@ module.exports = {
                 });
             }
 
+            // Cria o cargo
             const newRole = await message.guild.roles.create({
                 name: roleName,
                 color: roleColor,
@@ -112,6 +120,7 @@ module.exports = {
                 reason: `Criado por ${message.author.tag}`,
             });
 
+            // Envia confirmação
             const embed = new EmbedBuilder()
                 .setTitle('<:emoji_33:1219788320234803250> Cargo Criado com Sucesso!')
                 .setColor(roleColor)
