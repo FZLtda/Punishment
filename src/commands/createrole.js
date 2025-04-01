@@ -15,8 +15,8 @@ const colorMapping = {
 
 module.exports = {
     name: 'createrole',
-    description: 'Cria um cargo no servidor com configurações personalizadas.',
-    usage: '${currentPrefix}createrole <nome> [cor] [permissões]',
+    description: 'Cria um cargo no servidor com configurações avançadas.',
+    usage: '${currentPrefix}createrole <nome> [cor] [permissões] [posição] [menção automática]',
     permissions: 'Gerenciar Cargos',
     async execute(message, args) {
         try {
@@ -73,11 +73,10 @@ module.exports = {
             }
 
             const permissionsInput = args.slice(2).join(' ');
-
-            // Resolve permissões
             let resolvedPermissions = new PermissionsBitField();
             let invalidPermissions = [];
 
+            // Resolve permissões
             if (permissionsInput) {
                 const permissionsArray = permissionsInput
                     .toUpperCase()
@@ -112,11 +111,29 @@ module.exports = {
                 });
             }
 
+            // Define a posição do cargo
+            const position = args[3] ? parseInt(args[3], 10) : null;
+            if (position && (isNaN(position) || position < 0 || position > message.guild.roles.cache.size)) {
+                return message.reply({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor('#FF4C4C')
+                            .setAuthor({ name: 'A posição fornecida é inválida. Use um número válido.', iconURL: 'https://bit.ly/43PItSI' })
+                    ],
+                    allowedMentions: { repliedUser: false }
+                });
+            }
+
+            // Define se o cargo será mencionável
+            const mentionable = args[4] ? args[4].toLowerCase() === 'true' : false;
+
             // Cria o cargo
             const newRole = await message.guild.roles.create({
                 name: roleName,
                 color: roleColor,
-                permissions: resolvedPermissions.bitfield, // Certifique-se de passar o bitfield das permissões
+                permissions: resolvedPermissions.bitfield,
+                position: position || undefined,
+                mentionable: mentionable,
                 reason: `Criado por ${message.author.tag}`,
             });
 
@@ -127,7 +144,9 @@ module.exports = {
                 .addFields(
                     { name: 'Nome do Cargo', value: newRole.name, inline: true },
                     { name: 'Cor', value: newRole.hexColor.toUpperCase(), inline: true },
-                    { name: 'Permissões', value: newRole.permissions.toArray().join(', ') || 'Nenhuma', inline: false }
+                    { name: 'Permissões', value: newRole.permissions.toArray().join(', ') || 'Nenhuma', inline: false },
+                    { name: 'Posição', value: position ? position.toString() : 'Padrão', inline: true },
+                    { name: 'Mencionável', value: mentionable ? 'Sim' : 'Não', inline: true }
                 )
                 .setFooter({ text: `Criado por ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
                 .setTimestamp();
