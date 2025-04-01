@@ -26,7 +26,8 @@ async function checkTerms(context) {
     new ButtonBuilder()
       .setCustomId('accept_terms')
       .setLabel('Aceitar Termos')
-      .setStyle(ButtonStyle.Success),
+      .setStyle(ButtonStyle.Success)
+      .setEmoji('<:emoji_34:1219815388921991259>'),
     new ButtonBuilder()
       .setLabel('Ler Termos')
       .setStyle(ButtonStyle.Link)
