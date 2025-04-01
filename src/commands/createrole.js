@@ -1,4 +1,5 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
+
 const colorMapping = {
     RED: '#FF0000',
     BLUE: '#3498DB',
@@ -53,8 +54,19 @@ module.exports = {
 
         const roleName = args[0];
         const colorInput = args[1] ? args[1].toUpperCase() : 'WHITE';
-        const roleColor = colorMapping[colorInput] || colorInput;
+        const roleColor = colorMapping[colorInput] || (colorInput.startsWith('#') ? colorInput : null);
         const permissionsInput = args.slice(2).join(' ');
+
+        if (!roleColor) {
+            return message.reply({
+                embeds: [
+                    new EmbedBuilder()
+                        .setColor('#FF4C4C')
+                        .setAuthor({ name: 'A cor fornecida é inválida. Use um nome de cor válido ou um código hexadecimal.', iconURL: 'https://bit.ly/43PItSI' })
+                ],
+                allowedMentions: { repliedUser: false }
+            });
+        }
 
         try {
             let resolvedPermissions = new PermissionsBitField();
@@ -64,11 +76,11 @@ module.exports = {
                 const permissionsArray = permissionsInput
                     .toUpperCase()
                     .replace(/,/g, ' ')
-                    .split(/\s+/)
+                    .split(/\s+/) 
                     .map(perm => perm.trim());
 
                 permissionsArray.forEach(perm => {
-                    const formattedPerm = perm.toUpperCase().replace(/ /g, '_');
+                    const formattedPerm = perm.toUpperCase().replace(/ /g, '_'); // Corrige nomes errados
                     if (PermissionsBitField.Flags[formattedPerm]) {
                         resolvedPermissions.add(PermissionsBitField.Flags[formattedPerm]);
                     } else {
