@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { erro } = require('../data/emojiStorage/emoji.json')
+const { sucess, error } = require('../data/emojiStorage/emoji.json')
 const logger = require('../utils/logger');
 
 async function handleButtonInteraction(interaction, client, db) {
@@ -10,7 +10,7 @@ async function handleButtonInteraction(interaction, client, db) {
         return await command.execute(interaction);
       }
       return interaction.reply({
-        content: '<:Erro:1356016602994180266> Não foi possível processar os Termos de Uso.',
+        content: `${error} Não foi possível processar os Termos de Uso.`,
         ephemeral: true,
       });
     }
@@ -18,7 +18,7 @@ async function handleButtonInteraction(interaction, client, db) {
     const giveaway = db.prepare('SELECT * FROM giveaways WHERE message_id = ?').get(interaction.message.id);
     if (!giveaway) {
       return interaction.reply({
-        content: '<:Erro:1356016602994180266> Este sorteio não foi encontrado no banco de dados.',
+        content: `${error} Este sorteio não foi encontrado no banco de dados.`,
         ephemeral: true,
       });
     }
@@ -29,7 +29,7 @@ async function handleButtonInteraction(interaction, client, db) {
     } catch (error) {
       logger.error(`ERRO: O campo "participants" no sorteio está corrompido: ${error.message}`);
       return interaction.reply({
-        content: '<:Erro:1356016602994180266> O sorteio está corrompido. Por favor, contate um administrador.',
+        content: '...',
         ephemeral: true,
       });
     }
@@ -37,7 +37,7 @@ async function handleButtonInteraction(interaction, client, db) {
     if (interaction.customId === 'participar') {
       if (participants.includes(interaction.user.id)) {
         return interaction.reply({
-          content: '<:Erro:1356016602994180266> Você já está concorrendo neste sorteio!',
+          content: `${error} Você já está concorrendo neste sorteio!`,
           ephemeral: true,
         });
       }
@@ -60,7 +60,7 @@ async function handleButtonInteraction(interaction, client, db) {
 
       await interaction.update({ components: [updatedRow] });
       return interaction.followUp({
-        content: `${erro} Sua entrada no sorteio foi registrada!`,
+        content: `${sucess} Sua entrada no sorteio foi registrada!`,
         ephemeral: true,
       });
     }
@@ -74,7 +74,7 @@ async function handleButtonInteraction(interaction, client, db) {
   } catch (error) {
     logger.error(`ERRO: Erro ao processar interação de botão "${interaction.customId}": ${error.message}`, { stack: error.stack });
     return interaction.reply({
-      content: '<:Erro:1356016602994180266> Não foi possível processar sua interação.',
+      content: `${error} Não foi possível processar sua interação.`,
       ephemeral: true,
     });
   }
