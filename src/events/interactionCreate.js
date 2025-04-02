@@ -27,7 +27,7 @@ module.exports = {
           return;
         }
 
-        return await handleButtonInteraction(interaction, client);
+        return await handleButtonInteraction(interaction, client, db);
       }
 
       if (!await checkTerms(interaction)) return;
