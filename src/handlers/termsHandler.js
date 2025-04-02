@@ -1,4 +1,5 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { check } = require('../data/emojiStorage/emoji.json')
 const db = require('../data/database');
 
 async function checkTerms(context) {
@@ -27,7 +28,7 @@ async function checkTerms(context) {
       .setCustomId('accept_terms')
       .setLabel('Aceitar Termos')
       .setStyle(ButtonStyle.Success)
-      .setEmoji('<:emoji_34:1219815388921991259>'),
+      .setEmoji(`${check}`),
     new ButtonBuilder()
       .setLabel('Ler Termos')
       .setStyle(ButtonStyle.Link)
