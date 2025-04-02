@@ -8,14 +8,30 @@ async function handleButtonInteraction(interaction, client, db) {
       if (command) {
         return await command.execute(interaction);
       }
-      return interaction.reply({ content: '<:Erro:1356016602994180266> Não foi possível processar os Termos de Uso.',
-         ephemeral: true });
+      return interaction.reply({
+        content: '<:Erro:1356016602994180266> Não foi possível processar os Termos de Uso.',
+        ephemeral: true,
+      });
     }
 
     const giveaway = db.prepare('SELECT * FROM giveaways WHERE message_id = ?').get(interaction.message.id);
-    if (!giveaway) return;
+    if (!giveaway) {
+      return interaction.reply({
+        content: '<:Erro:1356016602994180266> Este sorteio não foi encontrado no banco de dados.',
+        ephemeral: true,
+      });
+    }
 
-    let participants = JSON.parse(giveaway.participants);
+    let participants;
+    try {
+      participants = JSON.parse(giveaway.participants || '[]');
+    } catch (error) {
+      logger.error(`ERRO: O campo "participants" no sorteio está corrompido: ${error.message}`);
+      return interaction.reply({
+        content: '<:Erro:1356016602994180266> O sorteio está corrompido. Por favor, contate um administrador.',
+        ephemeral: true,
+      });
+    }
 
     if (interaction.customId === 'participar') {
       if (participants.includes(interaction.user.id)) {
@@ -50,7 +66,7 @@ async function handleButtonInteraction(interaction, client, db) {
 
     if (interaction.customId === 'ver_participantes') {
       return interaction.reply({
-        content: `👥 Participantes: ${participants.length}`,
+        content: `👥 Participantes: ${participants.length}\n${participants.map((id) => `<@${id}>`).join('\n')}`,
         ephemeral: true,
       });
     }
