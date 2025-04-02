@@ -1,4 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { erro } = require('../data/emojiStorage/emoji.json')
 const logger = require('../utils/logger');
 
 async function handleButtonInteraction(interaction, client, db) {
@@ -59,7 +60,7 @@ async function handleButtonInteraction(interaction, client, db) {
 
       await interaction.update({ components: [updatedRow] });
       return interaction.followUp({
-        content: '<:Sucesso:1355720816129740918> Sua entrada no sorteio foi registrada!',
+        content: `${erro} Sua entrada no sorteio foi registrada!`,
         ephemeral: true,
       });
     }
