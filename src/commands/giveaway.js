@@ -19,7 +19,7 @@ module.exports = {
 
       if (args[0] !== 'start') {
         return message.reply({
-          content: 'Uso correto: `.giveaway start <tempo> <ganhadores> <prêmio>`',
+          content: '<:1000042883:1336044555354771638> Uso correto: `.giveaway start <tempo> <ganhadores> <prêmio>`',
           allowedMentions: { repliedUser: false },
         });
       }
@@ -39,7 +39,7 @@ module.exports = {
       const durationMs = convertTimeToMs(timeInput);
       if (!durationMs) {
         return message.reply({
-          content: 'Formato de tempo inválido! Use `1m`, `1h`, `1d`.',
+          content: '<:1000042883:1336044555354771638> Formato de tempo inválido! Use `1m`, `1h`, `1d`.',
           allowedMentions: { repliedUser: false },
         });
       }
@@ -47,7 +47,7 @@ module.exports = {
       const endTime = Date.now() + durationMs;
 
       const embed = new EmbedBuilder()
-        .setTitle('🎉 Novo Sorteio 🎉')
+        .setTitle('Novo Sorteio')
         .setDescription(`**Prêmio:** \`${prize}\`\n**Ganhadores:** \`${winnerCount}\`\n**Termina:** <t:${Math.floor(endTime / 1000)}:f> (<t:${Math.floor(endTime / 1000)}:R>)`)
         .setColor('#FE3838')
         .setFooter({ text: 'Clique no botão para participar!' });
@@ -79,9 +79,9 @@ module.exports = {
         finalizeGiveaway(giveawayMessage.id, message.guild.id, message.client);
       }, durationMs);
     } catch (error) {
-      console.error(`[ERROR] Erro ao iniciar o sorteio: ${error.message}`);
+      console.error(`[ERRO] Erro ao iniciar o sorteio: ${error.message}`);
       message.reply({
-        content: 'Ocorreu um erro ao iniciar o sorteio. Por favor, tente novamente.',
+        content: '<:1000042883:1336044555354771638> Ocorreu um erro ao iniciar o sorteio. Por favor, tente novamente.',
         allowedMentions: { repliedUser: false },
       });
     }
@@ -140,7 +140,7 @@ async function finalizeGiveaway(messageId, guildId, client) {
     }
 
     const embed = new EmbedBuilder()
-      .setTitle('🎉 Sorteio Finalizado 🎉')
+      .setTitle('Sorteio Finalizado')
       .setDescription(
         `**Prêmio:** \`${giveaway.prize}\`\n` +
         `**Participantes:** \`${totalParticipants}\`\n` +
