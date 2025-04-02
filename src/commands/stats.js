@@ -47,18 +47,13 @@ module.exports = {
             inline: true,
           },
           {
-            name: '<:1000043166:1336327290446942281> Canais',
+            name: '<:1000055959:1357117904948039700> Canais',
             value: `ﾠ \`${channelCount}\``,
             inline: true,
           },
           {
             name: '<:1000043168:1336330133086273566> Uso de Memória',
             value: `ﾠ \`${memoryUsage} MB / ${totalMemory} MB\``,
-            inline: true,
-          },
-          {
-            name: '<:1000043169:1336330133086273567> Memória Livre',
-            value: `ﾠ \`${freeMemory} MB\``,
             inline: true,
           },
           {
@@ -72,22 +67,17 @@ module.exports = {
             inline: true,
           },
           {
-            name: '<:1000043171:1336333421412225046> CPU',
-            value: `ﾠ \`${cpuModel}\``,
-            inline: false,
-          },
-          {
-            name: '<:1000043172:1336333421412225047> Uso de CPU',
+            name: '<:1000055958:1357117888045256775> Uso de CPU',
             value: `ﾠ \`${cpuUsage}%\``,
             inline: true,
           },
           {
-            name: '<:1000043164:1336327290446942282> Node.js',
+            name: '<:1000055960:1357117922505527468> Node.js',
             value: `ﾠ \`${nodeVersion}\``,
             inline: true,
           },
           {
-            name: '<:1000043163:1336327290446942283> Discord.js',
+            name: '<:1000043160:1336324162482081945> Discord.js',
             value: `ﾠ \`v${discordJsVersion}\``,
             inline: true,
           }
