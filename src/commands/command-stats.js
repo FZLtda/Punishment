@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const db = require('../data/database');
+const { error } = require('../config/emoji.json');
 
 module.exports = {
   name: 'command-stats',
@@ -8,10 +9,11 @@ module.exports = {
   permissions: 'Administrador',
   execute: async (message) => {
     try {
+      const allowedUserId = '1006909671908585586';
 
-      if (!message.member.permissions.has('Administrator')) {
+      if (message.author.id !== allowedUserId) {
         return message.reply({
-          content: '❌ Você não tem permissão para usar este comando.',
+          content: `${error} Você não tem permissão para usar este comando.`,
           allowedMentions: { repliedUser: false },
         });
       }
@@ -45,25 +47,25 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor('#3498DB')
-        .setTitle('📊 Estatísticas de Uso dos Comandos')
+        .setTitle('Estatísticas de Uso dos Comandos')
         .addFields(
-          { name: '🔢 Total de Comandos Executados', value: `\`${totalCommands}\``, inline: true },
+          { name: 'Total de Comandos Executados', value: `\`${totalCommands}\``, inline: true },
           {
-            name: '🏆 Comando Mais Usado',
+            name: 'Comando Mais Usado',
             value: mostUsedCommand
               ? `\`${mostUsedCommand.command_name}\`: \`${mostUsedCommand.usage_count}\` usos`
               : '`Nenhum comando registrado.`',
             inline: true,
           },
           {
-            name: '🐢 Comando Menos Usado',
+            name: 'Comando Menos Usado',
             value: leastUsedCommand
               ? `\`${leastUsedCommand.command_name}\`: \`${leastUsedCommand.usage_count}\` usos`
               : '`Nenhum comando registrado.`',
             inline: true,
           },
           {
-            name: '📋 Top 10 Comandos',
+            name: 'Top 10 Comandos',
             value: commandStats || '`Nenhum comando registrado.`',
             inline: false,
           }
@@ -76,9 +78,9 @@ module.exports = {
 
       return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     } catch (error) {
-      console.error('[ERROR] Falha ao executar o comando command-stats:', error);
+      console.error('[ERRO] Falha ao executar o comando command-stats:', error);
       return message.reply({
-        content: '❌ Ocorreu um erro ao tentar exibir as estatísticas dos comandos.',
+        content: `${error} Não foi possivel exibir as estatísticas dos comandos.`,
         allowedMentions: { repliedUser: false },
       });
     }
