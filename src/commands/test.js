@@ -13,11 +13,14 @@ module.exports = {
       const commandsPerPage = 10; // Número de comandos por página
       const totalPages = Math.ceil(commands.size / commandsPerPage);
 
+      // Gera um identificador único para os botões (baseado no ID do autor)
+      const uniqueId = `help-${message.author.id}`;
+
       // Página inicial
       let currentPage = 1;
       const embedMessage = await message.channel.send({
         embeds: [generateEmbed(commands, currentPage, commandsPerPage, totalPages, message)],
-        components: [generateButtons(currentPage, totalPages)],
+        components: [generateButtons(currentPage, totalPages, uniqueId)],
       });
 
       // Criar um coletor de interações para os botões
@@ -30,20 +33,22 @@ module.exports = {
             });
             return false;
           }
-          return true;
+          return interaction.customId.startsWith(uniqueId); // Garante que o botão pertence a esta instância
         },
         time: 60000, // 1 minuto
       });
 
       collector.on('collect', async (interaction) => {
-        if (interaction.customId === 'first') currentPage = 1;
-        if (interaction.customId === 'previous') currentPage--;
-        if (interaction.customId === 'next') currentPage++;
-        if (interaction.customId === 'last') currentPage = totalPages;
+        const action = interaction.customId.split('-')[2]; // Obtém a ação (first, previous, next, last)
+
+        if (action === 'first') currentPage = 1;
+        if (action === 'previous') currentPage--;
+        if (action === 'next') currentPage++;
+        if (action === 'last') currentPage = totalPages;
 
         await interaction.update({
           embeds: [generateEmbed(commands, currentPage, commandsPerPage, totalPages, message)],
-          components: [generateButtons(currentPage, totalPages)],
+          components: [generateButtons(currentPage, totalPages, uniqueId)],
         });
       });
 
@@ -51,7 +56,7 @@ module.exports = {
         embedMessage.edit({
           components: [
             new ActionRowBuilder().addComponents(
-              generateButtons(currentPage, totalPages).components.map((button) =>
+              generateButtons(currentPage, totalPages, uniqueId).components.map((button) =>
                 button.setDisabled(true)
               )
             ),
