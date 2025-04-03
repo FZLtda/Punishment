@@ -3,19 +3,19 @@ const db = require('../data/database');
 
 module.exports = {
   name: 'mod-stats',
-  description: 'Exibe estatísticas da moderação no servidor.',
+  description: 'Exibe estatísticas detalhadas da moderação no servidor.',
   usage: '${currentPrefix}mod-stats',
   permissions: 'Gerenciar Servidor',
   async execute(message) {
     if (!message.member.permissions.has('ManageGuild')) {
-      const embedErroMinimo = new EmbedBuilder()
+      const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Você não possui permissão para usar este comando.',
           iconURL: 'https://bit.ly/43PItSI',
         });
 
-      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -41,53 +41,58 @@ module.exports = {
         )
         .all(guildId);
 
-      let typeStats = '';
-      for (const action of actionsByType) {
-        typeStats += `**${action.action_type}:** \`${action.count}\`\n`;
-      }
+      const typeStats = actionsByType.length
+        ? actionsByType.map(action => `**${action.action_type}:** \`${action.count}\``).join('\n')
+        : '`Nenhuma ação registrada.`';
 
-      let moderatorStats = '';
-      for (const mod of actionsByModerator) {
-        const user = await message.guild.members.fetch(mod.moderator_id).catch(() => null);
-        const username = user ? user.user.tag : 'Usuário desconhecido';
-        moderatorStats += `**${username}:** \`${mod.count}\` ações\n`;
-      }
+      const moderatorStats = actionsByModerator.length
+        ? await Promise.all(
+            actionsByModerator.map(async mod => {
+              const user = await message.guild.members.fetch(mod.moderator_id).catch(() => null);
+              const username = user ? user.user.tag : 'Usuário desconhecido';
+              return `**${username}:** \`${mod.count}\` ações`;
+            })
+          ).then(stats => stats.join('\n'))
+        : '`Nenhuma ação registrada.`';
 
-      let recentStats = '';
-      for (const action of recentActions) {
-        const moderator = await message.guild.members.fetch(action.moderator_id).catch(() => null);
-        const target = await message.guild.members.fetch(action.target_id).catch(() => null);
-        const moderatorName = moderator ? moderator.user.tag : 'Desconhecido';
-        const targetName = target ? target.user.tag : 'Desconhecido';
-        recentStats += `**${action.action_type}:** \`${moderatorName} -> ${targetName}\`\nMotivo: \`${action.reason || 'Nenhum'}\`\n\n`;
-      }
+      const recentStats = recentActions.length
+        ? await Promise.all(
+            recentActions.map(async action => {
+              const moderator = await message.guild.members.fetch(action.moderator_id).catch(() => null);
+              const target = await message.guild.members.fetch(action.target_id).catch(() => null);
+              const moderatorName = moderator ? moderator.user.tag : 'Desconhecido';
+              const targetName = target ? target.user.tag : 'Desconhecido';
+              return `**${action.action_type}:** \`${moderatorName} -> ${targetName}\`\nMotivo: \`${action.reason || 'Nenhum'}\`\n`;
+            })
+          ).then(stats => stats.join('\n'))
+        : '`Nenhuma ação registrada.`';
 
       const embed = new EmbedBuilder()
         .setTitle('Estatísticas de Moderação')
-        .setColor('#fe3838')
+        .setColor('#FE3838')
         .addFields(
           { name: '<:1000043480:1336455409904517151> Total de Ações', value: `\`${totalActions.count || 0}\``, inline: true },
-          { name: '<:1000043157:1336324220770062497> Ações por Tipo', value: typeStats || '`Nenhuma ação registrada.`', inline: true },
-          { name: '<:1000043165:1336327290446942280> Top Moderadores', value: moderatorStats || '`Nenhuma ação registrada.`', inline: false },
-          { name: '<:1000043158:1336324199202947144> Ações Recentes', value: recentStats || '`Nenhuma ação registrada.`', inline: false }
+          { name: '<:1000043157:1336324220770062497> Ações por Tipo', value: typeStats, inline: true },
+          { name: '<:1000043165:1336327290446942280> Top Moderadores', value: moderatorStats, inline: false },
+          { name: '<:1000043158:1336324199202947144> Ações Recentes', value: recentStats, inline: false }
         )
         .setFooter({
-          text: `${message.author.username}`,
+          text: `${message.author.tag}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
 
       return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     } catch (error) {
-      console.error(`[ERROR] Falha ao gerar estatísticas:`, error);
-      const embedErroMinimo = new EmbedBuilder()
+      console.error(`[ERROR] Falha ao gerar estatísticas de moderação:`, error);
+      const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
           name: 'Não foi possível gerar as estatísticas de moderação devido a um erro.',
           iconURL: 'https://bit.ly/43PItSI',
         });
 
-      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
   },
 };
