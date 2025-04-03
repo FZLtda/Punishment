@@ -1,5 +1,18 @@
 const { getPrefix } = require('../utils/prefixes');
 const logger = require('../utils/logger');
+const db = require('../data/database');
+
+async function handleCommandUsage(commandName) {
+  const command = db
+    .prepare('SELECT * FROM command_usage WHERE command_name = ?')
+    .get(commandName);
+
+  if (command) {
+    db.prepare('UPDATE command_usage SET usage_count = usage_count + 1 WHERE command_name = ?').run(commandName);
+  } else {
+    db.prepare('INSERT INTO command_usage (command_name, usage_count) VALUES (?, 1)').run(commandName);
+  }
+}
 
 async function handleCommands(message, client) {
   const prefix = getPrefix(message.guild.id);
@@ -11,6 +24,9 @@ async function handleCommands(message, client) {
   if (!command) return false;
 
   try {
+
+    await handleCommandUsage(commandName);
+
     await command.execute(message, args, client, { getPrefix });
     
     await message.delete().catch((err) => {

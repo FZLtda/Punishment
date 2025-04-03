@@ -45,4 +45,11 @@ db.prepare(`
   )
 `).run();
 
+db.prepare(`
+CREATE TABLE IF NOT EXISTS command_usage (
+  command_name TEXT PRIMARY KEY,
+  usage_count INTEGER DEFAULT 0
+  )
+`).run();
+
 module.exports = db;
