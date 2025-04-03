@@ -22,7 +22,16 @@ module.exports = {
 
       // Criar um coletor de interações para os botões
       const collector = embedMessage.createMessageComponentCollector({
-        filter: (interaction) => interaction.user.id === message.author.id,
+        filter: (interaction) => {
+          if (interaction.user.id !== message.author.id) {
+            interaction.reply({
+              content: '❌ Apenas o autor do comando pode usar esses botões.',
+              ephemeral: true,
+            });
+            return false;
+          }
+          return true;
+        },
         time: 60000, // 1 minuto
       });
 
