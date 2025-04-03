@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
-  name: 'test',
+  name: 'help',
   description: 'Exibe todos os comandos disponíveis e suas informações.',
   usage: '${currentPrefix}help [comando]',
   permissions: 'Enviar Mensagens',
@@ -23,11 +23,11 @@ module.exports = {
 
         const embed = new EmbedBuilder()
           .setColor('#3498DB')
-          .setTitle(`📖 Detalhes do Comando: \`${command.name}\``)
+          .setTitle(`📖 Detalhes do Comando: ${command.name}`)
           .addFields(
-            { name: 'Descrição', value: command.description || 'Sem descrição disponível.' },
-            { name: 'Uso', value: command.usage || 'Sem informações de uso disponíveis.' },
-            { name: 'Permissões Necessárias', value: command.permissions || 'Nenhuma' }
+            { name: 'Descrição', value: `\`${command.description || 'Sem descrição disponível.'}\`` },
+            { name: 'Uso', value: `\`${command.usage || 'Sem informações de uso disponíveis.'}\`` },
+            { name: 'Permissões Necessárias', value: `\`${command.permissions || 'Nenhuma'}\`` }
           )
           .setFooter({
             text: `Solicitado por ${message.author.tag}`,
@@ -40,7 +40,7 @@ module.exports = {
 
       // Agrupa os comandos em uma lista
       const commandList = commands.map(
-        (cmd) => `\`${cmd.name}\`: ${cmd.description || 'Sem descrição'}`
+        (cmd) => `${cmd.name}: \`${cmd.description || 'Sem descrição'}\``
       );
 
       // Divide a lista em partes menores (máximo de 1024 caracteres por campo)
