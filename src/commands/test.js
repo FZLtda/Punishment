@@ -1,4 +1,6 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { generateEmbed } = require('../utils/generateEmbed');
+const { generateButtons } = require('../utils/generateButtons');
+const { ActionRowBuilder } = require('discord.js');
 
 module.exports = {
   name: 'test',
@@ -11,66 +13,11 @@ module.exports = {
       const commandsPerPage = 10; // Número de comandos por página
       const totalPages = Math.ceil(commands.size / commandsPerPage);
 
-      // Função para criar o embed de uma página específica
-      const generateEmbed = (page) => {
-        const start = (page - 1) * commandsPerPage;
-        const end = start + commandsPerPage;
-        const commandList = Array.from(commands.values()).slice(start, end);
-
-        const embed = new EmbedBuilder()
-          .setColor('#3498DB')
-          .setTitle('📚 Lista de Comandos')
-          .setDescription(
-            'Use `${currentPrefix}help [comando]` para obter mais detalhes sobre um comando específico.'
-          )
-          .setFooter({
-            text: `Página ${page} de ${totalPages} • Solicitado por ${message.author.tag}`,
-            iconURL: message.author.displayAvatarURL({ dynamic: true }),
-          })
-          .setTimestamp();
-
-        commandList.forEach((cmd) => {
-          embed.addFields({
-            name: cmd.name,
-            value: `\`${cmd.description || 'Sem descrição'}\``,
-            inline: false,
-          });
-        });
-
-        return embed;
-      };
-
-      // Função para criar os botões de navegação
-      const generateButtons = (page) => {
-        return new ActionRowBuilder().addComponents(
-          new ButtonBuilder()
-            .setCustomId('first')
-            .setLabel('⏮️')
-            .setStyle(ButtonStyle.Primary)
-            .setDisabled(page === 1),
-          new ButtonBuilder()
-            .setCustomId('previous')
-            .setLabel('◀️')
-            .setStyle(ButtonStyle.Primary)
-            .setDisabled(page === 1),
-          new ButtonBuilder()
-            .setCustomId('next')
-            .setLabel('▶️')
-            .setStyle(ButtonStyle.Primary)
-            .setDisabled(page === totalPages),
-          new ButtonBuilder()
-            .setCustomId('last')
-            .setLabel('⏭️')
-            .setStyle(ButtonStyle.Primary)
-            .setDisabled(page === totalPages)
-        );
-      };
-
       // Página inicial
       let currentPage = 1;
       const embedMessage = await message.channel.send({
-        embeds: [generateEmbed(currentPage)],
-        components: [generateButtons(currentPage)],
+        embeds: [generateEmbed(commands, currentPage, commandsPerPage, totalPages, message)],
+        components: [generateButtons(currentPage, totalPages)],
       });
 
       // Criar um coletor de interações para os botões
@@ -86,14 +33,20 @@ module.exports = {
         if (interaction.customId === 'last') currentPage = totalPages;
 
         await interaction.update({
-          embeds: [generateEmbed(currentPage)],
-          components: [generateButtons(currentPage)],
+          embeds: [generateEmbed(commands, currentPage, commandsPerPage, totalPages, message)],
+          components: [generateButtons(currentPage, totalPages)],
         });
       });
 
       collector.on('end', () => {
         embedMessage.edit({
-          components: [], // Remove os botões após o tempo expirar
+          components: [
+            new ActionRowBuilder().addComponents(
+              generateButtons(currentPage, totalPages).components.map((button) =>
+                button.setDisabled(true)
+              )
+            ),
+          ],
         });
       });
     } catch (error) {
