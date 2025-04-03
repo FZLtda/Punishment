@@ -1,6 +1,7 @@
 const { handleSlashCommand } = require('../handlers/slashCommandHandler');
 const { handleButtonInteraction } = require('../handlers/buttonInteractionHandler');
 const { checkTerms } = require('../handlers/termsHandler');
+const { check, error } = require('../config/emoji.json');
 const logger = require('../utils/logger');
 const db = require('../data/database');
 
@@ -20,7 +21,7 @@ module.exports = {
           db.prepare('INSERT OR IGNORE INTO terms (user_id) VALUES (?)').run(userId);
 
           await interaction.update({
-            content: '<:1000042885:1336044571125354496> **Termos de Uso** aceitos! O Punishment já está disponível para você.',
+            content: `${check} **Termos de Uso** aceitos! O Punishment já está disponível para você.`,
             components: [],
             embeds: [],
           });
@@ -40,12 +41,12 @@ module.exports = {
 
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
-          content: '<:Erro:1356016602994180266> Não foi possível processar essa ação.',
+          content: `${error} Não foi possível processar essa ação.`,
           ephemeral: true,
         });
       } else {
         await interaction.reply({
-          content: '<:Erro:1356016602994180266> Não foi possível processar essa ação.',
+          content: `${error} Não foi possível processar essa ação.`,
           ephemeral: true,
         });
       }

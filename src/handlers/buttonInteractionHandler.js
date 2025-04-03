@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { sucess, error } = require('../data/emojiStorage/emoji.json')
+const { sucess, error } = require('../config/emoji.json')
 const logger = require('../utils/logger');
 
 async function handleButtonInteraction(interaction, client, db) {
