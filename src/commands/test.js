@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
-  name: 'test',
+  name: 'help',
   description: 'Exibe todos os comandos disponíveis e suas informações.',
   usage: '${currentPrefix}help [comando]',
   permissions: 'Enviar Mensagens',
@@ -38,13 +38,24 @@ module.exports = {
         return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
       }
 
-      // Agrupa os comandos por categorias
-      const categories = {};
-      commands.forEach((command) => {
-        const category = command.category || 'Outros';
-        if (!categories[category]) categories[category] = [];
-        categories[category].push(command);
+      // Agrupa os comandos em uma lista
+      const commandList = commands.map(
+        (cmd) => `\`${cmd.name}\`: ${cmd.description || 'Sem descrição'}`
+      );
+
+      // Divide a lista em partes menores (máximo de 1024 caracteres por campo)
+      const chunks = [];
+      let currentChunk = '';
+
+      commandList.forEach((command) => {
+        if (currentChunk.length + command.length + 1 > 1024) {
+          chunks.push(currentChunk);
+          currentChunk = '';
+        }
+        currentChunk += `${command}\n`;
       });
+
+      if (currentChunk) chunks.push(currentChunk);
 
       // Cria o embed principal
       const embed = new EmbedBuilder()
@@ -59,13 +70,10 @@ module.exports = {
         })
         .setTimestamp();
 
-      // Adiciona os comandos ao embed, organizados por categoria
-      for (const [category, cmds] of Object.entries(categories)) {
-        embed.addFields({
-          name: `**${category}**`,
-          value: cmds.map((cmd) => `\`${cmd.name}\`: ${cmd.description || 'Sem descrição'}`).join('\n'),
-        });
-      }
+      // Adiciona os chunks ao embed
+      chunks.forEach((chunk, index) => {
+        embed.addFields({ name: `Comandos (${index + 1}/${chunks.length})`, value: chunk });
+      });
 
       return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     } catch (error) {
