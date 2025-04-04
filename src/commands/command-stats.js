@@ -47,25 +47,25 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor('#3498DB')
-        .setTitle('Estatísticas de Uso dos Comandos')
+        .setTitle('Estatísticas')
         .addFields(
-          { name: 'Total de Comandos Executados', value: `\`${totalCommands}\``, inline: true },
+          { name: 'Comandos Executados', value: `\`${totalCommands}\``, inline: true },
           {
-            name: 'Comando Mais Usado',
+            name: 'Mais Usado',
             value: mostUsedCommand
               ? `\`${mostUsedCommand.command_name}\` \`${mostUsedCommand.usage_count}\` usos`
               : '`Nenhum comando registrado.`',
             inline: true,
           },
           {
-            name: 'Comando Menos Usado',
+            name: 'Menos Usado',
             value: leastUsedCommand
               ? `\`${leastUsedCommand.command_name}\` \`${leastUsedCommand.usage_count}\` usos`
               : '`Nenhum comando registrado.`',
             inline: true,
           },
           {
-            name: 'Top 10 Comandos',
+            name: 'Top 10',
             value: commandStats || '`Nenhum comando registrado.`',
             inline: false,
           }
