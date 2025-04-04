@@ -1,12 +1,11 @@
 const { EmbedBuilder } = require('discord.js');
-const { setPrefix } = require('../utils/prefixes');
 
 module.exports = {
   name: 'setprefix',
   description: 'Altera o prefixo do bot no servidor.',
   usage: '${currentPrefix}setprefix <prefixo>',
   permissions: 'Gerenciar Servidor',
-  async execute(message, args, { setPrefix }) {
+  async execute(message, args) {
     
     if (!message.member.permissions.has('ManageGuild')) {
       const embedErro = new EmbedBuilder()
