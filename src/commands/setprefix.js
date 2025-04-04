@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
+const { setPrefix } = require('../utils/prefixes');
 
 module.exports = {
   name: 'setprefix',
