@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { check } = require('../data/emojiStorage/emoji.json')
+const { check } = require('../config/emoji.json')
 
 module.exports = {
   name: 'send',
