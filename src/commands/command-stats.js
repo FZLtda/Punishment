@@ -46,7 +46,7 @@ module.exports = {
         .join('\n');
 
       const embed = new EmbedBuilder()
-        .setColor('#3498DB')
+        .setColor('#FE3838')
         .setTitle('Estatísticas')
         .addFields(
           { name: 'Comandos Executados', value: `\`${totalCommands}\``, inline: true },
