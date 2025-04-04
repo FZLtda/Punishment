@@ -14,4 +14,4 @@ function setPrefix(guildId, newPrefix) {
   ).run(guildId, newPrefix, newPrefix);
 }
 
-module.exports = { getPrefix, setPrefix };
+module.exports = { setPrefix };
