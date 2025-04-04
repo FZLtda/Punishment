@@ -19,7 +19,7 @@ module.exports = {
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
-    const currentPrefix = typeof getPrefix === 'function' ? getPrefix(message.guild.id) : '.'; // Valor padrão
+    const currentPrefix = typeof getPrefix === 'function' ? getPrefix(message.guild.id) : '.';
     if (args.length > 0) {
       const commandName = args[0].toLowerCase();
       const command = commands.get(commandName);

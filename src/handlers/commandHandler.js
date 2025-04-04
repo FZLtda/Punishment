@@ -1,4 +1,5 @@
 const { getPrefix } = require('../utils/prefixes');
+const { setPrefix } = require('../utils/prefixes');
 const logger = require('../utils/logger');
 const db = require('../data/database');
 
