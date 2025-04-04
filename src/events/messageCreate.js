@@ -4,7 +4,7 @@ const { handleAntiLink } = require('../handlers/antiLinkHandler');
 const { handleAntiSpam } = require('../handlers/antiSpamHandler');
 const { handleCommands } = require('../handlers/commandHandler');
 const { checkTerms } = require('../handlers/termsHandler');
-const { getPrefix } = require('../utils/prefixes');
+const { getPrefix, setPrefix } = require('../utils/prefixes');
 const logger = require('../utils/logger');
 
 module.exports = {
@@ -32,7 +32,7 @@ module.exports = {
 
       if (await handleAntiSpam(message, client)) return;
 
-      await handleCommands(message, client, { getPrefix });
+      await handleCommands(message, client, { getPrefix, setPrefix });
     } catch (error) {
       logger.error(`ERRO: Erro no evento messageCreate: ${error.message}`, { stack: error.stack });
     }
