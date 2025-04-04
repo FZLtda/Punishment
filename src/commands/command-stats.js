@@ -37,7 +37,7 @@ module.exports = {
       const commandStats = allCommands
         .map(
           (cmd, index) =>
-            `**${index + 1}. ${cmd.command_name}**: \`${cmd.usage_count}\` usos (${(
+            `**${index + 1}. ${cmd.command_name}** \`${cmd.usage_count}\` usos (${(
               (cmd.usage_count / totalCommands) *
               100
             ).toFixed(2)}%)`
@@ -53,14 +53,14 @@ module.exports = {
           {
             name: 'Comando Mais Usado',
             value: mostUsedCommand
-              ? `\`${mostUsedCommand.command_name}\`: \`${mostUsedCommand.usage_count}\` usos`
+              ? `\`${mostUsedCommand.command_name}\` \`${mostUsedCommand.usage_count}\` usos`
               : '`Nenhum comando registrado.`',
             inline: true,
           },
           {
             name: 'Comando Menos Usado',
             value: leastUsedCommand
-              ? `\`${leastUsedCommand.command_name}\`: \`${leastUsedCommand.usage_count}\` usos`
+              ? `\`${leastUsedCommand.command_name}\` \`${leastUsedCommand.usage_count}\` usos`
               : '`Nenhum comando registrado.`',
             inline: true,
           },
