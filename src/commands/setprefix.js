@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-
+const { setPrefix } = require('../utils/prefixes');
 module.exports = {
   name: 'setprefix',
   description: 'Altera o prefixo do bot no servidor.',
