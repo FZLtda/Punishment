@@ -21,7 +21,7 @@ async function checkTerms(context) {
     .setDescription(
       'Antes de seguir, precisamos que você aceite nossos Termos de Uso. Leia-os clicando em **Ler Termos** e, se estiver de acordo, clique em **Aceitar Termos** para continuar aproveitando o Punishment!'
     )
-    .setFooter({ text: 'Punishment', iconURL: context.client.user.displayAvatarURL() });
+    .setFooter({ text: 'Punishment by FuncZero', iconURL: context.client.user.displayAvatarURL() });
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
