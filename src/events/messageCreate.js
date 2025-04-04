@@ -32,7 +32,7 @@ module.exports = {
 
       if (await handleAntiSpam(message, client)) return;
 
-      await handleCommands(message, client, { getPrefix });
+      await handleCommands(message, client, { getPrefix, setPrefix });
     } catch (error) {
       logger.error(`ERRO: Erro no evento messageCreate: ${error.message}`, { stack: error.stack });
     }
