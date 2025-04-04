@@ -1,5 +1,4 @@
-const { getPrefix } = require('../utils/prefixes');
-const { setPrefix } = require('../utils/prefixes');
+const { getPrefix, setPrefix } = require('../utils/prefixes');
 const logger = require('../utils/logger');
 const db = require('../data/database');
 
@@ -25,11 +24,10 @@ async function handleCommands(message, client) {
   if (!command) return false;
 
   try {
-
     await handleCommandUsage(commandName);
 
-    await command.execute(message, args, client, { getPrefix });
-    
+    await command.execute(message, args, client, { getPrefix, setPrefix });
+
     await message.delete().catch((err) => {
       logger.info(`Não foi possível apagar a mensagem do comando: ${err.message}`);
     });

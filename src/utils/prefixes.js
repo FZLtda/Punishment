@@ -1,23 +1,17 @@
-const fs = require('fs');
-const path = require('path');
-
-const prefixesPath = path.resolve(__dirname, '../data/prefixes.json');
-
-if (!fs.existsSync(prefixesPath)) {
-  fs.mkdirSync(path.dirname(prefixesPath), { recursive: true });
-  fs.writeFileSync(prefixesPath, JSON.stringify({}));
-}
+const db = require('../data/database');
 
 function getPrefix(guildId) {
-  const prefixes = JSON.parse(fs.readFileSync(prefixesPath, 'utf8'));
-  return prefixes[guildId] || '.';
+  const result = db
+    .prepare('SELECT prefix FROM prefixes WHERE guild_id = ?')
+    .get(guildId);
+
+  return result ? result.prefix : '.';
 }
 
 function setPrefix(guildId, newPrefix) {
-  const prefixes = JSON.parse(fs.readFileSync(prefixesPath, 'utf8'));
-  prefixes[guildId] = newPrefix;
-  fs.writeFileSync(prefixesPath, JSON.stringify(prefixes, null, 4));
-  console.log(`[INFO] Prefixo atualizado para o servidor ${guildId}: ${newPrefix}`);
+  db.prepare(
+    'INSERT INTO prefixes (guild_id, prefix) VALUES (?, ?) ON CONFLICT(guild_id) DO UPDATE SET prefix = ?'
+  ).run(guildId, newPrefix, newPrefix);
 }
 
 module.exports = { getPrefix, setPrefix };

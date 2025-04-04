@@ -52,4 +52,11 @@ CREATE TABLE IF NOT EXISTS command_usage (
   )
 `).run();
 
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS prefixes (
+  guild_id TEXT PRIMARY KEY,
+  prefix TEXT NOT NULL
+  )
+`).run();
+
 module.exports = db;
