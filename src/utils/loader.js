@@ -1,21 +1,9 @@
-const fs = require('fs');
 const path = require('path');
 const logger = require('./logger.js');
+const loadFiles = require('../utils/fileLoader.js');
 
 async function loadCommands(client) {
   const commandsPath = path.join(__dirname, '../commands');
-
-  const loadFiles = (dir) => {
-    const files = fs.readdirSync(dir, { withFileTypes: true });
-    return files.flatMap((file) =>
-      file.isDirectory()
-        ? loadFiles(path.join(dir, file.name))
-        : file.name.endsWith('.js') || file.name.endsWith('.ts')
-        ? [path.join(dir, file.name)]
-        : []
-    );
-  };
-
   const commandFiles = loadFiles(commandsPath);
 
   for (const file of commandFiles) {
@@ -23,13 +11,13 @@ async function loadCommands(client) {
       const command = require(file);
 
       if (command.data && command.data.name) {
-        client.slashCommands.set(command.data.name, command);
-        logger.info(`Slash command carregado: ${command.data.name}`);
+        client.slashCommands.set(command.data.name.toLowerCase(), command);
+        logger.info(`(Slash) Comando carregado: ${command.data.name}`);
       } else if (command.name) {
-        client.commands.set(command.name, command);
+        client.commands.set(command.name.toLowerCase(), command);
         logger.info(`Comando carregado: ${command.name}`);
       } else {
-        logger.warn(`Comando ignorado (estrutura inválida): ${file}`);
+        logger.warn(`Ignorado (estrutura inválida): ${file}`);
       }
     } catch (error) {
       logger.error(`Erro ao carregar comando ${file}: ${error.message}`);
@@ -39,18 +27,6 @@ async function loadCommands(client) {
 
 async function loadEvents(client) {
   const eventsPath = path.join(__dirname, '../events');
-
-  const loadFiles = (dir) => {
-    const files = fs.readdirSync(dir, { withFileTypes: true });
-    return files.flatMap((file) =>
-      file.isDirectory()
-        ? loadFiles(path.join(dir, file.name))
-        : file.name.endsWith('.js') || file.name.endsWith('.ts')
-        ? [path.join(dir, file.name)]
-        : []
-    );
-  };
-
   const eventFiles = loadFiles(eventsPath);
 
   for (const file of eventFiles) {
