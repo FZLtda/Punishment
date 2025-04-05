@@ -5,8 +5,8 @@ module.exports = {
   description: 'Altera o prefixo do bot no servidor.',
   usage: '${currentPrefix}setprefix <prefixo>',
   permissions: 'Gerenciar Servidor',
-  async execute(message, args, { setPrefix }) {
 
+  async execute(message, args, { setPrefix }) {
     if (!message.member.permissions.has('ManageGuild')) {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
@@ -18,18 +18,29 @@ module.exports = {
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
-    if (!args[0] || args[0].length > 5) {
+    const newPrefix = args[0];
+
+    if (!newPrefix) {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
-          name: 'Digite um novo prefixo respeitando o limite de 5 caracteres.',
+          name: 'Você precisa informar o novo prefixo. Exemplo: !setprefix ?',
           iconURL: 'https://bit.ly/43PItSI',
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
-    const newPrefix = args[0];
+    if (newPrefix.length > 5) {
+      const embedErro = new EmbedBuilder()
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'O prefixo não pode ter mais de 5 caracteres.',
+          iconURL: 'https://bit.ly/43PItSI',
+        });
+
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+    }
 
     try {
       
@@ -43,13 +54,14 @@ module.exports = {
         });
 
       return message.reply({ embeds: [embedSucesso], allowedMentions: { repliedUser: false } });
+
     } catch (error) {
-      console.error('[ERROR] Falha ao atualizar o prefixo:', error);
+      console.error('[ERRO] Falha ao atualizar o prefixo:', error);
 
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
-          name: 'Erro ao atualizar o prefixo. Tente novamente mais tarde.',	
+          name: 'Erro ao atualizar o prefixo. Tente novamente mais tarde.',
           iconURL: 'https://bit.ly/43PItSI',
         });
 
