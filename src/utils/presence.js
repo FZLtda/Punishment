@@ -5,7 +5,8 @@ function setPresence(client) {
       '.help',
       '.doar',
       '.stats',
-      '.privacy'
+      '.privacy',
+      '.setprefix'
     ];
 
     let index = 0;
