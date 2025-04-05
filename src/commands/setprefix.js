@@ -6,7 +6,7 @@ module.exports = {
   usage: '${currentPrefix}setprefix <prefixo>',
   permissions: 'Gerenciar Servidor',
   async execute(message, args, { setPrefix }) {
-    // Verifica se o usuário tem permissão para gerenciar o servidor
+
     if (!message.member.permissions.has('ManageGuild')) {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
@@ -18,7 +18,6 @@ module.exports = {
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
-    // Verifica se o argumento do prefixo é válido
     if (!args[0] || args[0].length > 5) {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
@@ -33,7 +32,7 @@ module.exports = {
     const newPrefix = args[0];
 
     try {
-      // Atualiza o prefixo no banco de dados
+      
       setPrefix(message.guild.id, newPrefix);
 
       const embedSucesso = new EmbedBuilder()
