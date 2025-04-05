@@ -1,6 +1,7 @@
 const { getPrefix, setPrefix } = require('../utils/prefixes');
 const logger = require('../utils/logger');
 const db = require('../data/database');
+const { all } = require('axios');
 
 async function handleCommandUsage(commandName) {
   const command = db
@@ -35,7 +36,10 @@ async function handleCommands(message, client) {
     return true;
   } catch (error) {
     logger.error(`Erro ao executar o comando "${commandName}":`, error);
-    await message.reply('<:1000042883:1336044555354771638> Não foi possível processar o comando.');
+    await message.reply({
+      content: '<:1000042883:1336044555354771638> Não foi possível processar o comando.',
+      allowedMentions: { repliedUser: false },
+    });
     return false;
   }
 }
