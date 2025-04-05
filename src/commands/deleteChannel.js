@@ -4,20 +4,12 @@ module.exports = {
   name: 'deletechannel',
   description: 'Exclui um canal do servidor.',
   usage: '${currentPrefix}deletechannel [canal]',
-  permissions: 'Gerenciar Canais',
+  userPermissions: ['ManageChannels'],
+  botPermissions: ['ManageChannels'],
+  deleteMessage: true,
+    
   async execute(message, args) {
   
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
-      const embedErroPerm = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({
-          name: 'Você não tem permissão para excluir canais.',
-          iconURL: 'https://bit.ly/43PItSI',
-        });
-
-      return message.reply({ embeds: [embedErroPerm], allowedMentions: { repliedUser: false } });
-    }
-
     const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[0]) || message.channel;
 
     if (!channel) {

@@ -6,18 +6,11 @@ module.exports = {
   name: 'emoji',
   description: 'Adiciona ou copia emojis para o servidor.',
   usage: '${currentPrefix}emoji add/copy <emoji/link> [nome]',
-  permissions: 'Gerenciar Servidor',
+  userPermissions: ['ManageEmojisAndStickers'],
+  botPermissions: ['ManageEmojisAndStickers'],
+  deleteMessage: true,
+  
   async execute(message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageGuildExpressions)) {
-      const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({
-          name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI',
-        });
-
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
-    }
 
     const action = args[0]?.toLowerCase();
     if (!['add', 'copy'].includes(action)) {

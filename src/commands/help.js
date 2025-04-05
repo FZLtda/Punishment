@@ -4,7 +4,10 @@ module.exports = {
   name: 'help',
   description: 'Exibe informações sobre um comando.',
   usage: '${currentPrefix}help [comando]',
-  permissions: 'Enviar Mensagens',
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+  
   execute: async (message, args, { getPrefix }) => {
     const commands = message.client.commands;
 

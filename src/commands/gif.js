@@ -6,7 +6,10 @@ module.exports = {
   name: 'gif',
   description: 'Busca e envia um GIF relacionado ao termo fornecido.',
   usage: '${currentPrefix}gif <termo>',
-  permissions: 'Enviar Mensagens',
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+  
   execute: async (message, args) => {
     const query = args.join(' ');
 

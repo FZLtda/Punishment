@@ -5,7 +5,10 @@ module.exports = {
   name: 'correct',
   description: 'Corrige erros em um texto utilizando a inteligência da DeepL.',
   usage: '${currentPrefix}correct <texto>',
-  permissions: 'Enviar Mensagens',
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+  
   async execute(message, args) {
     if (args.length === 0) {
       const embedErroMinimo = new EmbedBuilder()

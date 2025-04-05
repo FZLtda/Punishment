@@ -5,7 +5,10 @@ module.exports = {
   name: 'kick',
   description: 'Expulsa um membro do servidor.',
   usage: '${currentPrefix}kick <@usuário> [motivo]',
-  permissions: 'Expulsar Membros',
+  userPermissions: ['KickMembers'],
+  botPermissions: ['KickMembers'],
+  deleteMessage: true,
+  
   async execute(message, args) {
     if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
       const embedErroMinimo = new EmbedBuilder()

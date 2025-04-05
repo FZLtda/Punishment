@@ -5,7 +5,10 @@ module.exports = {
     name: 'doar',
     description: 'Faça uma doação para apoiar o Punishment!',
     usage: '${currentPrefix}doar <valor>',
-    permissions: 'Enviar Mensagens',
+    userPermissions: ['SendMessages'],
+    botPermissions: ['SendMessages'],
+    deleteMessage: true,
+    
     async execute(message, args) {
         if (!args[0] || isNaN(args[0])) {
             const embedErro = new EmbedBuilder()

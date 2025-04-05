@@ -5,17 +5,12 @@ module.exports = {
   name: 'giveaway',
   description: 'Gerencia sorteios no servidor.',
   usage: '${currentPrefix}giveaway start <tempo> <ganhadores> <prêmio>',
-  permissions: 'Gerenciar Servidor',
-
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+  
   async execute(message, args) {
     try {
-      if (!message.member.permissions.has('ManageGuild')) {
-        const embedErro = new EmbedBuilder()
-          .setColor('#FF4C4C')
-          .setAuthor({ name: 'Você não possui permissão para usar este comando.', iconURL: 'https://bit.ly/43PItSI' });
-
-        return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
-      }
 
       if (args[0] !== 'start') {
         return message.reply({
