@@ -5,18 +5,11 @@ module.exports = {
   name: 'removerole',
   description: 'Remove um cargo de um membro.',
   usage: '${currentPrefix}removerole <@membro> <@cargo>',
-  permissions: ['Gerenciar Cargos'],
+  userPermissions: ['ManageRoles'],
+  botPermissions: ['ManageRoles'],
+  deleteMessage: true,
+  
   async execute(message, args) {
-    if (!message.member.permissions.has('ManageRoles')) {
-      const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
-
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
-    }
 
     const member = message.mentions.members.first();
     const role = message.mentions.roles.first();

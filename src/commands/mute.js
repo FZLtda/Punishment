@@ -5,18 +5,11 @@ module.exports = {
   name: 'mute',
   description: 'Aplica um timeout (mute) em um membro.',
   usage: '${currentPrefix}mute <@usuário> <duração> [motivo]',
-  permissions: 'Moderar Membros',
-  async execute(message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-      const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
+  userPermissions: ['ModerateMembers'],
+  botPermissions: ['ModerateMembers'],
+  deleteMessage: true,
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
-    }
+  async execute(message, args) {
 
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
     const tempo = args[1];

@@ -5,18 +5,11 @@ module.exports = {
   name: 'unlock',
   description: 'Desbloqueia o envio de mensagens em um canal.',
   usage: '${currentPrefix}unlock [canal]',
-  permissions: 'Gerenciar Canais',
+  userPermissions: ['ManageChannels'],
+  botPermissions: ['ManageChannels'],
+  deleteMessage: true,
+  
   async execute(message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
-      const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
-
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
-    }
 
     const channel = message.mentions.channels.first() || message.channel;
 

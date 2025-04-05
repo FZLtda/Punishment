@@ -5,7 +5,10 @@ module.exports = {
   name: 'serverinfo',
   description: 'Mostra informações detalhadas sobre o servidor.',
   usage: '${currentPrefix}serverinfo',
-  permissions: 'Enviar Mensagens',
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+  
   async execute(message) {
     const guild = message.guild;
 

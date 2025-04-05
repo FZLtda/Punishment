@@ -5,19 +5,11 @@ module.exports = {
   name: 'setprefix',
   description: 'Altera o prefixo do bot no servidor.',
   usage: '${currentPrefix}setprefix <prefixo>',
-  permissions: 'Gerenciar Servidor',
+  userPermissions: ['ManageGuild'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
 
   async execute(message, args, { setPrefix }) {
-    if (!message.member.permissions.has('ManageGuild')) {
-      const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({
-          name: 'Você não tem permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI',
-        });
-
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
-    }
 
     const newPrefix = args[0];
 

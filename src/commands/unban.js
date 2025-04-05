@@ -5,18 +5,11 @@ module.exports = {
   name: 'unban',
   description: 'Desbane um membro do servidor.',
   usage: '${currentPrefix}unban <ID>',
-  permissions: 'Banir Membros',
+  userPermissions: ['BanMembers'],
+  botPermissions: ['BanMembers'],
+  deleteMessage: true,
+  
   async execute(message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-      const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
-
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
-    }
 
     const userId = args[0];
     const motivo = args.slice(1).join(' ') || 'Não especificado.';

@@ -4,22 +4,13 @@ module.exports = {
   name: 'undo',
   description: 'Desfaz o último comando executado.',
   usage: '${currentPrefix}undo [quantidade (1-5)]',
-  permissions: 'Gerenciar Mensagens',
+  userPermissions: ['ManageMessages'],
+  botPermissions: ['ManageMessages'],
+  deleteMessage: true,
+  
   execute: async (message, args) => {
     try {
       
-      if (!message.guild.members.me.permissions.has('MANAGE_MESSAGES')) {
-        const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({
-            name: 'Você não possui permissão para usar este comando.',
-            iconURL: 'https://bit.ly/43PItSI'
-        });
-  
-    return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
-      }
-
-     
       let amount = parseInt(args[0]) || 1;
       if (isNaN(amount) || amount < 1 || amount > 5) {
         const embedErroMinimo = new EmbedBuilder()

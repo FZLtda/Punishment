@@ -5,18 +5,11 @@ module.exports = {
   name: 'mod-stats',
   description: 'Exibe estatísticas detalhadas da moderação no servidor.',
   usage: '${currentPrefix}mod-stats',
-  permissions: 'Gerenciar Servidor',
-  async execute(message) {
-    if (!message.member.permissions.has('ManageGuild')) {
-      const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({
-          name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI',
-        });
+  userPermissions: ['ManageGuild'],
+  botPermissions: ['SendMessages', 'EmbedLinks'],
+  deleteMessage: true,
 
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
-    }
+  async execute(message) {
 
     try {
       const guildId = message.guild.id;

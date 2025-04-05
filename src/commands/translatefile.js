@@ -7,7 +7,10 @@ module.exports = {
   name: 'translatefile',
   description: 'Traduz o conteúdo de um arquivo para o idioma especificado.',
   usage: '${currentPrefix}translatefile <idioma_destino> <arquivo>',
-  permissions: 'Enviar Mensagens',
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+  
   async execute(message, args) {
     if (!message.attachments.first()) {
       const embedErro = new EmbedBuilder()

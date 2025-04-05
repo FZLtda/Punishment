@@ -5,18 +5,11 @@ module.exports = {
   name: 'slowmode',
   description: 'Configura o modo lento em um canal.',
   usage: '${currentPrefix}slowmode <tempo>',
-  permissions: 'Gerenciar Canais',
-  async execute(message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
-      const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
+  userPermissions: ['ManageChannels'],
+  botPermissions: ['ManageChannels'],
+  deleteMessage: true,
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
-    }
+  async execute(message, args) {
 
     const tempo = parseInt(args[0], 10);
     if (isNaN(tempo) || tempo < 0 || tempo > 21600) {

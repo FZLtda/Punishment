@@ -5,19 +5,12 @@ module.exports = {
   name: 'warn',
   description: 'Adiciona um aviso a um usuário no servidor.',
   usage: '${currentPrefix}warn <@usuário> [motivo]',
-  permissions: 'Gerenciar Mensagens',
+  userPermissions: ['ManageMessages'],
+  botPermissions: ['ManageMessages'],
+  deleteMessage: true,
+
   async execute(message, args) {
   
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-      const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({
-          name: 'Você não tem permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI',
-        });
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
-    }
-
     const user = message.mentions.members.first();
     if (!user) {
       const embedErro = new EmbedBuilder()

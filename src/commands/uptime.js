@@ -16,7 +16,10 @@ module.exports = {
   name: 'uptime',
   description: 'Exibe as estatísticas do bot.',
   usage: '${currentPrefix}uptime',
-  permissions: 'Enviar Mensagens',
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+  
   execute: async (message) => {
     try {
       

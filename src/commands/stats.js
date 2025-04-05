@@ -18,7 +18,10 @@ module.exports = {
   name: 'stats',
   description: 'Exibe as estatísticas detalhadas do bot e do sistema.',
   usage: '${currentPrefix}stats',
-  permissions: 'Enviar Mensagens',
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+  
   execute: async (message) => {
     try {
       const installCount = message.client.application?.approximateUserInstallCount || 'Indisponível';

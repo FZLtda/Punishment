@@ -5,18 +5,11 @@ module.exports = {
   name: 'unmute',
   description: 'Remove o mute (timeout) de um membro.',
   usage: '${currentPrefix}unmute <@usuário> [motivo]',
-  permissions: 'Moderar Membros',
+  userPermissions: ['ModerateMembers'],
+  botPermissions: ['ModerateMembers'],
+  deleteMessage: true,
+  
   async execute(message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-      const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
-
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
-    }
 
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 

@@ -5,8 +5,11 @@ module.exports = {
   name: 'userinfo',
   description: 'Mostra informações sobre um usuário.',
   usage: '${currentPrefix}userinfo [usuário]',
-  permissions: 'Enviar Mensagens',
-  async execute(message, args) {
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+  
+  async execute(message) {
     const user = message.mentions.users.first() || message.author;
     const member = message.guild.members.cache.get(user.id);
 

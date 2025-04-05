@@ -10,16 +10,6 @@ module.exports = {
   deleteMessage: true,
   
   async execute(message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
-      const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
-
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
-    }
 
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
     const motivo = args.slice(1).join(' ') || 'Não especificado.';

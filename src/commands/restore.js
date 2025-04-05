@@ -6,18 +6,11 @@ module.exports = {
   name: 'restore',
   description: 'Restaura o estado do servidor a partir de um arquivo de backup.',
   usage: '${currentPrefix}restore <arquivo>',
-  permissions: 'Administrador',
+  userPermissions: ['ManageGuild'],
+  botPermissions: ['ManageGuild'],
+  deleteMessage: true,
+    
   async execute(message) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'Você não possui permissão para usar este comando.',
-                iconURL: 'https://bit.ly/43PItSI'
-            });
-      
-        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
-    }
 
     const attachment = message.attachments.first();
     if (!attachment) {

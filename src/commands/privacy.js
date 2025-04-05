@@ -4,7 +4,10 @@ module.exports = {
   name: 'privacy',
   description: 'Exibe a Política de Privacidade do Punishment.',
   usage: '${currentPrefix}privacy',
-  permissions: 'Enviar Mensagens',
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+  
   execute: async (message) => {
    
     const lastUpdated = '<t:1739725440:f>';

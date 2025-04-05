@@ -4,7 +4,10 @@ module.exports = {
   name: 'ping',
   description: 'Exibe detalhes da conexão do bot com o Discord.',
   usage: '${currentPrefix}ping',
-  permissions: 'Enviar Mensagens',
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+  
   execute: async (message) => {
     const msg = await message.channel.send('Calculando...');
     const latency = msg.createdTimestamp - message.createdTimestamp;

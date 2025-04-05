@@ -5,7 +5,10 @@ module.exports = {
   name: 'warnings',
   description: 'Lista os avisos de um usuário no servidor.',
   usage: '${currentPrefix}warnings <@usuário>',
-  permissions: 'Gerenciar Mensagens',
+  userPermissions: ['ManageMessages'],
+  botPermissions: ['ManageMessages'],
+  deleteMessage: true,
+  
   async execute(message, args) {
     
     const user = message.mentions.members.first();

@@ -5,7 +5,10 @@ module.exports = {
   name: 'translate',
   description: 'Traduz um texto para o idioma especificado.',
   usage: '${currentPrefix}translate <idioma_destino> <texto>',
-  permissions: 'Enviar Mensagens',
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+
   async execute(message, args) {
     if (args.length < 2) {
       const embedErroMinimo = new EmbedBuilder()

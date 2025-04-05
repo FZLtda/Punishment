@@ -5,20 +5,12 @@ module.exports = {
   name: 'send',
   description: 'Envia uma mensagem para qualquer canal com a opção de ser em embed ou texto simples.',
   usage: '${currentPrefix}send <canal> <embed|texto> <mensagem>',
-  permissions: 'Administrador',
-  execute: async (message, args) => {
-    try {
-      if (!message.member.permissions.has('Administrator')) {
-        const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
+  userPermissions: ['Administrator'],
+  botPermissions: ['Administrator'],
+  deleteMessage: true,
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
-            
-      }
+  execute: async (message, args) => {
+    try {    
 
       if (args.length < 3) {
         const embedErroMinimo = new EmbedBuilder()
