@@ -49,10 +49,9 @@ module.exports = {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
-          name: 'Erro',
+          name: 'Erro ao atualizar o prefixo. Tente novamente mais tarde.',	
           iconURL: 'https://bit.ly/43PItSI',
-        })
-        .setDescription('Ocorreu um erro ao tentar atualizar o prefixo. Tente novamente mais tarde.');
+        });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
