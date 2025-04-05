@@ -8,14 +8,16 @@ async function handleCommandUsage(commandName) {
     .get(commandName);
 
   if (command) {
-    db.prepare('UPDATE command_usage SET usage_count = usage_count + 1 WHERE command_name = ?').run(commandName);
+    db.prepare('UPDATE command_usage SET usage_count = usage_count + 1 WHERE command_name = ?')
+      .run(commandName);
   } else {
-    db.prepare('INSERT INTO command_usage (command_name, usage_count) VALUES (?, 1)').run(commandName);
+    db.prepare('INSERT INTO command_usage (command_name, usage_count) VALUES (?, 1)')
+      .run(commandName);
   }
 }
 
 async function handleCommands(message, client) {
-  const prefix = getPrefix(message.guild.id);
+  const prefix = await getPrefix(message.guild.id);
   if (!message.content.startsWith(prefix)) return false;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
@@ -24,13 +26,30 @@ async function handleCommands(message, client) {
   if (!command) return false;
 
   try {
+
+    if (command.botPermissions) {
+      const botPerms = message.channel.permissionsFor(client.user);
+      if (!botPerms || !botPerms.has(command.botPermissions)) {
+        return message.reply('<:1000042883:1336044555354771638> Eu não tenho permissões suficientes para executar esse comando.');
+      }
+    }
+
+    if (command.userPermissions) {
+      const userPerms = message.channel.permissionsFor(message.member);
+      if (!userPerms || !userPerms.has(command.userPermissions)) {
+        return message.reply('<:1000042883:1336044555354771638> Você não tem permissões suficientes para usar esse comando.');
+      }
+    }
+
     await handleCommandUsage(commandName);
 
     await command.execute(message, args, { client, getPrefix, setPrefix });
 
-    await message.delete().catch((err) => {
-      logger.info(`Não foi possível apagar a mensagem do comando: ${err.message}`);
-    });
+    if (command.deleteMessage) {
+      await message.delete().catch((err) => {
+        logger.info(`Não foi possível apagar a mensagem do comando: ${err.message}`);
+      });
+    }
 
     return true;
   } catch (error) {
