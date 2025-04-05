@@ -5,18 +5,11 @@ module.exports = {
   name: 'clear',
   description: 'Apaga mensagens do chat, com suporte para apagar mensagens de um usuário específico.',
   usage: '${currentPrefix}clear <quantidade>',
-  permissions: 'Gerenciar Mensagens',
+  userPermissions: ['ManageMessages'],
+  botPermissions: ['ManageMessages'],
+  deleteMessage: true,
+    
   async execute(message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-      const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'Você não possui permissão para usar este comando.',
-                iconURL: 'https://bit.ly/43PItSI'
-            });
-      
-        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
-    }
 
     const quantidade = parseInt(args[0], 10);
     const usuario = message.mentions.users.first();

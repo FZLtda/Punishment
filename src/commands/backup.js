@@ -11,19 +11,12 @@ module.exports = {
   name: 'backup',
   description: 'Cria um backup completo do servidor, incluindo canais, cargos e permissões.',
   usage: '${currentPrefix}backup',
-  permissions: 'Administrador',
+  userPermissions: ['Administrator'],
+  botPermissions: ['Administrator'],
+  deleteMessage: true,
+    
   async execute(message) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
-
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
-    }
-
+    
     try {
       const guild = message.guild;
 

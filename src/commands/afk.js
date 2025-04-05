@@ -1,11 +1,15 @@
 const { EmbedBuilder } = require('discord.js');
+const { userPermissions } = require('./addrole');
 const afkUsers = new Map();
 
 module.exports = {
     name: 'afk',
     description: 'Define seu status como AFK (Away From Keyboard).',
     usage: '${currentPrefix}afk [motivo]',
-    permissions: 'Enviar Mensagens',
+    userPermissions: ['SendMessages'],
+    botPermissions: ['SendMessages'],
+    deleteMessage: true,
+    
     async execute(message, args) {
         const reason = args.join(' ') || 'Sem motivo especificado.';
 

@@ -4,7 +4,10 @@ module.exports = {
   name: 'avatar',
   description: 'Exibe o avatar de um usuário.',
   usage: '${currentPrefix}avatar [<@usuário>]',
-  permissions: 'Enviar Mensagens',
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+    
   async execute(message, args) {
     const usuario = message.mentions.users.first() || message.author;
 

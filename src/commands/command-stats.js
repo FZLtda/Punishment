@@ -6,7 +6,10 @@ module.exports = {
   name: 'command-stats',
   description: 'Exibe estatísticas de uso dos comandos do bot.',
   usage: '${currentPrefix}command-stats',
-  permissions: 'Administrador',
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+    
   execute: async (message) => {
     try {
       const allowedUserId = '1006909671908585586';

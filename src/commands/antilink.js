@@ -10,17 +10,12 @@ module.exports = {
   name: 'antilink',
   description: 'Ativa ou desativa o sistema de bloqueio de links no servidor.',
   usage: '${currentPrefix}antilink [on/off]',
-  permissions: 'Gerenciar Mensagens',
-  
+  userPermissions: ['ManageMessages'],
+  botPermissions: ['ManageMessages'],
+  deleteMessage: true,
+    
   async execute(message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-      const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({ name: 'Você não tem permissão para usar este comando.', iconURL: 'https://bit.ly/43PItSI' });
-
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
-    }
-
+    
     const option = args[0]?.toLowerCase();
     const guildId = message.guild.id;
 

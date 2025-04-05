@@ -10,19 +10,11 @@ module.exports = {
   name: 'antispam',
   description: 'Ativa ou desativa o sistema de bloqueio de spam no servidor.',
   usage: '${currentPrefix}antispam [on/off]',
-  permissions: 'Gerenciar Mensagens',
-  
+  userPermissions: ['ManageMessages'],
+  botPermissions: ['ManageMessages'],
+  deleteMessage: true,
+    
   async execute(message, args) {
-    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-      const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({
-          name: 'Você não possui permissão para usar este comando.',
-          iconURL: 'https://bit.ly/43PItSI',
-        });
-
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
-    }
 
     if (!message.guild) {
       return message.reply('Este comando só pode ser usado em servidores.');

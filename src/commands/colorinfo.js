@@ -5,7 +5,10 @@ module.exports = {
   name: 'colorinfo',
   description: 'Exibe informações sobre uma cor (nome ou código hexadecimal).',
   usage: '${currentPrefix}colorinfo <nome da cor | código hexadecimal>',
-  permissions: 'Enviar Mensagens',
+  userPermissions: ['SendMessages'],
+  botPermissions: ['SendMessages'],
+  deleteMessage: true,
+  
   async execute(message, args) {
     if (!args[0]) {
       const embedErroMinimo = new EmbedBuilder()

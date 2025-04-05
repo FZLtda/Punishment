@@ -32,7 +32,7 @@ module.exports = {
 
       const logChannel = client.channels.cache.get(process.env.LOG_CHANNEL);
       if (logChannel) {
-        logChannel.send(`Erro em \`messageCreate\`:\n\`\`\`${error.stack.slice(0, 1800)}\`\`\``);
+        logChannel.send(`Erro detectado: \`messageCreate\`:\n\`\`\`${error.stack.slice(0, 1800)}\`\`\``);
       }
     }
   },
