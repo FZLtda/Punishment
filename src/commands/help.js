@@ -46,7 +46,7 @@ module.exports = {
         .setDescription(command.description || '`Nenhuma descrição disponível.`')
         .addFields(
           { name: '<:1000043157:1336324220770062497> Uso', value: `\`${usage}\``, inline: false },
-          { name: '<:1000042960:1336120845881442365> Permissões Necessárias', value: `\`${command.permissions || 'Nenhuma'}\``, inline: false }
+          { name: '<:1000042960:1336120845881442365> Permissões Necessárias', value: `\`${command.userPermissions || 'Nenhuma'}\``, inline: false }
         )
         .setFooter({
           text: 'Punishment',
