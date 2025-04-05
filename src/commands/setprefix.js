@@ -44,7 +44,7 @@ module.exports = {
 
       return message.reply({ embeds: [embedSucesso], allowedMentions: { repliedUser: false } });
     } catch (error) {
-      console.error('[ERROR] Falha ao atualizar o prefixo:', error);
+      console.error('[ERRO] Falha ao atualizar o prefixo:', error);
 
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
