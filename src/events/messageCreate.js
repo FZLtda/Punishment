@@ -23,7 +23,7 @@ module.exports = {
       if (!termsAccepted) return;
 
       if (await handleAIResponse(message)) return;
-      if (await handleAntiLink(messag)) return;
+      if (await handleAntiLink(message)) return;
       if (await handleAntiSpam(message, client)) return;
 
       await handleCommands(message, client);
