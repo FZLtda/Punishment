@@ -22,7 +22,6 @@ module.exports = {
     const newPrefix = args[0];
 
     if (!newPrefix) {
-      const prefix = getPrefix(message.guild.id)
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
