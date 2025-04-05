@@ -1,13 +1,15 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 
 module.exports = {
   name: 'setprefix',
   description: 'Altera o prefixo do bot no servidor.',
-  usage: '${currentPrefix}setprefix <prefixo>',
+  usage: '<prefixo>',
   permissions: 'Gerenciar Servidor',
-  async execute(message, args, { setPrefix }) {
-    
-    if (!message.member.permissions.has('ManageGuild')) {
+
+  async execute(message, args, context) {
+    const { setPrefix } = context;
+
+    if (!message.member.permissions.has(PermissionsBitField.Flags.ManageGuild)) {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
@@ -18,7 +20,8 @@ module.exports = {
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
-    if (!args[0] || args[0].length > 5) {
+    const newPrefix = args[0];
+    if (!newPrefix || newPrefix.length > 5) {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
@@ -29,11 +32,8 @@ module.exports = {
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
-    const newPrefix = args[0];
-
     try {
-
-      setPrefix(message.guild.id, newPrefix);
+      await setPrefix(message.guild.id, newPrefix);
 
       const embedSucesso = new EmbedBuilder()
         .setColor('#2ecc71')
