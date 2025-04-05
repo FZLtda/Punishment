@@ -4,7 +4,7 @@ const { handleAntiLink } = require('../handlers/antiLinkHandler');
 const { handleAntiSpam } = require('../handlers/antiSpamHandler');
 const { handleCommands } = require('../handlers/commandHandler');
 const { checkTerms } = require('../handlers/termsHandler');
-const { getPrefix, setPrefix } = require('../utils/prefixes');
+const { getPrefix, setPrefix } = require('../utils/prefixUtils');
 const logger = require('../utils/logger');
 
 module.exports = {

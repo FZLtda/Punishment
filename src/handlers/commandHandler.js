@@ -1,7 +1,6 @@
-const { getPrefix, setPrefix } = require('../utils/prefixes');
 const logger = require('../utils/logger');
 const db = require('../data/database');
-const { all } = require('axios');
+const { getPrefix, setPrefix } = require('../utils/prefixUtils');
 
 async function handleCommandUsage(commandName) {
   const command = db
@@ -27,7 +26,7 @@ async function handleCommands(message, client) {
   try {
     await handleCommandUsage(commandName);
 
-    await command.execute(message, args, client, { getPrefix, setPrefix });
+    await command.execute(message, args, { client, getPrefix, setPrefix });
 
     await message.delete().catch((err) => {
       logger.info(`Não foi possível apagar a mensagem do comando: ${err.message}`);
