@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
+const { check } = require('../config/emoji.json');
 
 module.exports = {
   name: 'setprefix',
@@ -48,10 +49,8 @@ module.exports = {
 
       const embedSucesso = new EmbedBuilder()
         .setColor('#2ecc71')
-        .setAuthor({
-          name: `Prefixo atualizado com sucesso para: ${newPrefix}`,
-          iconURL: message.guild.iconURL({ dynamic: true }),
-        });
+        .setTitle(`${check} Atualização de Prefixo`)
+        .setDescription(`Prefixo atualizado para: ${newPrefix}`)
 
       return message.reply({ embeds: [embedSucesso], allowedMentions: { repliedUser: false } });
 
