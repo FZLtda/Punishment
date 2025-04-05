@@ -23,7 +23,7 @@ module.exports = {
       if (!termsAccepted) return;
 
       if (await handleAIResponse(message)) return;
-      if (await handleAntiLink(message)) return;
+      if (await handleAntiLink(messag)) return;
       if (await handleAntiSpam(message, client)) return;
 
       await handleCommands(message, client);
@@ -31,7 +31,7 @@ module.exports = {
     } catch (error) {
       logger.error(`ERRO: Erro no evento messageCreate: ${error.message}`, { stack: error.stack });
 
-      const logChannel = client.channels.cache.get(process.env.ERROR_LOG_CHANNEL);
+      const logChannel = client.channels.cache.get(process.env.LOG_CHANNEL);
       if (logChannel) {
         logChannel.send(`Erro em \`messageCreate\`:\n\`\`\`${error.stack.slice(0, 1800)}\`\`\``);
       }

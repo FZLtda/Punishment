@@ -1,6 +1,7 @@
 const logger = require('../utils/logger');
 const db = require('../data/database');
 const { getPrefix, setPrefix } = require('../utils/prefixUtils');
+const { error } = require('../config/emoji.json');
 
 async function handleCommandUsage(commandName) {
   const command = db
@@ -30,14 +31,14 @@ async function handleCommands(message, client) {
     if (command.botPermissions) {
       const botPerms = message.channel.permissionsFor(client.user);
       if (!botPerms || !botPerms.has(command.botPermissions)) {
-        return message.reply('<:1000042883:1336044555354771638> Eu não tenho permissões suficientes para executar esse comando.');
+        return message.reply(`${error} Eu não tenho permissões suficientes para executar esse comando.`);
       }
     }
 
     if (command.userPermissions) {
       const userPerms = message.channel.permissionsFor(message.member);
       if (!userPerms || !userPerms.has(command.userPermissions)) {
-        return message.reply('<:1000042883:1336044555354771638> Você não tem permissões suficientes para usar esse comando.');
+        return message.reply(`${error} Você não tem permissões suficientes para usar esse comando.`);
       }
     }
 
@@ -55,7 +56,7 @@ async function handleCommands(message, client) {
   } catch (error) {
     logger.error(`Erro ao executar o comando "${commandName}":`, error);
     await message.reply({
-      content: '<:1000042883:1336044555354771638> Não foi possível processar o comando.',
+      content: `${error} Não foi possível processar o comando.`,
       allowedMentions: { repliedUser: false },
     });
     return false;
