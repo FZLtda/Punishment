@@ -1,5 +1,5 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-
+const { getPrefix, setPrefix } = require('../utils/prefixes');
 module.exports = {
   name: 'customize',
   description: 'Personalize as configurações do bot no servidor.',
