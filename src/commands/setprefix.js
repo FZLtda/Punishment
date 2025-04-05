@@ -25,7 +25,7 @@ module.exports = {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
-          name: `Você precisa informar o novo prefixo. Exemplo: ${prefix}setprefix ?`,
+          name: 'Você precisa informar o novo prefixo. Exemplo: .setprefix !',
           iconURL: 'https://bit.ly/43PItSI',
         });
 
