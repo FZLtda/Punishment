@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { logModerationAction } = require('../utils/moderationUtils');
 const { icon_attention, icon_error } = require('../config/emoji.json');
-const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
   name: 'clear',
