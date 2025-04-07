@@ -1,6 +1,8 @@
-const { PermissionsBitField } = require('discord.js');
-const { logModerationAction } = require('../utils/moderationUtils');
 const { EmbedBuilder } = require('discord.js');
+const { logModerationAction } = require('../utils/moderationUtils');
+const { icon_attention, icon_error } = require('../config/emoji.json');
+const { EmbedBuilder } = require('discord.js');
+
 module.exports = {
   name: 'clear',
   description: 'Apaga mensagens do chat, com suporte para apagar mensagens de um usuário específico.',
@@ -19,7 +21,7 @@ module.exports = {
             .setColor('#FF4C4C')
             .setAuthor({
                 name: 'Só é possível excluir de 1 a 100 mensagens por vez.',
-                iconURL: 'https://bit.ly/43PItSI'
+                iconURL: `${icon_attention}`
             });
       
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });

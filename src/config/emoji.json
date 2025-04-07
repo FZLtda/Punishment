@@ -2,5 +2,9 @@
     "sucess": "<:sucesso:1358918549846098201>",
     "error": "<:error:1358918322770677971>",
     "check": "<:1000056232:1357514372863492107>",
-    "attent": "<:attention:1358918618808717704>"
+    "attent": "<:attention:1358918618808717704>",
+   
+    "icon_attention": "https://bit.ly/3Ypxwnl",
+    "icon_sucess": "https://bit.ly/3R8qteY",
+    "icon_error": "https://bit.ly/42jnCEX"
 }
