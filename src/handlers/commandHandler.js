@@ -19,8 +19,7 @@ async function handleCommandUsage(commandName) {
 }
 
 async function handleCommands(message, client) {
-  
-  const prefix = await getPrefix(message.guild.id);
+  const prefix = (await getPrefix(message.guild.id)) || '!';
 
   if (!message.content.startsWith(prefix)) return false;
 
@@ -31,6 +30,7 @@ async function handleCommands(message, client) {
   if (!command) return false;
 
   try {
+    logger.info(`Comando "${commandName}" detectado por ${message.author.tag} no servidor "${message.guild.name}".`);
 
     const termsAccepted = await checkTerms(message);
     if (!termsAccepted) return;
