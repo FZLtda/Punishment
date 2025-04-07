@@ -1,7 +1,7 @@
 const logger = require('../utils/logger');
 const db = require('../data/database');
 const { getPrefix, setPrefix } = require('../utils/prefixUtils');
-const { error } = require('../config/emoji.json');
+const { error, attent } = require('../config/emoji.json');
 
 async function handleCommandUsage(commandName) {
   const command = db
@@ -56,7 +56,7 @@ async function handleCommands(message, client) {
   } catch (error) {
     logger.error(`Erro ao executar o comando "${commandName}":`, error);
     await message.reply({
-      content: `${error} Não foi possível processar o comando.`,
+      content: `${attent} Não foi possível processar o comando.`,
       allowedMentions: { repliedUser: false },
     });
     return false;

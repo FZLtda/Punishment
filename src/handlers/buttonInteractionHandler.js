@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { sucess, error } = require('../config/emoji.json')
+const { sucess, error, attent } = require('../config/emoji.json')
 const logger = require('../utils/logger');
 
 async function handleButtonInteraction(interaction, client, db) {
@@ -10,7 +10,7 @@ async function handleButtonInteraction(interaction, client, db) {
         return await command.execute(interaction);
       }
       return interaction.reply({
-        content: `${error} Não foi possível processar os Termos de Uso.`,
+        content: `${attent} Não foi possível processar os Termos de Uso.`,
         ephemeral: true,
       });
     }
@@ -18,7 +18,7 @@ async function handleButtonInteraction(interaction, client, db) {
     const giveaway = db.prepare('SELECT * FROM giveaways WHERE message_id = ?').get(interaction.message.id);
     if (!giveaway) {
       return interaction.reply({
-        content: `${error} Este sorteio não foi encontrado no banco de dados.`,
+        content: `${attent} Este sorteio não foi encontrado no banco de dados.`,
         ephemeral: true,
       });
     }
@@ -37,7 +37,7 @@ async function handleButtonInteraction(interaction, client, db) {
     if (interaction.customId === 'participar') {
       if (participants.includes(interaction.user.id)) {
         return interaction.reply({
-          content: `${error} Você já está concorrendo neste sorteio!`,
+          content: `${attent} Você já está concorrendo neste sorteio!`,
           ephemeral: true,
         });
       }
@@ -74,7 +74,7 @@ async function handleButtonInteraction(interaction, client, db) {
   } catch (error) {
     logger.error(`ERRO: Erro ao processar interação de botão "${interaction.customId}": ${error.message}`, { stack: error.stack });
     return interaction.reply({
-      content: `${error} Não foi possível processar sua interação.`,
+      content: `${attent} Não foi possível processar sua interação.`,
       ephemeral: true,
     });
   }

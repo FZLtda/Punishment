@@ -1,5 +1,5 @@
 const { conversationHistory, fetchAIResponse } = require('../utils/aiUtils');
-const { error } = require('../config/emoji.json')
+const { attent } = require('../config/emoji.json')
 const logger = require('../utils/logger');
 
 const RATE_LIMIT = new Map();
@@ -28,7 +28,7 @@ async function handleAIResponse(message) {
     return true;
   } catch (error) {
     logger.error('ERRO: Erro ao consultar a IA:', error);
-    await message.channel.send(`${error} Não foi possível processar a resposta da IA.`);
+    await message.channel.send(`${attent} Não foi possível processar a resposta da IA.`);
     return false;
   }
 }
