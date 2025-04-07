@@ -2,6 +2,7 @@ const logger = require('../utils/logger');
 const db = require('../data/database');
 const { getPrefix, setPrefix } = require('../utils/prefixUtils');
 const { error, attent } = require('../config/emoji.json');
+const { checkTerms } = require('../handlers/termsHandler');
 
 async function handleCommandUsage(commandName) {
   const command = db
@@ -27,18 +28,27 @@ async function handleCommands(message, client) {
   if (!command) return false;
 
   try {
+    
+    const termsAccepted = await checkTerms(message);
+    if (!termsAccepted) return;
 
     if (command.botPermissions) {
       const botPerms = message.channel.permissionsFor(client.user);
       if (!botPerms || !botPerms.has(command.botPermissions)) {
-        return message.reply(`${error} Eu não tenho permissões suficientes para executar esse comando.`);
+        return message.reply({
+          content: `${error} Eu não tenho permissões suficientes para executar esse comando.`,
+          allowedMentions: { repliedUser: false },
+        });
       }
     }
 
     if (command.userPermissions) {
       const userPerms = message.channel.permissionsFor(message.member);
       if (!userPerms || !userPerms.has(command.userPermissions)) {
-        return message.reply(`${error} Você não tem permissões suficientes para usar esse comando.`);
+        return message.reply({
+          content: `${error} Você não tem permissões suficientes para usar esse comando.`,
+          allowedMentions: { repliedUser: false },
+        });
       }
     }
 

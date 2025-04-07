@@ -17,7 +17,7 @@ module.exports = {
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({
-          name: 'Argumentos inválidos. O formato correto do comando é: addrole @membro @cargo',
+          name: 'Argumentos inválidos. O formato correto do comando é: .addrole @membro @cargo',
           iconURL: 'https://bit.ly/43PItSI'
         });
 

@@ -58,10 +58,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
+            .setColor('#FFD55D')
             .setAuthor({
                 name: 'Não foi possível apagar as mensagens devido a um erro.',
-                iconURL: 'https://bit.ly/43PItSI'
+                iconURL: `${icon_attention}`
             });
       
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
