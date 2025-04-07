@@ -17,7 +17,7 @@ module.exports = {
 
     if (!quantidade || isNaN(quantidade) || quantidade < 1 || quantidade > 100) {
       const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
+            .setColor('#FFD55D')
             .setAuthor({
                 name: 'Só é possível excluir de 1 a 100 mensagens por vez.',
                 iconURL: `${icon_attention}`
