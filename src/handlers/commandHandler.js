@@ -19,16 +19,19 @@ async function handleCommandUsage(commandName) {
 }
 
 async function handleCommands(message, client) {
+  
   const prefix = await getPrefix(message.guild.id);
+
   if (!message.content.startsWith(prefix)) return false;
 
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
+
   const command = client.commands.get(commandName);
   if (!command) return false;
 
   try {
-    
+
     const termsAccepted = await checkTerms(message);
     if (!termsAccepted) return;
 
