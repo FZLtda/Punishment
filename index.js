@@ -1,4 +1,6 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 const logger = require('./src/utils/logger.js');
 const startBot = require('./src/bot.js');
