@@ -17,4 +17,19 @@ process.on('unhandledRejection', (reason, promise) => {
   });
 });
 
+process.on('warning', (warning) => {
+  const criticalWarnings = [
+    'DeprecationWarning',
+    'ExperimentalWarning',
+    'UnhandledPromiseRejectionWarning',
+  ];
+
+  if (criticalWarnings.includes(warning.name)) {
+    logger.warn(`[${warning.name}] ${warning.message}`, {
+      stack: warning.stack,
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
 startBot();
