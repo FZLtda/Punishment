@@ -1,11 +1,11 @@
 {
   "name": "punishment",
   "version": "1.0.0",
-  "description": "Um bot de moderação avançado para Discord com sistema de punições robusto.",
-  "main": "index.js",
+  "description": "Moderação inteligente com punições infalíveis.",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
     "check:env": "node ./src/utils/validateEnv.js",
