@@ -9,7 +9,7 @@ module.exports = {
   botPermissions: ['ManageRoles'],
   deleteMessage: true,
 
-  async execute(message, args) {
+  async execute(message) {
     const member = message.mentions.members.first();
     const role = message.mentions.roles.first();
 

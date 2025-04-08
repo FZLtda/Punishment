@@ -66,13 +66,13 @@ module.exports = {
     } catch (error) {
       console.error('[ERROR] Não foi possível obter as estatísticas:', error);
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não foi possível recuperar as estatísticas do bot devido a um erro.',
           iconURL: 'http://bit.ly/4aIyY9j'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

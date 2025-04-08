@@ -8,7 +8,7 @@ module.exports = {
   botPermissions: ['SendMessages'],
   deleteMessage: true,
     
-  async execute(message, args) {
+  async execute(message) {
     const usuario = message.mentions.users.first() || message.author;
 
     try {
@@ -26,13 +26,13 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não foi possível obter o avatar do usuário devido a um erro.',
           iconURL: 'http://bit.ly/4aIyY9j'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

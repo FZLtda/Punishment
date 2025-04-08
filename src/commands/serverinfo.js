@@ -33,7 +33,6 @@ module.exports = {
     const stickerCount = guild.stickers.cache.size;
 
     const rulesChannel = guild.rulesChannel ? `<#${guild.rulesChannel.id}>` : 'Nenhum';
-    const region = guild.preferredLocale || 'Desconhecida';
 
     const embed = new EmbedBuilder()
       .setAuthor({

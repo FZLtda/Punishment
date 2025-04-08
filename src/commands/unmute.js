@@ -1,4 +1,4 @@
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { logModerationAction } = require('../utils/moderationUtils');
 
 module.exports = {
@@ -15,24 +15,24 @@ module.exports = {
 
     if (!membro) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Mencione um usuário para executar esta ação.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } }); 
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } }); 
     }
 
     if (!membro.communicationDisabledUntilTimestamp) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não é possível remover o mute, pois o usuário não está silenciado.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -61,13 +61,13 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não foi possível remover o mute do usuário devido a um erro.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

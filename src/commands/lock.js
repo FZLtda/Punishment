@@ -1,4 +1,4 @@
-const { PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { logModerationAction } = require('../utils/moderationUtils');
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
   botPermissions: ['ManageChannels'],
   deleteMessage: true,
   
-  async execute(message, args) {
+  async execute(message) {
 
     const channel = message.mentions.channels.first() || message.channel;
 
@@ -34,13 +34,13 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não foi possível bloquear o canal devido a um erro.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

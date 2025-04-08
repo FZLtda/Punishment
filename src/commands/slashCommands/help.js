@@ -75,7 +75,7 @@ module.exports = {
       .addFields(
         {
           name: '<:1000043159:1336324177900077076> Ajuda',
-          value: `Use \`/help <comando>\` para exibir mais informações sobre um comando.`,
+          value: 'Use `/help <comando>` para exibir mais informações sobre um comando.',
         },
         {
           name: '<:1000043160:1336324162482081945> Suporte',

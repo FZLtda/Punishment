@@ -1,4 +1,4 @@
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const moment = require('moment-timezone');
 
 module.exports = {

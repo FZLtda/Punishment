@@ -9,31 +9,31 @@ module.exports = {
   botPermissions: ['ManageRoles'],
   deleteMessage: true,
   
-  async execute(message, args) {
+  async execute(message) {
 
     const member = message.mentions.members.first();
     const role = message.mentions.roles.first();
 
     if (!member || !role) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Argumentos inválidos. O formato correto do comando é: removerole @membro @cargo',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (!member.roles.cache.has(role.id)) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Este usuário não possui este cargo.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -61,13 +61,13 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não foi possível remover o cargo.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   }
 };

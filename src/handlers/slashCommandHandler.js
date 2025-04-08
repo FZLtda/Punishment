@@ -12,7 +12,7 @@ async function handleSlashCommand(interaction, client) {
 
   try {
     await command.execute(interaction);
-  } catch (error) {
+  } catch {
     logger.error(`ERRO: Erro ao executar Slash Command "${interaction.commandName}": ${error.message}`, { stack: error.stack });
     await interaction.reply({
       content: `${attent} Não foi possível processar o comando.`,

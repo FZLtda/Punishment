@@ -1,4 +1,4 @@
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { logModerationAction } = require('../utils/moderationUtils');
 
 module.exports = {
@@ -16,13 +16,13 @@ module.exports = {
 
     if (!userId) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Você precisa fornecer o ID do usuário para desbanir.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -30,13 +30,13 @@ module.exports = {
 
       if (!user) {
         const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Não há registro de banimento para este usuário.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
+          .setColor('#FF4C4C')
+          .setAuthor({
+            name: 'Não há registro de banimento para este usuário.',
+            iconURL: 'https://bit.ly/43PItSI'
+          });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       await message.guild.members.unban(userId, motivo);
@@ -66,13 +66,13 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não foi possível desbanir o usuário devido a um erro.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

@@ -1,4 +1,4 @@
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const fetch = require('node-fetch');
 const { logModerationAction } = require('../utils/moderationUtils');
 
@@ -15,13 +15,13 @@ module.exports = {
     const attachment = message.attachments.first();
     if (!attachment) {
       const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'Para continuar, envie o arquivo de backup junto com o comando.',
-                iconURL: 'https://bit.ly/43PItSI'
-            });
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Para continuar, envie o arquivo de backup junto com o comando.',
+          iconURL: 'https://bit.ly/43PItSI'
+        });
       
-        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -30,11 +30,11 @@ module.exports = {
 
       if (!backupData.roles || !backupData.channels) {
         const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'Não foi possível processar o backup. O arquivo pode estar corrompido.',
-                iconURL: 'https://bit.ly/43PItSI'
-            });
+          .setColor('#FF4C4C')
+          .setAuthor({
+            name: 'Não foi possível processar o backup. O arquivo pode estar corrompido.',
+            iconURL: 'https://bit.ly/43PItSI'
+          });
       
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
@@ -143,13 +143,13 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'Não foi possível processar o backup devido a um erro.',
-                iconURL: 'https://bit.ly/43PItSI'
-            });
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Não foi possível processar o backup devido a um erro.',
+          iconURL: 'https://bit.ly/43PItSI'
+        });
       
-        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

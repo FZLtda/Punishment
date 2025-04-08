@@ -1,4 +1,4 @@
-const { PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { logModerationAction } = require('../utils/moderationUtils');
 
 module.exports = {
@@ -14,13 +14,13 @@ module.exports = {
     const tempo = parseInt(args[0], 10);
     if (isNaN(tempo) || tempo < 0 || tempo > 21600) {
       const embedErroMinimo = new EmbedBuilder()
-            .setColor('#FF4C4C')
-            .setAuthor({
-                name: 'Por favor, forneça um tempo válido (0-21600 segundos).',
-                iconURL: 'https://bit.ly/43PItSI'
-            });
+        .setColor('#FF4C4C')
+        .setAuthor({
+          name: 'Por favor, forneça um tempo válido (0-21600 segundos).',
+          iconURL: 'https://bit.ly/43PItSI'
+        });
       
-        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       
     }
 
@@ -49,13 +49,13 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não foi possível configurar o modo lento devido a um erro.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

@@ -2,9 +2,17 @@
   "name": "punishment",
   "version": "1.0.0",
   "description": "Um bot de moderação avançado para Discord com sistema de punições robusto.",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix",
+    "check:env": "node ./src/utils/validateEnv.js",
+    "check:types": "tsc --noEmit",
+    "check": "npm run lint && npm run check:env && npm run check:types",
+    "prepare": "husky install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -31,7 +39,6 @@
     "discord-rpc": "^4.0.1",
     "discord.js": "^14.18.0",
     "dotenv": "^16.4.7",
-    "esm": "^3.2.25",
     "express": "^4.21.2",
     "ffmpeg-static": "^5.2.0",
     "moment-timezone": "^0.5.46",
@@ -45,5 +52,18 @@
     "typescript": "^5.8.2",
     "uuid": "^11.0.5",
     "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.24.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "globals": "^16.0.0",
+    "husky": "^8.0.0",
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5"
   }
 }

@@ -40,24 +40,24 @@ module.exports = {
 
       const moderatorStats = actionsByModerator.length
         ? await Promise.all(
-            actionsByModerator.map(async mod => {
-              const user = await message.guild.members.fetch(mod.moderator_id).catch(() => null);
-              const username = user ? user.user.tag : 'Usuário desconhecido';
-              return `**${username}:** \`${mod.count}\` ações`;
-            })
-          ).then(stats => stats.join('\n'))
+          actionsByModerator.map(async mod => {
+            const user = await message.guild.members.fetch(mod.moderator_id).catch(() => null);
+            const username = user ? user.user.tag : 'Usuário desconhecido';
+            return `**${username}:** \`${mod.count}\` ações`;
+          })
+        ).then(stats => stats.join('\n'))
         : '`Nenhuma ação registrada.`';
 
       const recentStats = recentActions.length
         ? await Promise.all(
-            recentActions.map(async action => {
-              const moderator = await message.guild.members.fetch(action.moderator_id).catch(() => null);
-              const target = await message.guild.members.fetch(action.target_id).catch(() => null);
-              const moderatorName = moderator ? moderator.user.tag : 'Desconhecido';
-              const targetName = target ? target.user.tag : 'Desconhecido';
-              return `**${action.action_type}:** \`${moderatorName} -> ${targetName}\`\nMotivo: \`${action.reason || 'Nenhum'}\`\n`;
-            })
-          ).then(stats => stats.join('\n'))
+          recentActions.map(async action => {
+            const moderator = await message.guild.members.fetch(action.moderator_id).catch(() => null);
+            const target = await message.guild.members.fetch(action.target_id).catch(() => null);
+            const moderatorName = moderator ? moderator.user.tag : 'Desconhecido';
+            const targetName = target ? target.user.tag : 'Desconhecido';
+            return `**${action.action_type}:** \`${moderatorName} -> ${targetName}\`\nMotivo: \`${action.reason || 'Nenhum'}\`\n`;
+          })
+        ).then(stats => stats.join('\n'))
         : '`Nenhuma ação registrada.`';
 
       const embed = new EmbedBuilder()
@@ -77,7 +77,7 @@ module.exports = {
 
       return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     } catch (error) {
-      console.error(`[ERROR] Falha ao gerar estatísticas de moderação:`, error);
+      console.error('[ERROR] Falha ao gerar estatísticas de moderação:', error);
       const embedErro = new EmbedBuilder()
         .setColor('#FF4C4C')
         .setAuthor({

@@ -15,13 +15,13 @@ module.exports = {
 
     if (!query) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Você precisa fornecer um termo para buscar o GIF!',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -29,13 +29,13 @@ module.exports = {
 
       if (!apiKey) {
         const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'A chave da API do Giphy não foi configurada.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
+          .setColor('#FF4C4C')
+          .setAuthor({
+            name: 'A chave da API do Giphy não foi configurada.',
+            iconURL: 'https://bit.ly/43PItSI'
+          });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       const response = await fetch(
@@ -45,13 +45,13 @@ module.exports = {
 
       if (!data.data.length) {
         const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Não encontrei nenhum GIF relacionado ao termo fornecido.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
+          .setColor('#FF4C4C')
+          .setAuthor({
+            name: 'Não encontrei nenhum GIF relacionado ao termo fornecido.',
+            iconURL: 'https://bit.ly/43PItSI'
+          });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       const gifUrl = data.data[0].images.original.url;
@@ -66,13 +66,13 @@ module.exports = {
     } catch (error) {
       console.error('Erro ao buscar GIF:', error);
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Ocorreu um erro ao tentar buscar o GIF.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

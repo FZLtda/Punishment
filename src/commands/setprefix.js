@@ -42,7 +42,7 @@ module.exports = {
       const embedSucesso = new EmbedBuilder()
         .setColor('#2ecc71')
         .setTitle(`${check} Atualização de Prefixo`)
-        .setDescription(`Prefixo atualizado para: ${newPrefix}`)
+        .setDescription(`Prefixo atualizado para: ${newPrefix}`);
 
       return message.reply({ embeds: [embedSucesso], allowedMentions: { repliedUser: false } });
 

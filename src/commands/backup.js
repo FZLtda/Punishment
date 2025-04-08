@@ -1,4 +1,4 @@
-const { EmbedBuilder, PermissionsBitField, AttachmentBuilder } = require('discord.js');
+const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 const { logModerationAction } = require('../utils/moderationUtils');
@@ -45,11 +45,11 @@ module.exports = {
             position: channel.rawPosition || 0,
             permissionOverwrites: channel.permissionOverwrites?.cache
               ? channel.permissionOverwrites.cache.map((overwrite) => ({
-                  id: overwrite.id?.toString() || 'N/A',
-                  type: overwrite.type || 'UNKNOWN',
-                  allow: overwrite.allow?.bitfield?.toString() || '0',
-                  deny: overwrite.deny?.bitfield?.toString() || '0',
-                }))
+                id: overwrite.id?.toString() || 'N/A',
+                type: overwrite.type || 'UNKNOWN',
+                allow: overwrite.allow?.bitfield?.toString() || '0',
+                deny: overwrite.deny?.bitfield?.toString() || '0',
+              }))
               : [],
           })),
       };
@@ -81,13 +81,13 @@ module.exports = {
       console.error(error);
 
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não foi possível criar o backup devido a um problema.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

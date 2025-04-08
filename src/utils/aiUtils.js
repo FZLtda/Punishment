@@ -6,26 +6,26 @@ require('dotenv').config();
 const conversationHistory = {};
 
 async function fetchAIResponse(history, apiKey) {
-    try {
-        const response = await axios.post(
-            'https://api.openai.com/v1/chat/completions',
-            {
-                model: 'gpt-3.5-turbo',
-                messages: history,
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
+  try {
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-3.5-turbo',
+        messages: history,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
-        return response.data.choices[0].message.content;
-    } catch (error) {
-        logger.error('Erro ao consultar a OpenAI:', error);
-        return '<:1000042883:1336044555354771638> Erro ao processar a resposta. Tente novamente mais tarde.';
-    }
+    return response.data.choices[0].message.content;
+  } catch (error) {
+    logger.error('Erro ao consultar a OpenAI:', error);
+    return '<:1000042883:1336044555354771638> Erro ao processar a resposta. Tente novamente mais tarde.';
+  }
 }
 
 module.exports = { conversationHistory, fetchAIResponse };

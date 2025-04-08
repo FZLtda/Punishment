@@ -1,6 +1,6 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { TERMS } = require('../config/settings.json');
-const { check } = require('../config/emoji.json')
+const { check } = require('../config/emoji.json');
 const db = require('../data/database');
 
 async function checkTerms(context) {

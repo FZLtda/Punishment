@@ -36,7 +36,7 @@ module.exports = {
       if (interaction.isChatInputCommand()) {
         return await handleSlashCommand(interaction, client);
       }
-    } catch (error) {
+    } catch {
       logger.error(`ERRO: Erro no evento interactionCreate: ${error.message}`, { stack: error.stack });
 
       if (interaction.replied || interaction.deferred) {

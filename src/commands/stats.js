@@ -24,15 +24,12 @@ module.exports = {
   
   execute: async (message) => {
     try {
-      const installCount = message.client.application?.approximateUserInstallCount || 'Indisponível';
       const serverCount = message.client.guilds.cache.size;
       const userCount = message.client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);
       const channelCount = message.client.channels.cache.size;
       const uptime = formatUptime(process.uptime());
       const memoryUsage = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
       const totalMemory = (os.totalmem() / 1024 / 1024).toFixed(2);
-      const freeMemory = (os.freemem() / 1024 / 1024).toFixed(2);
-      const cpuModel = os.cpus()[0].model;
       const cpuUsage = os.loadavg()[0].toFixed(2);
 
       const embed = new EmbedBuilder()

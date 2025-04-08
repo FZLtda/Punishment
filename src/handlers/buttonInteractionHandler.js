@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { sucess, error, attent } = require('../config/emoji.json')
+const { sucess, error, attent } = require('../config/emoji.json');
 const logger = require('../utils/logger');
 
 async function handleButtonInteraction(interaction, client, db) {
@@ -26,7 +26,7 @@ async function handleButtonInteraction(interaction, client, db) {
     let participants;
     try {
       participants = JSON.parse(giveaway.participants || '[]');
-    } catch (error) {
+    } catch {
       logger.error(`ERRO: O campo "participants" no sorteio está corrompido: ${error.message}`);
       return interaction.reply({
         content: '...',

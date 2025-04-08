@@ -1,4 +1,4 @@
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { logModerationAction } = require('../utils/moderationUtils');
 
 module.exports = {
@@ -17,47 +17,47 @@ module.exports = {
 
     if (!membro) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Mencione um usuário para executar esta ação.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (!tempo) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Defina um tempo de duração para prosseguir (ex.: 1m, 1h, 1d).',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const duracao = convertToMilliseconds(tempo);
     if (!duracao) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Duração inválida. Forneça um valor válido (ex.: 1m, 1h, 1d).',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (!membro.moderatable) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Este usuário não pode ser silenciado devido às suas permissões.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -84,13 +84,13 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não foi possível silenciar o usuário devido a um erro.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };
@@ -104,15 +104,15 @@ function convertToMilliseconds(tempo) {
   const unidade = match[2];
 
   switch (unidade) {
-    case 's':
-      return valor * 1000;
-    case 'm':
-      return valor * 60 * 1000;
-    case 'h':
-      return valor * 60 * 60 * 1000;
-    case 'd':
-      return valor * 24 * 60 * 60 * 1000;
-    default:
-      return null;
+  case 's':
+    return valor * 1000;
+  case 'm':
+    return valor * 60 * 1000;
+  case 'h':
+    return valor * 60 * 60 * 1000;
+  case 'd':
+    return valor * 24 * 60 * 60 * 1000;
+  default:
+    return null;
   }
 }

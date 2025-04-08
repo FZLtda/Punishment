@@ -13,13 +13,13 @@ module.exports = {
   async execute(message, args) {
     if (!args[0] || typeof args[0] !== 'string') {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Você precisa fornecer o repositório no formato `usuário/repositório`',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const repo = args[0].trim();
@@ -68,34 +68,34 @@ module.exports = {
 
         if (status === 404) {
           const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Repositório não encontrado. Verifique o nome e tente novamente.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
+            .setColor('#FF4C4C')
+            .setAuthor({
+              name: 'Repositório não encontrado. Verifique o nome e tente novamente.',
+              iconURL: 'https://bit.ly/43PItSI'
+            });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+          return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
         }
 
         if (status === 403) {
           const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Limite de requisições da API do GitHub excedido. Tente novamente mais tarde.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
+            .setColor('#FF4C4C')
+            .setAuthor({
+              name: 'Limite de requisições da API do GitHub excedido. Tente novamente mais tarde.',
+              iconURL: 'https://bit.ly/43PItSI'
+            });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+          return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
         }
       }
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Ocorreu um erro ao buscar informações do repositório.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

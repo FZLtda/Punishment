@@ -9,7 +9,7 @@ module.exports = {
   botPermissions: ['ManageMessages'],
   deleteMessage: true,
   
-  async execute(message, args) {
+  async execute(message) {
     
     const user = message.mentions.members.first();
     if (!user) {
@@ -24,7 +24,7 @@ module.exports = {
 
     
     const warnings = db
-      .prepare(`SELECT * FROM warnings WHERE user_id = ? AND guild_id = ?`)
+      .prepare('SELECT * FROM warnings WHERE user_id = ? AND guild_id = ?')
       .all(user.id, message.guild.id);
 
     if (warnings.length === 0) {
@@ -61,6 +61,6 @@ module.exports = {
       })
       .setTimestamp();
 
-      message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
+    message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
   },
 };

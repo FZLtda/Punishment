@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { check } = require('../config/emoji.json')
+const { check } = require('../config/emoji.json');
 
 module.exports = {
   name: 'send',
@@ -14,13 +14,13 @@ module.exports = {
 
       if (args.length < 3) {
         const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({
+          .setColor('#FF4C4C')
+          .setAuthor({
             name: 'Uso correto: `.send <canal> <embed|texto> <mensagem>',
             iconURL: 'https://bit.ly/43PItSI'
-        });
+          });
   
-    return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
           
       }
 
@@ -29,13 +29,13 @@ module.exports = {
 
       if (!channel || !channel.isTextBased()) {
         const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({
+          .setColor('#FF4C4C')
+          .setAuthor({
             name: 'Canal inválido ou não encontrado.',
             iconURL: 'https://bit.ly/43PItSI'
-        });
+          });
   
-    return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } }); 
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } }); 
       }
 
       const messageType = args[1].toLowerCase();
@@ -55,13 +55,13 @@ module.exports = {
         await channel.send(content);
       } else {
         const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({
+          .setColor('#FF4C4C')
+          .setAuthor({
             name: 'Tipo de mensagem inválido. Use `embed` ou `texto`.',
             iconURL: 'https://bit.ly/43PItSI'
-        });
+          });
   
-    return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
           
       }
 
@@ -72,13 +72,13 @@ module.exports = {
     } catch (error) {
       console.error('Erro ao enviar mensagem:', error);
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não foi possível enviar a mensagem devido a um erro.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

@@ -23,7 +23,7 @@ module.exports = {
       return message.reply({ embeds: [embedErroCanal], allowedMentions: { repliedUser: false } });
     }
 
-    const canaisProtegidos = ["regras", "anúncios", "staff"];
+    const canaisProtegidos = ['regras', 'anúncios', 'staff'];
     if (canaisProtegidos.includes(channel.name.toLowerCase())) {
       const embedProtegido = new EmbedBuilder()
         .setColor('#FF4C4C')
@@ -54,8 +54,8 @@ module.exports = {
     await message.reply({ embeds: [embedConfirmacao], allowedMentions: { repliedUser: false } });
 
     try {
-      const filter = (msg) => msg.author.id === message.author.id && msg.content.toLowerCase() === "sim";
-      const collected = await message.channel.awaitMessages({ filter, max: 1, time: 10000, errors: ["time"] });
+      const filter = (msg) => msg.author.id === message.author.id && msg.content.toLowerCase() === 'sim';
+      const collected = await message.channel.awaitMessages({ filter, max: 1, time: 10000, errors: ['time'] });
 
       if (collected) {
         await channel.delete();
@@ -68,7 +68,7 @@ module.exports = {
         await message.channel.send({ embeds: [embedSucesso] });
       }
     } catch (error) {
-      console.error("Erro ao excluir canal:", error);
+      console.error('Erro ao excluir canal:', error);
 
       const embedTempoEsgotado = new EmbedBuilder()
         .setColor('#FF4C4C')

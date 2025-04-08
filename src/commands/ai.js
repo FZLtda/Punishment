@@ -21,37 +21,37 @@ module.exports = {
 
     if (!apiKey) {
       console.error('ERRO: OPENAI_API_KEY não configurada.');
-     const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+      const embedErroMinimo = new EmbedBuilder()
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não foi possível obter resposta da API.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (!args.length) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Forneça uma pergunta para obter uma resposta.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const question = args.join(' ');
     if (question.length > MAX_CHARACTERS) {
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'A pergunta ultrapassa o limite permitido.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (userThreads[userId]) {
@@ -72,13 +72,13 @@ module.exports = {
     try {
       if (!message.channel || !message.channel.threads) {
         const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Não foi possível completar a criação do tópico.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
+          .setColor('#FF4C4C')
+          .setAuthor({
+            name: 'Não foi possível completar a criação do tópico.',
+            iconURL: 'https://bit.ly/43PItSI'
+          });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       const thread = await message.channel.threads.create({
@@ -89,13 +89,13 @@ module.exports = {
 
       if (!thread) {
         const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
-          name: 'Não foi possível completar a criação do tópico.',
-          iconURL: 'https://bit.ly/43PItSI'
-      });
+          .setColor('#FF4C4C')
+          .setAuthor({
+            name: 'Não foi possível completar a criação do tópico.',
+            iconURL: 'https://bit.ly/43PItSI'
+          });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       userThreads[userId] = thread.id;
@@ -126,13 +126,13 @@ module.exports = {
     } catch (error) {
       console.error('Erro ao criar o tópico:', error);
       const embedErroMinimo = new EmbedBuilder()
-      .setColor('#FF4C4C')
-      .setAuthor({
+        .setColor('#FF4C4C')
+        .setAuthor({
           name: 'Não foi possível completar a criação do tópico.',
           iconURL: 'https://bit.ly/43PItSI'
-      });
+        });
 
-  return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };

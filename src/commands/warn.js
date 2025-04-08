@@ -1,4 +1,4 @@
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const db = require('../data/database');
 
 module.exports = {
@@ -43,6 +43,6 @@ module.exports = {
       })
       .setTimestamp();
 
-      message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
+    message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
   },
 };

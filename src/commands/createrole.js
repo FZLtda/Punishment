@@ -1,5 +1,4 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
-const { userPermissions } = require('./addrole');
 
 const colorMapping = {
   RED: '#FF0000',

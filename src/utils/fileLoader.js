@@ -7,8 +7,8 @@ function loadFiles(dir) {
     file.isDirectory()
       ? loadFiles(path.join(dir, file.name))
       : file.name.endsWith('.js') || file.name.endsWith('.ts')
-      ? [path.join(dir, file.name)]
-      : []
+        ? [path.join(dir, file.name)]
+        : []
   );
 }
 
