@@ -1,7 +1,6 @@
-const logger = require('../utils/logger');
-const chalk = require('chalk');
+async function validateEnv() {
+  const { default: chalk } = await import('chalk');
 
-function validateEnv() {
   const requiredEnvVars = [
     'TOKEN',
     'CLIENT_ID',
@@ -18,7 +17,7 @@ function validateEnv() {
   const missingVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
 
   if (missingVars.length > 0) {
-    logger.error(`Variáveis de ambiente ausentes: ${missingVars.join(', ')}`);
+    console.error(chalk.red(`ERRO: Variáveis de ambiente ausentes: ${missingVars.join(', ')}`));
     process.exit(1);
   }
 
@@ -35,14 +34,14 @@ function validateEnv() {
     WEBHOOK: (value) => value.startsWith('https://discord.com/api/webhooks/'),
   };
 
-  Object.entries(validations).forEach(([key, validate]) => {
+  for (const [key, validate] of Object.entries(validations)) {
     if (!validate(process.env[key])) {
-      logger.error(`Variável de ambiente ${key} é inválida.`);
+      console.error(chalk.red(`ERRO: Variável de ambiente ${key} é inválida.`));
       process.exit(1);
     }
-  });
+  }
 
-  logger.info(chalk.green('Todas as variáveis de ambiente foram validadas com sucesso.'));
+  console.log(chalk.green('Todas as variáveis de ambiente foram validadas com sucesso.'));
 }
 
 module.exports = validateEnv;
