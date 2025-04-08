@@ -13,6 +13,7 @@
   "author": "FuncZero",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.8.4",
     "discord.js": "^14.13.0",
     "dotenv": "^16.4.5",
     "winston": "^3.17.0"
