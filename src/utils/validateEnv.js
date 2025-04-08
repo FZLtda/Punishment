@@ -1,6 +1,6 @@
-async function validateEnv() {
-  const { default: chalk } = await import('chalk');
+const logger = require('./logger');
 
+function validateEnv() {
   const requiredEnvVars = [
     'TOKEN',
     'CLIENT_ID',
@@ -17,7 +17,7 @@ async function validateEnv() {
   const missingVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
 
   if (missingVars.length > 0) {
-    console.error(chalk.red(`ERRO: Variáveis de ambiente ausentes: ${missingVars.join(', ')}`));
+    logger.error(`Variáveis de ambiente ausentes: ${missingVars.join(', ')}`);
     process.exit(1);
   }
 
@@ -36,12 +36,12 @@ async function validateEnv() {
 
   for (const [key, validate] of Object.entries(validations)) {
     if (!validate(process.env[key])) {
-      console.error(chalk.red(`ERRO: Variável de ambiente ${key} é inválida.`));
+      logger.error(`Variável de ambiente ${key} é inválida.`);
       process.exit(1);
     }
   }
 
-  console.log(chalk.green('Todas as variáveis de ambiente foram validadas com sucesso.'));
+  logger.info('Todas as variáveis de ambiente foram validadas com sucesso.');
 }
 
 module.exports = validateEnv;
