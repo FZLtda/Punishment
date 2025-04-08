@@ -1,4 +1,5 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { TERMS } = require('../config/settings.json');
 const { check } = require('../config/emoji.json')
 const db = require('../data/database');
 
@@ -32,7 +33,7 @@ async function checkTerms(context) {
     new ButtonBuilder()
       .setLabel('Ler Termos')
       .setStyle(ButtonStyle.Link)
-      .setURL('https://bit.ly/4c9U9lo')
+      .setURL(`${TERMS}`)
   );
 
   if (context.reply) {

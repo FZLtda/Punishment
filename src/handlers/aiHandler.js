@@ -1,19 +1,34 @@
 const { conversationHistory, fetchAIResponse } = require('../utils/aiUtils');
-const { attent } = require('../config/emoji.json')
+const { attent } = require('../config/emoji.json');
 const logger = require('../utils/logger');
 
 const RATE_LIMIT = new Map();
+const COOLDOWN_MS = 5000;
+const THREAD_PREFIX = 'Punishment -';
 
 async function handleAIResponse(message) {
-  if (!message.channel.isThread() || !message.channel.name.startsWith('Punishment -')) return false;
+  if (
+    !message.guild ||
+    !message.channel ||
+    !message.author ||
+    !message.channel.isThread() ||
+    !message.channel.name.startsWith(THREAD_PREFIX)
+  ) {
+    return false;
+  }
+
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    logger.warn('OPENAI_API_KEY não configurada.');
+    return false;
+  }
 
   const userId = message.author.id;
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return false;
+  const now = Date.now();
 
   const lastUsed = RATE_LIMIT.get(userId) || 0;
-  if (Date.now() - lastUsed < 5000) return false;
-  RATE_LIMIT.set(userId, Date.now());
+  if (now - lastUsed < COOLDOWN_MS) return false;
+  RATE_LIMIT.set(userId, now);
 
   if (!conversationHistory[userId]) {
     conversationHistory[userId] = [];
@@ -23,12 +38,24 @@ async function handleAIResponse(message) {
 
   try {
     const response = await fetchAIResponse(conversationHistory[userId], apiKey);
+
+    if (!response) {
+      logger.warn(`Resposta vazia da IA para ${message.author.tag}`);
+      await message.channel.send(`${attent} A IA não conseguiu gerar uma resposta agora. Tente novamente em instantes.`);
+      return false;
+    }
+
     conversationHistory[userId].push({ role: 'assistant', content: response });
+
     await message.channel.send(response);
+    logger.info(`Resposta da IA enviada para ${message.author.tag} em ${message.channel.name}`);
     return true;
   } catch (error) {
-    logger.error('ERRO: Erro ao consultar a IA:', error);
-    await message.channel.send(`${attent} Não foi possível processar a resposta da IA.`);
+    logger.error(`Erro ao consultar IA para ${message.author.tag}: ${error.message}`, {
+      stack: error.stack,
+    });
+
+    await message.channel.send(`${attent} Houve um erro ao tentar consultar a IA.`);
     return false;
   }
 }
