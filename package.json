@@ -11,7 +11,8 @@
     "check:env": "node ./src/utils/validateEnv.js",
     "check:types": "tsc --noEmit",
     "check": "npm run lint && npm run check:env && npm run check:types",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
   },
   "keywords": [
     "discord",
