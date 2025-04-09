@@ -1,5 +1,7 @@
-const { logModerationAction } = require('../utils/moderationUtils');
 const { EmbedBuilder } = require('discord.js');
+const { logModerationAction } = require('../utils/moderationUtils');
+const { yellow } = require('../../config/colors.json');
+const { icon_attention } = require('../../config/emoji.json');
 
 module.exports = {
   name: 'addrole',
@@ -15,10 +17,10 @@ module.exports = {
 
     if (!member || !role) {
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(`${yellow}`)
         .setAuthor({
           name: 'Argumentos inválidos. O formato correto do comando é: .addrole @membro @cargo',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: `${icon_attention}`,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -26,10 +28,10 @@ module.exports = {
 
     if (role.position >= message.guild.members.me.roles.highest.position) {
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(`${yellow}`)
         .setAuthor({
           name: 'Não tenho permissão para adicionar este cargo, pois ele está acima do meu cargo mais alto.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: `${icon_attention}`,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -37,10 +39,10 @@ module.exports = {
 
     if (member.roles.cache.has(role.id)) {
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(`${yellow}`)
         .setAuthor({
           name: 'Este usuário já possui este cargo.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: `${icon_attention}`,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -72,10 +74,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(`${yellow}`)
         .setAuthor({
           name: 'Não foi possível adicionar o cargo.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: `${icon_attention}`,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });

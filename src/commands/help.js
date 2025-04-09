@@ -1,8 +1,10 @@
 const { EmbedBuilder } = require('discord.js');
+const { yellow } = require('../../config/colors.json');
+const { icon_attention } = require('../../config/emoji.json');
 
 module.exports = {
   name: 'help',
-  description: 'Exibe informações sobre um comando.',
+  description: 'Exibe informações detalhadas sobre os comandos.',
   usage: '${currentPrefix}help [comando]',
   userPermissions: ['SendMessages'],
   botPermissions: ['SendMessages'],
@@ -13,10 +15,10 @@ module.exports = {
 
     if (!commands || commands.size === 0) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(`${yellow}`)
         .setAuthor({
           name: 'Parece que os comandos não foram carregados.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: `${icon_attention}`,
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -29,10 +31,11 @@ module.exports = {
 
       if (!command) {
         const embedErroMinimo = new EmbedBuilder()
-          .setColor('#FF4C4C')
+          .setColor(`${yellow}`)
           .setAuthor({
             name: 'Não encontrei esse comando no sistema.',
-            iconURL: 'https://bit.ly/43PItSI'
+            iconURL: `${icon_attention}`,
+
           });
 
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });

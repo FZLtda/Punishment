@@ -1,4 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { yellow } = require('../../config/colors.json');
+const { icon_attention } = require('../../config/emoji.json');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -15,10 +17,10 @@ module.exports = {
 
     if (!commands || commands.size === 0) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(`${yellow}`)
         .setAuthor({
           name: 'Parece que os comandos não foram carregados.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: `${icon_attention}`,
         });
 
       return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
@@ -34,10 +36,10 @@ module.exports = {
 
       if (!command) {
         const embedErroMinimo = new EmbedBuilder()
-          .setColor('#FF4C4C')
+          .setColor(`${yellow}`)
           .setAuthor({
             name: 'Não encontrei esse comando no sistema.',
-            iconURL: 'http://bit.ly/4aIyY9j'
+            iconURL: `${icon_attention}`,
           });
 
         return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
