@@ -59,4 +59,13 @@ db.prepare(`
   )
 `).run();
 
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS automod (
+    guild_id TEXT NOT NULL,
+    rule_type TEXT NOT NULL,
+    status BOOLEAN NOT NULL,
+    PRIMARY KEY (guild_id, rule_type)
+  )
+`).run();
+
 module.exports = db;
