@@ -38,7 +38,7 @@ module.exports = {
       const logChannel = client.channels.cache.get(process.env.LOG_CHANNEL);
       if (logChannel?.isTextBased?.()) {
         logChannel.send(
-          '🛑 **Erro em `messageCreate`**\n' +
+          '**Erro em `messageCreate`**\n' +
           `👤 Autor: \`${message.author?.tag}\`\n` +
           `📍 Servidor: \`${message.guild?.name}\`\n` +
           `💬 Mensagem: \`${message.content.slice(0, 100)}\`\n` +

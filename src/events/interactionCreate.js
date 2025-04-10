@@ -1,7 +1,7 @@
 const { handleSlashCommand } = require('../handlers/slashCommandHandler');
 const { handleButtonInteraction } = require('../handlers/buttonInteractionHandler');
 const { checkTerms } = require('../handlers/termsHandler');
-const { check, error } = require('../config/emoji.json');
+const { check, attent } = require('../config/emoji.json');
 const logger = require('../utils/logger');
 const db = require('../data/database');
 
@@ -41,12 +41,12 @@ module.exports = {
 
       if (interaction.replied || interaction.deferred) {
         await interaction.followUp({
-          content: `${error} Não foi possível processar essa ação.`,
+          content: `${attent} Não foi possível processar essa ação.`,
           ephemeral: true,
         });
       } else {
         await interaction.reply({
-          content: `${error} Não foi possível processar essa ação.`,
+          content: `${attent} Não foi possível processar essa ação.`,
           ephemeral: true,
         });
       }
