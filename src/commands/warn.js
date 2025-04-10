@@ -22,7 +22,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(yellow)
-      .setTitle(`${attent} Usuário Avisado`)
+      .setTitle(`${attent} Usuário avisado`)
       .setDescription(
         `${user} (\`${user.id}\`) recebeu um aviso.\n\n**Motivo:** ${reason}`
       )
