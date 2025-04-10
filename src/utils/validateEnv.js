@@ -24,7 +24,7 @@ function validateEnv() {
   const validations = {
     TOKEN: (value) => value.startsWith('M'),
     CLIENT_ID: (value) => /^\d+$/.test(value),
-    GITHUB_TOKEN: (value) => value.includes('ghp_'),
+    GITHUB_TOKEN: (value) => value.startsWith('ghp_'),
     DEEPL_API_KEY: (value) => value.includes(':fx'),
     OPENAI_API_KEY: (value) => value.startsWith('sk-'),
     GIPHY_API_KEY: (value) => value.length === 32,
