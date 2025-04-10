@@ -1,7 +1,7 @@
 const axios = require('axios');
 const logger = require('./logger');
 const WEBHOOK = process.env.WEBHOOK;
-const { BOT_NAME } = require('../config/settings.json');
+const { BOT_NAME, BOT_LOGO } = require('../config/settings.json');
 
 function monitorBot(client) {
   if (!client || typeof client.on !== 'function') {
@@ -52,8 +52,8 @@ async function sendWebhookNotification(title, description) {
 
   try {
     await axios.post(WEBHOOK, {
-      username: 'Punishment Status',
-      avatar_url: 'https://bit.ly/3Ybrvul',
+      username: 'Punishment',
+      avatar_url: `${BOT_LOGO}`,
       embeds: [embed],
     });
     logger.info('Notificação enviada via Webhook.');
