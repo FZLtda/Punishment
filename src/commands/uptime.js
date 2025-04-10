@@ -1,5 +1,4 @@
 const { EmbedBuilder } = require('discord.js');
-const os = require('os');
 
 function formatUptime(seconds) {
   const days = Math.floor(seconds / 86400);
@@ -23,39 +22,18 @@ module.exports = {
   execute: async (message) => {
     try {
       
-      const installCount = message.client.application?.approximateUserInstallCount || 'Indisponível';
-      const serverCount = message.client.guilds.cache.size;
       const uptime = formatUptime(process.uptime());
 
       const embed = new EmbedBuilder()
         .setColor('#FE3838')
-        .setTitle(`${message.client.user.username} • Estatísticas`)
+        .setTitle('Punishment Uptime')
         .addFields(
-          {
-            name: '<:1000043167:1336329540502421576> Servidores',
-            value: `ﾠ \`${serverCount}\``,
-            inline: true,
-          },
-          {
-            name: '<:1000043165:1336327290446942280> Instalações',
-            value: `ﾠ \`${installCount}\``,
-            inline: true,
-          },
-          {
-            name: '<:1000043168:1336330133086273566> Uso de Memória',
-            value: `ﾠ \`${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB\``,
-            inline: true,
-          },
-          {
+          {  
             name: '<:1000043158:1336324199202947144> Uptime',
             value: `ﾠ \`${uptime}\``,
-            inline: true,
-          },
-          {
-            name: '<:1000043170:1336333421412225045> Plataforma',
-            value: `ﾠ \`${os.platform()}\``,
-            inline: true,
+            inline: false
           }
+
         )
         .setFooter({
           text: `${message.client.user.username}`,
