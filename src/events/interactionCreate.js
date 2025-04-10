@@ -1,7 +1,6 @@
 const { handleSlashCommand } = require('../handlers/slashCommandHandler');
 const { handleButtonInteraction } = require('../handlers/buttonInteractionHandler');
 const { checkTerms } = require('../handlers/termsHandler');
-const automodInteractions = require('../interactions/automod'); // Importa o sistema AutoMod
 const { check, error } = require('../config/emoji.json');
 const logger = require('../utils/logger');
 const db = require('../data/database');
@@ -16,11 +15,6 @@ module.exports = {
       }
 
       if (interaction.isButton()) {
-
-        if (interaction.customId.startsWith('automod_')) {
-          return await automodInteractions.handle(interaction);
-        }
-
         if (interaction.customId === 'accept_terms') {
           const userId = interaction.user.id;
 
