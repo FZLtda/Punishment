@@ -24,7 +24,7 @@ function validateEnv() {
   const validations = {
     TOKEN: (value) => value.startsWith('M'),
     CLIENT_ID: (value) => /^\d+$/.test(value),
-    GITHUB_TOKEN: (value) => value.startsWith('ghp_'),
+    GITHUB_TOKEN: (value) => value.startsWith('ghu_'),
     DEEPL_API_KEY: (value) => value.includes(':fx'),
     OPENAI_API_KEY: (value) => value.startsWith('sk-'),
     GIPHY_API_KEY: (value) => value.length === 32,
@@ -34,10 +34,14 @@ function validateEnv() {
     WEBHOOK: (value) => value.startsWith('https://discord.com/api/webhooks/'),
   };
 
+  const maskValue = (value) => value ? `${value.slice(0, 4)}...${value.slice(-4)}` : 'undefined';
+
   for (const [key, validate] of Object.entries(validations)) {
     if (!validate(process.env[key])) {
-      logger.error(`Variável de ambiente ${key} é inválida.`);
+      logger.error(`Variável de ambiente ${key} é inválida. Valor recebido: ${maskValue(process.env[key])}`);
       process.exit(1);
+    } else {
+      logger.info(`Variável de ambiente ${key} validada com sucesso.`);
     }
   }
 
