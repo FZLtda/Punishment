@@ -1,4 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
+const { yellow } = require('../config/colors.json');
+const { icon_attention } = require('../config/emoji.json');
 const Color = require('color');
 
 module.exports = {
@@ -28,10 +30,10 @@ module.exports = {
       color = Color(colorInput);
     } catch {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(`${yellow}`)
         .setAuthor({
-          name: 'Não foi possível obter informações dessa cor.',
-          iconURL: 'https://bit.ly/43PItSI'
+          name: 'Não foi possível obter as informações da cor.',
+          iconURL: `${icon_attention}`,
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
