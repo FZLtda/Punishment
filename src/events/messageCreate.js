@@ -3,7 +3,7 @@ const { handleAIResponse } = require('../handlers/aiHandler');
 const { handleAntiLink } = require('../handlers/antiLinkHandler');
 const { handleAntiSpam } = require('../handlers/antiSpamHandler');
 const { handleCommands } = require('../handlers/commandHandler');
-const { getPrefix } = require('../utils/prefixUtils');
+const { getPrefix } = require('../util/prefixUtils');
 const logger = require('../utils/logger');
 
 const cooldown = new Set();
