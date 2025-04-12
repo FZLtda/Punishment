@@ -6,7 +6,8 @@ function setPresence(client) {
       '.doar',
       '.stats',
       '.privacy',
-      '.setprefix'
+      '.setprefix',
+      'A partir de 10/05, todo o projeto será migrado para TypeScript.'
     ];
 
     let index = 0;
