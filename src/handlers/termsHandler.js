@@ -37,9 +37,9 @@ async function checkTerms(context) {
   );
 
   if (context.reply) {
-    await context.reply({ embeds: [embed], components: [row], ephemeral: true });
+    await context.reply({ embeds: [embed], components: [row], ephemeral: true, allowedMentions: { repliedUser: false } });
   } else if (context.channel) {
-    await context.channel.send({ embeds: [embed], components: [row] });
+    await context.channel.send({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
   }
 
   return false;
