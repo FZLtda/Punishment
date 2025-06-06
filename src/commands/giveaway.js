@@ -43,7 +43,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('Novo Sorteio')
-        .setDescription(`**Prêmio:** \`${prize}\`\n**Ganhadores:** \`${winnerCount}\`\n**Termina:** <t:${Math.floor(endTime / 1000)}:f> (<t:${Math.floor(endTime / 1000)}:R>)`)
+        .setDescription(`**Prêmio:** \`${prize}\`\n**Ganhador(es):** \`${winnerCount}\`\n**Termina:** <t:${Math.floor(endTime / 1000)}:f> (<t:${Math.floor(endTime / 1000)}:R>)`)
         .setColor('#FE3838')
         .setFooter({ text: 'Clique no botão para participar!' });
 
@@ -139,7 +139,7 @@ async function finalizeGiveaway(messageId, guildId, client) {
       .setDescription(
         `**Prêmio:** \`${giveaway.prize}\`\n` +
         `**Participantes:** \`${totalParticipants}\`\n` +
-        `**Ganhadores:** ${winners.length > 0 ? winners.join(', ') : '`Nenhum vencedor`'}`
+        `**Ganhador(es):** ${winners.length > 0 ? winners.join(', ') : '`Nenhum vencedor`'}`
       )
       .setColor('#FE3838')
       .setFooter({ text: 'Sorteio encerrado!' });
