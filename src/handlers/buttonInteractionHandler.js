@@ -18,7 +18,7 @@ async function handleButtonInteraction(interaction, client, db) {
     const giveaway = db.prepare('SELECT * FROM giveaways WHERE message_id = ?').get(interaction.message.id);
     if (!giveaway) {
       return interaction.reply({
-        content: `${attent} Este sorteio não foi encontrado no banco de dados.`,
+        content: `${attent} Não há interação vinculada a este botão.`,
         ephemeral: true,
       });
     }
