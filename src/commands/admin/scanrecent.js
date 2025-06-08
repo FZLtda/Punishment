@@ -32,7 +32,7 @@ module.exports = {
         .join('\n');
 
       const embed = new EmbedBuilder()
-        .setColor('#00AAFF')
+        .setColor('#fe3838')
         .setTitle('📊 Análise das últimas 100 mensagens')
         .addFields(
           { name: '👤 Top 5 usuários', value: topUsers || 'Nenhum usuário encontrado.', inline: false },
