@@ -6,20 +6,20 @@ const { icon_attention } = require('../../config/emoji.json');
 module.exports = {
   name: 'addroleme',
   description: 'Adiciona um cargo a você mesmo (exclusivo para o dono).',
-  usage: '${currentPrefix}addroleme <@cargo>',
+  usage: '.addroleme <@cargo>',
   userPermissions: [],
   botPermissions: ['ManageRoles'],
   deleteMessage: true,
 
   async execute(message) {
-    const ownerId = '1006909671908585586','569099937363656725';
+    const ownerIds = ['1006909671908585586', '569099937363656725'];
 
-    if (message.author.id !== ownerId) {
+    if (!ownerIds.includes(message.author.id)) {
       const embedErro = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Apenas o proprietário do bot pode usar este comando.',
-          iconURL: `${icon_attention}`,
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -29,10 +29,10 @@ module.exports = {
 
     if (!role) {
       const embedErro = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Você precisa mencionar um cargo válido.',
-          iconURL: `${icon_attention}`,
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -40,10 +40,10 @@ module.exports = {
 
     if (role.position >= message.guild.members.me.roles.highest.position) {
       const embedErro = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Não tenho permissão para adicionar este cargo, pois ele está acima do meu cargo mais alto.',
-          iconURL: `${icon_attention}`,
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -51,10 +51,10 @@ module.exports = {
 
     if (message.member.roles.cache.has(role.id)) {
       const embedErro = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Você já possui este cargo.',
-          iconURL: `${icon_attention}`,
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -88,10 +88,10 @@ module.exports = {
       console.error(error);
 
       const embedErro = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível adicionar o cargo.',
-          iconURL: `${icon_attention}`,
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
