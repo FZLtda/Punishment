@@ -4,66 +4,82 @@ const { icon_attention } = require('../../config/emoji.json');
 
 module.exports = {
   name: 'sudo',
-  description: 'Executa um comando como se fosse outro usuário (admin only).',
-  usage: '${currentPrefix}sudo <@usuário> <comando>',
-  ownerOnly: true,
+  description: 'Executa um comando como se fosse outro usuário.',
+  usage: '${currentPrefix}sudo @usuário <comando> [args]',
+  userPermissions: ['Administrator'],
+  botPermissions: [],
+  deleteMessage: true,
 
-  async execute(message, args, client) {
-    const user = message.mentions.users.first();
-    if (!user) {
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setColor('#FF4C4C')
-          .setAuthor({ name: 'Mencione um usuário válido.', iconURL: icon_attention })
-        ],
-        allowedMentions: { repliedUser: false }
-      });
+  async execute(message, args) {
+    const membro = message.mentions.members.first();
+
+    if (!membro) {
+      const embedErro = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
+          name: 'Você precisa mencionar um usuário para executar o comando como ele.',
+          iconURL: `${icon_attention}`
+        });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
-    const commandInput = args.slice(1).join(' ');
-    if (!commandInput) {
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setColor('#FF4C4C')
-          .setAuthor({ name: 'Você precisa informar o comando que deseja executar como esse usuário.', iconURL: icon_attention })
-        ],
-        allowedMentions: { repliedUser: false }
-      });
+    args.shift();
+    const comandoNome = args.shift()?.toLowerCase();
+
+    if (!comandoNome) {
+      const embedErro = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
+          name: 'Você precisa fornecer o nome do comando que deseja executar.',
+          iconURL: `${icon_attention}`
+        });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
-    const fakeMessage = Object.create(message);
-    fakeMessage.author = user;
-    fakeMessage.member = await message.guild.members.fetch(user.id);
-    fakeMessage.content = commandInput;
-    fakeMessage.channel = message.channel;
-
-    const argsParsed = commandInput.trim().split(/\s+/);
-    const cmdName = argsParsed[0].toLowerCase();
-    const cmdArgs = argsParsed.slice(1);
-    const command = client.commands.get(cmdName);
-
-    if (!command) {
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setColor('#FF4C4C')
-          .setAuthor({ name: `O comando "${cmdName}" não foi encontrado.`, iconURL: icon_attention })
-        ],
-        allowedMentions: { repliedUser: false }
-      });
+    const comando = message.client.commands.get(comandoNome);
+    if (!comando) {
+      const embedNaoExiste = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
+          name: `O comando "${comandoNome}" não foi encontrado.`,
+          iconURL: `${icon_attention}`
+        });
+      return message.reply({ embeds: [embedNaoExiste], allowedMentions: { repliedUser: false } });
     }
 
     try {
-      await command.execute(fakeMessage, cmdArgs, client);
-      return message.react('<:sucesso:1358918549846098201>');
-    } catch (error) {
-      console.error(error);
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setColor(yellow)
-          .setAuthor({ name: 'Erro ao executar o comando como outro usuário.', iconURL: icon_attention })
-        ],
-        allowedMentions: { repliedUser: false }
-      });
+      const fakeMessage = {
+        ...message,
+        author: membro.user,
+        member: membro,
+        content: `${message.client.prefix}${comandoNome} ${args.join(' ')}`,
+        reply: message.reply.bind(message),
+        channel: message.channel,
+        guild: message.guild,
+        client: message.client
+      };
+
+      await comando.execute(fakeMessage, args);
+
+      const embedSucesso = new EmbedBuilder()
+        .setColor('Green')
+        .setAuthor({
+          name: `Comando "${comandoNome}" executado como ${membro.user.tag}.`,
+          iconURL: membro.user.displayAvatarURL({ dynamic: true })
+        });
+
+      return message.channel.send({ embeds: [embedSucesso] });
+    } catch (erro) {
+      console.error(erro);
+
+      const embedErroExec = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
+          name: 'Não foi possível executar o comando como outro usuário devido a um erro.',
+          iconURL: `${icon_attention}`
+        });
+
+      return message.reply({ embeds: [embedErroExec], allowedMentions: { repliedUser: false } });
     }
-  }
+  },
 };
