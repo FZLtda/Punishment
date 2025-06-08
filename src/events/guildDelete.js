@@ -15,10 +15,10 @@ module.exports = {
       .setColor(yellow)
       .setDescription(`O bot foi removido de um servidor.`)
       .addFields(
-        { name: '🛡 Nome do Servidor', value: guild.name || 'Desconhecido', inline: true },
-        { name: '🆔 ID', value: guild.id, inline: true },
-        { name: '📅 Criado em', value: `<t:${Math.floor(guild.createdTimestamp / 1000)}:F>`, inline: true },
-        { name: '🌍 Total de Servidores', value: `${client.guilds.cache.size}`, inline: false }
+        { name: 'Servidor', value: guild.name || 'Desconhecido', inline: true },
+        { name: 'ID', value: guild.id, inline: true },
+        { name: 'Criado em', value: `<t:${Math.floor(guild.createdTimestamp / 1000)}:F>`, inline: true },
+        { name: 'Total de Servidores', value: `${client.guilds.cache.size}`, inline: false }
       )
       .setThumbnail(guild.iconURL({ dynamic: true }) || client.user.displayAvatarURL())
       .setFooter({ text: 'Punishment', iconURL: client.user.displayAvatarURL() })
