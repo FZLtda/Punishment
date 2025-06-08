@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { yellow } = require('../../config/colors.json');
 const { icon_attention } = require('../../config/emoji.json');
+const { getPrefix } = require('../../utils/prefixUtils');
 
 module.exports = {
   name: 'sudo',
@@ -12,39 +13,28 @@ module.exports = {
 
   async execute(message, args) {
     const membro = message.mentions.members.first();
-
     if (!membro) {
-      const embedErro = new EmbedBuilder()
+      const embed = new EmbedBuilder()
         .setColor(yellow)
-        .setAuthor({
-          name: 'Você precisa mencionar um usuário para executar o comando como ele.',
-          iconURL: `${icon_attention}`
-        });
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+        .setAuthor({ name: 'Você precisa mencionar um usuário para executar o comando como ele.', iconURL: icon_attention });
+      return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
     args.shift();
     const comandoNome = args.shift()?.toLowerCase();
-
     if (!comandoNome) {
-      const embedErro = new EmbedBuilder()
+      const embed = new EmbedBuilder()
         .setColor(yellow)
-        .setAuthor({
-          name: 'Você precisa fornecer o nome do comando que deseja executar.',
-          iconURL: `${icon_attention}`
-        });
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+        .setAuthor({ name: 'Você precisa fornecer o nome do comando que deseja executar.', iconURL: icon_attention });
+      return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
     const comando = message.client.commands.get(comandoNome);
     if (!comando) {
-      const embedNaoExiste = new EmbedBuilder()
+      const embed = new EmbedBuilder()
         .setColor(yellow)
-        .setAuthor({
-          name: `O comando "${comandoNome}" não foi encontrado.`,
-          iconURL: `${icon_attention}`
-        });
-      return message.reply({ embeds: [embedNaoExiste], allowedMentions: { repliedUser: false } });
+        .setAuthor({ name: `O comando "${comandoNome}" não foi encontrado.`, iconURL: icon_attention });
+      return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -59,18 +49,23 @@ module.exports = {
         client: message.client
       };
 
-      await comando.execute(fakeMessage, args);
-    } catch (erro) {
-      console.error(erro);
+      const options = {
+        getPrefix: await getPrefix(message.guildId)
+      };
 
-      const embedErroExec = new EmbedBuilder()
+      await comando.execute(fakeMessage, args, options);
+
+      const embed = new EmbedBuilder()
+        .setColor('Green')
+        .setAuthor({ name: `Comando "${comandoNome}" executado como ${membro.user.tag}.`, iconURL: membro.user.displayAvatarURL({ dynamic: true }) });
+
+      return message.channel.send({ embeds: [embed] });
+    } catch (err) {
+      console.error(err);
+      const embed = new EmbedBuilder()
         .setColor(yellow)
-        .setAuthor({
-          name: 'Não foi possível executar o comando como outro usuário devido a um erro.',
-          iconURL: `${icon_attention}`
-        });
-
-      return message.reply({ embeds: [embedErroExec], allowedMentions: { repliedUser: false } });
+        .setAuthor({ name: 'Não foi possível executar o comando como outro usuário devido a um erro.', iconURL: icon_attention });
+      return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
   },
 };
