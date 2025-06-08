@@ -4,7 +4,7 @@ const { yellow } = require('../../config/colors.json');
 const { icon_attention } = require('../../config/emoji.json');
 
 module.exports = {
-  name: 'update-deps',
+  name: 'update',
   description: 'Atualiza as dependências do bot via npm install.',
   usage: '${currentPrefix}update-deps',
   userPermissions: ['Administrator'],
