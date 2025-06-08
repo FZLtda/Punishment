@@ -40,7 +40,10 @@ module.exports = {
           { name: '👥 Menções', value: `${mentions}`, inline: true },
           { name: '📎 Anexos', value: `${attachments}`, inline: true }
         )
-        .setFooter({ text: `Análise feita por ${message.author.tag}` })
+        .setFooter({
+          text: `${message.author.tag}`,
+          iconURL: message.author.displayAvatarURL({ dynamic: true })
+        })
         .setTimestamp();
 
       return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
