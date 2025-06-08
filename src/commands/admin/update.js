@@ -18,7 +18,7 @@ module.exports = {
 
     const embedProcessando = new EmbedBuilder()
       .setColor('Yellow')
-      .setDescription('🔄 Atualizando dependências...');
+      .setDescription('<:1000043158:1336324199202947144> Atualizando dependências...');
 
     const msg = await message.channel.send({ embeds: [embedProcessando] });
 
@@ -34,7 +34,7 @@ module.exports = {
 
       const embedSucesso = new EmbedBuilder()
         .setColor('Green')
-        .setTitle('✅ Dependências atualizadas com sucesso!')
+        .setTitle('<:sucesso:1358918549846098201> Dependências atualizadas com sucesso!')
         .setDescription('As dependências do projeto foram atualizadas via `npm install`.')
         .addFields({ name: 'Saída', value: `\`\`\`bash\n${stdout.slice(0, 1000)}\n\`\`\`` })
         .setTimestamp();
