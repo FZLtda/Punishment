@@ -60,7 +60,6 @@ module.exports = {
       };
 
       await comando.execute(fakeMessage, args);
-
     } catch (erro) {
       console.error(erro);
 
