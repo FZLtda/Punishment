@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 
 async function sendAlert(client, guild, executor, actionType, count, timeWindow) {
-  const logChannelId = '1267699137017806848';
+  const logChannelId = '1381065414246662286';
   const logChannel = await client.channels.fetch(logChannelId).catch(() => null);
   if (!logChannel) return;
 
