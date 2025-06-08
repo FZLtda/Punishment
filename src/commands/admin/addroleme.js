@@ -12,7 +12,7 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
-    const ownerId = '1006909671908585586';
+    const ownerId = '1006909671908585586','569099937363656725';
 
     if (message.author.id !== ownerId) {
       const embedErro = new EmbedBuilder()
