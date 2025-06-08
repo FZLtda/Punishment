@@ -40,7 +40,10 @@ module.exports = {
         .setColor('#fe3838')
         .setTitle('🧠 Análise Preditiva')
         .setDescription(suspects || 'Nenhum comportamento suspeito detectado.')
-        .setFooter({ text: `Executado por ${message.author.tag}` })
+        .setFooter({
+          text: `${message.author.tag}`,
+          iconURL: message.author.displayAvatarURL({ dynamic: true })
+        })
         .setTimestamp();
 
       return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
