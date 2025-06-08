@@ -61,14 +61,6 @@ module.exports = {
 
       await comando.execute(fakeMessage, args);
 
-      const embedSucesso = new EmbedBuilder()
-        .setColor('Green')
-        .setAuthor({
-          name: `Comando "${comandoNome}" executado como ${membro.user.tag}.`,
-          iconURL: membro.user.displayAvatarURL({ dynamic: true })
-        });
-
-      return message.channel.send({ embeds: [embedSucesso] });
     } catch (erro) {
       console.error(erro);
 
