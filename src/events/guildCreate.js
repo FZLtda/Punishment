@@ -23,13 +23,13 @@ module.exports = {
       .setColor(yellow)
       .setDescription(`O bot foi adicionado em um novo servidor!`)
       .addFields(
-        { name: '🛡 Nome do Servidor', value: guild.name, inline: true },
-        { name: '🆔 ID', value: guild.id, inline: true },
-        { name: '👑 Dono', value: dono, inline: false },
-        { name: '👥 Membros', value: `${guild.memberCount}`, inline: true },
-        { name: '🚀 Boosts', value: `${guild.premiumSubscriptionCount || 0}`, inline: true },
-        { name: '🧩 Canais / Cargos', value: `${guild.channels.cache.size} / ${guild.roles.cache.size}`, inline: true },
-        { name: '🌍 Total de Servidores', value: `${client.guilds.cache.size}`, inline: false }
+        { name: 'Nome', value: guild.name, inline: true },
+        { name: 'ID', value: guild.id, inline: true },
+        { name: 'Dono', value: dono, inline: false },
+        { name: 'Membros', value: `${guild.memberCount}`, inline: true },
+        { name: 'Boosts', value: `${guild.premiumSubscriptionCount || 0}`, inline: true },
+        { name: 'Canais / Cargos', value: `${guild.channels.cache.size} / ${guild.roles.cache.size}`, inline: true },
+        { name: 'Servidores', value: `${client.guilds.cache.size}`, inline: false }
       )
       .setThumbnail(guild.iconURL({ dynamic: true }) || client.user.displayAvatarURL())
       .setFooter({ text: 'Punishment', iconURL: client.user.displayAvatarURL() })
