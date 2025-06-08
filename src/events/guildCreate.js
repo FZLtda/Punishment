@@ -6,7 +6,7 @@ module.exports = {
   name: 'guildCreate',
 
   async execute(guild, client) {
-    const canalLogID = '1267699137017806848';
+    const canalLogID = '1381065414246662286';
     const canalLog = await client.channels.fetch(canalLogID).catch(() => null);
 
     if (!canalLog || !canalLog.isTextBased()) return;
@@ -14,18 +14,18 @@ module.exports = {
     const dono = await guild.fetchOwner().catch(() => null);
 
     const embed = new EmbedBuilder()
-      .setTitle('📥 Novo Servidor Adicionado')
+      .setTitle('Punishment Monitoramento')
       .setColor(yellow)
       .setDescription(`O bot foi adicionado a um novo servidor!`)
       .addFields(
-        { name: '🛡 Nome do Servidor', value: `${guild.name}`, inline: true },
+        { name: '🛡 Servidor', value: `${guild.name}`, inline: true },
         { name: '👑 Dono', value: `${dono ? dono.user.tag : 'Desconhecido'}`, inline: true },
         { name: '🆔 ID', value: `${guild.id}`, inline: true },
         { name: '👥 Membros', value: `${guild.memberCount}`, inline: true },
         { name: '🌍 Total de Servidores', value: `${client.guilds.cache.size}`, inline: true }
       )
       .setThumbnail(guild.iconURL({ dynamic: true }))
-      .setFooter({ text: 'Punishment - Sistema de Monitoramento', iconURL: client.user.displayAvatarURL() })
+      .setFooter({ text: 'Punishment', iconURL: client.user.displayAvatarURL() })
       .setTimestamp();
 
     canalLog.send({ embeds: [embed] }).catch(console.error);
