@@ -37,10 +37,12 @@ module.exports = {
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
-    const commandPath = require.resolve(`../${command.category || ''}/${command.name}.js`);
-
     try {
-      delete require.cache[commandPath];
+      
+      const commandFolders = path.join(__dirname, '..');
+      const commandPath = path.join(commandFolders, `${command.category || 'admin'}/${command.name}.js`);
+
+      delete require.cache[require.resolve(commandPath)];
       const newCommand = require(commandPath);
 
       message.client.commands.set(newCommand.name, newCommand);
@@ -55,6 +57,7 @@ module.exports = {
       return message.reply({ embeds: [embedSuccess], allowedMentions: { repliedUser: false } });
     } catch (error) {
       console.error(error);
+
       const embedErro = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
