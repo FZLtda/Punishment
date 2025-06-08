@@ -37,7 +37,7 @@ module.exports = {
         .join('\n');
 
       const embed = new EmbedBuilder()
-        .setColor('#FF4444')
+        .setColor('#fe3838')
         .setTitle('🧠 Análise Preditiva')
         .setDescription(suspects || 'Nenhum comportamento suspeito detectado.')
         .setFooter({ text: `Executado por ${message.author.tag}` })
