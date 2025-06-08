@@ -1,62 +1,69 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
 const fs = require('fs');
 const path = require('path');
+const { yellow } = require('../../config/colors.json');
+const { icon_attention } = require('../../config/emoji.json');
 
 module.exports = {
   name: 'reload',
-  description: 'Recarrega um comando específico do bot.',
-  usage: '${currentPrefix}reload <comando>',
-  ownerOnly: true,
+  description: 'Recarrega um comando sem reiniciar o bot.',
+  usage: '${currentPrefix}reload <nome do comando>',
+  userPermissions: ['Administrator'],
+  deleteMessage: true,
 
-  async execute(message, args, client) {
-    const commandName = args[0]?.toLowerCase();
+  async execute(message, args) {
+    const commandName = args[0];
     if (!commandName) {
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setColor('#FF4C4C')
-          .setAuthor({ name: 'Você precisa especificar um comando para recarregar.', iconURL: icon_attention })
-        ],
-        allowedMentions: { repliedUser: false }
-      });
+      const embedErro = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
+          name: 'Você precisa fornecer o nome do comando para recarregar.',
+          iconURL: icon_attention
+        });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
-    const command = client.commands.get(commandName);
+    const command =
+      message.client.commands.get(commandName) ||
+      message.client.commands.find((cmd) => cmd.name === commandName);
+
     if (!command) {
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setColor('#FF4C4C')
-          .setAuthor({ name: `O comando "${commandName}" não foi encontrado.`, iconURL: icon_attention })
-        ],
-        allowedMentions: { repliedUser: false }
-      });
+      const embedErro = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
+          name: `O comando "${commandName}" não foi encontrado.`,
+          iconURL: icon_attention
+        });
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
-    const commandPath = require.resolve(path.join(__dirname, `${command.name}.js`));
-    delete require.cache[commandPath];
-    
+    const commandPath = require.resolve(`../${command.category || ''}/${command.name}.js`);
+
     try {
+      delete require.cache[commandPath];
       const newCommand = require(commandPath);
-      client.commands.set(newCommand.name, newCommand);
 
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setColor('Green')
-          .setAuthor({ name: `Comando "${newCommand.name}" recarregado com sucesso!`, iconURL: 'https://bit.ly/43PItSI' })
-        ],
-        allowedMentions: { repliedUser: false }
-      });
+      message.client.commands.set(newCommand.name, newCommand);
 
+      const embedSuccess = new EmbedBuilder()
+        .setColor('Green')
+        .setAuthor({
+          name: `O comando "${newCommand.name}" foi recarregado com sucesso!`,
+          iconURL: message.author.displayAvatarURL({ dynamic: true })
+        });
+
+      return message.reply({ embeds: [embedSuccess], allowedMentions: { repliedUser: false } });
     } catch (error) {
       console.error(error);
-      return message.reply({
-        embeds: [new EmbedBuilder()
-          .setColor(yellow)
-          .setAuthor({ name: 'Ocorreu um erro ao recarregar o comando.', iconURL: icon_attention })
-        ],
-        allowedMentions: { repliedUser: false }
-      });
+      const embedErro = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
+          name: `Erro ao recarregar o comando "${commandName}".`,
+          iconURL: icon_attention
+        })
+        .setFooter({ text: error.message });
+
+      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
   }
 };
