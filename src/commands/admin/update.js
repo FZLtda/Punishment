@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { exec } = require('child_process');
-const { yellow } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
+const { yellow } = require('../../config/colors.json');
+const { icon_attention } = require('../../config/emoji.json');
 
 module.exports = {
   name: 'update-deps',
