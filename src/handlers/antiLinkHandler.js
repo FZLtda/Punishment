@@ -23,7 +23,7 @@ async function handleAntiLink(message) {
     await message.delete();
 
     const warnMsg = await message.channel.send({
-      content: `${message.author}, ⚠️ links não são permitidos neste servidor.`,
+      content: `${message.author}, links não são permitidos neste servidor.`,
       allowedMentions: { users: [message.author.id], roles: [] },
     });
 
