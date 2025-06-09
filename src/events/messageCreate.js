@@ -3,6 +3,7 @@ const { handleAIResponse } = require('../handlers/aiHandler');
 const { handleAntiLink } = require('../handlers/antiLinkHandler');
 const { handleAntiSpam } = require('../handlers/antiSpamHandler');
 const { handleCommands } = require('../handlers/commandHandler');
+const { checkTerms } = require('../handlers/termsHandler');
 const { getPrefix } = require('../utils/prefixUtils');
 const logger = require('../utils/logger');
 
@@ -12,7 +13,7 @@ module.exports = {
   name: Events.MessageCreate,
   async execute(message, client) {
     try {
-      if (message.author.bot || !message.guild) return;
+      if (!message.guild || message.author.bot) return;
 
       if (cooldown.has(message.author.id)) return;
       cooldown.add(message.author.id);
@@ -25,8 +26,10 @@ module.exports = {
       const prefix = await getPrefix(message.guild.id);
       if (!message.content.startsWith(prefix)) return;
 
-      await handleCommands(message, client);
+      const accepted = await checkTerms(message);
+      if (!accepted) return;
 
+      await handleCommands(message, client);
     } catch (error) {
       logger.error(`[messageCreate] ${error.message}`, {
         stack: error.stack,
@@ -37,13 +40,14 @@ module.exports = {
 
       const logChannel = client.channels.cache.get(process.env.LOG_CHANNEL);
       if (logChannel?.isTextBased?.()) {
-        logChannel.send(
-          '**Erro em `messageCreate`**\n' +
-          `👤 Autor: \`${message.author?.tag}\`\n` +
-          `📍 Servidor: \`${message.guild?.name}\`\n` +
-          `💬 Mensagem: \`${message.content.slice(0, 100)}\`\n` +
-          `\`\`\`js\n${error.stack.slice(0, 1800)}\`\`\``
-        );
+        logChannel.send({
+          content:
+            '**[Erro: messageCreate]**\n' +
+            `<:Desbanido:1355718942076965016> Autor: \`${message.author?.tag}\`\n` +
+            `<:Backup:1355721566582997054> Servidor: \`${message.guild?.name}\`\n` +
+            `<:Desbloqueado:1355700557465125064> Mensagem: \`${message.content.slice(0, 100)}\`\n` +
+            '```js\n' + error.stack.slice(0, 1900) + '\n```'
+        });
       }
     }
   },
