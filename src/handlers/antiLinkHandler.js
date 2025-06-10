@@ -4,8 +4,6 @@ const logger = require('../utils/logger');
 
 const ANTI_LINK_PATH = './data/antilink.json';
 
-const LINK_REGEX = /(?:https?:\/\/|www\.)\S+|discord(?:\.gg|app\.com\/invite)\/[^\s]+/gi;
-
 async function handleAntiLink(message) {
   if (!message.guild || !message.member || !message.channel || message.author.bot) return false;
 
@@ -14,7 +12,7 @@ async function handleAntiLink(message) {
 
   if (!guildSettings?.enabled) return false;
 
-  const containsLink = LINK_REGEX.test(message.content);
+  const containsLink = (/(?:https?:\/\/|www\.)\S+|discord(?:\.gg|app\.com\/invite)\/[^\s]+/i).test(message.content);
   const isExempt = message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers);
 
   if (!containsLink || isExempt) return false;
@@ -27,15 +25,13 @@ async function handleAntiLink(message) {
       allowedMentions: { users: [message.author.id], roles: [] },
     });
 
-    setTimeout(() => {
-      warnMsg.delete().catch(() => {});
-    }, 5000);
+    setTimeout(() => warnMsg.delete().catch(() => {}), 5000);
 
     logger.warn('Mensagem com link removida', {
       user: `${message.author.tag} (${message.author.id})`,
       guild: `${message.guild.name} (${message.guild.id})`,
       channel: `${message.channel.name} (${message.channel.id})`,
-      content: message.content.slice(0, 100),
+      content: message.content.slice(0, 150),
     });
 
     return true;
