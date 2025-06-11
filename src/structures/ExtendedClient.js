@@ -1,9 +1,12 @@
+'use strict';
+
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const { loadCommands, loadEvents } = require('../utils/loader.js');
 const { setPresence } = require('../utils/presence.js');
 const monitorBot = require('../utils/monitoring.js');
 const logger = require('../utils/logger.js');
 const { BOT_NAME } = require('../config/settings.json');
+const { version } = require('../../package.json');
 
 class ExtendedClient extends Client {
   constructor() {
@@ -20,46 +23,48 @@ class ExtendedClient extends Client {
     this.commands = new Collection();
     this.slashCommands = new Collection();
     this.startTimestamp = Date.now();
-    this.version = require('../../package.json').version;
+    this.version = version;
   }
 
   async init() {
     try {
-      await this._loadCore();
-      this._attachEvents();
-      logger.info(`[${BOT_NAME}] inicialização concluída.`);
-    } catch (error) {
-      logger.error(`[${BOT_NAME}] erro ao iniciar: ${error.message}`, { stack: error.stack });
-      throw error;
+      await this.#loadCore();
+      this.#attachEvents();
+      logger.info(`[${BOT_NAME}] Inicialização concluída.`);
+    } catch (err) {
+      logger.error(`[${BOT_NAME}] Erro na inicialização: ${err.message}`, { stack: err.stack });
+      throw err;
     }
   }
 
-  async _loadCore() {
-    const withTimeout = (promise, ms, errMsg) =>
+  async #loadCore() {
+    const timeout = (promise, ms, msg) =>
       Promise.race([
         promise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error(errMsg)), ms)),
+        new Promise((_, reject) => setTimeout(() => reject(new Error(msg)), ms)),
       ]);
 
     await Promise.all([
-      withTimeout(loadCommands(this), 10_000, 'Carregamento de comandos demorou demais'),
-      withTimeout(loadEvents(this), 10_000, 'Carregamento de eventos demorou demais'),
+      timeout(loadCommands(this), 10_000, 'Timeout: Carregamento de comandos'),
+      timeout(loadEvents(this), 10_000, 'Timeout: Carregamento de eventos'),
     ]);
 
     setPresence(this);
     monitorBot(this);
   }
 
-  _attachEvents() {
+  #attachEvents() {
     this.on('disconnect', () =>
-      logger.warn(`[${BOT_NAME}] desconectado! Tentando reconectar...`)
+      logger.warn(`[${BOT_NAME}] Desconectado. Reconectando...`)
     );
+
     this.on('reconnecting', () =>
-      logger.info(`[${BOT_NAME}] tentando reconectar...`)
+      logger.info(`[${BOT_NAME}] Tentando reconectar...`)
     );
-    this.on('error', (error) =>
-      logger.error(`[${BOT_NAME}] erro crítico: ${error.message}`, {
-        stack: error.stack,
+
+    this.on('error', (err) =>
+      logger.error(`[${BOT_NAME}] Erro crítico: ${err.message}`, {
+        stack: err.stack,
         timestamp: new Date().toISOString(),
       })
     );
