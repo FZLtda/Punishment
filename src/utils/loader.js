@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const logger = require('./logger.js');
 const loadFiles = require('./fileLoader.js');
@@ -8,37 +10,42 @@ async function loadCommands(client) {
   const commandFiles = loadFiles(commandsPath);
 
   for (const file of commandFiles) {
+    const start = Date.now();
+
     try {
-      const start = Date.now();
       const command = require(file);
 
       if (!command || typeof command !== 'object') {
-        logger.warn(`Ignorado (comando malformado): ${file}`);
+        logger.warn(`Ignorado: estrutura inválida em ${file}`);
         continue;
       }
 
-      if (command.data?.name) {
-        const name = command.data.name.toLowerCase();
+      const name = command.data?.name?.toLowerCase() || command.name?.toLowerCase();
+      const type = command.data ? 'slash' : 'prefix';
+
+      if (!name) {
+        logger.warn(`Ignorado: nome ausente em ${file}`);
+        continue;
+      }
+
+      if (type === 'slash') {
         client.slashCommands.set(name, command);
         logger.info(chalk.blueBright(`[SLASH] ${name} carregado (${Date.now() - start}ms)`));
-      } else if (command.name) {
-        const name = command.name.toLowerCase();
+      } else {
         client.commands.set(name, command);
         logger.info(chalk.cyan(`[PREFIX] ${name} carregado (${Date.now() - start}ms)`));
-      } else {
-        logger.warn(`Ignorado (estrutura inválida): ${file}`);
       }
 
       client.commandMetadata ||= [];
       client.commandMetadata.push({
-        name: command.data?.name || command.name || 'Desconhecido',
+        name,
         file,
-        type: command.data ? 'slash' : 'prefix',
+        type,
         loadedAt: new Date(),
       });
 
-    } catch (error) {
-      logger.error(`Erro ao carregar comando ${file}: ${error.message}`, { stack: error.stack });
+    } catch (err) {
+      logger.error(`Erro ao carregar comando ${file}: ${err.message}`, { stack: err.stack });
     }
   }
 }
@@ -48,24 +55,28 @@ async function loadEvents(client) {
   const eventFiles = loadFiles(eventsPath);
 
   for (const file of eventFiles) {
+    const start = Date.now();
+
     try {
-      const start = Date.now();
       const event = require(file);
 
-      if (event.name && typeof event.execute === 'function') {
-        const handler = (...args) => event.execute(...args, client);
-        if (event.once) {
-          client.once(event.name, handler);
-        } else {
-          client.on(event.name, handler);
-        }
-        logger.info(chalk.magenta(`[EVENT] ${event.name} carregado (${Date.now() - start}ms)`));
-      } else {
-        logger.warn(`Evento ignorado (estrutura inválida): ${file}`);
+      if (!event.name || typeof event.execute !== 'function') {
+        logger.warn(`Ignorado: estrutura inválida em ${file}`);
+        continue;
       }
 
-    } catch (error) {
-      logger.error(`Erro ao carregar evento ${file}: ${error.message}`, { stack: error.stack });
+      const handler = (...args) => event.execute(...args, client);
+
+      if (event.once) {
+        client.once(event.name, handler);
+      } else {
+        client.on(event.name, handler);
+      }
+
+      logger.info(chalk.magenta(`[EVENT] ${event.name} carregado (${Date.now() - start}ms)`));
+
+    } catch (err) {
+      logger.error(`Erro ao carregar evento ${file}: ${err.message}`, { stack: err.stack });
     }
   }
 }
