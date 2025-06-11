@@ -26,7 +26,7 @@ const startBot = async () => {
   try {
     await client.login(process.env.TOKEN);
     const elapsed = Math.round(performance.now() - startTime);
-    logger.info(`[${BOT_NAME}] Iniciado com sucesso em ${elapsed}ms como ${client.user.tag}`);
+    logger.info(`[${BOT_NAME}] Iniciado com sucesso em ${elapsed}ms.`);
     retryCount = 0;
   } catch (err) {
     logger.error(`[${BOT_NAME}] Erro no login: ${err.message}`, { stack: err.stack });
