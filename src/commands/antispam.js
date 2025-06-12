@@ -15,11 +15,13 @@ module.exports = {
   userPermissions: ['ManageMessages'],
   botPermissions: ['ManageMessages'],
   deleteMessage: true,
-    
-  async execute(message, args) {
 
+  async execute(message, args) {
     if (!message.guild) {
-      return message.reply('Este comando só pode ser usado em servidores.');
+      return message.reply({
+        content: 'Este comando só pode ser usado em servidores.',
+        allowedMentions: { repliedUser: false },
+      });
     }
 
     const guildId = message.guild.id;
@@ -30,23 +32,42 @@ module.exports = {
         .setColor(yellow)
         .setAuthor({
           name: 'Uso incorreto! Use `.antispam on` para ativar ou `.antispam off` para desativar o sistema.',
-          iconURL: icon_attention }
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
-    const settings = JSON.parse(fs.readFileSync(path, 'utf8'));
+    let settings = {};
+    try {
+      settings = JSON.parse(fs.readFileSync(path, 'utf8'));
+    } catch (err) {
+      return message.reply({
+        content: 'Erro ao ler as configurações do sistema antispam.',
+        allowedMentions: { repliedUser: false },
+      });
+    }
 
     if (option === 'on') {
       settings[guildId] = { enabled: true };
-      fs.writeFileSync(path, JSON.stringify(settings, null, 4));
+
+      try {
+        fs.writeFileSync(path, JSON.stringify(settings, null, 4));
+      } catch (err) {
+        return message.reply({
+          content: 'Erro ao salvar as configurações do sistema antispam.',
+          allowedMentions: { repliedUser: false },
+        });
+      }
 
       const embed = new EmbedBuilder()
         .setColor(green)
         .setTitle('<:on:1232142357848260639> Antispam Ativado')
         .setDescription('O sistema de bloqueio de spam foi ativado neste servidor.')
-        .setFooter({ text: `${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+        .setFooter({
+          text: message.author.tag,
+          iconURL: message.author.displayAvatarURL({ dynamic: true }),
+        })
         .setTimestamp();
 
       return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
@@ -54,16 +75,27 @@ module.exports = {
 
     if (option === 'off') {
       delete settings[guildId];
-      fs.writeFileSync(path, JSON.stringify(settings, null, 4));
+
+      try {
+        fs.writeFileSync(path, JSON.stringify(settings, null, 4));
+      } catch (err) {
+        return message.reply({
+          content: 'Erro ao atualizar as configurações do sistema antispam.',
+          allowedMentions: { repliedUser: false },
+        });
+      }
 
       const embed = new EmbedBuilder()
         .setColor(red)
         .setTitle('<:emoji_51:1248416468819906721> Antispam Desativado')
         .setDescription('O sistema de bloqueio de spam foi desativado neste servidor.')
-        .setFooter({ text: `${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+        .setFooter({
+          text: message.author.tag,
+          iconURL: message.author.displayAvatarURL({ dynamic: true }),
+        })
         .setTimestamp();
 
       return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
-  }
+  },
 };
