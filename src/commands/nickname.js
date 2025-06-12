@@ -51,7 +51,7 @@ module.exports = {
       await membro.setNickname(apelido);
 
       const embed = new EmbedBuilder()
-        .setTitle('<:Editar:1355731990069295214> Apelido alterado')
+        .setTitle('<:sucesso:1358918549846098201> Apelido alterado')
         .setColor('Green')
         .setDescription(`O apelido de ${membro} foi alterado com sucesso!`)
         .addFields(
