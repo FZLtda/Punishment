@@ -14,10 +14,10 @@ module.exports = {
   async execute(message, args) {
     if (!args[0]) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Forneça o nome da cor ou um código hexadecimal.',
-          iconURL: `${icon_attention}`
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -30,10 +30,10 @@ module.exports = {
       color = Color(colorInput);
     } catch {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível obter as informações da cor.',
-          iconURL: `${icon_attention}`,
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
