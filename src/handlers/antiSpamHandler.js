@@ -58,7 +58,7 @@ async function handleAntiSpam(message, client) {
       const embed = {
         color: 0xfe3838,
         title: '<:Mutado:1355700779859574954> Punição aplicada',
-        description: `${message.author} foi mutado(a) por spam.`,
+        description: `${message.author} (\`${message.author.id}\`) foi mutado(a) por spam.`,
         thumbnail: { url: message.author.displayAvatarURL({ dynamic: true }) },
         footer: {
           text: client.user.tag,
