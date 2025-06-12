@@ -1,4 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
+const { icon_attention } = require('../config/emoji.json');
+const { yellow } = require('../config/colors.json');
 const fs = require('fs');
 const path = './data/antispam.json';
 
@@ -25,10 +27,10 @@ module.exports = {
 
     if (!['on', 'off'].includes(option)) {
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(`${yellow}`)
         .setAuthor({
           name: 'Uso incorreto! Use `.antispam on` para ativar ou `.antispam off` para desativar o sistema.',
-          iconURL: 'https://bit.ly/43PItSI',
+          iconURL: `${icon_attention}`,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
