@@ -68,10 +68,10 @@ module.exports = {
       });
 
       if (collected) {
-        await channel.delete(`Solicitado por ${message.author.tag}`);
+        await channel.delete(`Por: ${message.author.tag}`);
 
         return message.channel.send({
-          embeds: [successEmbed(`O canal **${channel.name}** foi excluído com sucesso!`)],
+          embeds: [successEmbed(`O canal "${channel.name}" foi excluído com sucesso!`)],
         });
       }
     } catch (err) {
