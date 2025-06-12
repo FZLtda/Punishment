@@ -13,7 +13,7 @@ module.exports = {
   async execute(message, args) {
     const errorEmbed = (desc) =>
       new EmbedBuilder()
-        .setColor(red || yellow)
+        .setColor(yellow)
         .setAuthor({ name: desc, iconURL: icon_attention });
 
     const channel = message.mentions.channels.first() ||
@@ -33,11 +33,24 @@ module.exports = {
         allowedMentions: { repliedUser: false },
       });
 
+    if (channel.id === message.guild.rulesChannelId)
+      return message.reply({
+        embeds: [errorEmbed('Este é o canal de regras do servidor e não pode ser excluído.')],
+        allowedMentions: { repliedUser: false },
+      });
+
     if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageChannels))
       return message.reply({
         embeds: [errorEmbed('Eu não tenho permissão para excluir canais!')],
         allowedMentions: { repliedUser: false },
       });
+
+    if (channel.id === message.channel.id) {
+      return message.reply({
+        embeds: [errorEmbed('Você não pode iniciar a exclusão neste mesmo canal! Mencione outro canal ou envie o comando em outro canal.')],
+        allowedMentions: { repliedUser: false },
+      });
+    }
 
     const confirmEmbed = new EmbedBuilder()
       .setColor(yellow)
