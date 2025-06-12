@@ -19,7 +19,7 @@ module.exports = {
         .setColor(red)
         .setAuthor({
           name: 'Você não tem permissão para usar este comando.',
-          iconURL: icon_attention,
+          iconURL: icon_error,
         });
 
       return message.reply({ embeds: [embedSemPermissao], allowedMentions: { repliedUser: false } });
@@ -94,7 +94,7 @@ module.exports = {
       console.error('[ERRO] Falha ao gerar estatísticas de comandos:', err);
 
       const embedErro = new EmbedBuilder()
-        .setColor(red)
+        .setColor(yellow)
         .setAuthor({
           name: 'Ocorreu um erro ao tentar exibir as estatísticas.',
           iconURL: icon_attention,
