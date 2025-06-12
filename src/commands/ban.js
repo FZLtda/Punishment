@@ -18,10 +18,10 @@ module.exports = {
 
     if (!membro) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Mencione um usuário para executar esta ação.',
-          iconURL: `${icon_attention}`
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -29,10 +29,10 @@ module.exports = {
 
     if (!membro.bannable) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Este usuário não pode ser banido devido às suas permissões.',
-          iconURL: `${icon_attention}`
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -61,10 +61,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível banir o usuário devido a um erro.',
-          iconURL: `${icon_attention}`,
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
