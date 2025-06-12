@@ -51,7 +51,7 @@ module.exports = {
     const embedConfirmacao = new EmbedBuilder()
       .setColor(yellow)
         .setAuthor({
-          name: `Tem certeza que deseja excluir o canal ${channel.name}? Responda com sim em até 10 segundos.`,
+          name: `Tem certeza que deseja excluir o canal ${channel.name}?`,
           iconURL: icon_attention  
         });
     
