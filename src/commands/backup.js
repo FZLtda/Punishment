@@ -83,10 +83,10 @@ module.exports = {
       console.error(error);
 
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível criar o backup devido a um problema.',
-          iconURL: `${icon_attention}`
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
