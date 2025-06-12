@@ -1,4 +1,6 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
+const { yellow, green } = require('../config/colors.json');
+const { icon_attention } = require('../config/emoji.json');
 
 module.exports = {
   name: 'deletechannel',
@@ -14,10 +16,10 @@ module.exports = {
 
     if (!channel) {
       const embedErroCanal = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Canal não encontrado! Mencione um canal ou forneça um ID válido.',
-          iconURL: 'https://bit.ly/43PItSI',
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErroCanal], allowedMentions: { repliedUser: false } });
@@ -26,10 +28,10 @@ module.exports = {
     const canaisProtegidos = ['regras', 'anúncios', 'staff'];
     if (canaisProtegidos.includes(channel.name.toLowerCase())) {
       const embedProtegido = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Este canal é protegido e não pode ser excluído.',
-          iconURL: 'https://bit.ly/43PItSI',
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedProtegido], allowedMentions: { repliedUser: false } });
@@ -37,20 +39,22 @@ module.exports = {
 
     if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
       const embedErroBot = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Eu não tenho permissão para excluir canais!',
-          iconURL: 'https://bit.ly/43PItSI',
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErroBot], allowedMentions: { repliedUser: false } });
     }
 
     const embedConfirmacao = new EmbedBuilder()
-      .setColor('FE3838')
-      .setTitle('<:1000050077:1345956303926857861> Confirmação Necessária')
-      .setDescription(`Tem certeza que deseja excluir o canal **${channel.name}**? Responda com **sim** em até 10 segundos.`);
-
+      .setColor(yellow)
+        .setAuthor({
+          name: `Tem certeza que deseja excluir o canal ${channel.name}? Responda com sim em até 10 segundos.`,
+          iconURL: icon_attention  
+        });
+    
     await message.reply({ embeds: [embedConfirmacao], allowedMentions: { repliedUser: false } });
 
     try {
@@ -61,7 +65,7 @@ module.exports = {
         await channel.delete();
 
         const embedSucesso = new EmbedBuilder()
-          .setColor('Green')
+          .setColor(green)
           .setTitle('<:1000042885:1336044571125354496> Canal Excluído')
           .setDescription(`O canal **${channel.name}** foi excluído com sucesso!`);
 
@@ -71,10 +75,10 @@ module.exports = {
       console.error('Erro ao excluir canal:', error);
 
       const embedTempoEsgotado = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Tempo esgotado! Cancelando a exclusão.',
-          iconURL: 'https://bit.ly/43PItSI',
+          iconURL: icon_attention,
         });
 
       await message.channel.send({ embeds: [embedTempoEsgotado] });
