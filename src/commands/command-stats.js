@@ -16,7 +16,7 @@ module.exports = {
 
     if (message.author.id !== allowedUserId) {
       const embedSemPermissao = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(red)
         .setAuthor({
           name: 'Você não tem permissão para usar este comando.',
           iconURL: icon_attention,
@@ -55,7 +55,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('Estatísticas de Comandos')
-        .setColor('DarkVividPink')
+        .setColor(red)
         .addFields(
           {
             name: 'Total de Comandos Executados',
