@@ -1,4 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
+const { yellow } = require('../config/colors.json');
+const { icon_attention } = require('../config/emoji.json');
 const fetch = require('node-fetch');
 
 module.exports = {
@@ -12,10 +14,10 @@ module.exports = {
   async execute(message, args) {
     if (args.length === 0) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Você precisa fornecer um texto para corrigir.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -78,10 +80,10 @@ module.exports = {
     } catch (error) {
       console.error('Erro ao corrigir o texto:', error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível corrigir a mensagem fornecida.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
