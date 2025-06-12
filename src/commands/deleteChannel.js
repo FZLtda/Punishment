@@ -1,5 +1,5 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
-const { yellow, green, red } = require('../config/colors.json');
+const { yellow, green} = require('../config/colors.json');
 const { icon_attention, icon_success } = require('../config/emoji.json');
 
 module.exports = {
@@ -13,7 +13,7 @@ module.exports = {
   async execute(message, args) {
     const errorEmbed = (desc) =>
       new EmbedBuilder()
-        .setColor(red)
+        .setColor(yellow)
         .setAuthor({ name: desc, iconURL: icon_attention });
 
     const successEmbed = (desc) =>
