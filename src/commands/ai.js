@@ -24,10 +24,10 @@ module.exports = {
     if (!apiKey) {
       console.error('ERRO: OPENAI_API_KEY não configurada.');
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível obter resposta da API.',
-          iconURL: `${icon_attention}`
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -35,10 +35,10 @@ module.exports = {
 
     if (!args.length) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Forneça uma pergunta para obter uma resposta.',
-          iconURL: `${icon_attention}`
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -47,10 +47,10 @@ module.exports = {
     const question = args.join(' ');
     if (question.length > MAX_CHARACTERS) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'A pergunta ultrapassa o limite permitido.',
-          iconURL: `${icon_attention}`
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -74,10 +74,10 @@ module.exports = {
     try {
       if (!message.channel || !message.channel.threads) {
         const embedErroMinimo = new EmbedBuilder()
-          .setColor(`${yellow}`)
+          .setColor(yellow)
           .setAuthor({
             name: 'Não foi possível completar a criação do tópico.',
-            iconURL: `${icon_attention}`
+            iconURL: icon_attention
           });
 
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -91,10 +91,10 @@ module.exports = {
 
       if (!thread) {
         const embedErroMinimo = new EmbedBuilder()
-          .setColor(`${yellow}`)
+          .setColor(yellow)
           .setAuthor({
             name: 'Não foi possível completar a criação do tópico.',
-            iconURL: `${icon_attention}`
+            iconURL: icon_attention
           });
 
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -128,10 +128,10 @@ module.exports = {
     } catch (error) {
       console.error('Erro ao criar o tópico:', error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível completar a criação do tópico.',
-          iconURL: `${icon_attention}`
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -198,8 +198,8 @@ async function fetchAIResponse(conversation, apiKey) {
 
 function errorEmbed(text) {
   return new EmbedBuilder()
-    .setColor(`${yellow}`)
+    .setColor(yellow)
     .setAuthor({ 
       name: text, 
-      iconURL: `${icon_attention}` });
+      iconURL: icon_attention });
 }
