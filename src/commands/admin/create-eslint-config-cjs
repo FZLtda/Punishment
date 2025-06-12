@@ -2,11 +2,11 @@ const fs = require('fs');
 const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
-  name: 'create-eslint-config',
-  description: 'Cria o arquivo eslint.config.js com configurações básicas.',
+  name: 'create-eslint-config-cjs',
+  description: 'Cria um eslint.config.js compatível com CommonJS',
   ownerOnly: true,
   async execute(message) {
-    const content = `export default [
+    const content = `module.exports = [
   {
     files: ['**/*.js'],
     languageOptions: {
@@ -22,13 +22,15 @@ module.exports = {
 
     try {
       fs.writeFileSync('eslint.config.js', content);
+
       const embed = new EmbedBuilder()
         .setColor(0x00ff00)
-        .setTitle('📝 Arquivo criado')
-        .setDescription('O arquivo `eslint.config.js` foi criado com sucesso.');
+        .setTitle('✅ Arquivo de configuração CommonJS criado')
+        .setDescription('O arquivo `eslint.config.js` (modo CommonJS) foi criado com sucesso.');
+
       return message.reply({ embeds: [embed] });
     } catch (e) {
-      return message.reply(`❌ Erro ao criar arquivo:\n\`\`\`${e.message}\`\`\``);
+      return message.reply(`❌ Erro ao criar o arquivo:\n\`\`\`${e.message}\`\`\``);
     }
   },
 };
