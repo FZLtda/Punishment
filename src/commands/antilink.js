@@ -23,10 +23,10 @@ module.exports = {
 
     if (!['on', 'off'].includes(option)) {
       const embedErro = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({ 
           name: 'Uso incorreto! Use `.antilink on` para ativar ou `.antilink off` para desativar.', 
-          iconURL: `${icon_attention}` });
+          iconURL: icon_attention });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
