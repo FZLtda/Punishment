@@ -1,4 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
+const { icon_attention } = require('../config/emoji.json');
+const { yellow } = require('../config/colors.json');
 const fs = require('fs');
 const path = './data/antilink.json';
 
@@ -21,8 +23,10 @@ module.exports = {
 
     if (!['on', 'off'].includes(option)) {
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
-        .setAuthor({ name: 'Uso incorreto! Use `.antilink on` para ativar ou `.antilink off` para desativar.', iconURL: 'https://bit.ly/43PItSI' });
+        .setColor(`${yellow}`)
+        .setAuthor({ 
+          name: 'Uso incorreto! Use `.antilink on` para ativar ou `.antilink off` para desativar.', 
+          iconURL: `${icon_attention}` });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
