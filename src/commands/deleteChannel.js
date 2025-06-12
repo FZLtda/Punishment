@@ -1,6 +1,6 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
-const { yellow, green } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
+const { yellow, green, red } = require('../config/colors.json');
+const { icon_attention, icon_success } = require('../config/emoji.json');
 
 module.exports = {
   name: 'deletechannel',
@@ -9,79 +9,77 @@ module.exports = {
   userPermissions: ['ManageChannels'],
   botPermissions: ['ManageChannels'],
   deleteMessage: true,
-    
+
   async execute(message, args) {
-  
-    const channel = message.mentions.channels.first() || message.guild.channels.cache.get(args[0]) || message.channel;
+    const errorEmbed = (desc) =>
+      new EmbedBuilder()
+        .setColor(red || yellow)
+        .setAuthor({ name: desc, iconURL: icon_attention });
 
-    if (!channel) {
-      const embedErroCanal = new EmbedBuilder()
-        .setColor(yellow)
-        .setAuthor({
-          name: 'Canal não encontrado! Mencione um canal ou forneça um ID válido.',
-          iconURL: icon_attention,
-        });
+    const channel = message.mentions.channels.first() ||
+      message.guild.channels.cache.get(args[0]) ||
+      message.channel;
 
-      return message.reply({ embeds: [embedErroCanal], allowedMentions: { repliedUser: false } });
-    }
+    if (!channel)
+      return message.reply({
+        embeds: [errorEmbed('Canal não encontrado! Mencione um canal ou forneça um ID válido.')],
+        allowedMentions: { repliedUser: false },
+      });
 
     const canaisProtegidos = ['regras', 'anúncios', 'staff'];
-    if (canaisProtegidos.includes(channel.name.toLowerCase())) {
-      const embedProtegido = new EmbedBuilder()
-        .setColor(yellow)
-        .setAuthor({
-          name: 'Este canal é protegido e não pode ser excluído.',
-          iconURL: icon_attention,
-        });
+    if (canaisProtegidos.includes(channel.name.toLowerCase()))
+      return message.reply({
+        embeds: [errorEmbed('Este canal é protegido e não pode ser excluído.')],
+        allowedMentions: { repliedUser: false },
+      });
 
-      return message.reply({ embeds: [embedProtegido], allowedMentions: { repliedUser: false } });
-    }
+    if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageChannels))
+      return message.reply({
+        embeds: [errorEmbed('Eu não tenho permissão para excluir canais!')],
+        allowedMentions: { repliedUser: false },
+      });
 
-    if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
-      const embedErroBot = new EmbedBuilder()
-        .setColor(yellow)
-        .setAuthor({
-          name: 'Eu não tenho permissão para excluir canais!',
-          iconURL: icon_attention,
-        });
-
-      return message.reply({ embeds: [embedErroBot], allowedMentions: { repliedUser: false } });
-    }
-
-    const embedConfirmacao = new EmbedBuilder()
+    const confirmEmbed = new EmbedBuilder()
       .setColor(yellow)
-        .setAuthor({
-          name: `Tem certeza que deseja excluir o canal ${channel.name}?`,
-          iconURL: icon_attention  
-        });
-    
-    await message.reply({ embeds: [embedConfirmacao], allowedMentions: { repliedUser: false } });
+      .setAuthor({ name: `Tem certeza que deseja excluir o canal "${channel.name}"?`, iconURL: icon_attention })
+      .setFooter({ text: 'Responda com "sim" em até 10 segundos para confirmar.' });
+
+    await message.reply({
+      embeds: [confirmEmbed],
+      allowedMentions: { repliedUser: false },
+    });
 
     try {
-      const filter = (msg) => msg.author.id === message.author.id && msg.content.toLowerCase() === 'sim';
-      const collected = await message.channel.awaitMessages({ filter, max: 1, time: 10000, errors: ['time'] });
+      const filter = (msg) =>
+        msg.author.id === message.author.id && msg.content.toLowerCase() === 'sim';
+
+      const collected = await message.channel.awaitMessages({
+        filter,
+        max: 1,
+        time: 10000,
+        errors: ['time'],
+      });
 
       if (collected) {
-        await channel.delete();
+        await channel.delete(`Solicitado por ${message.author.tag}`);
 
-        const embedSucesso = new EmbedBuilder()
+        const successEmbed = new EmbedBuilder()
           .setColor(green)
-          .setTitle('<:1000042885:1336044571125354496> Canal Excluído')
-          .setDescription(`O canal **${channel.name}** foi excluído com sucesso!`);
+          .setTitle(`${icon_success} Canal Excluído`)
+          .setDescription(`O canal **${channel.name}** foi excluído com sucesso!`)
+          .setFooter({ text: `Por ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+          .setTimestamp();
 
-        await message.channel.send({ embeds: [embedSucesso] });
+        return message.channel.send({ embeds: [successEmbed] });
       }
-    } catch (error) {
-      console.error('Erro ao excluir canal:', error);
+    } catch (err) {
+      console.error('Erro ao excluir canal:', err);
 
-      const embedTempoEsgotado = new EmbedBuilder()
+      const timeoutEmbed = new EmbedBuilder()
         .setColor(yellow)
-        .setAuthor({
-          name: 'Tempo esgotado! Cancelando a exclusão.',
-          iconURL: icon_attention,
-        });
+        .setAuthor({ name: 'Tempo esgotado! Cancelando a exclusão.', iconURL: icon_attention });
 
-      await message.channel.send({ embeds: [embedTempoEsgotado] });
+      return message.channel.send({ embeds: [timeoutEmbed] });
     }
   },
 };
