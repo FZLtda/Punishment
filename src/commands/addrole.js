@@ -17,10 +17,10 @@ module.exports = {
 
     if (!member || !role) {
       const embedErro = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Argumentos inválidos. O formato correto do comando é: .addrole @membro @cargo',
-          iconURL: `${icon_attention}`,
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -28,10 +28,10 @@ module.exports = {
 
     if (role.position >= message.guild.members.me.roles.highest.position) {
       const embedErro = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Não tenho permissão para adicionar este cargo, pois ele está acima do meu cargo mais alto.',
-          iconURL: `${icon_attention}`,
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -39,10 +39,10 @@ module.exports = {
 
     if (member.roles.cache.has(role.id)) {
       const embedErro = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Este usuário já possui este cargo.',
-          iconURL: `${icon_attention}`,
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -74,10 +74,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErro = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível adicionar o cargo.',
-          iconURL: `${icon_attention}`,
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
