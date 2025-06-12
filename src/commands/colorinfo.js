@@ -14,10 +14,10 @@ module.exports = {
   async execute(message, args) {
     if (!args[0]) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(`${yellow}`)
         .setAuthor({
           name: 'Forneça o nome da cor ou um código hexadecimal.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: `${icon_attention}`
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
