@@ -7,9 +7,9 @@ module.exports = {
   ownerOnly: true,
   async execute(message, args) {
     const pacote = args[0];
-    if (!pacote) return message.reply('❌ Especifique o pacote: `.install <pacote>`');
+    if (!pacote) return message.reply('Especifique o pacote: `.install <pacote>`');
 
-    const msg = await message.reply(`📦 Instalando \`${pacote}\`...`);
+    const msg = await message.reply(`Instalando \`${pacote}\`...`);
 
     exec(`npm install ${pacote}`, (err, stdout, stderr) => {
       const embed = new EmbedBuilder()
