@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { icon_attention } = require('../config/emoji.json');
-const { yellow } = require('../config/colors.json');
+const { yellow, red, green } = require('../config/colors.json');
 const fs = require('fs');
 const path = './data/antispam.json';
 
@@ -27,10 +27,10 @@ module.exports = {
 
     if (!['on', 'off'].includes(option)) {
       const embedErro = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Uso incorreto! Use `.antispam on` para ativar ou `.antispam off` para desativar o sistema.',
-          iconURL: `${icon_attention}`,
+          iconURL: icon_attention }
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -43,7 +43,7 @@ module.exports = {
       fs.writeFileSync(path, JSON.stringify(settings, null, 4));
 
       const embed = new EmbedBuilder()
-        .setColor('#2ecc71')
+        .setColor(green)
         .setTitle('<:on:1232142357848260639> Antispam Ativado')
         .setDescription('O sistema de bloqueio de spam foi ativado neste servidor.')
         .setFooter({ text: `${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
@@ -57,7 +57,7 @@ module.exports = {
       fs.writeFileSync(path, JSON.stringify(settings, null, 4));
 
       const embed = new EmbedBuilder()
-        .setColor('#fe3838')
+        .setColor(red)
         .setTitle('<:emoji_51:1248416468819906721> Antispam Desativado')
         .setDescription('O sistema de bloqueio de spam foi desativado neste servidor.')
         .setFooter({ text: `${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
