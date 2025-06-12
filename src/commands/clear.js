@@ -18,10 +18,10 @@ module.exports = {
 
     if (!quantidade || isNaN(quantidade) || quantidade < 1 || quantidade > 100) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Só é possível excluir de 1 a 100 mensagens por vez.',
-          iconURL: `${icon_attention}`
+          iconURL: icon_attention
         });
       
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -59,10 +59,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível apagar as mensagens devido a um erro.',
-          iconURL: `${icon_attention}`
+          iconURL: icon_attention
         });
       
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
