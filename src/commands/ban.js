@@ -18,10 +18,10 @@ module.exports = {
 
     if (!membro) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(`${yellow}`)
         .setAuthor({
           name: 'Mencione um usuário para executar esta ação.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: `${icon_attention}`
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -29,10 +29,10 @@ module.exports = {
 
     if (!membro.bannable) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(`${yellow}`)
         .setAuthor({
           name: 'Este usuário não pode ser banido devido às suas permissões.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: `${icon_attention}`
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
