@@ -13,8 +13,13 @@ module.exports = {
   async execute(message, args) {
     const errorEmbed = (desc) =>
       new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(red)
         .setAuthor({ name: desc, iconURL: icon_attention });
+
+    const successEmbed = (desc) =>
+      new EmbedBuilder()
+        .setColor(green)
+        .setAuthor({ name: desc, iconURL: icon_success });
 
     const channel = message.mentions.channels.first() ||
       message.guild.channels.cache.get(args[0]) ||
@@ -27,15 +32,11 @@ module.exports = {
       });
 
     const canaisProtegidos = ['regras', 'anúncios', 'staff'];
-    if (canaisProtegidos.includes(channel.name.toLowerCase()))
+    const nomeNormalizado = channel.name.toLowerCase();
+
+    if (canaisProtegidos.includes(nomeNormalizado) || channel.id === message.guild.rulesChannelId)
       return message.reply({
         embeds: [errorEmbed('Este canal é protegido e não pode ser excluído.')],
-        allowedMentions: { repliedUser: false },
-      });
-
-    if (channel.id === message.guild.rulesChannelId)
-      return message.reply({
-        embeds: [errorEmbed('Este é o canal de regras do servidor e não pode ser excluído.')],
         allowedMentions: { repliedUser: false },
       });
 
@@ -45,19 +46,12 @@ module.exports = {
         allowedMentions: { repliedUser: false },
       });
 
-    if (channel.id === message.channel.id) {
-      return message.reply({
-        embeds: [errorEmbed('Você não pode iniciar a exclusão neste mesmo canal! Mencione outro canal ou envie o comando em outro canal.')],
-        allowedMentions: { repliedUser: false },
-      });
-    }
-
     const confirmEmbed = new EmbedBuilder()
       .setColor(yellow)
       .setAuthor({ name: `Tem certeza que deseja excluir o canal "${channel.name}"?`, iconURL: icon_attention })
       .setFooter({ text: 'Responda com "sim" em até 10 segundos para confirmar.' });
 
-    await message.reply({
+    const confirmationMessage = await message.reply({
       embeds: [confirmEmbed],
       allowedMentions: { repliedUser: false },
     });
@@ -76,18 +70,11 @@ module.exports = {
       if (collected) {
         await channel.delete(`Solicitado por ${message.author.tag}`);
 
-        const successEmbed = new EmbedBuilder()
-          .setColor(green)
-          .setTitle(`${icon_success} Canal Excluído`)
-          .setDescription(`O canal **${channel.name}** foi excluído com sucesso!`)
-          .setFooter({ text: `Por ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
-          .setTimestamp();
-
-        return message.channel.send({ embeds: [successEmbed] });
+        return message.channel.send({
+          embeds: [successEmbed(`O canal **${channel.name}** foi excluído com sucesso!`)],
+        });
       }
     } catch (err) {
-      console.error('Erro ao excluir canal:', err);
-
       const timeoutEmbed = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({ name: 'Tempo esgotado! Cancelando a exclusão.', iconURL: icon_attention });
