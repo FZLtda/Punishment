@@ -1,6 +1,8 @@
 const { EmbedBuilder } = require('discord.js');
 const fetch = require('node-fetch');
 const { logModerationAction } = require('../utils/moderationUtils');
+const { yellow, green } = require('../config/colors.json');
+const { icon_attention } = require('../config/emoji.json');
 
 module.exports = {
   name: 'restore',
@@ -15,10 +17,10 @@ module.exports = {
     const attachment = message.attachments.first();
     if (!attachment) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Para continuar, envie o arquivo de backup junto com o comando.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
       
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -30,10 +32,10 @@ module.exports = {
 
       if (!backupData.roles || !backupData.channels) {
         const embedErroMinimo = new EmbedBuilder()
-          .setColor('#FF4C4C')
+          .setColor(yellow)
           .setAuthor({
             name: 'Não foi possível processar o backup. O arquivo pode estar corrompido.',
-            iconURL: 'https://bit.ly/43PItSI'
+            iconURL: icon_attention
           });
       
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -127,7 +129,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('<:1000042885:1336044571125354496> Restauração Completa')
-        .setColor('Green')
+        .setColor(green)
         .setDescription('O estado do servidor foi restaurado com sucesso a partir do backup fornecido!')
         .addFields(
           { name: 'Canais Restaurados', value: `${backupData.channels.length}`, inline: true },
@@ -143,10 +145,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível processar o backup devido a um erro.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
       
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
