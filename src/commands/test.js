@@ -5,7 +5,7 @@ const axios = require('axios');
 const crypto = require('crypto');
 
 module.exports = {
-  name: 'test',
+  name: 'doar',
   description: 'Faça uma doação via Pix para apoiar o Punishment!',
   usage: '${currentPrefix}doar <valor>',
   userPermissions: ['SendMessages'],
@@ -33,23 +33,10 @@ module.exports = {
           payment_method_id: 'pix',
           description: 'Doação para Punishment',
           statement_descriptor: 'PUNISHMENT',
-          notification_url: 'https://webhook.site/seu-endpoint-aqui',
-          back_urls: {
-            success: 'https://funczero.xyz/sucesso',
-            failure: 'https://funczero.xyz/falha',
-            pending: 'https://funczero.xyz/pendente'
-          },
+          notification_url: 'https://webhook.site/seu-endpoint-aqui', // troque pelo seu webhook real
           payer: {
             email: 'comprador@email.com'
-          },
-          items: [
-            {
-              title: 'Doação Punishment',
-              description: 'Apoio ao projeto de moderação',
-              quantity: 1,
-              unit_price: valor
-            }
-          ]
+          }
         },
         {
           headers: {
@@ -81,7 +68,6 @@ module.exports = {
       const msg = await message.channel.send({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
 
       setTimeout(() => msg.delete().catch(() => {}), 2 * 60 * 1000);
-
     } catch (error) {
       console.error('Erro Mercado Pago:', error.response?.data || error.message);
 
