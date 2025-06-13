@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { logModerationAction } = require('../utils/moderationUtils');
-const { yellow } = require('../config/colors.json');
+const { yellow, red } = require('../config/colors.json');
 const { icon_attention } = require('../config/emoji.json');
 
 module.exports = {
