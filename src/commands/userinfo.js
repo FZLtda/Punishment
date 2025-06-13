@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const moment = require('moment-timezone');
+const { red } = require('../config/colors.json');
 
 module.exports = {
   name: 'userinfo',
@@ -21,7 +22,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle(`<:1000046547:1340465282568945675> Informações de ${user.displayName}`)
       .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 1024 }))
-      .setColor('fe3838')
+      .setColor(red)
       .addFields(
         { name: 'Usuário', value: user.tag, inline: true },
         { name: 'ID', value: user.id, inline: true },
