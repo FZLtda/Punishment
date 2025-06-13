@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { yellow } = require('../config/colors.json');
-const { attent } = require('../config/emoji.json');
+const { icon_attention } = require('../config/emoji.json');
 
 module.exports = {
   name: 'warn',
@@ -12,8 +12,15 @@ module.exports = {
   async execute(message, args) {
     const user = message.mentions.members.first();
     if (!user) {
+      const embedErro = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
+          name: 'Você precisa mencionar um usuário para avisar.',
+          iconURL: icon_attention,
+        });
+
       return message.reply({
-        content: `${attent} Você precisa mencionar um usuário para avisar.`,
+        embeds: [embedErro],
         allowedMentions: { repliedUser: false },
       });
     }
