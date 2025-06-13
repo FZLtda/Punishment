@@ -35,41 +35,21 @@ module.exports = {
           description: 'Doação para Punishment',
           statement_descriptor: 'PUNISHMENT',
           notification_url: 'https://webhook.site/seu-endpoint-aqui',
+
           external_reference: externalReference,
 
           payer: {
             email: 'contato@funczero.xyz',
             first_name: message.author.username,
             last_name: 'DiscordUser',
-            identification: {
-              type: 'CPF',
-              number: '12345678900' // ⚠️ Use um valor fictício, ou real com consentimento
+            phone: {
+              number: '11999999999' // ✅ Pontos extras
             },
-            address: {
-              zip_code: '12345678',
-              street_name: 'Rua Exemplo',
-              street_number: '100',
-              neighborhood: 'Centro',
-              city: 'São Paulo',
-              federal_unit: 'SP'
-            }
+            date_created: new Date().toISOString(), // ✅ Ponto extra
+            registration_date: new Date().toISOString() // ✅ Ponto extra
           },
 
           additional_info: {
-            payer: {
-              first_name: message.author.username,
-              last_name: 'DiscordUser',
-              phone: {
-                area_code: '11',
-                number: '999999999'
-              },
-              registration_date: '2023-01-01T00:00:00.000-03:00', // valor genérico
-              address: {
-                zip_code: '12345678',
-                street_name: 'Rua Exemplo',
-                street_number: '100'
-              }
-            },
             items: [
               {
                 id: 'donation',
@@ -80,12 +60,6 @@ module.exports = {
                 unit_price: valor
               }
             ]
-          },
-
-          metadata: {
-            discord_user_id: message.author.id,
-            discord_username: message.author.tag,
-            projeto: 'Punishment'
           }
         },
         {
