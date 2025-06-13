@@ -43,10 +43,8 @@ module.exports = {
             first_name: message.author.username,
             last_name: 'DiscordUser',
             phone: {
-              number: '11999999999' // ✅ Pontos extras
-            },
-            date_created: new Date().toISOString(), // ✅ Ponto extra
-            registration_date: new Date().toISOString() // ✅ Ponto extra
+              number: '11999999999' // ✅ Pontua
+            }
           },
 
           additional_info: {
