@@ -24,6 +24,7 @@ module.exports = {
     }
 
     const idempotencyKey = crypto.randomUUID();
+    const externalReference = `donation-${message.author.id}-${Date.now()}`;
 
     try {
       const response = await axios.post(
@@ -33,11 +34,58 @@ module.exports = {
           payment_method_id: 'pix',
           description: 'Doação para Punishment',
           statement_descriptor: 'PUNISHMENT',
-          notification_url: 'https://webhook.site/seu-endpoint-aqui', // Troque pelo seu webhook real
+          notification_url: 'https://webhook.site/seu-endpoint-aqui',
+          external_reference: externalReference,
+
           payer: {
             email: 'contato@funczero.xyz',
-            first_name: 'FuncZero',
-            last_name: 'User'
+            first_name: message.author.username,
+            last_name: 'DiscordUser',
+            identification: {
+              type: 'CPF',
+              number: '12345678900' // ⚠️ Use um valor fictício, ou real com consentimento
+            },
+            address: {
+              zip_code: '12345678',
+              street_name: 'Rua Exemplo',
+              street_number: '100',
+              neighborhood: 'Centro',
+              city: 'São Paulo',
+              federal_unit: 'SP'
+            }
+          },
+
+          additional_info: {
+            payer: {
+              first_name: message.author.username,
+              last_name: 'DiscordUser',
+              phone: {
+                area_code: '11',
+                number: '999999999'
+              },
+              registration_date: '2023-01-01T00:00:00.000-03:00', // valor genérico
+              address: {
+                zip_code: '12345678',
+                street_name: 'Rua Exemplo',
+                street_number: '100'
+              }
+            },
+            items: [
+              {
+                id: 'donation',
+                title: 'Doação Punishment',
+                description: 'Apoio ao projeto de moderação',
+                category_id: 'donation',
+                quantity: 1,
+                unit_price: valor
+              }
+            ]
+          },
+
+          metadata: {
+            discord_user_id: message.author.id,
+            discord_username: message.author.tag,
+            projeto: 'Punishment'
           }
         },
         {
