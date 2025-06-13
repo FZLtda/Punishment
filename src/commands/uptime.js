@@ -1,4 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
+const { yellow, red } = require('../config/colors.json');
+const { icon_attention } = require('../config/emoji.json');
 
 function formatUptime(seconds) {
   const days = Math.floor(seconds / 86400);
@@ -25,7 +27,7 @@ module.exports = {
       const uptime = formatUptime(process.uptime());
 
       const embed = new EmbedBuilder()
-        .setColor('#FE3838')
+        .setColor(red)
         .setTitle('Punishment Uptime')
         .addFields(
           {  
@@ -44,10 +46,10 @@ module.exports = {
     } catch (error) {
       console.error('[ERROR] Não foi possível obter as estatísticas:', error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível recuperar as estatísticas do bot devido a um erro.',
-          iconURL: 'http://bit.ly/4aIyY9j'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
