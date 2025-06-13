@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { logModerationAction } = require('../utils/moderationUtils');
-const { yellow } = require('../config/colors.json');
+const { yellow, green } = require('../config/colors.json');
 const { icon_attention } = require('../config/emoji.json');
 
 module.exports = {
@@ -17,10 +17,10 @@ module.exports = {
 
     if (!membro) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Mencione um usuário para executar esta ação.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } }); 
@@ -28,10 +28,10 @@ module.exports = {
 
     if (!membro.communicationDisabledUntilTimestamp) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Não é possível remover o mute, pois o usuário não está silenciado.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -50,7 +50,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('<:Desmutado:1355700639681740880> Punição removida')
-        .setColor('Green')
+        .setColor(green)
         .setDescription(`${membro} (\`${membro.id}\`) foi desmutado(a)!`)
         .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
         .setFooter({
@@ -64,10 +64,10 @@ module.exports = {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
       
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível remover o mute do usuário devido a um erro.',
-          iconURL: `${icon_attention}`,
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
