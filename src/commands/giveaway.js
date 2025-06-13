@@ -1,4 +1,6 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { yellow, red } = require('../config/colors.json');
+const { icon_attention } = require('../config/emoji.json');
 const db = require('../data/database');
 
 module.exports = {
@@ -25,8 +27,10 @@ module.exports = {
 
       if (!timeInput || isNaN(winnerCount) || !prize) {
         const embedErro = new EmbedBuilder()
-          .setColor('#FF4C4C')
-          .setAuthor({ name: 'Uso correto: .giveaway start <tempo> <ganhadores> <prêmio>', iconURL: 'https://bit.ly/43PItSI' });
+          .setColor(yellow)
+          .setAuthor({ 
+            name: 'Uso correto: .giveaway start <tempo> <ganhadores> <prêmio>', 
+            iconURL: icon_attention });
 
         return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
       }
@@ -44,7 +48,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setTitle('Novo Sorteio')
         .setDescription(`**Prêmio:** \`${prize}\`\n**Ganhador(es):** \`${winnerCount}\`\n**Termina:** <t:${Math.floor(endTime / 1000)}:f> (<t:${Math.floor(endTime / 1000)}:R>)`)
-        .setColor('#FE3838')
+        .setColor(red)
         .setFooter({ text: 'Clique no botão para participar!' });
 
       const row = new ActionRowBuilder().addComponents(
@@ -141,7 +145,7 @@ async function finalizeGiveaway(messageId, guildId, client) {
         `**Participantes:** \`${totalParticipants}\`\n` +
         `**Ganhador(es):** ${winners.length > 0 ? winners.join(', ') : '`Nenhum vencedor`'}`
       )
-      .setColor('#FE3838')
+      .setColor(red)
       .setFooter({ text: 'Sorteio encerrado!' });
 
     await message.edit({ embeds: [embed], components: [] });
