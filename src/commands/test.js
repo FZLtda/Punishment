@@ -23,7 +23,6 @@ module.exports = {
       return message.reply({ embeds: [erro], allowedMentions: { repliedUser: false } });
     }
 
-    const valorCentavos = Math.floor(valor * 100);
     const idempotencyKey = crypto.randomUUID();
 
     try {
@@ -33,13 +32,26 @@ module.exports = {
           transaction_amount: valor,
           payment_method_id: 'pix',
           description: 'Doação para Punishment',
-          payer: { email: 'comprador@email.com' },
+          statement_descriptor: 'PUNISHMENT',
+          notification_url: 'https://webhook.site/seu-endpoint-aqui',
+          payer: {
+            email: 'comprador@email.com'
+          },
+          items: [
+            {
+              title: 'Doação Punishment',
+              description: 'Contribuição para desenvolvimento do bot',
+              quantity: 1,
+              unit_price: valor
+            }
+          ]
         },
         {
           headers: {
             Authorization: `Bearer ${process.env.MERCADO_PAGO_TOKEN}`,
             'X-Idempotency-Key': idempotencyKey,
-          },
+            'Content-Type': 'application/json'
+          }
         }
       );
 
@@ -64,15 +76,16 @@ module.exports = {
       const msg = await message.channel.send({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
 
       setTimeout(() => msg.delete().catch(() => {}), 2 * 60 * 1000);
+
     } catch (error) {
+      console.error('Erro Mercado Pago:', error.response?.data || error.message);
+
       const erro = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
-          name: 'Erro ao gerar o Pix. Tente novamente',
+          name: 'Erro ao gerar o Pix. Tente novamente.',
           iconURL: icon_attention
         });
-
-      console.error('Erro Mercado Pago:', error.response?.data || error.message);
 
       await message.reply({ embeds: [erro], allowedMentions: { repliedUser: false } });
     }
