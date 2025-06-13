@@ -1,5 +1,5 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const { yellow } = require('../config/colors.json');
+const { yellow, green } = require('../config/colors.json');
 const { icon_attention } = require('../config/emoji.json');
 
 module.exports = {
@@ -16,10 +16,10 @@ module.exports = {
 
     if (!membro) {
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Mencione um usuário válido para alterar o apelido.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -27,10 +27,10 @@ module.exports = {
 
     if (!apelido) {
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Você deve fornecer um novo apelido.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -38,10 +38,10 @@ module.exports = {
 
     if (!membro.manageable) {
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Não é possível alterar o apelido deste usuário.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -52,7 +52,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('<:sucesso:1358918549846098201> Apelido alterado')
-        .setColor('Green')
+        .setColor(green)
         .setDescription(`O apelido de ${membro} foi alterado com sucesso!`)
         .addFields(
           { name: 'Novo apelido', value: `\`${apelido}\`` },
@@ -70,10 +70,10 @@ module.exports = {
       console.error(error);
 
       const embedErro = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível alterar o apelido devido a um erro.',
-          iconURL: `${icon_attention}`
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
