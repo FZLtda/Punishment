@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { check } = require('../config/emoji.json');
+const { yellow, green } = require('../config/colors.json');
+const { icon_attention, check } = require('../config/emoji.json');
 
 module.exports = {
   name: 'setprefix',
@@ -15,10 +16,10 @@ module.exports = {
 
     if (!newPrefix) {
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Você precisa informar o novo prefixo. Exemplo: .setprefix !',
-          iconURL: 'https://bit.ly/43PItSI',
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -26,10 +27,10 @@ module.exports = {
 
     if (newPrefix.length > 5) {
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'O prefixo não pode ter mais de 5 caracteres.',
-          iconURL: 'https://bit.ly/43PItSI',
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -40,7 +41,7 @@ module.exports = {
       setPrefix(message.guild.id, newPrefix);
 
       const embedSucesso = new EmbedBuilder()
-        .setColor('#2ecc71')
+        .setColor(green)
         .setTitle(`${check} Atualização de Prefixo`)
         .setDescription(`Prefixo atualizado para: ${newPrefix}`);
 
@@ -50,10 +51,10 @@ module.exports = {
       console.error('[ERRO] Falha ao atualizar o prefixo:', error);
 
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Erro ao atualizar o prefixo. Tente novamente mais tarde.',
-          iconURL: 'https://bit.ly/43PItSI',
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
