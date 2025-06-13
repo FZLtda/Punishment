@@ -5,7 +5,7 @@ const axios = require('axios');
 const crypto = require('crypto');
 
 module.exports = {
-  name: 'doar',
+  name: 'test',
   description: 'Faça uma doação via Pix para apoiar o Punishment!',
   usage: '${currentPrefix}doar <valor>',
   userPermissions: ['SendMessages'],
