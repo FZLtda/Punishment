@@ -35,7 +35,7 @@ module.exports = {
           statement_descriptor: 'PUNISHMENT',
           notification_url: 'https://webhook.site/seu-endpoint-aqui', // troque pelo seu webhook real
           payer: {
-            email: 'comprador@email.com'
+            email: 'contato@funczero.xyz'
           }
         },
         {
