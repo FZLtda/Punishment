@@ -1,5 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { logModerationAction } = require('../utils/moderationUtils');
+const { yellow, red } = require('../config/colors.json');
+const { icon_attention } = require('../config/emoji.json');
 
 module.exports = {
   name: 'removerole',
@@ -16,10 +18,10 @@ module.exports = {
 
     if (!member || !role) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Argumentos inválidos. O formato correto do comando é: removerole @membro @cargo',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -27,10 +29,10 @@ module.exports = {
 
     if (!member.roles.cache.has(role.id)) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Este usuário não possui este cargo.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -50,7 +52,7 @@ module.exports = {
       return message.channel.send({
         embeds: [
           new EmbedBuilder()
-            .setColor('Red')
+            .setColor(red)
             .setTitle('<:Removido:1355700154593710080> Cargo Removido')
             .setDescription(`O cargo ${role} foi removido de ${member}.`)
             .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
@@ -61,10 +63,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível remover o cargo.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
