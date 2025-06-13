@@ -16,85 +16,59 @@ module.exports = {
     const valor = parseFloat(args[0]?.replace(',', '.'));
 
     if (!valor || valor <= 0) {
-      const erro = new EmbedBuilder()
+      const erroEmbed = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({ name: 'Informe um valor válido!', iconURL: icon_attention });
 
-      return message.reply({ embeds: [erro], allowedMentions: { repliedUser: false } });
+      return message.reply({ embeds: [erroEmbed], allowedMentions: { repliedUser: false } });
     }
 
     const idempotencyKey = crypto.randomUUID();
     const externalReference = `donation-${message.author.id}-${Date.now()}`;
-    const registrationDate = new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString(); // 30 dias atrás
+
+    const payload = {
+      transaction_amount: valor,
+      payment_method_id: 'pix',
+      description: 'Doação para Punishment',
+      notification_url: 'https://webhook.site/seu-endpoint-aqui',
+      external_reference: externalReference,
+
+      payer: {
+        email: 'contato@funczero.xyz',
+        first_name: message.author.username,
+        last_name: 'DiscordUser'
+      },
+
+      additional_info: {
+        items: [
+          {
+            id: 'donation',
+            title: 'Doação Punishment',
+            description: 'Apoio ao projeto de moderação',
+            category_id: 'donation',
+            quantity: 1,
+            unit_price: valor
+          }
+        ]
+      },
+
+      metadata: {
+        discord_id: message.author.id,
+        donation_value: valor,
+        bot: 'Punishment'
+      }
+    };
 
     try {
-      const response = await axios.post(
-        'https://api.mercadopago.com/v1/payments',
-        {
-          transaction_amount: valor,
-          payment_method_id: 'pix',
-          description: 'Doação para Punishment',
-          statement_descriptor: 'PUNISHMENT',
-          notification_url: 'https://webhook.site/seu-endpoint-aqui',
-
-          external_reference: externalReference,
-
-          payer: {
-            email: 'contato@funczero.xyz',
-            first_name: message.author.username,
-            last_name: 'DiscordUser',
-            phone: {
-              number: '11999999999'
-            },
-            identification: {
-              type: 'CPF',
-              number: '12345678909' // Pode ser fictício, não precisa validar.
-            },
-            address: {
-              zip_code: '01010000',
-              street_name: 'Rua Exemplo',
-              street_number: '123',
-              neighborhood: 'Centro',
-              city: 'São Paulo',
-              federal_unit: 'SP'
-            }
-          },
-
-          additional_info: {
-            items: [
-              {
-                id: 'donation',
-                title: 'Doação Punishment',
-                description: 'Apoio ao projeto de moderação',
-                category_id: 'donation',
-                quantity: 1,
-                unit_price: valor
-              }
-            ],
-            payer: {
-              first_name: message.author.username,
-              last_name: 'DiscordUser',
-              registration_date: registrationDate
-            }
-          },
-
-          metadata: {
-            discord_id: message.author.id,
-            donation_value: valor,
-            bot: 'Punishment'
-          }
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.MP_TOKEN}`,
-            'X-Idempotency-Key': idempotencyKey,
-            'Content-Type': 'application/json'
-          }
+      const { data } = await axios.post('https://api.mercadopago.com/v1/payments', payload, {
+        headers: {
+          Authorization: `Bearer ${process.env.MP_TOKEN}`,
+          'X-Idempotency-Key': idempotencyKey,
+          'Content-Type': 'application/json'
         }
-      );
+      });
 
-      const { point_of_interaction } = response.data;
-      const pixUrl = point_of_interaction.transaction_data.ticket_url;
+      const pixUrl = data.point_of_interaction.transaction_data.ticket_url;
 
       const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
@@ -106,25 +80,24 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setColor(red)
         .setTitle('Doação Pix Iniciada')
-        .setDescription(
-          `${message.author}, você está doando **R$${valor.toFixed(2)}** para o **Punishment**.`
-        )
+        .setDescription(`${message.author}, você está doando **R$${valor.toFixed(2)}** para o **Punishment**.`)
         .setFooter({ text: 'Finalize sua doação clicando no botão abaixo.' });
 
       const msg = await message.channel.send({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
 
       setTimeout(() => msg.delete().catch(() => {}), 2 * 60 * 1000);
+
     } catch (error) {
       console.error('Erro Mercado Pago:', error.response?.data || error.message);
 
-      const erro = new EmbedBuilder()
+      const erroEmbed = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
           name: 'Erro ao gerar o Pix. Tente novamente.',
           iconURL: icon_attention
         });
 
-      await message.reply({ embeds: [erro], allowedMentions: { repliedUser: false } });
+      await message.reply({ embeds: [erroEmbed], allowedMentions: { repliedUser: false } });
     }
   }
 };
