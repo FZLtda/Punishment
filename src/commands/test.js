@@ -1,8 +1,12 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { yellow, red } = require('../config/colors.json');
 const { icon_attention } = require('../config/emoji.json');
-const axios = require('axios');
 const crypto = require('crypto');
+const mercadopago = require('mercadopago');
+
+mercadopago.configure({
+  access_token: process.env.MP_TOKEN
+});
 
 module.exports = {
   name: 'test',
@@ -27,50 +31,39 @@ module.exports = {
     const externalReference = `donation-${message.author.id}-${Date.now()}`;
 
     try {
-      const response = await axios.post(
-        'https://api.mercadopago.com/v1/payments',
-        {
-          transaction_amount: valor,
-          payment_method_id: 'pix',
-          description: 'Doação para Punishment',
-          statement_descriptor: 'PUNISHMENT',
-          notification_url: 'https://webhook.site/seu-endpoint-aqui',
+      const paymentData = {
+        transaction_amount: valor,
+        payment_method_id: 'pix',
+        description: 'Doação para Punishment',
+        statement_descriptor: 'PUNISHMENT',
+        notification_url: 'https://webhook.site/seu-endpoint-aqui',
+        external_reference: externalReference,
 
-          external_reference: externalReference,
-
-          payer: {
-            email: 'contato@funczero.xyz',
-            first_name: message.author.username,
-            last_name: 'DiscordUser',
-            phone: {
-              number: '11999999999' // ✅ Pontua
-            }
-          },
-
-          additional_info: {
-            items: [
-              {
-                id: 'donation',
-                title: 'Doação Punishment',
-                description: 'Apoio ao projeto de moderação',
-                category_id: 'donation',
-                quantity: 1,
-                unit_price: valor
-              }
-            ]
+        payer: {
+          email: 'contato@funczero.xyz',
+          first_name: message.author.username,
+          last_name: 'DiscordUser',
+          phone: {
+            number: '11999999999' // campo extra para somar pontos
           }
         },
-        {
-          headers: {
-            Authorization: `Bearer ${process.env.MP_TOKEN}`,
-            'X-Idempotency-Key': idempotencyKey,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
 
-      const { point_of_interaction } = response.data;
-      const pixUrl = point_of_interaction.transaction_data.ticket_url;
+        additional_info: {
+          items: [
+            {
+              id: 'donation',
+              title: 'Doação Punishment',
+              description: 'Apoio ao projeto de moderação',
+              category_id: 'donation',
+              quantity: 1,
+              unit_price: valor
+            }
+          ]
+        }
+      };
+
+      const response = await mercadopago.payment.create(paymentData);
+      const pixUrl = response.body.point_of_interaction.transaction_data.ticket_url;
 
       const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
