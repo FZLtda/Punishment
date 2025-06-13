@@ -68,7 +68,7 @@ module.exports = {
       const erro = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
-          name: 'Erro ao gerar o Pix. Tente novamente.',
+          name: 'Erro ao gerar o Pix. Tente novamente',
           iconURL: icon_attention
         });
 
