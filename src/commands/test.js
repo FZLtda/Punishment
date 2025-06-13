@@ -24,7 +24,6 @@ module.exports = {
     }
 
     const idempotencyKey = crypto.randomUUID();
-    const externalReference = `donation-${message.author.id}-${Date.now()}`;
 
     try {
       const response = await axios.post(
@@ -34,26 +33,11 @@ module.exports = {
           payment_method_id: 'pix',
           description: 'Doação para Punishment',
           statement_descriptor: 'PUNISHMENT',
-          notification_url: 'https://webhook.site/seu-endpoint-aqui',
-
-          external_reference: externalReference,
+          notification_url: 'https://webhook.site/seu-endpoint-aqui', // Troque pelo seu webhook real
           payer: {
             email: 'contato@funczero.xyz',
-            first_name: message.author.username,
-            last_name: 'DiscordUser'
-          },
-
-          additional_info: {
-            items: [
-              {
-                id: 'donation',
-                title: 'Doação Punishment',
-                description: 'Apoio ao projeto de moderação',
-                category_id: 'donation',
-                quantity: 1,
-                unit_price: valor
-              }
-            ]
+            first_name: 'FuncZero',
+            last_name: 'User'
           }
         },
         {
