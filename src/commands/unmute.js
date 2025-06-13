@@ -30,7 +30,7 @@ module.exports = {
       const embedErroMinimo = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
-          name: 'Não é possível remover o mute, pois o usuário não está silenciado.',
+          name: 'Este usuário não está silenciado no momento.',
           iconURL: icon_attention
         });
 
