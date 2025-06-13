@@ -1,5 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const db = require('../data/database');
+const { yellow, red } = require('../config/colors.json');
+const { icon_attention } = require('../config/emoji.json');
 
 module.exports = {
   name: 'mod-stats',
@@ -62,7 +64,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('Estatísticas de Moderação')
-        .setColor('#FE3838')
+        .setColor(red)
         .addFields(
           { name: '<:1000043480:1336455409904517151> Total de Ações', value: `\`${totalActions.count || 0}\``, inline: true },
           { name: '<:1000043157:1336324220770062497> Ações por Tipo', value: typeStats, inline: true },
@@ -79,10 +81,10 @@ module.exports = {
     } catch (error) {
       console.error('[ERROR] Falha ao gerar estatísticas de moderação:', error);
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível gerar as estatísticas de moderação devido a um erro.',
-          iconURL: 'https://bit.ly/43PItSI',
+          iconURL: icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
