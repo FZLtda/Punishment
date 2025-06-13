@@ -44,7 +44,7 @@ module.exports = {
       const usage = command.usage?.replace('${currentPrefix}', currentPrefix) || 'Não especificado.';
 
       const embed = new EmbedBuilder()
-        .setColor(0xfe3838)
+        .setColor(red)
         .setTitle(`<:1000042965:1336131844718202942> ${command.name}`)
         .setDescription(command.description || '`Nenhuma descrição disponível.`')
         .addFields(
