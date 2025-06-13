@@ -1,5 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { logModerationAction } = require('../utils/moderationUtils');
+const { yellow, red } = require('../config/colors.json');
+const { icon_attention } = require('../config/emoji.json');
 
 module.exports = {
   name: 'kick',
@@ -16,10 +18,10 @@ module.exports = {
 
     if (!membro) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Mencione um usuário para executar esta ação.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -27,10 +29,10 @@ module.exports = {
 
     if (!membro.kickable) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Este usuário não pode ser expulso devido às suas permissões.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -43,7 +45,7 @@ module.exports = {
 
       const kickEmbed = new EmbedBuilder()
         .setTitle('<:Expulso:1355700922197606573> Punição aplicada')
-        .setColor('Red')
+        .setColor(red)
         .setDescription(`${membro} (\`${membro.id}\`) foi expulso(a) do servidor!`)
         .addFields(
           { name: 'Motivo', value: `\`${motivo}\``, inline: false }
@@ -59,10 +61,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Não foi possível expulsar o usuário devido a um erro.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
