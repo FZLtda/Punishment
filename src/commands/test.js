@@ -1,12 +1,8 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { yellow, red } = require('../config/colors.json');
 const { icon_attention } = require('../config/emoji.json');
+const axios = require('axios');
 const crypto = require('crypto');
-const mercadopago = require('mercadopago');
-
-mercadopago.configure({
-  access_token: process.env.MP_TOKEN
-});
 
 module.exports = {
   name: 'test',
@@ -27,51 +23,78 @@ module.exports = {
       return message.reply({ embeds: [erro], allowedMentions: { repliedUser: false } });
     }
 
+    const idempotencyKey = crypto.randomUUID();
     const externalReference = `donation-${message.author.id}-${Date.now()}`;
     const registrationDate = new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString(); // 30 dias atrás
 
     try {
-      const payment_data = {
-        transaction_amount: valor,
-        payment_method_id: 'pix',
-        description: 'Doação para Punishment',
-        statement_descriptor: 'PUNISHMENT',
-        notification_url: 'https://webhook.site/seu-endpoint-aqui',
-        external_reference: externalReference,
+      const response = await axios.post(
+        'https://api.mercadopago.com/v1/payments',
+        {
+          transaction_amount: valor,
+          payment_method_id: 'pix',
+          description: 'Doação para Punishment',
+          statement_descriptor: 'PUNISHMENT',
+          notification_url: 'https://webhook.site/seu-endpoint-aqui',
 
-        payer: {
-          email: 'contato@funczero.xyz',
-          first_name: message.author.username,
-          last_name: 'DiscordUser',
-          phone: {
-            number: '11999999999'
-          }
-        },
+          external_reference: externalReference,
 
-        additional_info: {
-          items: [
-            {
-              id: 'donation',
-              title: 'Doação Punishment',
-              description: 'Apoio ao projeto de moderação',
-              category_id: 'donation',
-              quantity: 1,
-              unit_price: valor
-            }
-          ],
           payer: {
+            email: 'contato@funczero.xyz',
             first_name: message.author.username,
             last_name: 'DiscordUser',
-            registration_date: registrationDate,
             phone: {
               number: '11999999999'
+            },
+            identification: {
+              type: 'CPF',
+              number: '12345678909' // Pode ser fictício, não precisa validar.
+            },
+            address: {
+              zip_code: '01010000',
+              street_name: 'Rua Exemplo',
+              street_number: '123',
+              neighborhood: 'Centro',
+              city: 'São Paulo',
+              federal_unit: 'SP'
             }
+          },
+
+          additional_info: {
+            items: [
+              {
+                id: 'donation',
+                title: 'Doação Punishment',
+                description: 'Apoio ao projeto de moderação',
+                category_id: 'donation',
+                quantity: 1,
+                unit_price: valor
+              }
+            ],
+            payer: {
+              first_name: message.author.username,
+              last_name: 'DiscordUser',
+              registration_date: registrationDate
+            }
+          },
+
+          metadata: {
+            discord_id: message.author.id,
+            donation_value: valor,
+            bot: 'Punishment'
+          }
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.MP_TOKEN}`,
+            'X-Idempotency-Key': idempotencyKey,
+            'Content-Type': 'application/json'
           }
         }
-      };
+      );
 
-      const response = await mercadopago.payment.create(payment_data);
-      const pixUrl = response.body.point_of_interaction.transaction_data.ticket_url;
+      const { point_of_interaction } = response.data;
+      const pixUrl = point_of_interaction.transaction_data.ticket_url;
 
       const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
@@ -92,7 +115,7 @@ module.exports = {
 
       setTimeout(() => msg.delete().catch(() => {}), 2 * 60 * 1000);
     } catch (error) {
-      console.error('Erro Mercado Pago:', error.response?.body || error.message);
+      console.error('Erro Mercado Pago:', error.response?.data || error.message);
 
       const erro = new EmbedBuilder()
         .setColor(yellow)
