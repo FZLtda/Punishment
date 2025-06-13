@@ -1,7 +1,9 @@
+const { EmbedBuilder } = require('discord.js');
 const logger = require('../utils/logger');
 const db = require('../data/database');
 const { getPrefix, setPrefix } = require('../utils/prefixUtils');
-const { error, attent } = require('../config/emoji.json');
+const { yellow } = require('../config/colors.json');
+const { icon_attention, icon_error } = require('../config/emoji.json');
 const { checkTerms } = require('../handlers/termsHandler');
 
 async function handleCommandUsage(commandName) {
@@ -38,20 +40,28 @@ async function handleCommands(message, client) {
     if (command.botPermissions) {
       const botPerms = message.channel?.permissionsFor(client.user);
       if (!botPerms?.has(command.botPermissions)) {
-        return message.reply({
-          content: `${error} Eu não tenho permissões suficientes para executar esse comando.`,
-          allowedMentions: { repliedUser: false },
-        });
+        const embedErro = new EmbedBuilder()
+          .setColor(red)
+          .setAuthor({
+            name: 'Permissões insuficientes para o bot executar esse comando.',
+            iconURL: icon_error,
+          });
+
+        return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
       }
     }
 
     if (command.userPermissions) {
       const userPerms = message.channel?.permissionsFor(message.member);
       if (!userPerms?.has(command.userPermissions)) {
-        return message.reply({
-          content: `${error} Você não tem permissões suficientes para usar esse comando.`,
-          allowedMentions: { repliedUser: false },
-        });
+        const embedErro = new EmbedBuilder()
+          .setColor(red)
+          .setAuthor({
+            name: 'Você não tem permissões suficientes para usar esse comando.',
+            iconURL: icon_error,
+          });
+
+        return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
       }
     }
 
@@ -72,11 +82,14 @@ async function handleCommands(message, client) {
       content: message.content,
     });
 
-    await message.reply({
-      content: `${attent} Não foi possível processar o comando no momento.`,
-      allowedMentions: { repliedUser: false },
-    });
+    const embedErro = new EmbedBuilder()
+      .setColor(yellow)
+      .setAuthor({
+        name: 'teste',
+        iconURL: icon_attention,
+      });
 
+    await message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     return false;
   }
 }
