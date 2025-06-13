@@ -10,15 +10,18 @@ module.exports = {
   userPermissions: ['SendMessages'],
   botPermissions: ['SendMessages'],
   deleteMessage: true,
-  
+
   async execute(message, args) {
     try {
-
       if (args[0] !== 'start') {
-        return message.reply({
-          content: '<:1000042883:1336044555354771638> Uso correto: `.giveaway start <tempo> <ganhadores> <prêmio>`',
-          allowedMentions: { repliedUser: false },
-        });
+        const embedErro = new EmbedBuilder()
+          .setColor(yellow)
+          .setAuthor({
+            name: 'Uso correto: .giveaway start <tempo> <ganhadores> <prêmio>',
+            iconURL: icon_attention,
+          });
+
+        return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
       }
 
       const timeInput = args[1];
@@ -28,19 +31,24 @@ module.exports = {
       if (!timeInput || isNaN(winnerCount) || !prize) {
         const embedErro = new EmbedBuilder()
           .setColor(yellow)
-          .setAuthor({ 
-            name: 'Uso correto: .giveaway start <tempo> <ganhadores> <prêmio>', 
-            iconURL: icon_attention });
+          .setAuthor({
+            name: 'Uso correto: .giveaway start <tempo> <ganhadores> <prêmio>',
+            iconURL: icon_attention,
+          });
 
         return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
       }
 
       const durationMs = convertTimeToMs(timeInput);
       if (!durationMs) {
-        return message.reply({
-          content: '<:1000042883:1336044555354771638> Formato de tempo inválido! Use `1m`, `1h`, `1d`.',
-          allowedMentions: { repliedUser: false },
-        });
+        const embedErro = new EmbedBuilder()
+          .setColor(yellow)
+          .setAuthor({
+            name: 'Formato de tempo inválido! Use 1m, 1h ou 1d.',
+            iconURL: icon_attention,
+          });
+
+        return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
       }
 
       const endTime = Date.now() + durationMs;
@@ -77,12 +85,18 @@ module.exports = {
       setTimeout(() => {
         finalizeGiveaway(giveawayMessage.id, message.guild.id, message.client);
       }, durationMs);
+
     } catch (error) {
       console.error(`[ERRO] Erro ao iniciar o sorteio: ${error.message}`);
-      message.reply({
-        content: '<:1000042883:1336044555354771638> Ocorreu um erro ao iniciar o sorteio. Por favor, tente novamente.',
-        allowedMentions: { repliedUser: false },
-      });
+
+      const embedErro = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
+          name: 'Ocorreu um erro ao iniciar o sorteio. Por favor, tente novamente.',
+          iconURL: icon_attention,
+        });
+
+      message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
   },
 };
@@ -96,11 +110,11 @@ function convertTimeToMs(time) {
   const unit = match[2];
 
   switch (unit) {
-  case 's': return value * 1000;
-  case 'm': return value * 60000;
-  case 'h': return value * 3600000;
-  case 'd': return value * 86400000;
-  default: return null;
+    case 's': return value * 1000;
+    case 'm': return value * 60000;
+    case 'h': return value * 3600000;
+    case 'd': return value * 86400000;
+    default: return null;
   }
 }
 
@@ -149,11 +163,9 @@ async function finalizeGiveaway(messageId, guildId, client) {
       .setFooter({ text: 'Sorteio encerrado!' });
 
     await message.edit({ embeds: [embed], components: [] });
-
     await channel.send(winnerMessage);
-
     db.prepare('DELETE FROM giveaways WHERE message_id = ?').run(messageId);
   } catch (error) {
     console.error(`[ERROR] Erro ao finalizar o sorteio: ${error.message}`);
   }
-}
+            }
