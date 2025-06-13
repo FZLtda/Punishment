@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 const logger = require('../utils/logger');
 const db = require('../data/database');
 const { getPrefix, setPrefix } = require('../utils/prefixUtils');
-const { yellow } = require('../config/colors.json');
+const { yellow, red } = require('../config/colors.json');
 const { icon_attention, icon_error } = require('../config/emoji.json');
 const { checkTerms } = require('../handlers/termsHandler');
 
@@ -85,7 +85,7 @@ async function handleCommands(message, client) {
     const embedErro = new EmbedBuilder()
       .setColor(yellow)
       .setAuthor({
-        name: 'teste',
+        name: 'Não foi possível processar o comando devido a um erro.',
         iconURL: icon_attention,
       });
 
