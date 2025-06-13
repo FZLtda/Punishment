@@ -34,13 +34,18 @@ module.exports = {
           description: 'Doação para Punishment',
           statement_descriptor: 'PUNISHMENT',
           notification_url: 'https://webhook.site/seu-endpoint-aqui',
+          back_urls: {
+            success: 'https://funczero.xyz/sucesso',
+            failure: 'https://funczero.xyz/falha',
+            pending: 'https://funczero.xyz/pendente'
+          },
           payer: {
             email: 'comprador@email.com'
           },
           items: [
             {
               title: 'Doação Punishment',
-              description: 'Contribuição para desenvolvimento do bot',
+              description: 'Apoio ao projeto de moderação',
               quantity: 1,
               unit_price: valor
             }
