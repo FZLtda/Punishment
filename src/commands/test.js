@@ -2,6 +2,7 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('
 const { yellow, red } = require('../config/colors.json');
 const { icon_attention } = require('../config/emoji.json');
 const axios = require('axios');
+const { v4: uuidv4 } = require('uuid');
 
 module.exports = {
   name: 'test',
@@ -12,77 +13,78 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message, args) {
-    const raw = (args[0] || '').replace(',', '.');
-    const valor = parseFloat(raw);
-
-    if (isNaN(valor)) {
+    const valor = parseFloat(args[0]?.replace(',', '.'));
+    if (!valor || isNaN(valor)) {
       const embedErro = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
-          name: 'Valor inválido. Exemplo: .doar 10',
+          name: 'Informe um valor válido. Ex: .doar 10',
           iconURL: icon_attention,
         });
-
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
+
+    const centavos = Math.round(valor * 100);
+    const idempotencyKey = uuidv4();
 
     try {
       const response = await axios.post(
         'https://api.mercadopago.com/v1/payments',
         {
           transaction_amount: valor,
-          description: 'Doação para Punishment',
           payment_method_id: 'pix',
+          description: 'Doação para Punishment',
           payer: {
-            email: `${message.author.id}@punishment.dev`
+            email: `${message.author.id}@punishment.bot`, // dummy email obrigatório
+            first_name: message.author.username,
           },
-          notification_url: 'https://funczero.xyz/doacoes/webhook', // seu webhook
         },
         {
           headers: {
-            Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}`,
+            'Authorization': `Bearer ${process.env.MERCADOPAGO_TOKEN}`,
             'Content-Type': 'application/json',
-            'X-Idempotency-Key': `${message.author.id}-${Date.now()}`
-          }
+            'X-Idempotency-Key': idempotencyKey,
+          },
         }
       );
 
-      const { id, point_of_interaction } = response.data;
-      const qrImage = point_of_interaction.transaction_data.qr_code_base64;
-      const qrCode = point_of_interaction.transaction_data.qr_code;
+      const qrCode = response.data.point_of_interaction.transaction_data.qr_code_base64;
+      const linkPix = response.data.point_of_interaction.transaction_data.ticket_url;
 
       const embed = new EmbedBuilder()
         .setColor(red)
-        .setTitle('Doação via Pix')
-        .setDescription(`\`\`\`${qrCode}\`\`\``)
-        .setImage(`data:image/png;base64,${qrImage}`)
-        .setFooter({ text: `ID da doação: ${id}` });
+        .setTitle('Doação Iniciada')
+        .setDescription(`Valor: R$${valor.toFixed(2)}`)
+        .setImage(`data:image/png;base64,${qrCode}`)
+        .setFooter({ text: 'Escaneie o QR ou use o botão abaixo.' });
 
-      const row = new ActionRowBuilder()
-        .addComponents(
-          new ButtonBuilder()
-            .setLabel('Copiar código Pix')
-            .setStyle(ButtonStyle.Link)
-            .setURL(`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(qrCode)}`)
-        );
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setLabel('Abrir no App')
+          .setStyle(ButtonStyle.Link)
+          .setURL(linkPix)
+      );
 
-      await message.channel.send({
+      const msg = await message.channel.send({
         embeds: [embed],
         components: [row],
-        allowedMentions: { repliedUser: false }
+        allowedMentions: { repliedUser: false },
       });
 
-    } catch (err) {
-      console.error('Erro Mercado Pago:', err.response?.data || err);
+      setTimeout(() => {
+        msg.delete().catch(() => {});
+      }, 120000);
+    } catch (error) {
+      console.error('Erro Mercado Pago:', error.response?.data || error.message);
 
-      const embedErro = new EmbedBuilder()
+      const erroEmbed = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
           name: 'Erro ao gerar o Pix.',
           iconURL: icon_attention,
         });
 
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+      message.reply({ embeds: [erroEmbed], allowedMentions: { repliedUser: false } });
     }
-  }
+  },
 };
