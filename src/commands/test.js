@@ -27,11 +27,11 @@ module.exports = {
       return message.reply({ embeds: [erro], allowedMentions: { repliedUser: false } });
     }
 
-    const idempotencyKey = crypto.randomUUID();
     const externalReference = `donation-${message.author.id}-${Date.now()}`;
+    const registrationDate = new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString(); // 30 dias atrás
 
     try {
-      const paymentData = {
+      const payment_data = {
         transaction_amount: valor,
         payment_method_id: 'pix',
         description: 'Doação para Punishment',
@@ -44,7 +44,7 @@ module.exports = {
           first_name: message.author.username,
           last_name: 'DiscordUser',
           phone: {
-            number: '11999999999' // campo extra para somar pontos
+            number: '11999999999'
           }
         },
 
@@ -58,11 +58,19 @@ module.exports = {
               quantity: 1,
               unit_price: valor
             }
-          ]
+          ],
+          payer: {
+            first_name: message.author.username,
+            last_name: 'DiscordUser',
+            registration_date: registrationDate,
+            phone: {
+              number: '11999999999'
+            }
+          }
         }
       };
 
-      const response = await mercadopago.payment.create(paymentData);
+      const response = await mercadopago.payment.create(payment_data);
       const pixUrl = response.body.point_of_interaction.transaction_data.ticket_url;
 
       const row = new ActionRowBuilder().addComponents(
@@ -84,7 +92,7 @@ module.exports = {
 
       setTimeout(() => msg.delete().catch(() => {}), 2 * 60 * 1000);
     } catch (error) {
-      console.error('Erro Mercado Pago:', error.response?.data || error.message);
+      console.error('Erro Mercado Pago:', error.response?.body || error.message);
 
       const erro = new EmbedBuilder()
         .setColor(yellow)
