@@ -1,5 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const db = require('../data/database');
+const { yellow } = require('../config/colors.json');
+const { icon_attention } = require('../config/emoji.json');
 
 module.exports = {
   name: 'warnings',
@@ -14,10 +16,10 @@ module.exports = {
     const user = message.mentions.members.first();
     if (!user) {
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(yellow)
         .setAuthor({
           name: 'Mencione um usuário para visualizar os avisos.',
-          iconURL: 'https://bit.ly/43PItSI',
+          iconURL: icon_attention,
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -29,7 +31,7 @@ module.exports = {
 
     if (warnings.length === 0) {
       const embed = new EmbedBuilder()
-        .setColor('#2ECC71')
+        .setColor(yellow)
         .setTitle('Sem Avisos')
         .setDescription(`${user} não possui avisos.`)
         .setFooter({
@@ -42,7 +44,7 @@ module.exports = {
     }
 
     const embed = new EmbedBuilder()
-      .setColor('#FE3838')
+      .setColor(yellow)
       .setTitle(`Avisos para ${user.displayName}`)
       .setDescription(
         warnings
