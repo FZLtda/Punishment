@@ -53,7 +53,7 @@ module.exports = {
         },
         {
           headers: {
-            Authorization: `Bearer ${process.env.MERCADO_PAGO_TOKEN}`,
+            Authorization: `Bearer ${process.env.MP_TOKEN}`,
             'X-Idempotency-Key': idempotencyKey,
             'Content-Type': 'application/json'
           }
