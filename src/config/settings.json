@@ -16,7 +16,7 @@
   "SUPPORT": "https://discord.gg/SW4zKzAhQa",
   "TERMS": "https://docs.google.com/document/d/12-nG-vY0bhgIzsaO2moSHjh7QeCrQLSGd7W2XYDMXsk/mobilebasic",
 
-  "LOG_CHANNEL": "1356022546654433492",
+  "logChannelId": "1356022546654433492",
 
   "warnPunishments": [
     {
