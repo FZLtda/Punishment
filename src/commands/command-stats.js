@@ -22,7 +22,7 @@ module.exports = {
           iconURL: icon_error,
         });
 
-      return message.reply({ embeds: [embedSemPermissao], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedSemPermissao], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -96,11 +96,11 @@ module.exports = {
       const embedErro = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
-          name: 'Ocorreu um erro ao tentar exibir as estatísticas.',
+          name: 'Não foi possível exibir as estatísticas.',
           iconURL: icon_attention,
         });
 
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
   },
 };
