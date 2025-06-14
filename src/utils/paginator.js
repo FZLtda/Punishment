@@ -12,14 +12,8 @@ class Paginator {
 
     getButtons() {
         return new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setCustomId('prev')
-                .setLabel('◀️')
-                .setStyle(ButtonStyle.Primary),
-            new ButtonBuilder()
-                .setCustomId('next')
-                .setLabel('▶️')
-                .setStyle(ButtonStyle.Primary)
+            new ButtonBuilder().setCustomId('prev').setLabel('◀️').setStyle(ButtonStyle.Primary),
+            new ButtonBuilder().setCustomId('next').setLabel('▶️').setStyle(ButtonStyle.Primary)
         );
     }
 
