@@ -3,7 +3,6 @@ const db = require('../data/database');
 const { yellow } = require('../config/colors.json');
 const { icon_attention, attent } = require('../config/emoji.json');
 const { logChannelId } = require('../config/settings.json');
-const { buildEmbed } = require('../utils/embedUtils');
 const { applyPunishment } = require('../utils/punishmentSystem');
 const { saveWarnChannel } = require('../utils/warnChannelTracker');
 
@@ -16,36 +15,30 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message, args) {
+    if (this.deleteMessage) message.delete().catch(() => {});
+
     const target = message.mentions.members.first();
 
     if (!target) {
-      return message.channel.send({
-        embeds: [
-          buildEmbed({
-            color: yellow,
-            author: {
-              name: 'Você precisa mencionar um usuário para aplicar o aviso.',
-              iconURL: icon_attention,
-            },
-          }),
-        ],
-        allowedMentions: { repliedUser: false },
-      });
+      const embed = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
+          name: 'Você precisa mencionar um usuário para aplicar o aviso.',
+          iconURL: icon_attention,
+        });
+
+      return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
     if (target.user.bot || target.id === message.author.id) {
-      return message.channel.send({
-        embeds: [
-          buildEmbed({
-            color: yellow,
-            author: {
-              name: 'Não é possível avisar bots ou a si mesmo.',
-              iconURL: icon_attention,
-            },
-          }),
-        ],
-        allowedMentions: { repliedUser: false },
-      });
+      const embed = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
+          name: 'Não é possível avisar bots ou a si mesmo.',
+          iconURL: icon_attention,
+        });
+
+      return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
     const reason = args.slice(1).join(' ') || 'Motivo não especificado';
@@ -61,15 +54,15 @@ module.exports = {
       .prepare(`SELECT COUNT(*) AS count FROM warnings WHERE user_id = ? AND guild_id = ?`)
       .get(target.id, message.guild.id).count;
 
-    const embed = buildEmbed({
-      color: yellow,
-      title: `${attent} Aviso Aplicado`,
-      description: `${target} (\`${target.id}\`) recebeu um aviso.\n\n**Motivo:** ${reason}`,
-      footer: {
-        text: `${message.author.tag}`,
-        iconURL: message.author.displayAvatarURL(),
-      },
-    });
+    const embed = new EmbedBuilder()
+      .setColor(yellow)
+      .setTitle(`${attent} Aviso Aplicado`)
+      .setDescription(`${target} (\`${target.id}\`) recebeu um aviso.\n\n**Motivo:** ${reason}`)
+      .setFooter({
+        text: message.author.tag,
+        iconURL: message.author.displayAvatarURL({ dynamic: true }),
+      })
+      .setTimestamp();
 
     await message.channel.send({
       embeds: [embed],
@@ -78,15 +71,19 @@ module.exports = {
 
     const logChannel = message.guild.channels.cache.get(logChannelId);
     if (logChannel) {
-      const logEmbed = buildEmbed({
-        color: yellow,
-        title: `${attent} Advertência`,
-        description: `**Usuário:** ${target} (\`${target.id}\`)\n**Moderador:** ${message.author} (\`${message.author.id}\`)\n**Motivo:** ${reason}`,
-        footer: {
+      const logEmbed = new EmbedBuilder()
+        .setColor(yellow)
+        .setTitle(`${attent} Advertência`)
+        .setDescription(
+          `**Usuário:** ${target} (\`${target.id}\`)\n` +
+          `**Moderador:** ${message.author} (\`${message.author.id}\`)\n` +
+          `**Motivo:** ${reason}`
+        )
+        .setFooter({
           text: `Total de avisos: ${totalWarnings}`,
           iconURL: message.guild.iconURL(),
-        },
-      });
+        })
+        .setTimestamp();
 
       await logChannel.send({ embeds: [logEmbed] });
     }
