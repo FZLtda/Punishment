@@ -15,7 +15,8 @@ module.exports = {
       return message.channel.send({
         embeds: [buildEmbed({
           color: yellow,
-          author: { name: 'Você precisa mencionar um usuário.', iconURL: message.author.displayAvatarURL() }
+          author: { name: 'Você precisa mencionar um usuário.', 
+          iconURL: message.author.displayAvatarURL() }
         })],
         allowedMentions: { repliedUser: false },
       });
@@ -27,7 +28,7 @@ module.exports = {
     return message.channel.send({
       embeds: [buildEmbed({
         color: yellow,
-        title: '✅ Avisos Removidos',
+        title: 'Avisos Removidos',
         description: `Todos os avisos de ${user} foram removidos.`,
         footer: { text: message.author.tag, iconURL: message.author.displayAvatarURL() }
       })],
