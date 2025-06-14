@@ -1,96 +1,72 @@
 const { EmbedBuilder } = require('discord.js');
-const db = require('../data/database');
-const { yellow } = require('../config/colors.json');
-const { icon_attention, attent } = require('../config/emoji.json');
+const db = require('../../data/database');
+const { yellow } = require('../../config/colors.json');
+const { icon_attention, attent } = require('../../config/emoji.json');
+const { LOG_CHANNEL } = require('../../config/settings.json');
+const { buildEmbed } = require('../../utils/embedUtils');
+const { applyPunishment } = require('../../utils/punishmentSystem');
 
 module.exports = {
   name: 'warn',
-  description: 'Adiciona um aviso a um usuário no servidor.',
+  description: 'Adiciona um aviso a um membro.',
   usage: '${currentPrefix}warn <@usuário> [motivo]',
   userPermissions: ['ManageMessages'],
   botPermissions: ['ManageMessages'],
   deleteMessage: true,
 
   async execute(message, args) {
-    try {
-      const user = message.mentions.members.first();
+    const target = message.mentions.members.first();
 
-      if (!user) {
-        const embedErro = new EmbedBuilder()
-          .setColor(yellow)
-          .setAuthor({
-            name: 'Você precisa mencionar um usuário para avisar.',
-            iconURL: icon_attention,
-          });
-
-        return message.reply({
-          embeds: [embedErro],
-          allowedMentions: { repliedUser: false },
-        });
-      }
-
-      if (user.user.bot) {
-        return message.reply({
-          embeds: [
-            new EmbedBuilder()
-              .setColor(yellow)
-              .setAuthor({
-                name: 'Você não pode avisar um bot.',
-                iconURL: icon_attention,
-              }),
-          ],
-          allowedMentions: { repliedUser: false },
-        });
-      }
-
-      if (user.id === message.author.id) {
-        return message.reply({
-          embeds: [
-            new EmbedBuilder()
-              .setColor(yellow)
-              .setAuthor({
-                name: 'Você não pode se autoavisar.',
-                iconURL: icon_attention,
-              }),
-          ],
-          allowedMentions: { repliedUser: false },
-        });
-      }
-
-      const reason = args.slice(1).join(' ') || 'Nenhum motivo especificado';
-
-      db.prepare(`
-        INSERT INTO warnings (user_id, guild_id, reason, moderator_id, timestamp)
-        VALUES (?, ?, ?, ?, ?)
-      `).run(user.id, message.guild.id, reason, message.author.id, Date.now());
-
-      const embed = new EmbedBuilder()
-        .setColor(yellow)
-        .setTitle(`${attent} Usuário avisado`)
-        .setDescription(
-          `${user} (\`${user.id}\`) recebeu um aviso.\n\n**Motivo:** ${reason}`
-        )
-        .setFooter({
-          text: `Avisado por ${message.author.username}`,
-          iconURL: message.author.displayAvatarURL(),
-        })
-        .setTimestamp();
-
-      return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
-    } catch (error) {
-      console.error('[Erro ao aplicar warn]:', error);
-
-      return message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor(yellow)
-            .setAuthor({
-              name: 'Erro ao adicionar o aviso. Tente novamente mais tarde.',
-              iconURL: icon_attention,
-            }),
-        ],
-        allowedMentions: { repliedUser: false },
+    if (!target)
+      return message.channel.send({
+        embeds: [buildEmbed({
+          color: yellow,
+          author: { name: 'Você precisa mencionar um usuário para aplicar o aviso.', iconURL: icon_attention }
+        })],
+        allowedMentions: { repliedUser: false }
       });
+
+    if (target.user.bot || target.id === message.author.id)
+      return message.channel.send({
+        embeds: [buildEmbed({
+          color: yellow,
+          author: { name: 'Ação inválida: não é possível avisar bots ou a si mesmo.', iconURL: icon_attention }
+        })],
+        allowedMentions: { repliedUser: false }
+      });
+
+    const reason = args.slice(1).join(' ') || 'Motivo não especificado';
+
+    db.prepare(`
+      INSERT INTO warnings (user_id, guild_id, reason, moderator_id, timestamp)
+      VALUES (?, ?, ?, ?, ?)
+    `).run(target.id, message.guild.id, reason, message.author.id, Date.now());
+
+    const totalWarnings = db
+      .prepare(`SELECT COUNT(*) AS count FROM warnings WHERE user_id = ? AND guild_id = ?`)
+      .get(target.id, message.guild.id).count;
+
+    const embed = buildEmbed({
+      color: yellow,
+      title: `${attent} Aviso Aplicado`,
+      description: `${target} (\`${target.id}\`) recebeu um aviso.\n\n**Motivo:** ${reason}`,
+      footer: { text: `Moderador: ${message.author.tag}`, iconURL: message.author.displayAvatarURL() }
+    });
+
+    await message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
+
+    const logChannel = message.guild.channels.cache.get(logChannelId);
+    if (logChannel) {
+      const logEmbed = buildEmbed({
+        color: yellow,
+        title: `📋 Novo Aviso`,
+        description: `**Usuário:** ${target} (\`${target.id}\`)\n**Moderador:** ${message.author} (\`${message.author.id}\`)\n**Motivo:** ${reason}`,
+        footer: { text: `Total de avisos: ${totalWarnings}`, iconURL: message.guild.iconURL() },
+      });
+
+      await logChannel.send({ embeds: [logEmbed] });
     }
-  },
+
+    await applyPunishment(message.client, message.guild, target.id, totalWarnings, message.author.id);
+  }
 };
