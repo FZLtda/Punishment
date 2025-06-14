@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const db = require('../data/database');
 const { yellow } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
+const { icon_attention, attent } = require('../config/emoji.json');
 
 module.exports = {
   name: 'warnings',
@@ -52,7 +52,7 @@ module.exports = {
 
       const embedAvisos = new EmbedBuilder()
         .setColor(yellow)
-        .setTitle(`Avisos para ${user.displayName}`)
+        .setTitle(`${attent} Registro de Advertências — ${user.displayName}`)
         .setDescription(
           warnings
             .map(
