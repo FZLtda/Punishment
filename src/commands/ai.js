@@ -30,7 +30,7 @@ module.exports = {
           iconURL: icon_attention
         });
 
-      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (!args.length) {
@@ -41,7 +41,7 @@ module.exports = {
           iconURL: icon_attention
         });
 
-      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const question = args.join(' ');
@@ -53,7 +53,7 @@ module.exports = {
           iconURL: icon_attention
         });
 
-      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     if (userThreads[userId]) {
@@ -80,7 +80,7 @@ module.exports = {
             iconURL: icon_attention
           });
 
-        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+        return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       const thread = await message.channel.threads.create({
@@ -97,7 +97,7 @@ module.exports = {
             iconURL: icon_attention
           });
 
-        return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+        return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
       }
 
       userThreads[userId] = thread.id;
@@ -134,7 +134,7 @@ module.exports = {
           iconURL: icon_attention
         });
 
-      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };
