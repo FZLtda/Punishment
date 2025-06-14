@@ -20,7 +20,7 @@ module.exports = {
           iconURL: icon_attention
         });
 
-      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     let colorInput = args[0];
@@ -36,7 +36,7 @@ module.exports = {
           iconURL: icon_attention
         });
 
-      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     const hexCode = color.hex();
