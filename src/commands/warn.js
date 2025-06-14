@@ -3,7 +3,7 @@ const db = require('../data/database');
 const { yellow } = require('../config/colors.json');
 const { icon_attention, attent } = require('../config/emoji.json');
 const { logChannelId } = require('../config/settings.json');
-const { buildEmbed } = require('./utils/embedUtils');
+const { buildEmbed } = require('../utils/embedUtils');
 const { applyPunishment } = require('../utils/punishmentSystem');
 
 module.exports = {
