@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-function loadSettings(filePath) {
+function loadSettings(relativePath) {
   try {
-    const resolvedPath = path.resolve(filePath);
+    const resolvedPath = path.resolve(__dirname, '..', relativePath);
     const dir = path.dirname(resolvedPath);
 
     if (!fs.existsSync(dir)) {
@@ -16,7 +16,7 @@ function loadSettings(filePath) {
 
     return JSON.parse(fs.readFileSync(resolvedPath, 'utf8'));
   } catch (error) {
-    console.error(`Erro ao carregar configurações de ${filePath}:`, error);
+    console.error(`Erro ao carregar configurações de ${relativePath}:`, error);
     return {};
   }
 }
