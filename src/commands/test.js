@@ -15,24 +15,32 @@ module.exports = {
   category: 'info',
 
   execute: async (client, messageOrInteraction, args) => {
-    // Detecta se é uma interação (slash command)
     const isInteraction = !!messageOrInteraction.isCommand;
 
-    // Obtém o canal para enviar mensagem
-    const channel = isInteraction
-      ? messageOrInteraction.channel
-      : messageOrInteraction.channel;
+    let channel;
+    let userId;
 
-    if (!channel) {
-      return console.error('Canal não encontrado para enviar a mensagem');
+    if (isInteraction) {
+      userId = messageOrInteraction.user.id;
+      channel = messageOrInteraction.channel;
+
+      // Se não tiver canal (exemplo: DM), tenta abrir DM com o usuário
+      if (!channel) {
+        try {
+          channel = await messageOrInteraction.user.createDM();
+        } catch {
+          return console.error('Não foi possível abrir DM com o usuário.');
+        }
+      }
+    } else {
+      userId = messageOrInteraction.author.id;
+      channel = messageOrInteraction.channel;
+
+      if (!channel) {
+        return console.error('Canal da mensagem não encontrado.');
+      }
     }
 
-    // Obtém o userId para filtro dos botões
-    const userId = isInteraction
-      ? messageOrInteraction.user.id
-      : messageOrInteraction.author.id;
-
-    // Monta os botões para categorias
     const buttons = Object.keys(categories).map((key) =>
       new ButtonBuilder()
         .setCustomId(`help_${key}_${userId}`)
@@ -43,7 +51,6 @@ module.exports = {
 
     const row = new ActionRowBuilder().addComponents(buttons);
 
-    // Cria o embed inicial
     const embed = new EmbedBuilder()
       .setTitle('🧭 Ajuda do Punishment')
       .setDescription('Escolha uma categoria abaixo para visualizar os comandos disponíveis.')
@@ -52,15 +59,12 @@ module.exports = {
     let msg;
 
     if (isInteraction) {
-      // Se for interação, defere e responde com followUp
       await messageOrInteraction.deferReply();
       msg = await messageOrInteraction.followUp({ embeds: [embed], components: [row] });
     } else {
-      // Se for mensagem normal, envia no canal
       msg = await channel.send({ embeds: [embed], components: [row] });
     }
 
-    // Coletor para os botões
     const collector = msg.createMessageComponentCollector({
       componentType: ComponentType.Button,
       time: 120_000,
