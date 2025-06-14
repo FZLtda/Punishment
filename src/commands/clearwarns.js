@@ -1,5 +1,5 @@
 const db = require('../data/database');
-const { yellow, red } = require('../config/colors.json');
+const { yellow } = require('../config/colors.json');
 const { icon_attention, attent } = require('../config/emoji.json');
 const { buildEmbed } = require('../utils/embedUtils');
 const { logModerationAction } = require('../utils/moderationUtils');
@@ -52,7 +52,7 @@ module.exports = {
       logModerationAction(message.guild.id, message.author.id, 'ClearWarns', user.id, `Removeu ${totalWarnings} aviso(s)`);
 
       const embed = buildEmbed({
-        color: red,
+        color: yellow,
         title: `${attent} Avisos Removidos`,
         description: `Todos os **${totalWarnings}** aviso(s) de ${user} (\`${user.id}\`) foram removidos com sucesso.`,
         thumbnail: user.user.displayAvatarURL({ dynamic: true }),
