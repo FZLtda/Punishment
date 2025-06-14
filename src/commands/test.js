@@ -17,14 +17,26 @@ module.exports = {
   execute: async (client, messageOrInteraction, args) => {
     const isInteraction = !!messageOrInteraction.isCommand;
 
+    // Validação para evitar erro de undefined
+    if (isInteraction && !messageOrInteraction.user) {
+      console.error('Interação sem user');
+      return;
+    }
+    if (!isInteraction && !messageOrInteraction.author) {
+      console.error('Mensagem sem author');
+      return;
+    }
+
+    const userId = isInteraction
+      ? messageOrInteraction.user.id
+      : messageOrInteraction.author.id;
+
     let channel;
-    let userId;
 
     if (isInteraction) {
-      userId = messageOrInteraction.user.id;
       channel = messageOrInteraction.channel;
 
-      // Se não tiver canal (exemplo: DM), tenta abrir DM com o usuário
+      // Se não tiver canal, tenta abrir DM
       if (!channel) {
         try {
           channel = await messageOrInteraction.user.createDM();
@@ -33,9 +45,7 @@ module.exports = {
         }
       }
     } else {
-      userId = messageOrInteraction.author.id;
       channel = messageOrInteraction.channel;
-
       if (!channel) {
         return console.error('Canal da mensagem não encontrado.');
       }
