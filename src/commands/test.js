@@ -14,13 +14,25 @@ module.exports = {
   usage: '.test',
   category: 'info',
 
-  execute: async (client, message, args) => {
-    if (!message.author) {
-      return message.channel.send('Erro: não foi possível identificar o autor da mensagem.');
+  execute: async (client, messageOrInteraction, args) => {
+    // Detecta se é uma interação (slash command)
+    const isInteraction = !!messageOrInteraction.isCommand;
+
+    // Obtém o canal para enviar mensagem
+    const channel = isInteraction
+      ? messageOrInteraction.channel
+      : messageOrInteraction.channel;
+
+    if (!channel) {
+      return console.error('Canal não encontrado para enviar a mensagem');
     }
 
-    const userId = message.author.id;
+    // Obtém o userId para filtro dos botões
+    const userId = isInteraction
+      ? messageOrInteraction.user.id
+      : messageOrInteraction.author.id;
 
+    // Monta os botões para categorias
     const buttons = Object.keys(categories).map((key) =>
       new ButtonBuilder()
         .setCustomId(`help_${key}_${userId}`)
@@ -31,13 +43,24 @@ module.exports = {
 
     const row = new ActionRowBuilder().addComponents(buttons);
 
+    // Cria o embed inicial
     const embed = new EmbedBuilder()
       .setTitle('🧭 Ajuda do Punishment')
       .setDescription('Escolha uma categoria abaixo para visualizar os comandos disponíveis.')
       .setColor('#2f3136');
 
-    const msg = await message.channel.send({ embeds: [embed], components: [row] });
+    let msg;
 
+    if (isInteraction) {
+      // Se for interação, defere e responde com followUp
+      await messageOrInteraction.deferReply();
+      msg = await messageOrInteraction.followUp({ embeds: [embed], components: [row] });
+    } else {
+      // Se for mensagem normal, envia no canal
+      msg = await channel.send({ embeds: [embed], components: [row] });
+    }
+
+    // Coletor para os botões
     const collector = msg.createMessageComponentCollector({
       componentType: ComponentType.Button,
       time: 120_000,
