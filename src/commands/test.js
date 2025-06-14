@@ -6,9 +6,9 @@ module.exports = {
     description: 'Exibe os comandos disponíveis.',
     execute: async (interaction) => {
         const pages = [
-            new EmbedBuilder().setTitle('🔧 Moderação').setDescription('Comandos de moderação:\n`ban`, `kick`, `mute`, `warn`').setColor('#ff0000'),
-            new EmbedBuilder().setTitle('⚙️ Utilidade').setDescription('Comandos úteis:\n`ping`, `serverinfo`, `userinfo`').setColor('#0080ff'),
-            new EmbedBuilder().setTitle('🎉 Diversão').setDescription('Comandos divertidos:\n`8ball`, `meme`, `gif`').setColor('#ff8000'),
+            new EmbedBuilder().setTitle('🔧 Moderação').setDescription('Comandos:\n`ban`, `kick`, `mute`, `warn`').setColor('#ff0000'),
+            new EmbedBuilder().setTitle('⚙️ Utilidade').setDescription('Comandos:\n`ping`, `serverinfo`, `userinfo`').setColor('#0080ff'),
+            new EmbedBuilder().setTitle('🎉 Diversão').setDescription('Comandos:\n`8ball`, `meme`, `gif`').setColor('#ff8000'),
         ];
 
         const paginator = new Paginator(pages);
