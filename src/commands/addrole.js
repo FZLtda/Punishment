@@ -23,7 +23,7 @@ module.exports = {
           iconURL: icon_attention,
         });
 
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     if (role.position >= message.guild.members.me.roles.highest.position) {
@@ -34,7 +34,7 @@ module.exports = {
           iconURL: icon_attention,
         });
 
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     if (member.roles.cache.has(role.id)) {
@@ -45,7 +45,7 @@ module.exports = {
           iconURL: icon_attention,
         });
 
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -80,7 +80,7 @@ module.exports = {
           iconURL: icon_attention,
         });
 
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
   }
 };
