@@ -54,7 +54,7 @@ module.exports = {
       const embed = buildEmbed({
         color: yellow,
         title: `${attent} Avisos Removidos`,
-        description: `Todos os **${totalWarnings}** aviso(s) de ${user} (\`${user.id}\`) foram removidos com sucesso.`,
+        description: `${user} (\`${user.id}\`) teve \`${totalWarnings}\` aviso(s) removido(s).`,
         thumbnail: user.user.displayAvatarURL({ dynamic: true }),
         footer: {
           text: message.author.tag,
