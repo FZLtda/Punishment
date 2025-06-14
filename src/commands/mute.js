@@ -44,7 +44,7 @@ module.exports = {
       const embedErroMinimo = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
-          name: 'Duração inválida. Forneça um valor válido (ex.: 1m, 1h, 1d).',
+          name: 'Duração inválida. Forneça um valor válido (ex: 1m, 1h, 1d).',
           iconURL: icon_attention
         });
 
