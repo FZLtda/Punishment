@@ -63,7 +63,7 @@ module.exports = {
       title: `${attent} Aviso Aplicado`,
       description: `${target} (\`${target.id}\`) recebeu um aviso.\n\n**Motivo:** ${reason}`,
       footer: {
-        text: `Moderador: ${message.author.tag}`,
+        text: `${message.author.tag}`,
         iconURL: message.author.displayAvatarURL(),
       },
     });
@@ -77,7 +77,7 @@ module.exports = {
     if (logChannel) {
       const logEmbed = buildEmbed({
         color: yellow,
-        title: '📋 Novo Aviso',
+        title: `${attent} Advertência`,
         description: `**Usuário:** ${target} (\`${target.id}\`)\n**Moderador:** ${message.author} (\`${message.author.id}\`)\n**Motivo:** ${reason}`,
         footer: {
           text: `Total de avisos: ${totalWarnings}`,
