@@ -4,11 +4,11 @@ const { yellow } = require('../config/colors.json');
 const fs = require('fs');
 const path = require('path');
 
-const dataPath = path.resolve(__dirname, '../data/antilink.json');
+const dataDir = path.resolve(__dirname, '../data');
+const dataPath = path.join(dataDir, 'antilink.json');
 
-if (!fs.existsSync(dataPath)) {
-  fs.writeFileSync(dataPath, JSON.stringify({}));
-}
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+if (!fs.existsSync(dataPath)) fs.writeFileSync(dataPath, JSON.stringify({}));
 
 module.exports = {
   name: 'antilink',
@@ -23,14 +23,17 @@ module.exports = {
     const guildId = message.guild.id;
 
     if (!['on', 'off'].includes(option)) {
-      const embedErro = new EmbedBuilder()
-        .setColor(yellow)
-        .setAuthor({
-          name: 'Uso incorreto! Use `.antilink on` para ativar ou `.antilink off` para desativar.',
-          iconURL: icon_attention,
-        });
-
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+      return message.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(yellow)
+            .setAuthor({
+              name: 'Use `.antilink on` para ativar ou `.antilink off` para desativar.',
+              iconURL: icon_attention,
+            })
+        ],
+        allowedMentions: { repliedUser: false }
+      });
     }
 
     let settings;
@@ -41,11 +44,9 @@ module.exports = {
       fs.writeFileSync(dataPath, JSON.stringify({}, null, 4));
     }
 
-    if (option === 'on') {
-      settings[guildId] = { enabled: true };
-    } else {
-      delete settings[guildId];
-    }
+    option === 'on'
+      ? settings[guildId] = { enabled: true }
+      : delete settings[guildId];
 
     fs.writeFileSync(dataPath, JSON.stringify(settings, null, 4));
 
@@ -55,7 +56,10 @@ module.exports = {
         ? '<:on:1232142357848260639> Antilink Ativado'
         : '<:emoji_51:1248416468819906721> Antilink Desativado')
       .setDescription(`O sistema de bloqueio de links foi ${option === 'on' ? 'ativado' : 'desativado'} neste servidor.`)
-      .setFooter({ text: `${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+      .setFooter({
+        text: message.author.tag,
+        iconURL: message.author.displayAvatarURL({ dynamic: true })
+      })
       .setTimestamp();
 
     return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
