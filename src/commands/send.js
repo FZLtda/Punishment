@@ -17,7 +17,7 @@ module.exports = {
         const embedErroMinimo = new EmbedBuilder()
           .setColor(yellow)
           .setAuthor({
-            name: 'Uso correto: `.send <canal> <embed|texto> <mensagem>',
+            name: 'Uso correto: .send <canal> <embed|texto> <mensagem>',
             iconURL: icon_attention
           });
   
