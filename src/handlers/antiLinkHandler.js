@@ -2,7 +2,7 @@ const { PermissionsBitField } = require('discord.js');
 const { loadSettings } = require('../utils/loadSettings');
 const logger = require('../utils/logger');
 
-const ANTI_LINK_PATH = './data/antilink.json';
+const ANTI_LINK_PATH = '../data/antilink.json';
 
 async function handleAntiLink(message) {
   if (!message.guild || !message.member || !message.channel || message.author.bot) return false;
