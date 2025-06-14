@@ -1,8 +1,9 @@
+const path = require('path');
 const { PermissionsBitField } = require('discord.js');
 const { loadSettings } = require('../utils/loadSettings');
 const logger = require('../utils/logger');
 
-const ANTI_SPAM_PATH = '../data/antispam.json';
+const ANTI_SPAM_PATH = path.join(__dirname, '..', 'data', 'antispam.json');
 
 const SPAM_LIMIT = 5;
 const TIME_FRAME_MS = 10000;
@@ -29,7 +30,6 @@ async function handleAntiSpam(message, client) {
   if (!userData) {
     userData = { count: 1, timestamp: now };
     messageCounts.set(key, userData);
-
     setTimeout(() => messageCounts.delete(key), TIME_FRAME_MS);
   } else {
     if (now - userData.timestamp > TIME_FRAME_MS) {
