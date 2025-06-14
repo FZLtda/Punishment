@@ -30,7 +30,7 @@ module.exports = {
       return message.channel.send({
         embeds: [buildEmbed({
           color: yellow,
-          author: { name: 'Ação inválida: não é possível avisar bots ou a si mesmo.', iconURL: icon_attention }
+          author: { name: 'Não é possível avisar bots ou a si mesmo.', iconURL: icon_attention }
         })],
         allowedMentions: { repliedUser: false }
       });
