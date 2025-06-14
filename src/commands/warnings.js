@@ -32,7 +32,7 @@ module.exports = {
       if (!warnings.length) {
         return sendEmbed(message, {
           color: yellow,
-          title: 'Nenhum Aviso Encontrado',
+          title: `${attent} Nenhum Aviso Encontrado`,
           description: `${target} não possui avisos registrados.`,
           footer: {
             text: message.author.username,
