@@ -7,7 +7,7 @@ const { buildEmbed } = require('../utils/embedUtils');
 const { applyPunishment } = require('../utils/punishmentSystem');
 
 module.exports = {
-  name: 'warnn',
+  name: 'warn',
   description: 'Adiciona um aviso a um membro.',
   usage: '${currentPrefix}warn <@usuário> [motivo]',
   userPermissions: ['ManageMessages'],
