@@ -64,7 +64,7 @@ module.exports = {
       return sendEmbed(message, {
         color: yellow,
         author: {
-          name: 'Ocorreu um erro ao tentar obter os avisos.',
+          name: 'Não foi possível obter os avisos.',
           iconURL: icon_attention,
         },
       });
