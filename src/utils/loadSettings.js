@@ -1,13 +1,22 @@
 const fs = require('fs');
+const path = require('path');
 
-function loadSettings(path) {
+function loadSettings(filePath) {
   try {
-    if (!fs.existsSync(path)) {
-      fs.writeFileSync(path, JSON.stringify({}), 'utf8');
+    const resolvedPath = path.resolve(filePath);
+    const dir = path.dirname(resolvedPath);
+
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
     }
-    return JSON.parse(fs.readFileSync(path, 'utf8'));
+
+    if (!fs.existsSync(resolvedPath)) {
+      fs.writeFileSync(resolvedPath, JSON.stringify({}, null, 2), 'utf8');
+    }
+
+    return JSON.parse(fs.readFileSync(resolvedPath, 'utf8'));
   } catch (error) {
-    console.error(`Erro ao carregar configurações de ${path}:`, error);
+    console.error(`Erro ao carregar configurações de ${filePath}:`, error);
     return {};
   }
 }
