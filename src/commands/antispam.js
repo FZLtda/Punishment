@@ -2,10 +2,12 @@ const { EmbedBuilder } = require('discord.js');
 const { icon_attention } = require('../config/emoji.json');
 const { yellow, red, green } = require('../config/colors.json');
 const fs = require('fs');
-const path = '../data/antispam.json';
+const path = require('path');
 
-if (!fs.existsSync(path)) {
-  fs.writeFileSync(path, JSON.stringify({}));
+const dataPath = path.resolve(__dirname, '../data/antispam.json');
+
+if (!fs.existsSync(dataPath)) {
+  fs.writeFileSync(dataPath, JSON.stringify({}));
 }
 
 module.exports = {
@@ -40,7 +42,7 @@ module.exports = {
 
     let settings = {};
     try {
-      settings = JSON.parse(fs.readFileSync(path, 'utf8'));
+      settings = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
     } catch (err) {
       return message.reply({
         content: 'Erro ao ler as configurações do sistema antispam.',
@@ -52,7 +54,7 @@ module.exports = {
       settings[guildId] = { enabled: true };
 
       try {
-        fs.writeFileSync(path, JSON.stringify(settings, null, 4));
+        fs.writeFileSync(dataPath, JSON.stringify(settings, null, 4));
       } catch (err) {
         return message.reply({
           content: 'Erro ao salvar as configurações do sistema antispam.',
@@ -77,7 +79,7 @@ module.exports = {
       delete settings[guildId];
 
       try {
-        fs.writeFileSync(path, JSON.stringify(settings, null, 4));
+        fs.writeFileSync(dataPath, JSON.stringify(settings, null, 4));
       } catch (err) {
         return message.reply({
           content: 'Erro ao atualizar as configurações do sistema antispam.',
