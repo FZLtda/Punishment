@@ -1,8 +1,9 @@
 const { warnPunishments, logChannelId } = require('../config/settings.json');
-const { buildEmbed } = require('../utils/embedUtils');
-const { yellow } = require('../config/colors.json');
+const { EmbedBuilder } = require('discord.js');
+const { yellow, red } = require('../config/colors.json');
+const { icon_attention } = require('../config/emoji.json');
 
-async function applyPunishment(client, guild, user, warningsCount, moderator) {
+async function applyPunishment(client, guild, user, warningsCount, moderatorId) {
   const punishment = warnPunishments.find(p => p.count === warningsCount);
   if (!punishment) return;
 
@@ -10,36 +11,69 @@ async function applyPunishment(client, guild, user, warningsCount, moderator) {
   if (!member) return;
 
   let action = '';
+  let tempoPunicao = '';
+  let motivo = 'Punição automática por excesso de avisos';
+
   try {
     switch (punishment.action) {
       case 'timeout':
-        await member.timeout(punishment.duration, 'Punição automática por avisos');
-        action = `Timeout de ${punishment.duration / 1000}s`;
+        await member.timeout(punishment.duration, motivo);
+        action = 'Timeout';
+        tempoPunicao = formatDuration(punishment.duration);
         break;
       case 'kick':
-        await member.kick('Punição automática por avisos');
-        action = 'Expulso';
+        await member.kick(motivo);
+        action = 'Expulsão';
         break;
       case 'ban':
-        await member.ban({ reason: 'Punição automática por avisos' });
-        action = 'Banido';
+        await member.ban({ reason: motivo });
+        action = 'Banimento';
         break;
     }
+
+    const embed = new EmbedBuilder()
+      .setTitle('<:Mutado:1355700779859574954> Punição aplicada')
+      .setColor(red)
+      .setDescription(`${member} (\`${member.id}\`) recebeu uma punição automática!`)
+      .addFields(
+        { name: 'Ação', value: `\`${action}\``, inline: true },
+        ...(tempoPunicao ? [{ name: 'Duração', value: `\`${tempoPunicao}\``, inline: true }] : []),
+        { name: 'Motivo', value: `\`${motivo}\`` },
+        { name: 'Avisos', value: `\`${warningsCount}\``, inline: true },
+        { name: 'Moderador original', value: `<@${moderatorId}>`, inline: true }
+      )
+      .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+      .setFooter({ text: guild.name, iconURL: guild.iconURL() })
+      .setTimestamp();
 
     const logChannel = guild.channels.cache.get(logChannelId);
     if (logChannel) {
-      const logEmbed = buildEmbed({
-        color: yellow,
-        title: '⚠️ Punição Automática Aplicada',
-        description: `**Usuário:** <@${user}> (\`${user}\`)\n**Avisos:** ${warningsCount}\n**Ação:** ${action}\n**Moderador Original:** <@${moderator}>`,
-        footer: { text: guild.name, iconURL: guild.iconURL() }
-      });
-
-      await logChannel.send({ embeds: [logEmbed] });
+      await logChannel.send({ embeds: [embed] });
     }
+
+    const defaultChannel = guild.systemChannel || guild.channels.cache.find(c => c.isTextBased() && c.permissionsFor(guild.members.me).has('SendMessages'));
+    if (defaultChannel) {
+      await defaultChannel.send({ embeds: [embed] });
+    }
+
   } catch (err) {
     console.error('[Punishment] Erro ao aplicar punição automática:', err);
   }
+}
+
+function formatDuration(ms) {
+  const s = Math.floor((ms / 1000) % 60);
+  const m = Math.floor((ms / (1000 * 60)) % 60);
+  const h = Math.floor((ms / (1000 * 60 * 60)) % 24);
+  const d = Math.floor(ms / (1000 * 60 * 60 * 24));
+
+  const parts = [];
+  if (d > 0) parts.push(`${d}d`);
+  if (h > 0) parts.push(`${h}h`);
+  if (m > 0) parts.push(`${m}m`);
+  if (s > 0) parts.push(`${s}s`);
+
+  return parts.join(' ');
 }
 
 module.exports = { applyPunishment };
