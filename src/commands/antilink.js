@@ -4,7 +4,7 @@ const { yellow } = require('../config/colors.json');
 const fs = require('fs');
 const path = require('path');
 
-const dataPath = path.resolve(__dirname, '../antilink.json');
+const dataPath = path.resolve(__dirname, 'antilink.json');
 
 if (!fs.existsSync(dataPath)) {
   fs.writeFileSync(dataPath, JSON.stringify({}));
