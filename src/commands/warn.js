@@ -5,6 +5,7 @@ const { icon_attention, attent } = require('../config/emoji.json');
 const { logChannelId } = require('../config/settings.json');
 const { buildEmbed } = require('../utils/embedUtils');
 const { applyPunishment } = require('../utils/punishmentSystem');
+const { saveWarnChannel } = require('../utils/warnChannelTracker');
 
 module.exports = {
   name: 'warn',
@@ -48,6 +49,8 @@ module.exports = {
     }
 
     const reason = args.slice(1).join(' ') || 'Motivo não especificado';
+
+    saveWarnChannel(message.guild.id, message.channel.id);
 
     db.prepare(
       `INSERT INTO warnings (user_id, guild_id, reason, moderator_id, timestamp)
