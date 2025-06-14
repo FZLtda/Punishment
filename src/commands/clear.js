@@ -24,7 +24,7 @@ module.exports = {
           iconURL: icon_attention
         });
       
-      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
@@ -65,7 +65,7 @@ module.exports = {
           iconURL: icon_attention
         });
       
-      return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
   },
 };
