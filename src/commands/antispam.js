@@ -4,7 +4,7 @@ const { yellow, red, green } = require('../config/colors.json');
 const fs = require('fs');
 const path = require('path');
 
-const dataPath = path.resolve(__dirname, './data/antispam.json');
+const dataPath = path.resolve(__dirname, './antispam');
 
 if (!fs.existsSync(dataPath)) {
   fs.writeFileSync(dataPath, JSON.stringify({}));
