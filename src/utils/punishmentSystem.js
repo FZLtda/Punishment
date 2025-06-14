@@ -2,6 +2,10 @@ const { warnPunishments, logChannelId } = require('../config/settings.json');
 const { EmbedBuilder } = require('discord.js');
 const { yellow, red } = require('../config/colors.json');
 const { icon_attention } = require('../config/emoji.json');
+const fs = require('fs');
+const path = require('path');
+
+const warnChannelPath = path.join(__dirname, '..', 'data', 'warnChannels.json');
 
 async function applyPunishment(client, guild, user, warningsCount, moderatorId) {
   const punishment = warnPunishments.find(p => p.count === warningsCount);
@@ -51,9 +55,16 @@ async function applyPunishment(client, guild, user, warningsCount, moderatorId) 
       await logChannel.send({ embeds: [embed] });
     }
 
-    const defaultChannel = guild.systemChannel || guild.channels.cache.find(c => c.isTextBased() && c.permissionsFor(guild.members.me).has('SendMessages'));
-    if (defaultChannel) {
-      await defaultChannel.send({ embeds: [embed] });
+    if (fs.existsSync(warnChannelPath)) {
+      const data = JSON.parse(fs.readFileSync(warnChannelPath, 'utf8'));
+      const lastWarnChannelId = data[guild.id];
+
+      if (lastWarnChannelId) {
+        const lastWarnChannel = guild.channels.cache.get(lastWarnChannelId);
+        if (lastWarnChannel?.isTextBased()) {
+          await lastWarnChannel.send({ embeds: [embed] });
+        }
+      }
     }
 
   } catch (err) {
