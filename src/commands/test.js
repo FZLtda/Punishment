@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 const Paginator = require('../utils/paginator');
 
 module.exports = {
-    name: 'help',
+    name: 'test',
     description: 'Exibe os comandos disponíveis.',
     execute: async (interaction) => {
         const pages = [
