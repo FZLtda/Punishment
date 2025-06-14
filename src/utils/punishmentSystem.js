@@ -1,5 +1,5 @@
 const { warnPunishments, logChannelId } = require('../config/settings.json');
-const { buildEmbed } = require('../embedUtils');
+const { buildEmbed } = require('../utils/embedUtils');
 const { yellow } = require('../config/colors.json');
 
 async function applyPunishment(client, guild, user, warningsCount, moderator) {
