@@ -1,6 +1,6 @@
-const db = require('../../data/database');
-const { yellow } = require('../../config/colors.json');
-const { buildEmbed } = require('../../utils/embedUtils');
+const db = require('../data/database');
+const { yellow } = require('../config/colors.json');
+const { buildEmbed } = require('../utils/embedUtils');
 
 module.exports = {
   name: 'clearwarns',
