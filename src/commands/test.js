@@ -11,21 +11,21 @@ const { createPagination } = require('../utils/pagination');
 module.exports = {
   name: 'test',
   description: 'Veja todos os comandos disponíveis por categoria.',
-  usage: '.help',
+  usage: '.test',
   category: 'info',
 
-  run: async (client, message, args) => {
+  execute: async (client, message, args) => {
     const userId = message.author.id;
 
-    const row = new ActionRowBuilder().addComponents(
-      Object.keys(categories).map((key) =>
-        new ButtonBuilder()
-          .setCustomId(`help_${key}_${userId}`)
-          .setLabel(categories[key].label)
-          .setEmoji(categories[key].emoji)
-          .setStyle(ButtonStyle.Secondary)
-      )
+    const buttons = Object.keys(categories).map((key) =>
+      new ButtonBuilder()
+        .setCustomId(`help_${key}_${userId}`)
+        .setLabel(categories[key].label)
+        .setEmoji(categories[key].emoji)
+        .setStyle(ButtonStyle.Secondary)
     );
+
+    const row = new ActionRowBuilder().addComponents(buttons);
 
     const embed = new EmbedBuilder()
       .setTitle('🧭 Ajuda do Punishment')
@@ -42,9 +42,15 @@ module.exports = {
 
     collector.on('collect', async (interaction) => {
       const [_, category, id] = interaction.customId.split('_');
-      if (id !== userId) return interaction.reply({ content: 'Esses botões não são para você.', ephemeral: true });
+      if (id !== userId) {
+        return interaction.reply({
+          content: 'Esses botões não são para você.',
+          ephemeral: true
+        });
+      }
 
       const commandList = getCommandsByCategory(client.commands, category);
+
       if (!commandList.length) {
         return interaction.reply({
           content: 'Nenhum comando encontrado nessa categoria.',
