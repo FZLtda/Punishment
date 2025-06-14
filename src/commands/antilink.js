@@ -23,12 +23,12 @@ module.exports = {
     const guildId = message.guild.id;
 
     if (!['on', 'off'].includes(option)) {
-      return message.reply({
+      return message.channel.send({
         embeds: [
           new EmbedBuilder()
             .setColor(yellow)
             .setAuthor({
-              name: 'Use `.antilink on` para ativar ou `.antilink off` para desativar.',
+              name: 'Use .antilink on para ativar ou .antilink off para desativar.',
               iconURL: icon_attention,
             })
         ],
