@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { yellow } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
+const { icon_attention, attent } = require('../config/emoji.json');
 
 module.exports = {
   name: 'warn',
