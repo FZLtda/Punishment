@@ -15,6 +15,10 @@ module.exports = {
   category: 'info',
 
   execute: async (client, message, args) => {
+    if (!message.author) {
+      return message.channel.send('Erro: não foi possível identificar o autor da mensagem.');
+    }
+
     const userId = message.author.id;
 
     const buttons = Object.keys(categories).map((key) =>
@@ -41,7 +45,13 @@ module.exports = {
     });
 
     collector.on('collect', async (interaction) => {
-      const [_, category, id] = interaction.customId.split('_');
+      const parts = interaction.customId.split('_');
+      if (parts.length !== 3) {
+        return interaction.reply({ content: 'Botão inválido.', ephemeral: true });
+      }
+
+      const [_, category, id] = parts;
+
       if (id !== userId) {
         return interaction.reply({
           content: 'Esses botões não são para você.',
