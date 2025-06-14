@@ -36,8 +36,8 @@ module.exports = {
     }
 
     try {
-      // Aqui removemos payment_method_types para ativar métodos automáticos
       const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['pix'],
         line_items: [{
           price_data: {
             currency: 'brl',
@@ -70,6 +70,7 @@ module.exports = {
 
       const donationMessage = await message.channel.send({ embeds: [embed], components: [row], allowedMentions: { repliedUser: false } });
 
+            
       setTimeout(() => {
         donationMessage.delete().catch(console.error);
       }, 120000);
