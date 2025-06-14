@@ -1,7 +1,7 @@
+const { EmbedBuilder } = require('discord.js');
 const db = require('../data/database');
 const { yellow } = require('../config/colors.json');
 const { icon_attention, attent } = require('../config/emoji.json');
-const { buildEmbed } = require('../utils/embedUtils');
 const { logModerationAction } = require('../utils/moderationUtils');
 
 module.exports = {
@@ -13,21 +13,22 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
-    if (this.deleteMessage) {
-      message.delete().catch(() => {});
-    }
+    if (this.deleteMessage) message.delete().catch(() => {});
 
     const user = message.mentions.members.first();
 
     if (!user) {
-      const embed = buildEmbed({
-        color: yellow,
-        author: {
+      const embed = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
           name: 'Você precisa mencionar um usuário.',
           iconURL: icon_attention,
-        },
+        });
+
+      return message.channel.send({
+        embeds: [embed],
+        allowedMentions: { repliedUser: false },
       });
-      return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
     const { count: totalWarnings } = db
@@ -35,47 +36,61 @@ module.exports = {
       .get(user.id, message.guild.id);
 
     if (totalWarnings === 0) {
-      const embed = buildEmbed({
-        color: yellow,
-        author: {
+      const embed = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
           name: 'Este usuário não possui avisos para remover.',
           iconURL: icon_attention,
-        },
+        });
+
+      return message.channel.send({
+        embeds: [embed],
+        allowedMentions: { repliedUser: false },
       });
-      return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
     try {
       db.prepare('DELETE FROM warnings WHERE user_id = ? AND guild_id = ?')
         .run(user.id, message.guild.id);
 
-      logModerationAction(message.guild.id, message.author.id, 'ClearWarns', user.id, `Removeu ${totalWarnings} aviso(s)`);
+      logModerationAction(
+        message.guild.id,
+        message.author.id,
+        'ClearWarns',
+        user.id,
+        `Removeu ${totalWarnings} aviso(s)`
+      );
 
-      const embed = buildEmbed({
-        color: yellow,
-        title: `${attent} Avisos Removidos`,
-        description: `${user} (\`${user.id}\`) teve \`${totalWarnings}\` aviso(s) removido(s).`,
-        thumbnail: user.user.displayAvatarURL({ dynamic: true }),
-        footer: {
+      const embed = new EmbedBuilder()
+        .setColor(yellow)
+        .setTitle(`${attent} Avisos Removidos`)
+        .setDescription(`${user} (\`${user.id}\`) teve \`${totalWarnings}\` aviso(s) removido(s).`)
+        .setThumbnail(user.user.displayAvatarURL({ dynamic: true }))
+        .setFooter({
           text: message.author.tag,
-          iconURL: message.author.displayAvatarURL(),
-        },
-        timestamp: true,
+          iconURL: message.author.displayAvatarURL({ dynamic: true }),
+        })
+        .setTimestamp();
+
+      return message.channel.send({
+        embeds: [embed],
+        allowedMentions: { repliedUser: false },
       });
 
-      return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
     } catch (error) {
       console.error('Erro ao remover avisos:', error);
 
-      const embed = buildEmbed({
-        color: yellow,
-        author: {
+      const embed = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
           name: 'Não foi possível remover os avisos devido a um erro interno.',
           iconURL: icon_attention,
-        },
-      });
+        });
 
-      return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
+      return message.channel.send({
+        embeds: [embed],
+        allowedMentions: { repliedUser: false },
+      });
     }
   },
 };
