@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 const { icon_attention } = require('../config/emoji.json');
 const { yellow } = require('../config/colors.json');
 const fs = require('fs');
-const path = './data/antilink.json';
+const path = '../data/antilink.json';
 
 if (!fs.existsSync(path)) {
   fs.writeFileSync(path, JSON.stringify({}));
