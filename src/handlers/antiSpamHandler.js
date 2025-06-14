@@ -2,7 +2,7 @@ const { PermissionsBitField } = require('discord.js');
 const { loadSettings } = require('../utils/loadSettings');
 const logger = require('../utils/logger');
 
-const ANTI_SPAM_PATH = './data/antispam.json';
+const ANTI_SPAM_PATH = '../data/antispam.json';
 
 const SPAM_LIMIT = 5;
 const TIME_FRAME_MS = 10000;
