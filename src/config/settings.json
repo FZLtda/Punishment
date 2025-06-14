@@ -1,14 +1,36 @@
 {
+  // Informações principais do bot
   "BOT_NAME": "Punishment",
   "BOT_VERSION": "1.0.0",
-  "MAX_RETRIES": 3,
-  "RETRY_DELAY": 5000,
+  "OWNER_ID": "1006909671908585586",
+
   "PREFIX": ".",
   "DEFAULT_LANGUAGE": "pt-BR",
+
   "EMBED_COLOR": "#FE3838",
-  "OWNER_ID": "1006909671908585586",
+  "BOT_LOGO": "https://bit.ly/3Eci2wf",
+
+  "MAX_RETRIES": 3,
+  "RETRY_DELAY": 5000,
+
   "SUPPORT": "https://discord.gg/SW4zKzAhQa",
   "TERMS": "https://docs.google.com/document/d/12-nG-vY0bhgIzsaO2moSHjh7QeCrQLSGd7W2XYDMXsk/mobilebasic",
-  "BOT_LOGO": "https://bit.ly/3Eci2wf",
-  "LOG_CHANNEL": "1356022546654433492"
+
+  "LOG_CHANNEL": "1356022546654433492",
+
+  "warnPunishments": [
+    {
+      "count": 3,
+      "action": "timeout",
+      "duration": 60000
+    },
+    {
+      "count": 5,
+      "action": "kick"
+    },
+    {
+      "count": 7,
+      "action": "ban"
+    }
+  ]
 }
