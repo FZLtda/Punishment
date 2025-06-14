@@ -32,7 +32,7 @@ module.exports = {
       const embedErroMinimo = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
-          name: 'Defina um tempo de duração para prosseguir (ex.: 1m, 1h, 1d).',
+          name: 'Defina um tempo de duração para prosseguir (ex: 1m, 1h, 1d).',
           iconURL: icon_attention
         });
 
