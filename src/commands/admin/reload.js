@@ -12,6 +12,9 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message, args) {
+
+    if (message.author.id !== '1006909671908585586') return;
+    
     const commandName = args[0];
     if (!commandName) {
       const embedErro = new EmbedBuilder()
