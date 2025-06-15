@@ -12,6 +12,8 @@ function validateEnv() {
     'API_URL_TRANSLATE',
     'API_URL_DOCUMENT',
     'WEBHOOK',
+    'LOG_CHANNEL',
+    'ROLE_ID',
   ];
 
   const missingVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
@@ -32,13 +34,18 @@ function validateEnv() {
     API_URL_TRANSLATE: (value) => value.startsWith('https://'),
     API_URL_DOCUMENT: (value) => value.startsWith('https://'),
     WEBHOOK: (value) => value.startsWith('https://discord.com/api/webhooks/'),
+    LOG_CHANNEL: (value) => /^\d{17,19}$/.test(value),
+    ROLE_ID: (value) => /^\d{17,19}$/.test(value),
   };
 
-  const maskValue = (value) => value ? `${value.slice(0, 4)}...${value.slice(-4)}` : 'undefined';
+  const maskValue = (value) =>
+    value ? `${value.slice(0, 4)}...${value.slice(-4)}` : 'undefined';
 
   for (const [key, validate] of Object.entries(validations)) {
     if (!validate(process.env[key])) {
-      logger.error(`Variável de ambiente ${key} é inválida. Valor recebido: ${maskValue(process.env[key])}`);
+      logger.error(
+        `Variável de ambiente ${key} é inválida. Valor recebido: ${maskValue(process.env[key])}`
+      );
       process.exit(1);
     } else {
       logger.info(`Variável de ambiente ${key} validada com sucesso.`);
