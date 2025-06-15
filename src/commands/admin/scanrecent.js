@@ -11,6 +11,9 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
+
+    if (message.author.id !== '1006909671908585586') return;
+    
     try {
       const messages = await message.channel.messages.fetch({ limit: 100 });
       const userCount = {};
@@ -33,12 +36,12 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor('#fe3838')
-        .setTitle('📊 Análise das últimas 100 mensagens')
+        .setTitle('Análise das últimas 100 mensagens')
         .addFields(
-          { name: '👤 Top 5 usuários', value: topUsers || 'Nenhum usuário encontrado.', inline: false },
-          { name: '🔗 Links encontrados', value: `${links}`, inline: true },
-          { name: '👥 Menções', value: `${mentions}`, inline: true },
-          { name: '📎 Anexos', value: `${attachments}`, inline: true }
+          { name: 'Top 5 usuários', value: topUsers || 'Nenhum usuário encontrado.', inline: false },
+          { name: 'Links encontrados', value: `${links}`, inline: true },
+          { name: 'Menções', value: `${mentions}`, inline: true },
+          { name: 'Anexos', value: `${attachments}`, inline: true }
         )
         .setFooter({
           text: `${message.author.tag}`,
