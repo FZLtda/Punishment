@@ -1,13 +1,17 @@
-const {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  EmbedBuilder,
+require('dotenv').config(); // Carrega variáveis de ambiente primeiro
+
+const { 
+  ActionRowBuilder, 
+  ButtonBuilder, 
+  ButtonStyle, 
+  EmbedBuilder 
 } = require('discord.js');
+
 const { sucess, error, attent, check } = require('../config/emoji.json');
-const { userAlreadyVerified, markUserVerified } = require('../utils/verifyUtils');
 const { green, yellow } = require('../config/colors.json');
+
 const logger = require('../utils/logger');
+const { userAlreadyVerified, markUserVerified } = require('../utils/verifyUtils');
 
 async function handleButtonInteraction(interaction, client, db) {
   try {
@@ -24,8 +28,9 @@ async function handleButtonInteraction(interaction, client, db) {
 
     // Verificação de usuários
     if (interaction.customId === 'verify_user') {
-      const roleId = '1267270735232110644'; // Cargo de verificado
-      const logChannelId = '1381065414246662286'; // Canal de logs
+      
+      const roleId = process.env.ROLE_ID;
+      const logChannelId = process.env.LOG_CHANNEL;
 
       const member = interaction.guild.members.cache.get(interaction.user.id);
       if (!member) {
