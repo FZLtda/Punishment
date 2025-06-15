@@ -24,7 +24,7 @@ module.exports = {
         .setCustomId('verify_user')
         .setLabel('Verificar')
         .setStyle(ButtonStyle.Success)
-        .setEmoji('1219815388921991259')
+        .setEmoji('')
     );
 
     await message.channel.send({ embeds: [embed], components: [row] });
