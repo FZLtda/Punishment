@@ -24,8 +24,8 @@ async function handleButtonInteraction(interaction, client, db) {
 
     // Verificação de usuários
     if (interaction.customId === 'verify_user') {
-      const roleId = '1267270735232110644';
-      const logChannelId = '1381065414246662286';
+      const roleId = '1267270735232110644'; // Cargo de verificado
+      const logChannelId = '1381065414246662286'; // Canal de logs
 
       const member = interaction.guild.members.cache.get(interaction.user.id);
       if (!member) {
@@ -36,7 +36,10 @@ async function handleButtonInteraction(interaction, client, db) {
         });
       }
 
-      if (await userAlreadyVerified(interaction.user.id)) {
+      const jaRegistrado = await userAlreadyVerified(interaction.user.id);
+      const temCargo = member.roles.cache.has(roleId);
+
+      if (jaRegistrado && temCargo) {
         return interaction.reply({
           ephemeral: true,
           content: `${attent} Você já foi verificado anteriormente.`,
@@ -44,14 +47,23 @@ async function handleButtonInteraction(interaction, client, db) {
       }
 
       try {
-        await member.roles.add(roleId);
-        await markUserVerified(interaction.user.id);
+        // Atribui cargo se ainda não tem
+        if (!temCargo) {
+          await member.roles.add(roleId);
+          logger.info(`Cargo de verificado atribuído a ${interaction.user.tag} (${interaction.user.id})`);
+        }
+
+        // Marca no banco apenas se ainda não foi registrado
+        if (!jaRegistrado) {
+          await markUserVerified(interaction.user.id);
+        }
 
         await interaction.reply({
           ephemeral: true,
           content: `${check} Você foi verificado com sucesso!`,
         });
 
+        // Log opcional
         const logChannel = interaction.guild.channels.cache.get(logChannelId);
         if (logChannel) {
           const embedLog = new EmbedBuilder()
