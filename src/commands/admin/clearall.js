@@ -12,7 +12,7 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
-    const allowedIds = ['100690967190858558', '569099937363656725'];
+    const allowedIds = ['1006909671908585586', '569099937363656725'];
 
     if (!allowedIds.includes(message.author.id)) {
       const embedErro = new EmbedBuilder()
