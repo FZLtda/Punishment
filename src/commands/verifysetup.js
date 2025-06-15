@@ -16,9 +16,9 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
-
+    
     if (message.author.id !== '1006909671908585586') return;
-
+    
     const embed = new EmbedBuilder()
       .setColor(green)
       .setTitle('Verificação Necessária')
