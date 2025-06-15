@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
-const db = require('../data/database');
-const { yellow, red } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
+const db = require('../../data/database');
+const { yellow, red } = require('../../config/colors.json');
+const { icon_attention } = require('../../config/emoji.json');
 
 module.exports = {
   name: 'mod-stats',
