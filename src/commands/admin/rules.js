@@ -28,7 +28,7 @@ module.exports = {
         `**4. Divulgação** <:seta2:1325132415542231140> É proibido divulgar qualquer conteúdo sem autorização da equipe.\n\n` +
         `**5. Segurança** <:seta2:1325132415542231140> Nunca compartilhe dados pessoais. A equipe nunca pedirá suas informações sensíveis.\n\n` +
         `**6. Punições** <:seta2:1325132415542231140> O descumprimento das regras resultará em punições. A moderação tem a palavra final.\n\n` +
-        `> **__Clique no botão abaixo para aceitar as regras e obter acesso ao servidor__**`
+        `> **__Clique no botão abaixo para aceitar as regras.__**`
       )
       .setFooter({
         text: message.guild.name,
