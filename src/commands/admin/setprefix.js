@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow, green } = require('../config/colors.json');
-const { icon_attention, check } = require('../config/emoji.json');
+const { yellow, green } = require('../../config/colors.json');
+const { icon_attention, check } = require('../../config/emoji.json');
 
 module.exports = {
   name: 'setprefix',
