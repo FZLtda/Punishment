@@ -12,38 +12,37 @@ module.exports = {
     async execute(message, args) {
         const userIdPermitido = '1006909671908585586';
         if (message.author.id !== userIdPermitido) {
-            const embedErro = new EmbedBuilder()
-                .setColor(yellow)
-                .setAuthor({ name: 'Você não tem permissão para executar este comando.', iconURL: icon_attention });
-
-            return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+            return message.reply({
+                embeds: [new EmbedBuilder().setColor(yellow).setAuthor({ name: 'Você não tem permissão para executar este comando.', iconURL: icon_attention })],
+                allowedMentions: { repliedUser: false }
+            });
         }
 
         const comando = args.join(' ');
         if (!comando) {
-            const embedErro = new EmbedBuilder()
-                .setColor(yellow)
-                .setAuthor({ name: 'Forneça um comando válido para executar.', iconURL: icon_attention });
-
-            return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+            return message.reply({
+                embeds: [new EmbedBuilder().setColor(yellow).setAuthor({ name: 'Forneça um comando válido para executar.', iconURL: icon_attention })],
+                allowedMentions: { repliedUser: false }
+            });
         }
 
         try {
             const resultado = await CommandExecutor.run(comando);
+            const respostaFormatada = `\`\`\`bash\n${resultado.slice(0, 2000)}\n\`\`\``; // Formata como terminal
 
             const embed = new EmbedBuilder()
                 .setTitle('🖥️ Execução de Terminal')
-                .setDescription(`**Comando:** \`${comando}\`\n**Resultado:**\n\`\`\`${resultado.slice(0, 1000)}\`\`\``)
+                .setDescription(`**Comando:** \`${comando}\`\n\n${respostaFormatada}`)
                 .setColor(red);
 
             return message.reply({ embeds: [embed] });
         } catch (error) {
-            const embedErro = new EmbedBuilder()
-                .setColor(red)
-                .setAuthor({ name: 'Erro ao executar comando!', iconURL: icon_attention })
-                .setDescription(`\`\`\`${error.slice(0, 1000)}\`\`\``);
-
-            return message.reply({ embeds: [embedErro] });
+            return message.reply({
+                embeds: [new EmbedBuilder()
+                    .setColor(red)
+                    .setAuthor({ name: 'Erro ao executar comando!', iconURL: icon_attention })
+                    .setDescription(`\`\`\`bash\n${error.slice(0, 2000)}\n\`\`\``)]
+            });
         }
     }
 };
