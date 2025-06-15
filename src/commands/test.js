@@ -9,9 +9,9 @@ const { getAllCategories } = require('../utils/cmdUtils');
 const { createPaginatorRow, handlePaginatorInteraction } = require('../utils/paginatorUtils');
 
 module.exports = {
-  name: 'help',
+  name: 'test',
   description: 'Exibe todos os comandos organizados por categoria.',
-  usage: '.test',
+  usage: '.help',
   category: 'Utilidade',
   userPermissions: [],
   botPermissions: ['SendMessages'],
