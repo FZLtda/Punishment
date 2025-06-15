@@ -1,6 +1,6 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
-const { yellow, green, red } = require('../config/colors.json');
-const { icon_attention, icon_success } = require('../config/emoji.json');
+const { yellow, green, red } = require('../../config/colors.json');
+const { icon_attention, icon_success } = require('../../config/emoji.json');
 
 const colorMapping = {
   RED: '#FF0000',
