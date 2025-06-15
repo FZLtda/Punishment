@@ -24,8 +24,8 @@ async function handleButtonInteraction(interaction, client, db) {
 
     // Verificação de usuários
     if (interaction.customId === 'verify_user') {
-      const roleId = 'ID_DO_CARGO_VERIFICADO';
-      const logChannelId = 'ID_DO_CANAL_LOGS';
+      const roleId = '1267270735232110644';
+      const logChannelId = '1381065414246662286';
 
       const member = interaction.guild.members.cache.get(interaction.user.id);
       if (!member) {
