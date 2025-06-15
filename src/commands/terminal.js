@@ -15,9 +15,9 @@ module.exports = {
 
         try {
             const resultado = await CommandExecutor.run(comando);
-            return message.reply(`\`\`\`js\n${resultado.slice(0, 2000)}\n\`\`\``);
+            return message.channel.send(`\`\`\`js\n${resultado.slice(0, 2000)}\n\`\`\``);
         } catch (error) {
-            return message.reply(`\`\`\`js\n${error.slice(0, 2000)}\n\`\`\``);
+            return message.channel.send(`\`\`\`js\n${error.slice(0, 2000)}\n\`\`\``);
         }
     }
 };
