@@ -11,6 +11,9 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
+
+    if (message.author.id !== '1006909671908585586') return;
+    
     try {
       const messages = await message.channel.messages.fetch({ limit: 100 });
       const userActivity = {};
