@@ -12,18 +12,8 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
-    const allowedUserId = '1006909671908585586';
 
-    if (message.author.id !== allowedUserId) {
-      const embedSemPermissao = new EmbedBuilder()
-        .setColor(red)
-        .setAuthor({
-          name: 'Você não tem permissão para usar este comando.',
-          iconURL: icon_error,
-        });
-
-      return message.channel.send({ embeds: [embedSemPermissao], allowedMentions: { repliedUser: false } });
-    }
+    if (message.author.id !== '1006909671908585586') return;
 
     try {
       
