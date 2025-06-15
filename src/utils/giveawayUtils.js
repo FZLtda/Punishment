@@ -5,7 +5,7 @@ const db = require('../data/database');
 
 function gerarEmbedInicial(prize, winnerCount, endTime) {
   return new EmbedBuilder()
-    .setTitle('🎉 Novo Sorteio')
+    .setTitle('Novo Sorteio')
     .setDescription(`**Prêmio:** \`${prize}\`\n**Ganhador(es):** \`${winnerCount}\`\n**Termina:** <t:${Math.floor(endTime / 1000)}:f> (<t:${Math.floor(endTime / 1000)}:R>)`)
     .setColor(red)
     .setFooter({ text: 'Clique no botão para participar!' });
@@ -27,7 +27,7 @@ function gerarComponentesInterativos() {
 
 function gerarEmbedFinal(prize, total, winners) {
   return new EmbedBuilder()
-    .setTitle('🏁 Sorteio Finalizado')
+    .setTitle('Sorteio Finalizado')
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
       `**Participantes:** \`${total}\`\n` +
