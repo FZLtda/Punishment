@@ -12,17 +12,17 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
-    const allowedIds = ['1006909671908585586', '569099937363656725'];
+    const allowedIds = ['100690967190858558', '569099937363656725'];
 
     if (!allowedIds.includes(message.author.id)) {
       const embedErro = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
-          name: 'Apenas o proprietário do bot pode usar este comando.',
+          name: 'Comando exclusivo para desenvolvedores autorizados.',
           iconURL: icon_attention,
         });
 
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     try {
