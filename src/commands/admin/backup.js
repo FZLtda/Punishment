@@ -1,9 +1,9 @@
 const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
-const { yellow } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
+const { yellow } = require('../../config/colors.json');
+const { icon_attention } = require('../../config/emoji.json');
 const fs = require('fs');
 const path = require('path');
-const { logModerationAction } = require('../utils/moderationUtils');
+const { logModerationAction } = require('../../utils/moderationUtils');
 
 function serializeBigInt(key, value) {
   return typeof value === 'bigint' ? value.toString() : value;
