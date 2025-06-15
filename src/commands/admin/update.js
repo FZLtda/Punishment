@@ -12,9 +12,8 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
-    if (message.author.id !== '1006909671908585586') {
-      return message.reply({ content: 'Apenas o desenvolvedor pode executar esse comando.', ephemeral: true });
-    }
+    
+    if (message.author.id !== '1006909671908585586') return;
 
     const embedProcessando = new EmbedBuilder()
       .setColor('Yellow')
