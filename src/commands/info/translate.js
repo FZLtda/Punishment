@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const fetch = require('node-fetch');
-const { yellow, red } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
+const { yellow, red } = require('../../config/colors.json');
+const { icon_attention } = require('../../config/emoji.json');
 
 module.exports = {
   name: 'translate',
