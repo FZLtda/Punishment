@@ -1,10 +1,10 @@
 const { EmbedBuilder } = require('discord.js');
-const db = require('../data/database');
-const { yellow } = require('../config/colors.json');
-const { icon_attention, attent } = require('../config/emoji.json');
-const { logChannelId } = require('../config/settings.json');
-const { applyPunishment } = require('../utils/punishmentSystem');
-const { saveWarnChannel } = require('../utils/warnChannelTracker');
+const db = require('../../data/database');
+const { yellow } = require('../../config/colors.json');
+const { icon_attention, attent } = require('../../config/emoji.json');
+const { logChannelId } = require('../../config/settings.json');
+const { applyPunishment } = require('../../utils/punishmentSystem');
+const { saveWarnChannel } = require('../../utils/warnChannelTracker');
 
 module.exports = {
   name: 'warn',
