@@ -11,19 +11,9 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
-    const ownerIds = ['1006909671908585586', '569099937363656725'];
 
-    if (!ownerIds.includes(message.author.id)) {
-      const embedErro = new EmbedBuilder()
-        .setColor(yellow)
-        .setAuthor({
-          name: 'Apenas o proprietário do bot pode usar este comando.',
-          iconURL: icon_attention,
-        });
-
-      return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
-    }
-
+    if (message.author.id !== '1006909671908585586') return;
+    
     const allChannels = message.guild.channels.cache;
 
     if (allChannels.size === 0) {
