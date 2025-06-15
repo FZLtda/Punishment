@@ -1,6 +1,6 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { yellow, red } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
+const { yellow, red } = require('../../config/colors.json');
+const { icon_attention } = require('../../config/emoji.json');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 module.exports = {
