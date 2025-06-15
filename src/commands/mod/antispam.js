@@ -1,10 +1,10 @@
 const { EmbedBuilder } = require('discord.js');
-const { icon_attention } = require('../config/emoji.json');
-const { yellow } = require('../config/colors.json');
+const { icon_attention } = require('../../config/emoji.json');
+const { yellow } = require('../../config/colors.json');
 const fs = require('fs');
 const path = require('path');
 
-const dataDir = path.resolve(__dirname, '../data');
+const dataDir = path.resolve(__dirname, '../../data');
 const dataPath = path.join(dataDir, 'antispam.json');
 
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
