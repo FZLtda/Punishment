@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { red } = require('../config/colors.json');
+const { red } = require('../../config/colors.json');
 const moment = require('moment-timezone');
 
 module.exports = {
