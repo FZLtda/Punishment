@@ -1,5 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
-const { green } = require('../config/colors.json');
+const { red } = require('../config/colors.json');
 
 module.exports = {
   name: 'verifysetup',
@@ -12,7 +12,7 @@ module.exports = {
   async execute(message) {
     const embed = new EmbedBuilder()
       .setColor(green)
-      .setTitle('🔐 Verificação Necessária')
+      .setTitle('Verificação Necessária')
       .setDescription('Clique no botão abaixo para se verificar e ter acesso completo ao servidor.')
       .setFooter({
         text: `${message.guild.name}`,
@@ -22,8 +22,9 @@ module.exports = {
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId('verify_user')
-        .setLabel('✅ Verificar')
+        .setLabel('Verificar')
         .setStyle(ButtonStyle.Success)
+        .setEmoji('1219815388921991259')
     );
 
     await message.channel.send({ embeds: [embed], components: [row] });
