@@ -2,8 +2,8 @@ const { EmbedBuilder } = require('discord.js');
 const os = require('os');
 const { version: discordJsVersion } = require('discord.js');
 const { version: nodeVersion } = process;
-const { yellow, red } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
+const { yellow, red } = require('../../config/colors.json');
+const { icon_attention } = require('../../config/emoji.json');
 
 function formatUptime(seconds) {
   const days = Math.floor(seconds / 86400);
