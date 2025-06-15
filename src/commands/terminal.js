@@ -1,7 +1,4 @@
-const { EmbedBuilder } = require('discord.js');
 const CommandExecutor = require('../utils/executeCommand');
-const { yellow, red } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
 
 module.exports = {
     name: 'terminal',
@@ -11,38 +8,16 @@ module.exports = {
 
     async execute(message, args) {
         const userIdPermitido = '1006909671908585586';
-        if (message.author.id !== userIdPermitido) {
-            return message.reply({
-                embeds: [new EmbedBuilder().setColor(yellow).setAuthor({ name: 'Você não tem permissão para executar este comando.', iconURL: icon_attention })],
-                allowedMentions: { repliedUser: false }
-            });
-        }
+        if (message.author.id !== userIdPermitido) return;
 
         const comando = args.join(' ');
-        if (!comando) {
-            return message.reply({
-                embeds: [new EmbedBuilder().setColor(yellow).setAuthor({ name: 'Forneça um comando válido para executar.', iconURL: icon_attention })],
-                allowedMentions: { repliedUser: false }
-            });
-        }
+        if (!comando) return;
 
         try {
             const resultado = await CommandExecutor.run(comando);
-            const respostaFormatada = `\`\`\`bash\n${resultado.slice(0, 2000)}\n\`\`\``;
-
-            const embed = new EmbedBuilder()
-                
-                .setDescription(`${respostaFormatada}`)
-                .setColor(red);
-
-            return message.reply({ embeds: [embed] });
+            return message.reply(`\`\`\`js\n${resultado.slice(0, 2000)}\n\`\`\``);
         } catch (error) {
-            return message.reply({
-                embeds: [new EmbedBuilder()
-                    .setColor(red)
-                    .setAuthor({ name: 'Erro ao executar comando!', iconURL: icon_attention })
-                    .setDescription(`\`\`\`bash\n${error.slice(0, 2000)}\n\`\`\``)]
-            });
+            return message.reply(`\`\`\`js\n${error.slice(0, 2000)}\n\`\`\``);
         }
     }
 };
