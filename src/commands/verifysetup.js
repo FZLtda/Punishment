@@ -11,7 +11,7 @@ module.exports = {
 
   async execute(message) {
     const embed = new EmbedBuilder()
-      .setColor(green)
+      .setColor(red)
       .setTitle('Verificação Necessária')
       .setDescription('Clique no botão abaixo para se verificar e ter acesso completo ao servidor.')
       .setFooter({
