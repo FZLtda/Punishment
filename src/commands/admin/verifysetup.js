@@ -4,8 +4,8 @@ const {
   ButtonStyle,
   EmbedBuilder,
 } = require('discord.js');
-const { green } = require('../config/colors.json');
-const { check } = require('../config/emoji.json');
+const { green } = require('../../config/colors.json');
+const { check } = require('../../config/emoji.json');
 
 module.exports = {
   name: 'verifysetup',
