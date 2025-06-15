@@ -37,7 +37,7 @@ module.exports = {
 
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setCustomId('accept_rules')
+        .setCustomId('verify_user')
         .setLabel('Aceitar Regras')
         .setStyle(ButtonStyle.Success)
         .setEmoji(check)
