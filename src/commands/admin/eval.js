@@ -9,6 +9,9 @@ module.exports = {
   ownerOnly: true,
 
   async execute(message, args) {
+
+    if (message.author.id !== '1006909671908585586') return;
+    
     const code = args.join(' ');
     if (!code) {
       return message.reply({
@@ -29,7 +32,6 @@ module.exports = {
       return message.reply({
         embeds: [new EmbedBuilder()
           .setColor('Green')
-          .setTitle('<:terminal:1355678918191587379> Resultado')
           .setDescription(`\`\`\`js\n${result}\n\`\`\``)
         ],
         allowedMentions: { repliedUser: false }
@@ -39,7 +41,6 @@ module.exports = {
       return message.reply({
         embeds: [new EmbedBuilder()
           .setColor(yellow)
-          .setTitle('❌ Erro')
           .setDescription(`\`\`\`js\n${err}\n\`\`\``)
         ],
         allowedMentions: { repliedUser: false }
