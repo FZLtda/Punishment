@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { cyan } = require('../config/colors.json');
-const { getCommandsByCategory } = require('./commandUtils');
+const { green } = require('../config/colors.json');
+const { getCommandsByCategory } = require('../utils/cmdUtils');
 
 function buildHelpEmbed(category) {
   const commands = getCommandsByCategory(category);
