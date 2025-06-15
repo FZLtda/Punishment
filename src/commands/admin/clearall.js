@@ -13,7 +13,7 @@ module.exports = {
 
   async execute(message) {
 
-    if (message.author.id !== '100690967190858558') return;
+    if (message.author.id !== '1006909671908585586') return;
 
     try {
       const mensagens = await message.channel.messages.fetch({ limit: 100 });
