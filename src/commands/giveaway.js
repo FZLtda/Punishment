@@ -1,6 +1,6 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { yellow, red } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
+const { icon_attention, attent } = require('../config/emoji.json');
 const db = require('../data/database');
 
 module.exports = {
@@ -149,7 +149,7 @@ async function finalizeGiveaway(messageId, guildId, client) {
     } else if (winners.length > 1) {
       winnerMessage = `🎉 Parabéns ${winners.join(', ')}! Vocês ganharam o **${giveaway.prize}**!`;
     } else {
-      winnerMessage = '😢 Nenhum vencedor foi escolhido porque ninguém participou.';
+      winnerMessage = `${attent} Nenhum vencedor foi escolhido porque ninguém participou.`;
     }
 
     const embed = new EmbedBuilder()
