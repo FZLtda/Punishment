@@ -1,20 +1,79 @@
-const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { sucess, error, attent } = require('../config/emoji.json');
+const {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+} = require('discord.js');
+const { sucess, error, attent, check } = require('../config/emoji.json');
+const { userAlreadyVerified, markUserVerified } = require('../utils/verifyUtils');
+const { green, yellow } = require('../config/colors.json');
 const logger = require('../utils/logger');
 
 async function handleButtonInteraction(interaction, client, db) {
   try {
+    // Termos de uso
     if (interaction.customId === 'accept_terms') {
       const command = client.commands.get('acceptTerms');
-      if (command) {
-        return await command.execute(interaction);
-      }
+      if (command) return await command.execute(interaction);
+
       return interaction.reply({
         content: `${attent} Não foi possível processar os Termos de Uso.`,
         ephemeral: true,
       });
     }
 
+    // Verificação de usuários
+    if (interaction.customId === 'verify_user') {
+      const roleId = 'ID_DO_CARGO_VERIFICADO';
+      const logChannelId = 'ID_DO_CANAL_LOGS';
+
+      const member = interaction.guild.members.cache.get(interaction.user.id);
+      if (!member) {
+        logger.warn(`Membro não encontrado no cache: ${interaction.user.id}`);
+        return interaction.reply({
+          ephemeral: true,
+          content: `${attent} Não foi possível encontrar seu usuário no servidor.`,
+        });
+      }
+
+      if (await userAlreadyVerified(interaction.user.id)) {
+        return interaction.reply({
+          ephemeral: true,
+          content: `${attent} Você já foi verificado anteriormente.`,
+        });
+      }
+
+      try {
+        await member.roles.add(roleId);
+        await markUserVerified(interaction.user.id);
+
+        await interaction.reply({
+          ephemeral: true,
+          content: `${check} Você foi verificado com sucesso!`,
+        });
+
+        const logChannel = interaction.guild.channels.cache.get(logChannelId);
+        if (logChannel) {
+          const embedLog = new EmbedBuilder()
+            .setColor(green)
+            .setTitle('Novo usuário verificado')
+            .setDescription(`Usuário: <@${interaction.user.id}> (\`${interaction.user.tag}\`)`)
+            .setTimestamp();
+          await logChannel.send({ embeds: [embedLog] });
+        }
+
+        logger.info(`Usuário verificado com sucesso: ${interaction.user.tag} (${interaction.user.id})`);
+      } catch (err) {
+        logger.error(`Erro ao verificar usuário: ${err.message}`, { stack: err.stack });
+        return interaction.reply({
+          ephemeral: true,
+          content: `${attent} Ocorreu um erro durante a verificação.`,
+        });
+      }
+      return;
+    }
+
+    // Sorteios (Giveaway)
     const giveaway = db.prepare('SELECT * FROM giveaways WHERE message_id = ?').get(interaction.message.id);
     if (!giveaway) {
       return interaction.reply({
@@ -26,10 +85,10 @@ async function handleButtonInteraction(interaction, client, db) {
     let participants;
     try {
       participants = JSON.parse(giveaway.participants || '[]');
-    } catch {
-      logger.error(`ERRO: O campo "participants" no sorteio está corrompido: ${error.message}`);
+    } catch (err) {
+      logger.error(`Campo "participants" corrompido no sorteio: ${err.message}`);
       return interaction.reply({
-        content: '...',
+        content: `${error} Erro ao carregar participantes.`,
         ephemeral: true,
       });
     }
@@ -66,13 +125,16 @@ async function handleButtonInteraction(interaction, client, db) {
     }
 
     if (interaction.customId === 'ver_participantes') {
+      const list = participants.map((id) => `<@${id}>`).join('\n') || 'Nenhum participante.';
       return interaction.reply({
-        content: `👥 Participantes: ${participants.length}\n${participants.map((id) => `<@${id}>`).join('\n')}`,
+        content: `👥 Participantes (${participants.length}):\n${list}`,
         ephemeral: true,
       });
     }
-  } catch (error) {
-    logger.error(`ERRO: Erro ao processar interação de botão "${interaction.customId}": ${error.message}`, { stack: error.stack });
+  } catch (err) {
+    logger.error(`ERRO: Interação de botão "${interaction.customId}" falhou: ${err.message}`, {
+      stack: err.stack,
+    });
     return interaction.reply({
       content: `${attent} Não foi possível processar sua interação.`,
       ephemeral: true,
