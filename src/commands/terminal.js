@@ -28,11 +28,11 @@ module.exports = {
 
         try {
             const resultado = await CommandExecutor.run(comando);
-            const respostaFormatada = `\`\`\`bash\n${resultado.slice(0, 2000)}\n\`\`\``; // Formata como terminal
+            const respostaFormatada = `\`\`\`bash\n${resultado.slice(0, 2000)}\n\`\`\``;
 
             const embed = new EmbedBuilder()
-                .setTitle('🖥️ Execução de Terminal')
-                .setDescription(`**Comando:** \`${comando}\`\n\n${respostaFormatada}`)
+                
+                .setDescription(`${respostaFormatada}`)
                 .setColor(red);
 
             return message.reply({ embeds: [embed] });
