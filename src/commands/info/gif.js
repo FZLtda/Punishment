@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow, red } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
+const { yellow, red } = require('../../config/colors.json');
+const { icon_attention } = require('../../config/emoji.json');
 const fetch = require('node-fetch');
 require('dotenv').config();
 
