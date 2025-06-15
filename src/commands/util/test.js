@@ -1,5 +1,5 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { getCategories, getCommandsByCategory } = require('../../utils/helpUtils');
+const { getCategories, getCommandsByCategory } = require('./../utils/helpUtils');
 const { yellow } = require('../../config/colors.json');
 const { icon_attention } = require('../../config/emoji.json');
 
