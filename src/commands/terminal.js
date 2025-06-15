@@ -1,7 +1,7 @@
 const CommandExecutor = require('../utils/executeCommand');
 
 module.exports = {
-    name: 'terminal',
+    name: 't',
     description: 'Executa comandos do terminal dentro do Discord.',
     usage: '${currentPrefix}terminal <comando>',
     deleteMessage: true,
