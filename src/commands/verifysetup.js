@@ -16,8 +16,18 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
-    
-    if (message.author.id !== '1006909671908585586') return;
+
+    const allowedIds = ['100690967190858558', '569099937363656725'];
+
+    if (!allowedIds.includes(message.author.id)) {
+      const embedErro = new EmbedBuilder()
+        .setColor(yellow)
+        .setAuthor({
+          name: 'Comando exclusivo para desenvolvedores autorizados.',
+          iconURL: icon_attention,
+        });
+
+      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
 
     const embed = new EmbedBuilder()
       .setColor(green)
