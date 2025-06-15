@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow, red, green } = require('../config/colors.json');
+const { yellow, red, green } = require('../../config/colors.json');
 const afkUsers = new Map();
 
 module.exports = {
