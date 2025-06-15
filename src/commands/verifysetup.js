@@ -27,7 +27,7 @@ module.exports = {
           iconURL: icon_attention,
         });
 
-      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });,
 
     const embed = new EmbedBuilder()
       .setColor(green)
