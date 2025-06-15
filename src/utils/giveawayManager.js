@@ -36,11 +36,19 @@ async function createGiveaway({ client, guild, channel, durationMs, winnerCount,
   return message;
 }
 
-function scheduleGiveawayEnd({ messageId, guildId, client, timeout }) {
-  setTimeout(() => finalizeGiveaway(messageId, guildId, client), timeout);
+function scheduleGiveawayEnd({ messageId, guildId, client, timeout, prize, winnerCount }) {
+  setTimeout(() => finalizeGiveaway(messageId, guildId, client, prize, winnerCount), timeout);
 }
 
-async function finalizeGiveaway(messageId, guildId, client) {
+function generateWinnersMessage(winners, prize) {
+  if (winners.length === 0) return `${attent} Nenhum vencedor foi escolhido porque ninguém participou.`;
+  const mention = winners.join(', ');
+  return winners.length === 1
+    ? `🎉 Parabéns ${mention}! Você ganhou o **${prize}**!`
+    : `🎉 Parabéns ${mention}! Vocês ganharam o **${prize}**!`;
+}
+
+async function finalizeGiveaway(messageId, guildId, client, prize, winnerCount) {
   const giveaway = db.prepare('SELECT * FROM giveaways WHERE message_id = ?').get(messageId);
   if (!giveaway) return;
 
@@ -55,20 +63,18 @@ async function finalizeGiveaway(messageId, guildId, client) {
     const message = await channel.messages.fetch(giveaway.message_id);
     if (!message) return;
 
-    for (let i = 0; i < giveaway.winners && participants.length > 0; i++) {
+    for (let i = 0; i < winnerCount && participants.length > 0; i++) {
       const idx = Math.floor(Math.random() * participants.length);
-      winners.push(`<@${participants.splice(idx, 1)}>`);
+      winners.push(`<@${participants.splice(idx, 1)}>`); 
     }
 
     const resultEmbed = new EmbedBuilder()
-      .setTitle('Sorteio Finalizado')
-      .setDescription(`**Prêmio:** \`${giveaway.prize}\`\n**Participantes:** \`${total}\`\n**Ganhador(es):** ${winners.length ? winners.join(', ') : '`Nenhum vencedor`'}`)
+      .setTitle('🏁 Sorteio Finalizado')
+      .setDescription(`**Prêmio:** \`${giveaway.prize}\`\n**Participantes:** \`${total}\`\n**Ganhador(es):** ${winners.length > 0 ? winners.join(', ') : '`Nenhum vencedor`'}`)
       .setColor(red)
       .setFooter({ text: 'Sorteio encerrado!' });
 
-    const resultMessage = winners.length
-      ? `🎉 Parabéns ${winners.join(', ')}! Vocês ganharam o **${giveaway.prize}**!`
-      : `${attent} Nenhum vencedor foi escolhido porque ninguém participou.`;
+    const resultMessage = generateWinnersMessage(winners, giveaway.prize);
 
     await message.edit({ embeds: [resultEmbed], components: [] });
     await channel.send(resultMessage);
