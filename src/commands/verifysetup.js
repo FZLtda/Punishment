@@ -17,17 +17,7 @@ module.exports = {
 
   async execute(message) {
 
-    const allowedIds = ['100690967190858558', '569099937363656725'];
-
-    if (!allowedIds.includes(message.author.id)) {
-      const embedErro = new EmbedBuilder()
-        .setColor(yellow)
-        .setAuthor({
-          name: 'Comando exclusivo para desenvolvedores autorizados.',
-          iconURL: icon_attention,
-        });
-
-      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });,
+    if (message.author.id !== '100690967190858558') return;
 
     const embed = new EmbedBuilder()
       .setColor(green)
