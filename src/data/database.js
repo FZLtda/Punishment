@@ -59,4 +59,10 @@ db.prepare(`
   )
 `).run();
 
+db.prepare(`
+  CREATE TABLE IF NOT EXISTS verified_users (
+    user_id TEXT PRIMARY KEY
+  );
+`).run();
+
 module.exports = db;
