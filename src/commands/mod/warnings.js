@@ -1,7 +1,7 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const db = require('../data/database');
-const { yellow } = require('../config/colors.json');
-const { icon_attention, attent } = require('../config/emoji.json');
+const db = require('../../data/database');
+const { yellow } = require('../../config/colors.json');
+const { icon_attention, attent } = require('../../config/emoji.json');
 
 module.exports = {
   name: 'warnings',
