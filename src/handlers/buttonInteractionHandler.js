@@ -79,7 +79,7 @@ async function handleButtonInteraction(interaction, client, db) {
         logger.error(`Erro ao verificar usuário: ${err.message}`, { stack: err.stack });
         return interaction.reply({
           ephemeral: true,
-          content: `${attent} Ocorreu um erro durante a verificação.`,
+          content: `${attent} Não foi possível concluir a verificação.`,
         });
       }
       return;
