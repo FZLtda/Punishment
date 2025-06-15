@@ -1,14 +1,11 @@
-const categories = {
-  moderation: { label: 'Moderação', emoji: '🛡️' },
+module.exports.categories = {
   info: { label: 'Informações', emoji: '📖' },
+  mod: { label: 'Moderação', emoji: '🛡️' },
   fun: { label: 'Diversão', emoji: '🎉' },
-  utility: { label: 'Utilidades', emoji: '🧰' }
+  util: { label: 'Utilidades', emoji: '🛠️' },
+  staff: { label: 'Staff', emoji: '🔧' }
 };
 
-function getCommandsByCategory(commands, category) {
-  return commands
-    .filter(cmd => cmd.category === category)
-    .sort((a, b) => a.name.localeCompare(b.name));
-}
-
-module.exports = { categories, getCommandsByCategory };
+module.exports.getCommandsByCategory = (commands, category) => {
+  return [...commands.values()].filter(cmd => cmd.category === category);
+};
