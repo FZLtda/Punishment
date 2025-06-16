@@ -74,7 +74,7 @@ async function handleButtonInteraction(interaction, client, db) {
           const embedLog = new EmbedBuilder()
             .setColor(green)
             .setTitle('Novo usuário verificado')
-            .setDescription(`Usuário: <@${interaction.user.id}> (\`${interaction.user.tag}\`)`)
+            .setDescription(`${interaction.user} (\`${interaction.user.id}\`)`)
             .setTimestamp();
           await logChannel.send({ embeds: [embedLog] });
         }
