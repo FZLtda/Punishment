@@ -1,15 +1,13 @@
 const { EmbedBuilder } = require('discord.js');
-const { red, green } = require('../../config/colors.json');
+const { restartSquareApp } = require('../../utils/squareUtils');
 const { icon_shutdown } = require('../../config/emoji.json');
-const logger = require('../../utils/logger');
+const { red, green } = require('../../config/colors.json');
 
 module.exports = {
   name: 'restart',
-  description: 'Reinicia o bot com segurança.',
+  description: 'Reinicia o bot na SquareCloud.',
   category: 'Administração',
-  aliases: ['reboot', 'shutdown'],
-  cooldown: 5,
-  async execute(message, args, client) {
+  async execute(message) {
     const ownerIds = process.env.OWNERS_ID?.split(',') || [];
     if (!ownerIds.includes(message.author.id)) {
       return message.reply({
@@ -21,18 +19,31 @@ module.exports = {
       });
     }
 
-    const embed = new EmbedBuilder()
-      .setColor(green)
-      .setTitle(`${icon_shutdown} Reiniciando...`)
-      .setDescription('O bot está sendo reiniciado com segurança. Aguarde alguns segundos.')
-      .setFooter({ text: 'Shutdown iniciado por ' + message.author.tag });
+    const reply = await message.channel.send({
+      embeds: [
+        new EmbedBuilder()
+          .setColor(green)
+          .setDescription(`${icon_shutdown} | Reiniciando a aplicação na SquareCloud...`)
+      ]
+    });
 
-    await message.channel.send({ embeds: [embed] });
+    const result = await restartSquareApp();
+    if (!result || result.error) {
+      return reply.edit({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(red)
+            .setDescription(`${icon_shutdown} | Falha ao reiniciar o bot: ${result?.message || 'erro desconhecido'}`)
+        ]
+      });
+    }
 
-    logger.warn(`Reinício solicitado por ${message.author.tag} (${message.author.id})`);
-    
-    setTimeout(() => {
-      process.exit(0);
-    }, 3000);
+    return reply.edit({
+      embeds: [
+        new EmbedBuilder()
+          .setColor(green)
+          .setDescription(`${icon_shutdown} | Bot reiniciado com sucesso pela SquareCloud!`)
+      ]
+    });
   }
 };
