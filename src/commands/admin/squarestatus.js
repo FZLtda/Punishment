@@ -8,13 +8,13 @@ module.exports = {
   description: 'Exibe o status atual da aplicação na SquareCloud.',
   category: 'Administração',
   async execute(message) {
-    const ownerIds = process.env.DEVS_ID?.split(',') || [];
+    const ownerIds = process.env.OWNERS_ID?.split(',') || [];
     if (!ownerIds.includes(message.author.id)) {
       return message.reply({
         embeds: [
           new EmbedBuilder()
             .setColor(red)
-            .setDescription('Você não tem permissão para ver o status da aplicação.')
+            .setDescription(`${icon_shutdown} | Você não tem permissão para ver o status da aplicação.`)
         ]
       });
     }
@@ -28,6 +28,12 @@ module.exports = {
             .setColor(red)
             .setTitle('Erro ao consultar a API da SquareCloud')
             .setDescription(`Erro: ${data.message}`)
+            .addFields(
+              data.raw ? {
+                name: '🔍 Resposta da API',
+                value: `\`\`\`json\n${JSON.stringify(data.raw, null, 2)}\n\`\`\``
+              } : {}
+            )
         ]
       });
     }
