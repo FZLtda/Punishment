@@ -10,6 +10,10 @@ module.exports = {
   name: 'squareinfo',
   description: 'Exibe informações técnicas da aplicação na SquareCloud.',
   category: 'Administração',
+  usage: '${currentPrefix}reload <nome do comando>',
+  userPermissions: ['Administrator'],
+  deleteMessage: true,
+  
   async execute(message) {
     const ownerIds = process.env.OWNERS_ID?.split(',') || [];
     if (!ownerIds.includes(message.author.id)) {
