@@ -6,7 +6,7 @@ const APP_ID = process.env.SQUARE_APP_ID;
 
 async function restartSquareApp() {
   try {
-    logger.info('[SQUARE] Iniciando requisição para reiniciar o app na SquareCloud...');
+    logger.info('[SQUARE] Iniciando requisição para reiniciar o app...');
 
     const res = await fetch(`https://api.squarecloud.app/v2/apps/${APP_ID}/restart`, {
       method: 'POST',
