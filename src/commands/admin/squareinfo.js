@@ -56,7 +56,7 @@ module.exports = {
         )
         .setFooter({ text: 'Dados da SquareCloud (v2 API)', iconURL: message.client.user.displayAvatarURL() });
 
-      return message.reply({ embeds: [embed] });
+      return message.channel.send({ embeds: [embed] });
 
     } catch (err) {
       return message.reply({
