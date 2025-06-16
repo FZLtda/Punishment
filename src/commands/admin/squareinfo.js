@@ -30,46 +30,26 @@ module.exports = {
     }
 
     try {
-      const [infoRes, statsRes] = await Promise.all([
-        fetch(`https://api.squarecloud.app/v2/apps/${APP_ID}`, {
-          headers: { Authorization: SQUARE_TOKEN }
-        }),
-        fetch(`https://api.squarecloud.app/v2/apps/${APP_ID}/resources`, {
-          headers: { Authorization: SQUARE_TOKEN }
-        })
-      ]);
+      const res = await fetch(`https://api.squarecloud.app/v2/apps/${APP_ID}`, {
+        headers: { Authorization: SQUARE_TOKEN }
+      });
 
-      const infoData = await infoRes.json();
-      const statsData = await statsRes.json();
+      const data = await res.json();
 
-      if (!infoRes.ok || !infoData.response) {
-        logger.error(`[SQUARE] Erro na resposta da API (info): ${JSON.stringify(infoData)}`);
+      if (!res.ok || !data.response) {
+        logger.error(`[SQUARE] Erro na resposta da API: ${JSON.stringify(data)}`);
         return message.reply({
           embeds: [
             new EmbedBuilder()
               .setColor(red)
-              .setTitle('Erro ao obter informações da aplicação.')
-              .setDescription(infoData.message || 'Erro desconhecido.')
+              .setTitle('Erro na API')
+              .setDescription(data.message || 'Não foi possível obter os dados da aplicação.')
           ],
           allowedMentions: { repliedUser: false }
         });
       }
 
-      if (!statsRes.ok || !statsData.response) {
-        logger.error(`[SQUARE] Erro na resposta da API (resources): ${JSON.stringify(statsData)}`);
-        return message.reply({
-          embeds: [
-            new EmbedBuilder()
-              .setColor(red)
-              .setTitle('Erro ao obter recursos da aplicação.')
-              .setDescription(statsData.message || 'Erro desconhecido.')
-          ],
-          allowedMentions: { repliedUser: false }
-        });
-      }
-
-      const { name, id, desc, language, ram, cluster } = infoData.response;
-      const { cpu, ram: ramStats, network } = statsData.response;
+      const { name, id, desc, language, ram, cluster, status } = data.response;
 
       const embed = new EmbedBuilder()
         .setTitle('Informações da Aplicação SquareCloud')
@@ -79,11 +59,9 @@ module.exports = {
           { name: 'ID', value: `\`${id}\``, inline: true },
           { name: 'Descrição', value: desc || 'N/A' },
           { name: 'Linguagem', value: language, inline: true },
-          { name: 'Cluster', value: cluster, inline: true },
           { name: 'RAM Alocada', value: `${ram}MB`, inline: true },
-          { name: 'RAM em Uso', value: `${ramStats.usage}MB / ${ramStats.limit}MB`, inline: true },
-          { name: 'Uso de CPU', value: `${cpu.usage}%`, inline: true },
-          { name: 'Rede Total', value: `${network.total}MB`, inline: true }
+          { name: 'Cluster', value: cluster, inline: true },
+          { name: 'Status', value: status || 'Desconhecido', inline: true }
         )
         .setFooter({
           text: 'SquareCloud API v2',
