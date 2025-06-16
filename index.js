@@ -2,6 +2,7 @@ require('dotenv').config();
 const os = require('os');
 const logger = require('./src/utils/logger.js');
 const startBot = require('./src/bot.js');
+const connectDatabase = require('./src/utils/database.js');
 
 const processInfo = {
   pid: process.pid,
@@ -48,4 +49,7 @@ const gracefulShutdown = async () => {
 process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);
 
-startBot();
+(async () => {
+  await connectDatabase();
+  await startBot();
+})();
