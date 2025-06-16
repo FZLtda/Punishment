@@ -9,7 +9,7 @@ module.exports = {
   description: 'Reinicia o bot na SquareCloud.',
   category: 'Administração',
   async execute(message) {
-    const ownerIds = process.env.OWNERS_ID?.split(',') || [];
+    const ownerIds = process.env.DEVS_ID?.split(',') || [];
     const userTag = `${message.author.tag} (${message.author.id})`;
 
     if (!ownerIds.includes(message.author.id)) {
