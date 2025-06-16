@@ -1,64 +1,51 @@
-const { EmbedBuilder } = require('discord.js');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
-const { converterTempo } = require('../../utils/giveawayUtils');
+const { EmbedBuilder } = require('discord.js'); 
+const { yellow } = require('../../config/colors.json'); 
+const { icon_attention } = require('../../config/emoji.json'); 
+const { converterTempo } = require('../../utils/giveawayUtils'); 
 const { criarSorteio, agendarEncerramento } = require('../../core/giveawayManager');
 
-module.exports = {
-  name: 'giveaway',
-  description: 'Gerencia sorteios no servidor.',
-  usage: '.giveaway start <tempo> <quantidade> <prêmio>',
-  userPermissions: ['SendMessages'],
-  botPermissions: ['SendMessages'],
-  deleteMessage: true,
+module.exports = { name: 'giveaway', description: 'Gerencia sorteios no servidor.', usage: '.giveaway start <tempo> <quantidade> <prêmio>', userPermissions: ['SendMessages'], botPermissions: ['SendMessages'], deleteMessage: true,
 
-  async execute(message, args) {
-    try {
-      if (args[0] !== 'start') {
-        return enviarErro(message, 'Uso correto: .giveaway start <tempo> <quantidade> <prêmio>');
-      }
+async execute(message, args) { try { if (args[0] !== 'start') { return enviarErro(message, 'Uso correto: .giveaway start <tempo> <quantidade> <prêmio>'); }
 
-      const tempoInput = args[1];
-      const quantidade = parseInt(args[2]);
-      const premio = args.slice(3).join(' ');
+const tempoInput = args[1];
+  const quantidade = parseInt(args[2]);
+  const premio = args.slice(3).join(' ');
 
-      if (!tempoInput || isNaN(quantidade) || !premio) {
-        return enviarErro(message, 'Uso correto: .giveaway start <tempo> <quantidade> <prêmio>');
-      }
+  if (!tempoInput || isNaN(quantidade) || !premio) {
+    return enviarErro(message, 'Uso correto: .giveaway start <tempo> <quantidade> <prêmio>');
+  }
 
-      const tempoMs = converterTempo(tempoInput);
-      if (!tempoMs) {
-        return enviarErro(message, 'Formato de tempo inválido! Use 1m, 1h ou 1d.');
-      }
+  const tempoMs = converterTempo(tempoInput);
+  if (!tempoMs) {
+    return enviarErro(message, 'Formato de tempo inválido! Use 1m, 1h ou 1d.');
+  }
 
-      const { message: sorteioMsg, endTime } = await criarSorteio({
-        client: message.client,
-        guild: message.guild,
-        channel: message.channel,
-        durationMs: tempoMs,
-        winnerCount: quantidade,
-        prize: premio,
-      });
+  const { message: sorteioMsg, endTime } = await criarSorteio({
+    client: message.client,
+    guild: message.guild,
+    channel: message.channel,
+    durationMs: tempoMs,
+    winnerCount: quantidade,
+    prize: premio,
+  });
 
-      agendarEncerramento({
-        messageId: sorteioMsg.id,
-        guildId: message.guild.id,
-        client: message.client,
-        timeout: tempoMs,
-      });
+  agendarEncerramento({
+    messageId: sorteioMsg.id,
+    guildId: message.guild.id,
+    client: message.client,
+    timeout: tempoMs,
+  });
 
-      message.delete().catch(() => null);
-    } catch (err) {
-      console.error(`[ERRO] Comando giveaway: ${err}`);
-      enviarErro(message, 'Ocorreu um erro ao iniciar o sorteio.');
-    }
-  },
-};
-
-function enviarErro(message, texto) {
-  const embed = new EmbedBuilder()
-    .setColor(yellow)
-    .setAuthor({ name: texto, iconURL: icon_attention });
-
-  return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
+  message.delete().catch(() => null);
+} catch (err) {
+  console.error(`[ERRO] Comando giveaway: ${err}`);
+  enviarErro(message, 'Ocorreu um erro ao iniciar o sorteio.');
 }
+
+}, };
+
+function enviarErro(message, texto) { const embed = new EmbedBuilder() .setColor(yellow) .setAuthor({ name: texto, iconURL: icon_attention });
+
+return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } }); }
+
