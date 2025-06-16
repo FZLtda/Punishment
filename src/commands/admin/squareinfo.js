@@ -2,6 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 const fetch = require('node-fetch');
 const logger = require('../../utils/logger');
 const { red, green } = require('../../config/colors.json');
+const { square_icon } = require('../../config/emoji.json');
 
 const SQUARE_TOKEN = process.env.SQUARE_TOKEN;
 const APP_ID = process.env.SQUARE_APP_ID;
@@ -63,7 +64,7 @@ module.exports = {
         )
         .setFooter({
           text: 'SquareCloud API v2',
-          iconURL: 'https://cdn.squarecloud.app/assets/logo.png'
+          iconURL: square_icon
         })
         .setTimestamp();
 
