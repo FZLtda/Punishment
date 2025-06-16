@@ -1,4 +1,4 @@
-const Giveaway = require('../models/Giveaway');
+const db = require('../data/database');
 const {
   gerarEmbedInicial,
   gerarComponentesInterativos,
@@ -13,18 +13,19 @@ async function criarSorteio({ client, guild, channel, durationMs, winnerCount, p
 
   const message = await channel.send({ embeds: [embed], components: [components] });
 
-  const novoSorteio = new Giveaway({
-    guild_id: guild.id,
-    channel_id: channel.id,
-    message_id: message.id,
+  db.prepare(`
+    INSERT INTO giveaways (guild_id, channel_id, message_id, prize, duration, winners, end_time, participants)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `).run(
+    guild.id,
+    channel.id,
+    message.id,
     prize,
-    duration: durationMs,
-    winners: winnerCount,
-    end_time: endTime,
-    participants: [],
-  });
-
-  await novoSorteio.save(); // Salva no MongoDB
+    durationMs,
+    winnerCount,
+    endTime,
+    JSON.stringify([])
+  );
 
   return { message, endTime };
 }
@@ -34,10 +35,10 @@ function agendarEncerramento({ messageId, guildId, client, timeout }) {
 }
 
 async function finalizarSorteio(messageId, guildId, client) {
-  const sorteio = await Giveaway.findOne({ message_id: messageId });
+  const sorteio = db.prepare('SELECT * FROM giveaways WHERE message_id = ?').get(messageId);
   if (!sorteio) return;
 
-  const participantes = sorteio.participants || [];
+  const participantes = JSON.parse(sorteio.participants);
   const total = participantes.length;
   const winners = [];
 
@@ -59,7 +60,7 @@ async function finalizarSorteio(messageId, guildId, client) {
     await mensagem.edit({ embeds: [embedFinal], components: [] });
     await canal.send(mensagemFinal);
 
-    await Giveaway.deleteOne({ message_id: messageId });
+    db.prepare('DELETE FROM giveaways WHERE message_id = ?').run(messageId);
   } catch (err) {
     console.error(`[ERRO] Finalizando sorteio: ${err}`);
   }
