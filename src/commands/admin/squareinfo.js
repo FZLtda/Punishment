@@ -1,75 +1,84 @@
 const { EmbedBuilder } = require('discord.js');
-const { red, green } = require('../../config/colors.json');
-const { icon_shutdown } = require('../../config/emoji.json');
 const fetch = require('node-fetch');
+const logger = require('../../utils/logger');
+const { red, green } = require('../../config/colors.json');
 
 const SQUARE_TOKEN = process.env.SQUARE_TOKEN;
 const APP_ID = process.env.SQUARE_APP_ID;
+const OWNERS_ID = process.env.DEVS_ID?.split(',') || [];
 
 module.exports = {
   name: 'squareinfo',
-  description: 'Exibe informações técnicas da aplicação na SquareCloud.',
+  description: 'Exibe informações técnicas detalhadas da aplicação na SquareCloud.',
   category: 'Administração',
-  usage: '${currentPrefix}reload <nome do comando>',
+  usage: '.squareinfo',
   userPermissions: ['Administrator'],
   deleteMessage: true,
-  
+
   async execute(message) {
-    const ownerIds = process.env.OWNERS_ID?.split(',') || [];
-    if (!ownerIds.includes(message.author.id)) {
+    if (!OWNERS_ID.includes(message.author.id)) {
       return message.reply({
         embeds: [
           new EmbedBuilder()
             .setColor(red)
-            .setDescription(`${icon_shutdown} | Você não tem permissão para usar este comando.`)
-        ]
+            .setTitle('Acesso negado')
+            .setDescription('Este comando é restrito aos desenvolvedores autorizados.')
+        ],
+        allowedMentions: { repliedUser: false }
       });
     }
 
     try {
-      const response = await fetch(`https://api.squarecloud.app/v2/apps/${APP_ID}`, {
-        headers: {
-          Authorization: SQUARE_TOKEN
-        }
+      const res = await fetch(`https://api.squarecloud.app/v2/apps/${APP_ID}`, {
+        headers: { Authorization: SQUARE_TOKEN }
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (!response.ok || !data.response) {
+      if (!res.ok || !data.response) {
+        logger.error(`[SQUARE] Erro na resposta da API: ${JSON.stringify(data)}`);
         return message.reply({
           embeds: [
             new EmbedBuilder()
               .setColor(red)
-              .setTitle('Falha ao obter informações do bot')
-              .setDescription(`Erro: ${data.message || 'Resposta inesperada da API SquareCloud.'}`)
-          ]
+              .setTitle('Erro na API')
+              .setDescription(data.message || 'Não foi possível obter os dados da aplicação.')
+          ],
+          allowedMentions: { repliedUser: false }
         });
       }
 
-      const info = data.response;
+      const { name, id, desc, language, ram, cluster } = data.response;
 
       const embed = new EmbedBuilder()
-        .setTitle(`${info.name}`)
+        .setTitle('Informações da Aplicação SquareCloud')
         .setColor(green)
         .addFields(
-          { name: 'App ID', value: `\`${info.id}\`` },
-          { name: 'Descrição', value: info.desc || 'Nenhuma descrição disponível.' },
-          { name: 'Linguagem', value: `\`${info.language}\``, inline: true },
-          { name: 'RAM', value: `\`${info.ram}MB\``, inline: true },
-          { name: 'Cluster', value: `\`${info.cluster}\``, inline: true }
+          { name: 'Nome', value: name, inline: true },
+          { name: 'ID', value: `\`${id}\``, inline: true },
+          { name: 'Descrição', value: desc || 'N/A' },
+          { name: 'Linguagem', value: language, inline: true },
+          { name: 'RAM Alocada', value: `${ram}MB`, inline: true },
+          { name: 'Cluster', value: cluster, inline: true }
         )
-        .setFooter({ text: 'SquareCloud (v2 API)', iconURL: message.client.user.displayAvatarURL() });
+        .setFooter({
+          text: 'SquareCloud API v2',
+          iconURL: 'https://squarecloud.app/favicon.png'
+        })
+        .setTimestamp();
 
       return message.channel.send({ embeds: [embed] });
 
-    } catch (err) {
+    } catch (error) {
+      logger.error(`[SQUARE] Erro ao obter informações da aplicação: ${error.message}`);
       return message.reply({
         embeds: [
           new EmbedBuilder()
             .setColor(red)
-            .setTitle('Erro inesperado')
-            .setDescription(`\`\`\`js\n${err.message}\n\`\`\``)
-        ]
+            .setTitle('Erro interno')
+            .setDescription(`\`\`\`js\n${error.message}\n\`\`\``)
+        ],
+        allowedMentions: { repliedUser: false }
       });
     }
   }
