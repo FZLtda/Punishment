@@ -44,12 +44,19 @@ async function getSquareAppStatus() {
 
     const data = await response.json();
 
-    if (!response.ok) {
-      logger.error(`[SQUARE] Erro ao consultar status: ${response.status}`, { response: data });
-      return { error: true, message: data.message || 'Erro desconhecido' };
+    if (!response.ok || !data.application) {
+      logger.error('[SQUARE] Erro ao consultar status', { status: response.status, response: data });
+      return {
+        error: true,
+        message: data.message || 'Estrutura inesperada da API',
+        raw: data
+      };
     }
 
-    logger.info('[SQUARE] Status da aplicação recebido com sucesso.', { appStatus: data.application.status });
+    logger.info('[SQUARE] Status da aplicação recebido com sucesso.', {
+      appStatus: data.application.status
+    });
+
     return data;
   } catch (err) {
     logger.error(`[SQUARE] Falha na API SquareCloud: ${err.message}`);
