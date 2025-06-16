@@ -45,16 +45,16 @@ module.exports = {
       const info = data.response;
 
       const embed = new EmbedBuilder()
-        .setTitle(`📘 Informações do Bot: ${info.name}`)
+        .setTitle(`${info.name}`)
         .setColor(green)
         .addFields(
-          { name: '🆔 App ID', value: `\`${info.id}\`` },
-          { name: '📄 Descrição', value: info.desc || 'Nenhuma descrição disponível.' },
-          { name: '🖥️ Linguagem', value: `\`${info.language}\``, inline: true },
-          { name: '💾 RAM Alocada', value: `\`${info.ram}MB\``, inline: true },
-          { name: '☁️ Cluster', value: `\`${info.cluster}\``, inline: true }
+          { name: 'App ID', value: `\`${info.id}\`` },
+          { name: 'Descrição', value: info.desc || 'Nenhuma descrição disponível.' },
+          { name: 'Linguagem', value: `\`${info.language}\``, inline: true },
+          { name: 'RAM', value: `\`${info.ram}MB\``, inline: true },
+          { name: 'Cluster', value: `\`${info.cluster}\``, inline: true }
         )
-        .setFooter({ text: 'Dados da SquareCloud (v2 API)', iconURL: message.client.user.displayAvatarURL() });
+        .setFooter({ text: 'SquareCloud (v2 API)', iconURL: message.client.user.displayAvatarURL() });
 
       return message.channel.send({ embeds: [embed] });
 
