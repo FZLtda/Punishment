@@ -37,22 +37,14 @@ module.exports = {
       const data = await res.json();
 
       if (!res.ok || !data.response) {
-        logger.error(`[SQUARE] Erro na resposta da API: ${JSON.stringify(data)}`);
-        return message.reply({
-          embeds: [
-            new EmbedBuilder()
-              .setColor(red)
-              .setTitle('Erro na API')
-              .setDescription(data.message || 'Não foi possível obter os dados da aplicação.')
-          ],
-          allowedMentions: { repliedUser: false }
-        });
+        logger.error('[SQUARE] Não foi possível obter os dados da aplicação.');
+        return;
       }
 
       const { name, id, desc, language, ram, cluster, status } = data.response;
 
       const embed = new EmbedBuilder()
-        .setTitle('Informações da Aplicação SquareCloud')
+        .setTitle('Informações da Aplicação')
         .setColor(green)
         .addFields(
           { name: 'Nome', value: name, inline: true },
@@ -72,16 +64,8 @@ module.exports = {
       return message.channel.send({ embeds: [embed] });
 
     } catch (error) {
-      logger.error(`[SQUARE] Erro ao obter informações da aplicação: ${error.message}`);
-      return message.reply({
-        embeds: [
-          new EmbedBuilder()
-            .setColor(red)
-            .setTitle('Erro interno')
-            .setDescription(`\`\`\`js\n${error.message}\n\`\`\``)
-        ],
-        allowedMentions: { repliedUser: false }
-      });
+      logger.error('[SQUARE] Não foi possível obter informações da aplicação');
+      return;
     }
   }
 };
