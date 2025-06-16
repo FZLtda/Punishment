@@ -63,7 +63,7 @@ module.exports = {
         )
         .setFooter({
           text: 'SquareCloud API v2',
-          iconURL: 'https://squarecloud.app/favicon.png'
+          iconURL: 'https://cdn.squarecloud.app/assets/logo.png'
         })
         .setTimestamp();
 
