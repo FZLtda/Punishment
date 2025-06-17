@@ -5,11 +5,21 @@ const fs = require('fs');
 const logDir = path.resolve(__dirname, '../logs');
 if (!fs.existsSync(logDir)) fs.mkdirSync(logDir);
 
+const levels = {
+  fatal: 0,
+  error: 1,
+  warn: 2,
+  info: 3,
+  http: 4,
+  debug: 5,
+};
+
 const colors = {
+  fatal: 'magentaBG',
   error: 'red',
   warn: 'yellow',
   info: 'green',
-  http: 'magenta',
+  http: 'cyan',
   debug: 'blue',
 };
 winston.addColors(colors);
@@ -30,12 +40,18 @@ const fileFormat = winston.format.combine(
 );
 
 const logger = winston.createLogger({
+  levels,
   level: 'debug',
-  levels: winston.config.npm.levels,
   format: winston.format.json(),
   transports: [
     new winston.transports.Console({
       format: consoleFormat,
+    }),
+
+    new winston.transports.File({
+      filename: path.join(logDir, 'fatal.log'),
+      level: 'fatal',
+      format: fileFormat,
     }),
 
     new winston.transports.File({
@@ -45,13 +61,13 @@ const logger = winston.createLogger({
     }),
 
     new winston.transports.File({
-      filename: path.join(logDir, 'combined.log'),
+      filename: path.join(logDir, 'warn.log'),
+      level: 'warn',
       format: fileFormat,
     }),
 
     new winston.transports.File({
-      filename: path.join(logDir, 'warn.log'),
-      level: 'warn',
+      filename: path.join(logDir, 'combined.log'),
       format: fileFormat,
     }),
   ],
@@ -63,5 +79,15 @@ logger.stream = {
     logger.info(message.trim());
   },
 };
+
+if (!logger.fatal) {
+  logger.fatal = (message, meta = {}) => {
+    logger.log({
+      level: 'fatal',
+      message: `[FATAL] ${message}`,
+      ...meta,
+    });
+  };
+}
 
 module.exports = logger;
