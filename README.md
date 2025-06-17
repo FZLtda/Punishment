@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/funczero/meu-repo/blob/main/imagens/logo.png" width="100">
+  <img src="https://raw.githubusercontent.com/FZLtda/Punishment/41caac19ed0f4add339f0621a81ead88ba0a1415/src/config/logo.png" width="100">
 
   <h1 style="color:#fe3838;">Punishment</h1>  
 
