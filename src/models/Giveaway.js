@@ -45,6 +45,10 @@ const giveawaySchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
+  winners: {
+    type: [String],
+    default: [],
+  },
   ended: {
     type: Boolean,
     default: false,
