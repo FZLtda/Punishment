@@ -1,14 +1,17 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { red } = require('../config/colors.json');
 const { attent } = require('../config/emoji.json');
-const db = require('../data/database');
 
-function gerarEmbedInicial(prize, winnerCount, endTime) {
+function gerarEmbedInicial(prize, winnerCount, endTime, messageId) {
   return new EmbedBuilder()
-    .setTitle('Novo Sorteio')
-    .setDescription(`**Prêmio:** \`${prize}\`\n**Ganhador(es):** \`${winnerCount}\`\n**Termina:** <t:${Math.floor(endTime / 1000)}:f> (<t:${Math.floor(endTime / 1000)}:R>)`)
+    .setTitle(`🎉 Sorteio ID: ${messageId || 'Em breve'}`)
+    .setDescription(
+      `**Prêmio:** \`${prize}\`\n` +
+      `**Ganhador(es):** \`${winnerCount}\`\n` +
+      `**Termina em:** <t:${Math.floor(endTime / 1000)}:f> (<t:${Math.floor(endTime / 1000)}:R>)`
+    )
     .setColor(red)
-    .setFooter({ text: 'Clique no botão para participar!' });
+    .setFooter({ text: 'Clique no botão abaixo para participar!' });
 }
 
 function gerarComponentesInterativos() {
@@ -25,13 +28,14 @@ function gerarComponentesInterativos() {
   );
 }
 
-function gerarEmbedFinal(prize, total, winners) {
+function gerarEmbedFinal(prize, total, winners, messageId, endedAt = new Date()) {
   return new EmbedBuilder()
-    .setTitle('Sorteio Finalizado')
+    .setTitle(`🎉 Sorteio Finalizado (ID: ${messageId})`)
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
       `**Participantes:** \`${total}\`\n` +
-      `**Ganhador(es):** ${winners.length > 0 ? winners.join(', ') : '`Nenhum vencedor`'}`
+      `**Ganhador(es):** ${winners.length > 0 ? winners.join(', ') : '`Nenhum vencedor`'}\n\n` +
+      `**Encerrado em:** <t:${Math.floor(endedAt.getTime() / 1000)}:f>`
     )
     .setColor(red)
     .setFooter({ text: 'Sorteio encerrado!' });
@@ -42,7 +46,7 @@ function gerarMensagemVencedores(winners, prize) {
     return `${attent} Nenhum vencedor foi escolhido porque ninguém participou.`;
   }
 
-  const mencoes = winners.join(', ');
+  const mencoes = winners.map(id => `<@${id}>`).join(', ');
   return winners.length === 1
     ? `🎉 Parabéns ${mencoes}! Você ganhou o **${prize}**!`
     : `🎉 Parabéns ${mencoes}! Vocês ganharam o **${prize}**!`;
@@ -53,7 +57,7 @@ function converterTempo(tempo) {
   if (!match) return null;
 
   const valor = parseInt(match[1]);
-  const unidade = match[2];
+  const unidade = match[2].toLowerCase();
 
   switch (unidade) {
     case 's': return valor * 1000;
