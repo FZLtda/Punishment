@@ -1,13 +1,22 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const {
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} = require('discord.js');
 const { red } = require('../config/colors.json');
 const { attent } = require('../config/emoji.json');
 
-function gerarEmbedInicial(prize, winnerCount, endTime, messageId) {
+const formatNumber = (num) => new Intl.NumberFormat('pt-BR').format(num);
+
+function gerarEmbedInicial(prize = 'Indefinido', winnerCount = 1, endTime = Date.now(), messageId = null) {
+  const idVisivel = messageId ?? 'Em breve';
+
   return new EmbedBuilder()
-    .setTitle(`🎉 Sorteio ID: ${messageId || 'Em breve'}`)
+    .setTitle(`🎉 Sorteio ID: ${idVisivel}`)
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
-      `**Ganhador(es):** \`${winnerCount}\`\n` +
+      `**${winnerCount === 1 ? 'Ganhador' : 'Ganhadores'}:** \`${winnerCount}\`\n` +
       `**Termina em:** <t:${Math.floor(endTime / 1000)}:f> (<t:${Math.floor(endTime / 1000)}:R>)`
     )
     .setColor(red)
@@ -29,16 +38,16 @@ function gerarComponentesInterativos() {
   );
 }
 
-function gerarEmbedFinal(prize, total, winners = [], messageId = 'Desconhecido', endedAt = new Date()) {
+function gerarEmbedFinal(prize = 'Indefinido', total = 0, winners = [], messageId = 'Desconhecido', endedAt = new Date()) {
   const mencoes = winners.length > 0
-    ? winners.map(id => (typeof id === 'string' && id.startsWith('<@') ? id : `<@${id}>`)).join(', ')
+    ? winners.map(id => `<@${String(id).replace(/[<@!>]/g, '')}>`).join(', ')
     : '`Nenhum vencedor`';
 
   return new EmbedBuilder()
     .setTitle(`🎊 Sorteio Finalizado (ID: ${messageId})`)
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
-      `**Participantes:** \`${total}\`\n` +
+      `**Participantes:** \`${formatNumber(total)}\`\n` +
       `**${winners.length === 1 ? 'Ganhador' : 'Ganhadores'}:** ${mencoes}\n\n` +
       `**Encerrado em:** <t:${Math.floor(endedAt.getTime() / 1000)}:f>`
     )
@@ -46,31 +55,33 @@ function gerarEmbedFinal(prize, total, winners = [], messageId = 'Desconhecido',
     .setFooter({ text: 'Sorteio encerrado!' });
 }
 
-function gerarMensagemVencedores(winners, prize) {
-  if (!winners || winners.length === 0) {
+function gerarMensagemVencedores(winners = [], prize = 'Indefinido') {
+  if (winners.length === 0) {
     return `${attent} Nenhum vencedor foi escolhido porque ninguém participou.`;
   }
 
-  const mencoes = winners.map(id => `<@${id.replace(/[<@!>]/g, '')}>`).join(', ');
+  const mencoes = winners.map(id => `<@${String(id).replace(/[<@!>]/g, '')}>`).join(', ');
+
   return winners.length === 1
     ? `🎉 Parabéns ${mencoes}! Você ganhou o **${prize}**!`
     : `🎉 Parabéns ${mencoes}! Vocês ganharam o **${prize}**!`;
 }
 
-function converterTempo(tempo) {
+function converterTempo(tempo = '') {
   const match = tempo.match(/^(\d+)([smhd])$/i);
   if (!match) return null;
 
-  const valor = parseInt(match[1]);
+  const valor = parseInt(match[1], 10);
   const unidade = match[2].toLowerCase();
 
-  switch (unidade) {
-    case 's': return valor * 1000;
-    case 'm': return valor * 60000;
-    case 'h': return valor * 3600000;
-    case 'd': return valor * 86400000;
-    default: return null;
-  }
+  const unidades = {
+    s: 1000,
+    m: 60000,
+    h: 3600000,
+    d: 86400000,
+  };
+
+  return unidades[unidade] ? valor * unidades[unidade] : null;
 }
 
 module.exports = {
