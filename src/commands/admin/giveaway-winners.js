@@ -37,14 +37,14 @@ module.exports = {
         return message.channel.send({ embeds: [embedAviso], allowedMentions: { repliedUser: false } });
       }
 
-      const ganhadores = sorteio.participants.slice(0, sorteio.winnerCount);
+      const ganhadores = sorteio.winners || [];
 
       const embed = new EmbedBuilder()
         .setTitle('Ganhadores do Sorteio')
         .setColor(green)
         .addFields(
           { name: 'Prêmio', value: sorteio.prize, inline: true },
-          { name: 'Ganhadores', value: ganhadores.length ? ganhadores.map(id => `<@${id}>`).join('\n') : 'Nenhum participante', inline: false }
+          { name: 'Ganhadores', value: ganhadores.length ? ganhadores.map(id => `<@${id}>`).join('\n') : 'Nenhum ganhador registrado', inline: false }
         )
         .setFooter({
           text: `${message.author.username}`,
