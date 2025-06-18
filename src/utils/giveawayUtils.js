@@ -2,9 +2,9 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('
 const { red } = require('../config/colors.json');
 const { attent } = require('../config/emoji.json');
 
-function gerarEmbedInicial(prize, winnerCount, endTime, messageId = 'desconhecido') {
+function gerarEmbedInicial(prize, winnerCount, endTime, messageId) {
   return new EmbedBuilder()
-    .setTitle(`🎉 Sorteio (ID: ${messageId})`)
+    .setTitle(`Sorteio ID: ${messageId || 'Em breve'}`)
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
       `**Ganhador(es):** \`${winnerCount}\`\n` +
@@ -28,13 +28,13 @@ function gerarComponentesInterativos() {
   );
 }
 
-function gerarEmbedFinal(prize, total, winners, messageId = 'desconhecido', endedAt = new Date()) {
+function gerarEmbedFinal(prize, total, winners, messageId, endedAt = new Date()) {
   return new EmbedBuilder()
-    .setTitle(`🎊 Sorteio Finalizado (ID: ${messageId})`)
+    .setTitle(`Sorteio Finalizado (ID: ${messageId})`)
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
       `**Participantes:** \`${total}\`\n` +
-      `**Ganhador(es):** ${winners.length > 0 ? winners.map(id => `<@${id}>`).join(', ') : '`Nenhum vencedor`'}\n\n` +
+      `**Ganhador(es):** ${winners.length > 0 ? winners.join(', ') : '`Nenhum vencedor`'}\n\n` +
       `**Encerrado em:** <t:${Math.floor(endedAt.getTime() / 1000)}:f>`
     )
     .setColor(red)
