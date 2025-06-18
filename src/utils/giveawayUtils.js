@@ -2,12 +2,12 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('
 const { red } = require('../config/colors.json');
 const { attent } = require('../config/emoji.json');
 
-function gerarEmbedInicial(prize, winnerCount, endTime, messageId = 'Desconhecido') {
+function gerarEmbedInicial(prize, winnerCount, endTime, messageId) {
   return new EmbedBuilder()
-    .setTitle(`🎉 Sorteio ID: ${messageId}`)
+    .setTitle(`🎉 Sorteio ID: ${messageId || 'Em breve'}`)
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
-      `**Ganhador${winnerCount > 1 ? 'es' : ''}:** \`${winnerCount}\`\n` +
+      `**Ganhador(es):** \`${winnerCount}\`\n` +
       `**Termina em:** <t:${Math.floor(endTime / 1000)}:f> (<t:${Math.floor(endTime / 1000)}:R>)`
     )
     .setColor(red)
@@ -20,6 +20,7 @@ function gerarComponentesInterativos() {
       .setCustomId('participar')
       .setLabel('🎟 Participar')
       .setStyle(ButtonStyle.Primary),
+
     new ButtonBuilder()
       .setCustomId('ver_participantes')
       .setLabel('👥 Participantes: 0')
@@ -30,7 +31,7 @@ function gerarComponentesInterativos() {
 
 function gerarEmbedFinal(prize, total, winners = [], messageId = 'Desconhecido', endedAt = new Date()) {
   const mencoes = winners.length > 0
-    ? winners.map(id => `<@${id}>`).join(', ')
+    ? winners.map(id => (typeof id === 'string' && id.startsWith('<@') ? id : `<@${id}>`)).join(', ')
     : '`Nenhum vencedor`';
 
   return new EmbedBuilder()
@@ -45,8 +46,8 @@ function gerarEmbedFinal(prize, total, winners = [], messageId = 'Desconhecido',
     .setFooter({ text: 'Sorteio encerrado!' });
 }
 
-function gerarMensagemVencedores(winners = [], prize) {
-  if (winners.length === 0) {
+function gerarMensagemVencedores(winners, prize) {
+  if (!winners || winners.length === 0) {
     return `${attent} Nenhum vencedor foi escolhido porque ninguém participou.`;
   }
 
@@ -65,9 +66,9 @@ function converterTempo(tempo) {
 
   switch (unidade) {
     case 's': return valor * 1000;
-    case 'm': return valor * 60 * 1000;
-    case 'h': return valor * 60 * 60 * 1000;
-    case 'd': return valor * 24 * 60 * 60 * 1000;
+    case 'm': return valor * 60000;
+    case 'h': return valor * 3600000;
+    case 'd': return valor * 86400000;
     default: return null;
   }
 }
