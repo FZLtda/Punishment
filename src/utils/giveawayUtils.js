@@ -4,7 +4,7 @@ const { attent } = require('../config/emoji.json');
 
 function gerarEmbedInicial(prize, winnerCount, endTime, messageId) {
   return new EmbedBuilder()
-    .setTitle(`Sorteio (ID: ${messageId})`)
+    .setTitle(`🎉 Sorteio (ID: ${messageId})`)
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
       `**Ganhador(es):** \`${winnerCount}\`\n` +
@@ -30,7 +30,7 @@ function gerarComponentesInterativos() {
 
 function gerarEmbedFinal(prize, total, winners, messageId, endedAt = new Date()) {
   return new EmbedBuilder()
-    .setTitle(`Sorteio Finalizado (ID: ${messageId})`)
+    .setTitle(`🎊 Sorteio Finalizado (ID: ${messageId})`)
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
       `**Participantes:** \`${total}\`\n` +
@@ -46,7 +46,7 @@ function gerarMensagemVencedores(winners, prize) {
     return `${attent} Nenhum vencedor foi escolhido porque ninguém participou.`;
   }
 
-  const mencoes = winners.map(id => `<@{id}>`).join(', ');
+  const mencoes = winners.map(id => `<@${id}>`).join(', ');
   return winners.length === 1
     ? `🎉 Parabéns ${mencoes}! Você ganhou o **${prize}**!`
     : `🎉 Parabéns ${mencoes}! Vocês ganharam o **${prize}**!`;
