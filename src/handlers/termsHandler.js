@@ -21,8 +21,7 @@ async function checkTerms(context) {
   const userId = user.id;
 
   // [Verifica no MongoDB se o usuário já aceitou os termos] FZ
-  const accepted = await Terms.exists({ userId });
-  if (accepted) return true;
+  await Terms.updateOne({ userId }, { $setOnInsert: { acceptedAt: new Date() } }, { upsert: true });
 
   const embed = new EmbedBuilder()
     .setColor('#FE3838')
