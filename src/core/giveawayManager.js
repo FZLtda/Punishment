@@ -10,26 +10,21 @@ const logger = require('../utils/logger');
 async function criarSorteio({ client, guild, channel, durationMs, winnerCount, prize, hostId }) {
   const endTime = Date.now() + durationMs;
 
-  // [1. Cria embed inicial sem o ID da mensagem]
+  // Cria embed SEM o ID ainda
   const embedSemId = gerarEmbedInicial(prize, winnerCount, endTime, null);
   const components = gerarComponentesInterativos();
 
-  // [2. Envia a mensagem]
+  // Envia a mensagem
   const message = await channel.send({
     embeds: [embedSemId],
     components: [components],
   });
 
-  // [3. Recria embed com o ID agora disponível]
+  // Atualiza embed COM o ID real da mensagem
   const embedComId = gerarEmbedInicial(prize, winnerCount, endTime, message.id);
+  await message.edit({ embeds: [embedComId], components });
 
-  // [4. Edita a mesma mensagem adicionando o ID]
-  await message.edit({
-    embeds: [embedComId],
-    components,
-  });
-
-  // [5. Salva no banco de dados]
+  // Salva no banco
   await GiveawayModel.create({
     messageId: message.id,
     channelId: channel.id,
