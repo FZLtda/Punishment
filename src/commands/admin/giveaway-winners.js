@@ -39,12 +39,22 @@ module.exports = {
 
       const ganhadores = sorteio.winners || [];
 
+      const dataSorteio = sorteio.createdAt ? sorteio.createdAt.toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      }) : 'Data indisponível';
+
       const embed = new EmbedBuilder()
-        .setTitle('Ganhadores do Sorteio')
+        .setTitle(`Sorteio ID: ${sorteio.messageId}`)
         .setColor(green)
         .addFields(
           { name: 'Prêmio', value: sorteio.prize, inline: true },
-          { name: 'Ganhadores', value: ganhadores.length ? ganhadores.map(id => `<@${id}>`).join('\n') : 'Nenhum ganhador registrado', inline: false }
+          { name: 'Ganhadores', value: ganhadores.length ? ganhadores.map(id => `<@${id}>`).join('\n') : 'Nenhum ganhador registrado', inline: false },
+          { name: 'Data do Sorteio', value: dataSorteio, inline: true },
         )
         .setFooter({
           text: `${message.author.username}`,
