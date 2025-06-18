@@ -32,36 +32,37 @@ module.exports = {
 
       const ganhadores = [];
       const participantes = [...sorteio.participants];
-      const totalParticipantes = participantes.length;
 
       for (let i = 0; i < sorteio.winnerCount && participantes.length > 0; i++) {
         const index = Math.floor(Math.random() * participantes.length);
         ganhadores.push(participantes.splice(index, 1)[0]);
       }
 
-      // [Embed atualizado com visual padrão]
+      const mencoes = ganhadores.map(id => `<@${id}>`).join(', ');
+      const plural = ganhadores.length > 1;
+
       const embed = new EmbedBuilder()
         .setTitle(`🎉 Sorteio Finalizado (ID: ${messageId})`)
         .setColor(green)
         .setDescription(
           `**Prêmio:** \`${sorteio.prize}\`\n` +
-          `**Participantes:** \`${totalParticipantes}\`\n` +
-          `**Ganhador(es):** ${ganhadores.length > 0 ? ganhadores.map(id => `<@${id}>`).join(', ') : '`Nenhum vencedor`'}\n\n` +
-          `**Encerrado em:** <t:${Math.floor(Date.now() / 1000)}:f>`
+          `**Participantes:** \`${sorteio.participants.length + ganhadores.length}\`\n` +
+          `**Ganhador${plural ? 'es' : ''}:** ${ganhadores.length ? mencoes : '`Nenhum vencedor`'}\n` +
+          `**Data:** <t:${Math.floor(Date.now() / 1000)}:f>`
         )
         .setFooter({
-          text: `Sorteado manualmente por ${message.author.username}`,
-          iconURL: message.author.displayAvatarURL({ dynamic: true })
+          text: `Sorteado por ${message.author.username}`,
+          iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
 
       await mensagem.edit({ embeds: [embed], components: [] });
 
-      if (ganhadores.length > 0) {
-        await canal.send(`🎉 Parabéns ${ganhadores.map(id => `<@${id}>`).join(', ')}! Você(s) ganhou(aram) **${sorteio.prize}**!`);
-      } else {
-        await canal.send(`${icon_attention} Nenhum vencedor foi sorteado, pois não havia participantes suficientes.`);
-      }
+      const mensagemGanhadores = plural
+        ? `🎉 Parabéns ${mencoes}! Vocês ganharam **${sorteio.prize}**!`
+        : `🎉 Parabéns ${mencoes}! Você ganhou **${sorteio.prize}**!`;
+
+      await canal.send(mensagemGanhadores);
 
       sorteio.ended = true;
       sorteio.winners = ganhadores;
