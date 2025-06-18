@@ -3,12 +3,13 @@ const { yellow } = require('../../config/colors.json');
 const { icon_attention } = require('../../config/emoji.json');
 const { converterTempo } = require('../../utils/giveawayUtils');
 const { criarSorteio, agendarEncerramento } = require('../../core/giveawayManager');
+const GiveawayModel = require('../../models/Giveaway');
 
 module.exports = {
   name: 'giveaway',
   description: 'Gerencia sorteios no servidor.',
   usage: '.giveaway start <tempo> <quantidade> <prêmio>',
-  userPermissions: ['SendMessages'],
+  userPermissions: ['Administrator'],
   botPermissions: ['SendMessages'],
   deleteMessage: true,
 
@@ -31,6 +32,7 @@ module.exports = {
         return enviarErro(message, 'Formato de tempo inválido! Use 1m, 1h ou 1d.');
       }
 
+      // [Cria a mensagem de sorteio] FZ
       const { message: sorteioMsg, endTime } = await criarSorteio({
         client: message.client,
         guild: message.guild,
@@ -38,8 +40,24 @@ module.exports = {
         durationMs: tempoMs,
         winnerCount: quantidade,
         prize: premio,
+        hostId: message.author.id,
       });
 
+      // [Salva no MongoDB] FZ
+      await GiveawayModel.create({
+        messageId: sorteioMsg.id,
+        channelId: message.channel.id,
+        guildId: message.guild.id,
+        prize: premio,
+        winnerCount: quantidade,
+        endsAt: endTime,
+        createdAt: new Date(),
+        hostId: message.author.id,
+        participants: [],
+        ended: false,
+      });
+
+      // [Agenda o encerramento do sorteio] FZ
       agendarEncerramento({
         messageId: sorteioMsg.id,
         guildId: message.guild.id,
@@ -47,6 +65,7 @@ module.exports = {
         timeout: tempoMs,
       });
 
+      // [Deleta o comando original] FZ
       message.delete().catch(() => null);
     } catch (err) {
       console.error(`[ERRO] Comando giveaway: ${err}`);
