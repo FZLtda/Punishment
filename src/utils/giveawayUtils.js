@@ -7,6 +7,7 @@ const {
 const { red } = require('../config/colors.json');
 const { attent } = require('../config/emoji.json');
 
+// Formatar números de forma legível
 const formatNumber = (num) => new Intl.NumberFormat('pt-BR').format(num);
 
 function gerarEmbedInicial(prize = 'Indefinido', winnerCount = 1, endTime = Date.now(), messageId = null) {
