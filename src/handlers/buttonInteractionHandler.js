@@ -16,7 +16,7 @@ const { userAlreadyVerified, markUserVerified } = require('../utils/verifyUtils'
 
 async function handleButtonInteraction(interaction, client) {
   try {
-    // [Aceitar Termos de Uso]
+    
     if (interaction.customId === 'accept_terms') {
       const userId = interaction.user.id;
 
@@ -54,14 +54,13 @@ async function handleButtonInteraction(interaction, client) {
         logger.error(`Erro ao salvar termos no banco: ${err.message}`, { stack: err.stack });
         return interaction.reply({
           ephemeral: true,
-          content: `${error} Ocorreu um erro ao processar sua aceitação dos termos.`,
+          content: `${error} Não foi possível processar sua aceitação dos termos.`,
         });
       }
 
       return;
     }
 
-    // [Verificação de Usuário]
     if (interaction.customId === 'verify_user') {
       const roleId = process.env.ROLE_ID;
       const logChannelId = process.env.LOG_CHANNEL;
@@ -107,7 +106,6 @@ async function handleButtonInteraction(interaction, client) {
       return;
     }
 
-    // [Participar de Sorteio]
     const giveaway = await Giveaway.findOne({
       messageId: interaction.message.id,
       guildId: interaction.guild.id,
@@ -149,10 +147,17 @@ async function handleButtonInteraction(interaction, client) {
 
       await interaction.update({ components: [updatedRow] });
 
-      return interaction.followUp({
-        content: `${sucess} Sua entrada foi registrada! Boa sorte!`,
-        ephemeral: true,
-      });
+      if (!interaction.deferred && !interaction.replied) {
+        return interaction.reply({
+          content: `${sucess} Sua entrada foi registrada! Boa sorte!`,
+          ephemeral: true,
+        });
+      } else {
+        return interaction.followUp({
+          content: `${sucess} Sua entrada foi registrada! Boa sorte!`,
+          ephemeral: true,
+        });
+      }
     }
 
     if (interaction.customId === 'ver_participantes') {
