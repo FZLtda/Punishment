@@ -4,23 +4,28 @@ const giveawaySchema = new mongoose.Schema({
   guildId: {
     type: String,
     required: true,
+    trim: true,
   },
   channelId: {
     type: String,
     required: true,
+    trim: true,
   },
   messageId: {
     type: String,
     required: true,
     index: true,
+    trim: true,
   },
   prize: {
     type: String,
     required: true,
+    trim: true,
   },
   duration: {
     type: Number,
     required: true,
+    min: 1000,
   },
   winnerCount: {
     type: Number,
@@ -34,6 +39,7 @@ const giveawaySchema = new mongoose.Schema({
   hostId: {
     type: String,
     required: true,
+    trim: true,
   },
   participants: {
     type: [String],
