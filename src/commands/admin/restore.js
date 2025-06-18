@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { logModerationAction } = require('../../utils/moderationUtils');
 const { yellow, green } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { icon_attention, success } = require('../../config/emoji.json');
 const Backup = require('../../models/Backup');
 
 module.exports = {
@@ -125,9 +125,9 @@ module.exports = {
       );
 
       const embed = new EmbedBuilder()
-        .setTitle('<:1000042885:1336044571125354496> Restauração Completa')
+        .setTitle(`${success} Restauração Completa`)
         .setColor(green)
-        .setDescription('O estado do servidor foi restaurado com sucesso a partir do backup fornecido!')
+        .setDescription('Servidor restaurado com sucesso!')
         .addFields(
           { name: 'Canais Restaurados', value: `${backupData.channels.length}`, inline: true },
           { name: 'Cargos Restaurados', value: `${backupData.roles.length}`, inline: true }
