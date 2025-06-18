@@ -1,12 +1,12 @@
 const { EmbedBuilder } = require('discord.js');
+const { logModerationAction } = require('../../utils/moderationUtils');
 const { yellow, green } = require('../../config/colors.json');
 const { icon_attention } = require('../../config/emoji.json');
-const { logModerationAction } = require('../../utils/moderationUtils');
 const Backup = require('../../models/Backup');
 
 module.exports = {
   name: 'restore',
-  description: 'Restaura o estado do servidor a partir de um backup salvo.',
+  description: 'Restaura o estado do servidor a partir do ID de backup salvo.',
   usage: '${currentPrefix}restore <id>',
   userPermissions: ['ManageGuild'],
   botPermissions: ['ManageGuild'],
@@ -19,28 +19,27 @@ module.exports = {
       const embedErro = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
-          name: 'Você precisa fornecer o ID do backup que deseja restaurar.',
-          iconURL: icon_attention
+          name: 'Você precisa fornecer o ID do backup.',
+          iconURL: icon_attention,
         });
-
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     try {
       const backupData = await Backup.findById(backupId);
 
-      if (!backupData || !backupData.roles || !backupData.channels) {
+      if (!backupData) {
         const embedErro = new EmbedBuilder()
           .setColor(yellow)
           .setAuthor({
-            name: 'Backup não encontrado ou inválido.',
-            iconURL: icon_attention
+            name: 'Nenhum backup foi encontrado com esse ID.',
+            iconURL: icon_attention,
           });
-
         return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
       }
 
       const guild = message.guild;
+
       const categoryMapping = new Map();
       const channelMapping = new Map();
       const roleMapping = new Map();
@@ -53,17 +52,18 @@ module.exports = {
         GUILD_STAGE_VOICE: 13,
       };
 
-      const serverChannelIds = guild.channels.cache.map(ch => ch.id);
+      const serverChannelIds = guild.channels.cache.map((channel) => channel.id);
 
       for (const roleData of backupData.roles) {
-        const existing = guild.roles.cache.find(
-          r => r.name === roleData.name &&
-               r.color === roleData.color &&
-               r.permissions.bitfield.toString() === roleData.permissions
+        const existingRole = guild.roles.cache.find(
+          (role) =>
+            role.name === roleData.name &&
+            role.color === roleData.color &&
+            role.permissions.bitfield.toString() === roleData.permissions
         );
 
-        if (existing) {
-          roleMapping.set(roleData.id, existing.id);
+        if (existingRole) {
+          roleMapping.set(roleData.id, existingRole.id);
           continue;
         }
 
@@ -74,85 +74,80 @@ module.exports = {
           hoist: roleData.hoist,
           mentionable: roleData.mentionable,
         });
-
         roleMapping.set(roleData.id, newRole.id);
       }
 
-      for (const cat of backupData.channels.filter(ch => ch.type === 4)) {
-        if (serverChannelIds.includes(cat.id)) {
-          categoryMapping.set(cat.id, cat.id);
-          channelMapping.set(cat.id, cat.id);
+      for (const channelData of backupData.channels.filter((ch) => ch.type === 4)) {
+        if (serverChannelIds.includes(channelData.id)) {
+          categoryMapping.set(channelData.id, channelData.id);
+          channelMapping.set(channelData.id, channelData.id);
           continue;
         }
 
-        const newCat = await guild.channels.create({
-          name: cat.name,
+        const newCategory = await guild.channels.create({
+          name: channelData.name,
           type: channelTypeMapping['GUILD_CATEGORY'],
-          position: cat.position,
+          position: channelData.position,
         });
-
-        categoryMapping.set(cat.id, newCat.id);
-        channelMapping.set(cat.id, newCat.id);
+        categoryMapping.set(channelData.id, newCategory.id);
+        channelMapping.set(channelData.id, newCategory.id);
       }
 
-      for (const ch of backupData.channels.filter(ch => ch.type !== 4)) {
-        if (serverChannelIds.includes(ch.id)) {
-          channelMapping.set(ch.id, ch.id);
+      for (const channelData of backupData.channels.filter((ch) => ch.type !== 4)) {
+        if (serverChannelIds.includes(channelData.id)) {
+          channelMapping.set(channelData.id, channelData.id);
           continue;
         }
 
-        const parentId = categoryMapping.get(ch.parentId) || null;
+        const parentId = categoryMapping.get(channelData.parentId) || null;
 
         const newChannel = await guild.channels.create({
-          name: ch.name,
-          type: channelTypeMapping[ch.type] ?? 0,
+          name: channelData.name,
+          type: channelTypeMapping[channelData.type] || 0,
           parent: parentId,
-          position: ch.position,
-          permissionOverwrites: ch.permissionOverwrites.map(overwrite => ({
+          position: channelData.position,
+          permissionOverwrites: channelData.permissionOverwrites.map((overwrite) => ({
             id: roleMapping.get(overwrite.id) || overwrite.id,
             allow: BigInt(overwrite.allow),
             deny: BigInt(overwrite.deny),
             type: overwrite.type,
           })),
         });
-
-        channelMapping.set(ch.id, newChannel.id);
+        channelMapping.set(channelData.id, newChannel.id);
       }
 
       logModerationAction(
         guild.id,
         message.author.id,
         'Restore',
-        backupId,
+        null,
         `Servidor restaurado com ${backupData.roles.length} cargos e ${backupData.channels.length} canais`
       );
 
-      const embedSucesso = new EmbedBuilder()
+      const embed = new EmbedBuilder()
         .setTitle('<:1000042885:1336044571125354496> Restauração Completa')
         .setColor(green)
-        .setDescription('O estado do servidor foi restaurado com sucesso a partir do backup!')
+        .setDescription('O estado do servidor foi restaurado com sucesso a partir do backup fornecido!')
         .addFields(
           { name: 'Canais Restaurados', value: `${backupData.channels.length}`, inline: true },
           { name: 'Cargos Restaurados', value: `${backupData.roles.length}`, inline: true }
         )
         .setFooter({
-          text: `${message.author.username}`,
-          iconURL: message.author.displayAvatarURL({ dynamic: true })
+          text: message.author.username,
+          iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
 
-      return message.channel.send({ embeds: [embedSucesso] });
+      return message.channel.send({ embeds: [embed] });
 
     } catch (error) {
       console.error(error);
-
       const embedErro = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
-          name: 'Erro ao restaurar o backup.',
-          iconURL: icon_attention
+          name: 'Não foi possível restaurar o backup devido a um erro.',
+          iconURL: icon_attention,
         });
-
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
   },
