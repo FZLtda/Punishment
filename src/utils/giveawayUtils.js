@@ -4,7 +4,7 @@ const { attent } = require('../config/emoji.json');
 
 function gerarEmbedInicial(prize, winnerCount, endTime, messageId) {
   return new EmbedBuilder()
-    .setTitle(`🎉 Sorteio ID: ${messageId || 'Em breve'}`)
+    .setTitle('🎉 Sorteio')
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
       `**Ganhador(es):** \`${winnerCount}\`\n` +
@@ -30,7 +30,7 @@ function gerarComponentesInterativos() {
 
 function gerarEmbedFinal(prize, total, winners, messageId, endedAt = new Date()) {
   return new EmbedBuilder()
-    .setTitle(`🎉 Sorteio Finalizado (ID: ${messageId})`)
+    .setTitle(`Sorteio Finalizado (ID: ${messageId})`)
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
       `**Participantes:** \`${total}\`\n` +
