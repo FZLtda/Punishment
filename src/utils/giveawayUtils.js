@@ -2,7 +2,7 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('
 const { red } = require('../config/colors.json');
 const { attent } = require('../config/emoji.json');
 
-function gerarEmbedInicial(prize, winnerCount, endTime, messageId) {
+function gerarEmbedInicial(prize, winnerCount, endTime, messageId = 'desconhecido') {
   return new EmbedBuilder()
     .setTitle(`🎉 Sorteio (ID: ${messageId})`)
     .setDescription(
@@ -28,7 +28,7 @@ function gerarComponentesInterativos() {
   );
 }
 
-function gerarEmbedFinal(prize, total, winners, messageId, endedAt = new Date()) {
+function gerarEmbedFinal(prize, total, winners, messageId = 'desconhecido', endedAt = new Date()) {
   return new EmbedBuilder()
     .setTitle(`🎊 Sorteio Finalizado (ID: ${messageId})`)
     .setDescription(
