@@ -20,33 +20,36 @@ async function checkTerms(context) {
 
   const userId = user.id;
 
-  // [Verifica no MongoDB se o usuário já aceitou os termos] FZ
-  await Terms.updateOne({ userId }, { $setOnInsert: { acceptedAt: new Date() } }, { upsert: true });
-
-  const embed = new EmbedBuilder()
-    .setColor('#FE3838')
-    .setTitle('Termos de Uso')
-    .setDescription(
-      'Antes de continuar, é necessário aceitar nossos **Termos de Uso**.\n\nClique em **Ler Termos** para visualizar o conteúdo, e em **Aceitar Termos** se estiver de acordo.'
-    )
-    .setFooter({
-      text: 'Punishment by FuncZero',
-      iconURL: context.client?.user?.displayAvatarURL() ?? null,
-    });
-
-  const row = new ActionRowBuilder().addComponents(
-    new ButtonBuilder()
-      .setCustomId('accept_terms')
-      .setLabel('Aceitar Termos')
-      .setStyle(ButtonStyle.Success)
-      .setEmoji(check),
-    new ButtonBuilder()
-      .setLabel('Ler Termos')
-      .setStyle(ButtonStyle.Link)
-      .setURL(TERMS)
-  );
-
   try {
+    // [Verifica se o usuário já aceitou os termos]
+    const alreadyAccepted = await Terms.exists({ userId });
+
+    if (alreadyAccepted) return true;
+
+    // [Caso não tenha aceitado, envia o embed de aceitação]
+    const embed = new EmbedBuilder()
+      .setColor('#FE3838')
+      .setTitle('Termos de Uso')
+      .setDescription(
+        'Antes de continuar, é necessário aceitar nossos **Termos de Uso**.\n\nClique em **Ler Termos** para visualizar o conteúdo, e em **Aceitar Termos** se estiver de acordo.'
+      )
+      .setFooter({
+        text: 'Punishment by FuncZero',
+        iconURL: context.client?.user?.displayAvatarURL() ?? null,
+      });
+
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId('accept_terms')
+        .setLabel('Aceitar Termos')
+        .setStyle(ButtonStyle.Success)
+        .setEmoji(check),
+      new ButtonBuilder()
+        .setLabel('Ler Termos')
+        .setStyle(ButtonStyle.Link)
+        .setURL(TERMS)
+    );
+
     if (context.reply && typeof context.reply === 'function') {
       await context.reply({
         embeds: [embed],
@@ -64,7 +67,9 @@ async function checkTerms(context) {
       logger.warn('checkTerms: Contexto não pôde enviar a mensagem.');
     }
   } catch (err) {
-    logger.error(`checkTerms: Falha ao enviar embed de termos: ${err.message}`, { stack: err.stack });
+    logger.error(`checkTerms: Erro ao verificar ou enviar termos: ${err.message}`, {
+      stack: err.stack,
+    });
   }
 
   return false;
