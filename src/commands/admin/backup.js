@@ -1,9 +1,8 @@
-const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
-const { yellow } = require('../../config/colors.json');
+const { EmbedBuilder } = require('discord.js');
+const { yellow, green } = require('../../config/colors.json');
 const { icon_attention } = require('../../config/emoji.json');
-const fs = require('fs');
-const path = require('path');
 const { logModerationAction } = require('../../utils/moderationUtils');
+const Backup = require('../../models/Backup');
 
 function serializeBigInt(key, value) {
   return typeof value === 'bigint' ? value.toString() : value;
@@ -11,14 +10,13 @@ function serializeBigInt(key, value) {
 
 module.exports = {
   name: 'backup',
-  description: 'Cria um backup completo do servidor, incluindo canais, cargos e permissões.',
+  description: 'Cria um backup completo do servidor no banco de dados.',
   usage: '${currentPrefix}backup',
   userPermissions: ['Administrator'],
   botPermissions: ['Administrator'],
   deleteMessage: true,
-    
+
   async execute(message) {
-    
     try {
       const guild = message.guild;
 
@@ -26,9 +24,9 @@ module.exports = {
         guildName: guild.name,
         guildId: guild.id.toString(),
         roles: guild.roles.cache
-          .filter((role) => role.id !== guild.id)
+          .filter(role => role.id !== guild.id)
           .sort((a, b) => b.position - a.position)
-          .map((role) => ({
+          .map(role => ({
             id: role.id?.toString() || 'N/A',
             name: role.name || 'Sem Nome',
             color: role.color || 0,
@@ -37,59 +35,64 @@ module.exports = {
             hoist: role.hoist || false,
             mentionable: role.mentionable || false,
           })),
-        channels: guild.channels?.cache
+        channels: guild.channels.cache
           .sort((a, b) => (a.rawPosition || 0) - (b.rawPosition || 0))
-          .map((channel) => ({
+          .map(channel => ({
             id: channel.id?.toString() || 'N/A',
             name: channel.name || 'Sem Nome',
             type: channel.type || 'UNKNOWN',
             parentId: channel.parentId ? channel.parentId.toString() : null,
             position: channel.rawPosition || 0,
             permissionOverwrites: channel.permissionOverwrites?.cache
-              ? channel.permissionOverwrites.cache.map((overwrite) => ({
-                id: overwrite.id?.toString() || 'N/A',
-                type: overwrite.type || 'UNKNOWN',
-                allow: overwrite.allow?.bitfield?.toString() || '0',
-                deny: overwrite.deny?.bitfield?.toString() || '0',
-              }))
+              ? channel.permissionOverwrites.cache.map(overwrite => ({
+                  id: overwrite.id?.toString() || 'N/A',
+                  type: overwrite.type || 'UNKNOWN',
+                  allow: overwrite.allow?.bitfield?.toString() || '0',
+                  deny: overwrite.deny?.bitfield?.toString() || '0',
+                }))
               : [],
           })),
       };
 
-      const backupPath = path.resolve(__dirname, '../backups');
-      if (!fs.existsSync(backupPath)) fs.mkdirSync(backupPath);
+      // [Salva no MongoDB]
+      const newBackup = await Backup.create(backupData);
 
-      const backupFile = path.join(backupPath, `backup_${guild.id}.json`);
-      fs.writeFileSync(backupFile, JSON.stringify(backupData, serializeBigInt, 2));
-      
-      logModerationAction(message.guild.id,message.author.id, 'Backup', guild.id, 'Backup completo do servidor criado');
+      // [Log]
+      logModerationAction(
+        message.guild.id,
+        message.author.id,
+        'Backup',
+        newBackup._id,
+        'Backup completo do servidor salvo no banco de dados'
+      );
 
       const embed = new EmbedBuilder()
-        .setTitle('<:Backup:1355721566582997054> Backup Criado')
-        .setColor('Green')
-        .setDescription('As informações do servidor foram salvas com sucesso!')
-        .addFields({ name: 'Servidor', value: `${guild.name}`, inline: true })
+        .setTitle('<:Backup:1355721566582997054> Backup Criado com Sucesso')
+        .setColor(green)
+        .setDescription(`O backup foi salvo no banco de dados com sucesso!`)
+        .addFields(
+          { name: 'Servidor', value: guild.name, inline: true },
+          { name: 'ID do Backup', value: `\`${newBackup._id.toString()}\``, inline: false }
+        )
         .setFooter({
           text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
 
-      await message.channel.send({ embeds: [embed] });
+      return message.channel.send({ embeds: [embed] });
 
-      const attachment = new AttachmentBuilder(backupFile);
-      await message.channel.send({ files: [attachment] });
     } catch (error) {
       console.error(error);
 
-      const embedErroMinimo = new EmbedBuilder()
+      const embedErro = new EmbedBuilder()
         .setColor(yellow)
         .setAuthor({
-          name: 'Não foi possível criar o backup devido a um problema.',
+          name: 'Não foi possível criar o backup.',
           iconURL: icon_attention
         });
 
-      return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
   },
 };
