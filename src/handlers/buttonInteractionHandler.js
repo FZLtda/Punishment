@@ -11,7 +11,6 @@ const Giveaway = require('../models/Giveaway');
 const Terms = require('../models/Terms');
 const { sucess, error, attent, check } = require('../config/emoji.json');
 const { green, yellow } = require('../config/colors.json');
-
 const logger = require('../utils/logger');
 const { userAlreadyVerified, markUserVerified } = require('../utils/verifyUtils');
 
@@ -21,7 +20,7 @@ async function handleButtonInteraction(interaction, client) {
     if (interaction.customId === 'accept_terms') {
       const userId = interaction.user.id;
 
-      const alreadyAccepted = await Terms.exists({ userId });
+      const alreadyAccepted = !!(await Terms.exists({ userId }));
       if (alreadyAccepted) {
         return interaction.reply({
           ephemeral: true,
@@ -45,6 +44,13 @@ async function handleButtonInteraction(interaction, client) {
 
         logger.info(`Termos aceitos por ${interaction.user.tag} (${userId})`);
       } catch (err) {
+        if (err.code === 11000) {
+          return interaction.reply({
+            ephemeral: true,
+            content: `${check} Você já aceitou os termos anteriormente.`,
+          });
+        }
+
         logger.error(`Erro ao salvar termos no banco: ${err.message}`, { stack: err.stack });
         return interaction.reply({
           ephemeral: true,
