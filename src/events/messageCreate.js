@@ -35,7 +35,7 @@ module.exports = {
         stack: error.stack,
         author: message.author?.tag,
         guild: message.guild?.name,
-        content: message.content
+        content: message.content,
       });
 
       const logChannel = client.channels.cache.get(process.env.LOG_CHANNEL);
@@ -46,7 +46,7 @@ module.exports = {
             `<:Desbanido:1355718942076965016> Autor: \`${message.author?.tag}\`\n` +
             `<:Backup:1355721566582997054> Servidor: \`${message.guild?.name}\`\n` +
             `<:Desbloqueado:1355700557465125064> Mensagem: \`${message.content.slice(0, 100)}\`\n` +
-            '```js\n' + error.stack.slice(0, 1900) + '\n```'
+            '```js\n' + error.stack.slice(0, 1900) + '\n```',
         });
       }
     }
