@@ -42,7 +42,7 @@ module.exports = {
       const plural = ganhadores.length > 1;
 
       const embed = new EmbedBuilder()
-        .setTitle(`🎉 Sorteio Finalizado (ID: ${messageId})`)
+        .setTitle(`Sorteio Finalizado (ID: ${messageId})`)
         .setColor(green)
         .setDescription(
           `**Prêmio:** \`${sorteio.prize}\`\n` +
