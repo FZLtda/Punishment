@@ -14,9 +14,11 @@ module.exports = {
         return;
       }
 
-      if (type === 'command' || type === 'button') {
-        const skipCheck = interaction.customId === 'accept_terms';
-        if (!skipCheck && !(await checkTerms(interaction))) return;
+      const isButton = interaction.isButton();
+      const isAcceptTerms = isButton && interaction.customId === 'accept_terms';
+
+      if (!isAcceptTerms && (type === 'command' || type === 'button')) {
+        if (!(await checkTerms(interaction))) return;
       }
 
       await routeInteraction(interaction, client, type);
