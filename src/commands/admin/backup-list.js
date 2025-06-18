@@ -27,13 +27,13 @@ module.exports = {
       }
 
       const embed = new EmbedBuilder()
-        .setTitle('<:Backup:1355721566582997054> Lista de Backups')
+        .setTitle('<:Backup:1355721566582997054> Backups')
         .setColor(green)
         .setDescription(
           backups
             .map((backup, index) => {
               const data = new Date(backup.createdAt).toLocaleString('pt-BR');
-              return `\`${index + 1}.\` **ID:** \`${backup._id}\` - Criado em: **${data}**`;
+              return `\`${index + 1}.\` **ID:** \`${backup._id}\` - **Criado em:** \`${data}\``;
             })
             .slice(0, 10) // [limita a exibição para os 10 mais recentes]
             .join('\n')
