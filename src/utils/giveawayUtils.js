@@ -12,7 +12,7 @@ const { attent } = require('../config/emoji.json');
  */
 function gerarEmbedInicial(prize, winnerCount, endTime, messageId) {
   return new EmbedBuilder()
-    .setTitle(`🎉 Sorteio (ID: ${messageId || 'Aguardando envio'})`)
+    .setTitle(`🎉 Sorteio (ID: ${messageId || 'Em breve'})`)
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
       `**Ganhador(es):** \`${winnerCount}\`\n` +
@@ -23,7 +23,7 @@ function gerarEmbedInicial(prize, winnerCount, endTime, messageId) {
 }
 
 /**
- * Gera os botões interativos do sorteio
+ * Gera os botões interativos
  */
 function gerarComponentesInterativos() {
   return new ActionRowBuilder().addComponents(
@@ -41,11 +41,11 @@ function gerarComponentesInterativos() {
 }
 
 /**
- * Gera o embed final após encerramento do sorteio
+ * Gera o embed final do sorteio
  */
-function gerarEmbedFinal(prize, total, winners = [], messageId = 'Desconhecido', endedAt = new Date()) {
-  const vencedoresFormatados = winners.length > 0
-    ? winners.map(id => `<@${id}>`).join(', ')
+function gerarEmbedFinal(prize, total, winners = [], messageId = 'Em breve', endedAt = new Date()) {
+  const mencoes = winners.length > 0
+    ? winners.map(id => `<@${id.replace(/[<@!>]/g, '')}>`).join(', ')
     : '`Nenhum vencedor`';
 
   return new EmbedBuilder()
@@ -53,7 +53,7 @@ function gerarEmbedFinal(prize, total, winners = [], messageId = 'Desconhecido',
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
       `**Participantes:** \`${total}\`\n` +
-      `**Ganhador(es):** ${vencedoresFormatados}\n\n` +
+      `**Ganhador(es):** ${mencoes}\n\n` +
       `**Encerrado em:** <t:${Math.floor(endedAt.getTime() / 1000)}:f>`
     )
     .setColor(red)
@@ -61,23 +61,23 @@ function gerarEmbedFinal(prize, total, winners = [], messageId = 'Desconhecido',
 }
 
 /**
- * Gera a mensagem de vencedores para envio no canal
+ * Mensagem que menciona o(s) vencedor(es)
  */
 function gerarMensagemVencedores(winners = [], prize) {
   if (winners.length === 0) {
     return `${attent} Nenhum vencedor foi escolhido porque ninguém participou.`;
   }
 
-  const mencoes = winners.map(id => `<@${id}>`).join(', ');
-  const plural = winners.length > 1;
+  // Sanitiza qualquer menção acidental
+  const mencoes = winners.map(id => `<@${id.replace(/[<@!>]/g, '')}>`).join(', ');
 
-  return plural
-    ? `🎉 Parabéns ${mencoes}! Vocês ganharam o **${prize}**!`
-    : `🎉 Parabéns ${mencoes}! Você ganhou o **${prize}**!`;
+  return winners.length === 1
+    ? `🎉 Parabéns ${mencoes}! Você ganhou o **${prize}**!`
+    : `🎉 Parabéns ${mencoes}! Vocês ganharam o **${prize}**!`;
 }
 
 /**
- * Converte tempo no formato 10s/10m/10h/10d para milissegundos
+ * Converte 10s/10m/10h/10d para milissegundos
  */
 function converterTempo(tempo) {
   const match = tempo.match(/^(\d+)([smhd])$/i);
@@ -86,14 +86,14 @@ function converterTempo(tempo) {
   const valor = parseInt(match[1], 10);
   const unidade = match[2].toLowerCase();
 
-  const unidades = {
+  const mapa = {
     s: 1000,
     m: 60000,
     h: 3600000,
     d: 86400000,
   };
 
-  return unidades[unidade] ? valor * unidades[unidade] : null;
+  return mapa[unidade] || null;
 }
 
 module.exports = {
