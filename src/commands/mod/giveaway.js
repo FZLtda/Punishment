@@ -22,7 +22,7 @@ module.exports = {
       const quantidade = parseInt(args[2]);
       const premio = args.slice(3).join(' ');
 
-      if (!tempoInput || isNaN(quantidade) || !premio) {
+      if (!tempoInput || isNaN(quantidade) || quantidade <= 0 || !premio) {
         return enviarErro(message, 'Uso correto: .giveaway start <tempo> <quantidade> <prêmio>');
       }
 
@@ -31,7 +31,6 @@ module.exports = {
         return enviarErro(message, 'Formato de tempo inválido! Use 1m, 1h ou 1d.');
       }
 
-      // [Cria o sorteio e salva no MongoDB internamente] FZ
       const { message: sorteioMsg, endTime } = await criarSorteio({
         client: message.client,
         guild: message.guild,
@@ -42,7 +41,6 @@ module.exports = {
         hostId: message.author.id,
       });
 
-      // [Agenda encerramento automático] FZ
       agendarEncerramento({
         messageId: sorteioMsg.id,
         guildId: message.guild.id,
