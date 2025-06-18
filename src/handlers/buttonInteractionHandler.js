@@ -8,6 +8,7 @@ const {
 } = require('discord.js');
 
 const Giveaway = require('../models/Giveaway');
+const Terms = require('../models/Terms');
 const { sucess, error, attent, check } = require('../config/emoji.json');
 const { green, yellow } = require('../config/colors.json');
 
@@ -16,15 +17,45 @@ const { userAlreadyVerified, markUserVerified } = require('../utils/verifyUtils'
 
 async function handleButtonInteraction(interaction, client) {
   try {
+    // [Aceitar Termos de Uso]
     if (interaction.customId === 'accept_terms') {
-      const command = client.commands.get('acceptTerms');
-      if (command) return await command.execute(interaction);
-      return interaction.reply({
-        content: `${attent} Não foi possível processar os Termos de Uso.`,
-        ephemeral: true,
-      });
+      const userId = interaction.user.id;
+
+      const alreadyAccepted = await Terms.exists({ userId });
+      if (alreadyAccepted) {
+        return interaction.reply({
+          ephemeral: true,
+          content: `${check} Você já aceitou os termos anteriormente.`,
+        });
+      }
+
+      try {
+        await Terms.create({ userId });
+
+        const embed = new EmbedBuilder()
+          .setColor(green)
+          .setTitle('Termos Aceitos')
+          .setDescription(`${check} Você aceitou os Termos de Uso com sucesso!`)
+          .setTimestamp();
+
+        await interaction.reply({
+          embeds: [embed],
+          ephemeral: true,
+        });
+
+        logger.info(`Termos aceitos por ${interaction.user.tag} (${userId})`);
+      } catch (err) {
+        logger.error(`Erro ao salvar termos no banco: ${err.message}`, { stack: err.stack });
+        return interaction.reply({
+          ephemeral: true,
+          content: `${error} Ocorreu um erro ao processar sua aceitação dos termos.`,
+        });
+      }
+
+      return;
     }
 
+    // [Verificação de Usuário]
     if (interaction.customId === 'verify_user') {
       const roleId = process.env.ROLE_ID;
       const logChannelId = process.env.LOG_CHANNEL;
@@ -70,7 +101,7 @@ async function handleButtonInteraction(interaction, client) {
       return;
     }
 
-    // [Sorteio]
+    // [Participar de Sorteio]
     const giveaway = await Giveaway.findOne({
       messageId: interaction.message.id,
       guildId: interaction.guild.id,
@@ -111,6 +142,7 @@ async function handleButtonInteraction(interaction, client) {
       );
 
       await interaction.update({ components: [updatedRow] });
+
       return interaction.followUp({
         content: `${sucess} Sua entrada foi registrada! Boa sorte!`,
         ephemeral: true,
