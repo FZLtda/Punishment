@@ -46,7 +46,7 @@ function gerarMensagemVencedores(winners, prize) {
     return `${attent} Nenhum vencedor foi escolhido porque ninguém participou.`;
   }
 
-  const mencoes = winners.map(id => `{id}`).join(', ');
+  const mencoes = winners.map(id => `<@{id}>`).join(', ');
   return winners.length === 1
     ? `🎉 Parabéns ${mencoes}! Você ganhou o **${prize}**!`
     : `🎉 Parabéns ${mencoes}! Vocês ganharam o **${prize}**!`;
