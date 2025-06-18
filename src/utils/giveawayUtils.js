@@ -7,7 +7,6 @@ const {
 const { red } = require('../config/colors.json');
 const { attent } = require('../config/emoji.json');
 
-// Formatar números de forma legível
 const formatNumber = (num) => new Intl.NumberFormat('pt-BR').format(num);
 
 function gerarEmbedInicial(prize = 'Indefinido', winnerCount = 1, endTime = Date.now(), messageId = null) {
@@ -49,7 +48,7 @@ function gerarEmbedFinal(prize = 'Indefinido', total = 0, winners = [], messageI
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
       `**Participantes:** \`${formatNumber(total)}\`\n` +
-      `**${winners.length === 1 ? 'Ganhador' : 'Ganhadores'}:** ${mencoes}\n\n` +
+      `**${winners.length === 1 ? 'Ganhador' : 'Ganhadores'}:** ${mencoes}\n` +
       `**Encerrado em:** <t:${Math.floor(endedAt.getTime() / 1000)}:f>`
     )
     .setColor(red)
@@ -73,6 +72,8 @@ function converterTempo(tempo = '') {
   if (!match) return null;
 
   const valor = parseInt(match[1], 10);
+  if (valor <= 0) return null;
+
   const unidade = match[2].toLowerCase();
 
   const unidades = {
