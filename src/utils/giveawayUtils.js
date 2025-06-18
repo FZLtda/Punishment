@@ -34,7 +34,7 @@ function gerarEmbedFinal(prize, total, winners, messageId, endedAt = new Date())
     .setDescription(
       `**Prêmio:** \`${prize}\`\n` +
       `**Participantes:** \`${total}\`\n` +
-      `**Ganhador(es):** ${winners.length > 0 ? winners.join(', ') : '`Nenhum vencedor`'}\n\n` +
+      `**Ganhador(es):** ${winners.length > 0 ? winners.map(id => `<@${id}>`).join(', ') : '`Nenhum vencedor`'}\n\n` +
       `**Encerrado em:** <t:${Math.floor(endedAt.getTime() / 1000)}:f>`
     )
     .setColor(red)
