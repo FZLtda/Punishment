@@ -5,20 +5,26 @@ const {
   gerarEmbedFinal,
   gerarMensagemVencedores,
 } = require('../utils/giveawayUtils');
+const logger = require('../utils/logger');
 
 async function criarSorteio({ client, guild, channel, durationMs, winnerCount, prize, hostId }) {
   const endTime = Date.now() + durationMs;
+
   const embed = gerarEmbedInicial(prize, winnerCount, endTime);
   const components = gerarComponentesInterativos();
 
-  const message = await channel.send({ embeds: [embed], components: [components] });
+  const message = await channel.send({
+    embeds: [embed],
+    components: [components],
+  });
 
-  // [Salvar sorteio no MongoDB] FZ
+  // [Salvar sorteio no MongoDB com todos os campos necessários]
   await GiveawayModel.create({
     messageId: message.id,
     channelId: channel.id,
     guildId: guild.id,
     prize,
+    duration: durationMs, // [Campo obrigatório agora incluído]
     winnerCount,
     endsAt: new Date(endTime),
     createdAt: new Date(),
@@ -49,10 +55,10 @@ async function finalizarSorteio(messageId, guildId, client) {
     const mensagem = await canal.messages.fetch(sorteio.messageId).catch(() => null);
     if (!mensagem) return;
 
-    // [Selecionar ganhadores aleatórios] FZ
+    // [Seleciona ganhadores aleatórios sem repetir]
     for (let i = 0; i < sorteio.winnerCount && participantes.length > 0; i++) {
       const index = Math.floor(Math.random() * participantes.length);
-      winners.push(`<@${participantes.splice(index, 1)}>`); 
+      winners.push(`<@${participantes.splice(index, 1)}>`);
     }
 
     const embedFinal = gerarEmbedFinal(sorteio.prize, total, winners);
@@ -61,12 +67,14 @@ async function finalizarSorteio(messageId, guildId, client) {
     await mensagem.edit({ embeds: [embedFinal], components: [] });
     await canal.send(mensagemFinal);
 
-    // [Marcar sorteio como encerrado no banco] FZ
+    // [Atualiza o status do sorteio no banco de dados]
     sorteio.ended = true;
-    sorteio.participants = participantes; // [Atualiza lista final sem os ganhadores sorteados] FZ
+    sorteio.participants = participantes;
     await sorteio.save();
+
+    logger.info(`Sorteio finalizado: ${sorteio.prize} (${messageId})`);
   } catch (err) {
-    console.error(`[ERRO] Finalizando sorteio: ${err}`);
+    logger.error(`Erro ao finalizar sorteio (${messageId}): ${err.message}`, { stack: err.stack });
   }
 }
 
