@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow } = require('../../config/colors.json');
+const { yellow, green } = require('../../config/colors.json');
 const { icon_attention } = require('../../config/emoji.json');
 const Backup = require('../../models/Backup');
 
@@ -28,7 +28,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('<:Backup:1355721566582997054> Lista de Backups')
-        .setColor('Blue')
+        .setColor(green)
         .setDescription(
           backups
             .map((backup, index) => {
