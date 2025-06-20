@@ -1,5 +1,5 @@
-const handleButtonInteraction = require('./buttons/default');
-const commandHandlers = require('./commands/default');
+const handleButtonInteraction = require('@buttons/default');
+const commandHandlers = require('@commands/default');
 
 module.exports = async function routeInteraction(interaction, client, type) {
   switch (type) {
