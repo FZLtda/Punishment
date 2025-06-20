@@ -5,11 +5,11 @@ const {
   ButtonStyle,
 } = require('discord.js');
 
-const { TERMS } = require('../config/settings.json');
-const { check } = require('../config/emoji.json');
-const logger = require('../utils/logger');
+const { TERMS } = require('@config/settings');
+const { check } = require('@config/emoji');
+const logger = require('@utils/logger');
 
-const Terms = require('../models/Terms');
+const Terms = require('@models/Terms');
 
 async function checkTerms(context) {
   const user = context.user || context.author;
