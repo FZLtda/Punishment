@@ -1,5 +1,5 @@
 const logger = require('@utils/logger');
-const { attent } = require('@config/emoji.json');
+const { attent } = require('@config/emoji');
 const { checkTerms } = require('@handlers/termsHandler');
 const routeInteraction = require('@interactions/router');
 
