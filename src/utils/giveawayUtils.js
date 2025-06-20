@@ -5,8 +5,8 @@ const {
   ButtonStyle,
 } = require('discord.js');
 
-const { red } = require('../config/colors.json');
-const { attent } = require('../config/emoji.json');
+const { red } = require('@config/colors');
+const { attent } = require('@config/emoji');
 
 // !Formata números (ex: 1000 → 1.000)
 const formatNumber = (num) => new Intl.NumberFormat('pt-BR').format(num);
