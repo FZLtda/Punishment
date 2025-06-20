@@ -1,9 +1,9 @@
 require('dotenv').config();
 require('module-alias/register');
 const os = require('os');
-const logger = require('@utils');
+const logger = require('@utils/logger');
 const startBot = require('@src');
-const connectDatabase = require('@utils');
+const connectDatabase = require('@utils/database');
 
 const processInfo = {
   pid: process.pid,
