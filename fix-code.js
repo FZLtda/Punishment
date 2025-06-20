@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { ESLint } = require('eslint');
-const logger = require('./src/utils/logger.js');
+const logger = require('@utils/logger');
 
 const FIX_TARGET_DIR = path.join(__dirname, 'src');
 
