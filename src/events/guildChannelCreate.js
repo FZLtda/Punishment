@@ -1,6 +1,6 @@
 const { AuditLogEvent } = require('discord.js');
-const { monitorAction } = require('../modules/predictiveMonitor');
-const { sendAlert } = require('../utils/sendAlert');
+const { monitorAction } = require('@modules/predictiveMonitor');
+const { sendAlert } = require('@utils/sendAlert');
 
 module.exports = {
   name: 'channelCreate',
