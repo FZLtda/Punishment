@@ -43,7 +43,7 @@
     "@handlers": "src/handlers",
     "@events": "src/events",
     "@config": "src/config",
-    "@structures": "src/structures"
+    "@structures": "src/structures",
     "@giveawayButtons": "src/handlers/interactions/buttons/giveaway"
   }
 }
