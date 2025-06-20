@@ -2,7 +2,7 @@ require('dotenv').config();
 require('module-alias/register');
 const os = require('os');
 const logger = require('@utils/logger');
-const startBot = require('@src');
+const startBot = require('@src/bot');
 const connectDatabase = require('@utils/database');
 
 const processInfo = {
