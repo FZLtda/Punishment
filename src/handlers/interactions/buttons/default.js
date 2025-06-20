@@ -1,6 +1,6 @@
-const handleGiveawayButtons = require('@giveawayButtons');
-const handleTermsButtons = require('@termsButtons');
-const handleVerifyButtons = require('@verifyButtons');
+const handleGiveawayButtons = require('@buttons');
+const handleTermsButtons = require('@buttons');
+const handleVerifyButtons = require('@buttons');
 
 module.exports = async function handleButton(interaction, client) {
   try {
