@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { check, attent } = require('../../../config/emoji.json');
 const { green } = require('../../../config/colors.json');
-const logger = require('../../utils/logger');
+const logger = require('../../../utils/logger');
 const { userAlreadyVerified, markUserVerified } = require('../../../utils/verifyUtils');
 
 async function handleVerifyButtons(interaction) {
