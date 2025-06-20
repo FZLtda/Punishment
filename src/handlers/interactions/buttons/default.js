@@ -1,17 +1,23 @@
 const handleGiveawayButtons = require('./giveawayButtons');
-    // Mais em breve...
+const handleTermsButtons = require('./termsButtons');
+const handleVerifyButtons = require('./verifyButtons');
 
 module.exports = async function handleButton(interaction, client) {
   try {
-    // !Se for botão de sorteio
     if (['participar', 'ver_participantes'].includes(interaction.customId)) {
       return await handleGiveawayButtons(interaction, client);
     }
 
-    // Mais em breve...
-    // Caso não tratado
+    if (interaction.customId === 'accept_terms') {
+      return await handleTermsButtons(interaction, client);
+    }
+
+    if (interaction.customId === 'verify_user') {
+      return await handleVerifyButtons(interaction, client);
+    }
+
     return interaction.reply({
-      content: 'Este botão não está configurado.',
+      content: 'Este botão não possui funcionalidade atribuída no momento.',
       ephemeral: true,
     });
   } catch (error) {
