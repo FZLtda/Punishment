@@ -1,10 +1,10 @@
-const Giveaway = require('../../../models/Giveaway');
+const Giveaway = require('@models/Giveaway');
 const {
   gerarComponentesInterativos,
   gerarMensagemVencedores,
-} = require('../../../utils/giveawayUtils');
-const { sucess, attent } = require('../../../config/emoji.json');
-const logger = require('../../../utils/logger');
+} = require('@utils/giveawayUtils');
+const { sucess, attent } = require('@config/emoji.json');
+const logger = require('@utils/logger');
 
 module.exports = async function handleGiveawayButtons(interaction, client) {
   try {
