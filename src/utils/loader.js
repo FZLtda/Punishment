@@ -1,8 +1,8 @@
 'use strict';
 
 const path = require('path');
-const logger = require('./logger.js');
-const loadFiles = require('./fileLoader.js');
+const logger = require('@utils/logger');
+const loadFiles = require('./fileLoader');
 const chalk = require('chalk');
 
 async function loadCommands(client) {
