@@ -4,7 +4,9 @@ const { green } = require('../../config/colors.json');
 const logger = require('../../utils/logger');
 const { userAlreadyVerified, markUserVerified } = require('../../utils/verifyUtils');
 
-async function handleVerify(interaction) {
+async function handleVerifyButtons(interaction) {
+  if (interaction.customId !== 'verify_user') return;
+
   const roleId = process.env.ROLE_ID;
   const logChannelId = process.env.LOG_CHANNEL;
   const member = interaction.guild.members.cache.get(interaction.user.id);
@@ -48,4 +50,4 @@ async function handleVerify(interaction) {
   logger.info(`Usuário verificado: ${interaction.user.tag} (${interaction.user.id})`);
 }
 
-module.exports = { handleVerify };
+module.exports = handleVerifyButtons;
