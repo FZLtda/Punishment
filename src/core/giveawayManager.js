@@ -1,9 +1,9 @@
 const GiveawayModel = require('../models/Giveaway');
 const {
   gerarEmbedInicial,
-  gerarComponentesInterativos,
   gerarEmbedFinal,
   gerarMensagemVencedores,
+  gerarComponentesInterativos,
 } = require('../utils/giveawayUtils');
 const logger = require('../utils/logger');
 
@@ -11,29 +11,33 @@ async function criarSorteio({ client, guild, channel, durationMs, winnerCount, p
   const endTime = Date.now() + durationMs;
 
   const embed = gerarEmbedInicial(prize, winnerCount, endTime);
-  const components = gerarComponentesInterativos();
+  const components = gerarComponentesInterativos(0);
 
-  const message = await channel.send({
-    embeds: [embed],
-    components: [components],
-  });
+  const message = await channel.send({ embeds: [embed], components: [components] });
 
-  await GiveawayModel.create({
+  const giveaway = await GiveawayModel.create({
     messageId: message.id,
     channelId: channel.id,
     guildId: guild.id,
     prize,
-    duration: durationMs,
     winnerCount,
+    participants: [],
+    winners: [],
+    duration: durationMs,
     endsAt: new Date(endTime),
     createdAt: new Date(),
     hostId,
-    participants: [],
-    winners: [],
     ended: false,
   });
 
-  return { message, endTime };
+  agendarEncerramento({
+    messageId: message.id,
+    guildId: guild.id,
+    client,
+    timeout: durationMs,
+  });
+
+  return { message, endTime, giveaway };
 }
 
 function agendarEncerramento({ messageId, guildId, client, timeout }) {
@@ -55,24 +59,23 @@ async function finalizarSorteio(messageId, guildId, client) {
     const mensagem = await canal.messages.fetch(sorteio.messageId).catch(() => null);
     if (!mensagem) return;
 
+    // Seleciona vencedores aleatórios
     for (let i = 0; i < sorteio.winnerCount && participantes.length > 0; i++) {
       const index = Math.floor(Math.random() * participantes.length);
-      const winnerId = participantes.splice(index, 1)[0];
-      winners.push(winnerId);
+      winners.push(participantes.splice(index, 1)[0]);
     }
 
-    const embedFinal = gerarEmbedFinal(sorteio.prize, total, winners.map(id => `<@${id}>`));
-    const mensagemFinal = gerarMensagemVencedores(winners.map(id => `<@${id}>`), sorteio.prize);
+    const embedFinal = gerarEmbedFinal(sorteio.prize, total, winners, sorteio.messageId, new Date());
+    const mensagemFinal = gerarMensagemVencedores(winners, sorteio.prize);
 
     await mensagem.edit({ embeds: [embedFinal], components: [] });
     await canal.send(mensagemFinal);
 
     sorteio.ended = true;
-    sorteio.participants = participantes;
     sorteio.winners = winners;
     await sorteio.save();
 
-    logger.info(`Sorteio finalizado: ${sorteio.prize} (${messageId})`);
+    logger.info(`🎉 Sorteio encerrado (${sorteio.messageId}) - Prêmio: ${sorteio.prize}`);
   } catch (err) {
     logger.error(`Erro ao finalizar sorteio (${messageId}): ${err.message}`, { stack: err.stack });
   }
