@@ -1,6 +1,6 @@
-const { conversationHistory, fetchAIResponse } = require('../utils/aiUtils');
-const { attent } = require('../config/emoji.json');
-const logger = require('../utils/logger');
+const { conversationHistory, fetchAIResponse } = require('@utils/aiUtils');
+const { attent } = require('@config/emoji');
+const logger = require('@utils/logger');
 
 const RATE_LIMIT = new Map();
 const COOLDOWN_MS = 5000;
