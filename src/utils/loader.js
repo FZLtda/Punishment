@@ -2,7 +2,7 @@
 
 const path = require('path');
 const logger = require('@utils/logger');
-const loadFiles = require('./fileLoader');
+const loadFiles = require('@utils/fileLoader');
 const chalk = require('chalk');
 
 async function loadCommands(client) {
