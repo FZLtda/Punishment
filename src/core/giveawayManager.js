@@ -61,12 +61,8 @@ async function finalizarSorteio(messageId, guildId, client) {
       winners.push(winnerId);
     }
 
-    if (winners.length < sorteio.winnerCount) {
-      logger.warn(`Sorteio com menos ganhadores do que o esperado: ${winners.length}/${sorteio.winnerCount}`);
-    }
-
-    const embedFinal = gerarEmbedFinal(sorteio.prize, total, winners);
-    const mensagemFinal = gerarMensagemVencedores(winners, sorteio.prize);
+    const embedFinal = gerarEmbedFinal(sorteio.prize, total, winners.map(id => `<@${id}>`));
+    const mensagemFinal = gerarMensagemVencedores(winners.map(id => `<@${id}>`), sorteio.prize);
 
     await mensagem.edit({ embeds: [embedFinal], components: [] });
     await canal.send(mensagemFinal);
