@@ -1,11 +1,11 @@
-const GiveawayModel = require('../models/Giveaway');
+const GiveawayModel = require('@models');
 const {
   gerarEmbedInicial,
   gerarEmbedFinal,
   gerarMensagemVencedores,
   gerarComponentesInterativos,
-} = require('../utils/giveawayUtils');
-const logger = require('../utils/logger');
+} = require('@utils');
+const logger = require('@utils');
 
 async function criarSorteio({ client, guild, channel, durationMs, winnerCount, prize, hostId }) {
   const endTime = Date.now() + durationMs;
