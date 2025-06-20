@@ -1,60 +1,18 @@
-const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const giveawaySchema = new mongoose.Schema({
-  guildId: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  channelId: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  messageId: {
-    type: String,
-    required: true,
-    index: true,
-    trim: true,
-  },
-  prize: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  duration: {
-    type: Number,
-    required: true,
-    min: 1000,
-  },
-  winnerCount: {
-    type: Number,
-    required: true,
-    min: 1,
-  },
-  endsAt: {
-    type: Date,
-    required: true,
-  },
-  hostId: {
-    type: String,
-    required: true,
-    trim: true,
-  },
-  participants: {
-    type: [String],
-    default: [],
-  },
-  winners: {
-    type: [String],
-    default: [],
-  },
-  ended: {
-    type: Boolean,
-    default: false,
-  },
-}, {
-  timestamps: true,
+const giveawaySchema = new Schema({
+  messageId: { type: String, required: true, unique: true },
+  channelId: { type: String, required: true },
+  guildId: { type: String, required: true },
+  prize: { type: String, required: true },
+  winnerCount: { type: Number, default: 1 },
+  participants: { type: [String], default: [] },
+  winners: { type: [String], default: [] },
+  hostId: { type: String, required: true },
+  duration: { type: Number, required: true },
+  endsAt: { type: Date, required: true },
+  ended: { type: Boolean, default: false },
+  createdAt: { type: Date, default: () => new Date() },
 });
 
-module.exports = mongoose.model('Giveaway', giveawaySchema);
+module.exports = model('Giveaway', giveawaySchema);
