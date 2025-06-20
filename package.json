@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "babel-node src/index.js",
+    "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -27,17 +27,22 @@
     "node-fetch": "^2.7.0",
     "openai": "^4.93.0",
     "stripe": "^18.0.0",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "module-alias": "^2.2.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.7",
-    "@babel/node": "^7.24.7",
-    "@babel/preset-env": "^7.24.7",
-    "babel-plugin-module-resolver": "^5.0.0",
     "eslint": "^8.57.1",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.6.0"
+  },
+  "_moduleAliases": {
+    "@utils": "src/utils",
+    "@handlers": "src/handlers",
+    "@events": "src/events",
+    "@config": "src/config",
+    "@structures": "src/structures",
+    "@src": "src"
   }
 }
