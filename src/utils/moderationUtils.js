@@ -1,4 +1,4 @@
-const db = require('../data/database');
+const db = require('@data/database');
 
 function logModerationAction(guildId, moderatorId, actionType, targetId, reason = 'Sem motivo') {
   const stmt = db.prepare(
