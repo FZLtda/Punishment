@@ -14,9 +14,9 @@ const { green, yellow } = require('../config/colors.json');
 const logger = require('../utils/logger');
 const { userAlreadyVerified, markUserVerified } = require('../utils/verifyUtils');
 
-async function handleButtonInteraction(interaction, client) {
+module.exports = async function handleButtonInteraction(interaction, client) {
   try {
-    
+    // Aceitar termos
     if (interaction.customId === 'accept_terms') {
       const userId = interaction.user.id;
 
@@ -61,6 +61,7 @@ async function handleButtonInteraction(interaction, client) {
       return;
     }
 
+    // Verificação de usuário
     if (interaction.customId === 'verify_user') {
       const roleId = process.env.ROLE_ID;
       const logChannelId = process.env.LOG_CHANNEL;
@@ -99,6 +100,7 @@ async function handleButtonInteraction(interaction, client) {
           .setTitle('Novo usuário verificado')
           .setDescription(`${interaction.user} (\`${interaction.user.id}\`)`)
           .setTimestamp();
+
         await logChannel.send({ embeds: [embedLog] });
       }
 
@@ -106,6 +108,7 @@ async function handleButtonInteraction(interaction, client) {
       return;
     }
 
+    // Sorteios
     const giveaway = await Giveaway.findOne({
       messageId: interaction.message.id,
       guildId: interaction.guild.id,
@@ -121,6 +124,7 @@ async function handleButtonInteraction(interaction, client) {
 
     const participants = giveaway.participants || [];
 
+    // Participar
     if (interaction.customId === 'participar') {
       if (participants.includes(interaction.user.id)) {
         return interaction.reply({
@@ -160,6 +164,7 @@ async function handleButtonInteraction(interaction, client) {
       }
     }
 
+    // Ver participantes
     if (interaction.customId === 'ver_participantes') {
       const list = participants.map((id) => `<@${id}>`).join('\n') || 'Nenhum participante.';
       return interaction.reply({
@@ -178,6 +183,4 @@ async function handleButtonInteraction(interaction, client) {
       ephemeral: true,
     });
   }
-}
-
-module.exports = { handleButtonInteraction };
+};
