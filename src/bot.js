@@ -1,9 +1,9 @@
 'use strict';
 
 const { performance } = require('perf_hooks');
-const ExtendedClient = require('@structures');
-const logger = require('@utils');
-const validateEnv = require('@utils');
+const ExtendedClient = require('@structures/ExtendedClient');
+const logger = require('@utils/logger');
+const validateEnv = require('@utils/validateEnv');
 const { BOT_NAME, MAX_RETRIES, RETRY_DELAY } = require('@config');
 
 validateEnv();
