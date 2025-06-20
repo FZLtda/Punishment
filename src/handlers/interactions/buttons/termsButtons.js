@@ -4,9 +4,11 @@ const { check, error } = require('../../config/emoji.json');
 const { green } = require('../../config/colors.json');
 const logger = require('../../utils/logger');
 
-async function handleTerms(interaction) {
+async function handleTermsButtons(interaction) {
+  if (interaction.customId !== 'accept_terms') return;
+
   const userId = interaction.user.id;
-  const alreadyAccepted = !!(await Terms.exists({ userId }));
+  const alreadyAccepted = await Terms.exists({ userId });
   if (alreadyAccepted) {
     return interaction.reply({
       ephemeral: true,
@@ -24,6 +26,7 @@ async function handleTerms(interaction) {
       .setTimestamp();
 
     await interaction.reply({ embeds: [embed], ephemeral: true });
+
     logger.info(`Termos aceitos por ${interaction.user.tag} (${userId})`);
   } catch (err) {
     if (err.code === 11000) {
@@ -41,4 +44,4 @@ async function handleTerms(interaction) {
   }
 }
 
-module.exports = { handleTerms };
+module.exports = handleTermsButtons;
