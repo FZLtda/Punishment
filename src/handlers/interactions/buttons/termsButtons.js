@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const Terms = require('../../models/Terms');
+const Terms = require('../../../models/Terms');
 const { check, error } = require('../../config/emoji.json');
 const { green } = require('../../config/colors.json');
 const logger = require('../../utils/logger');
