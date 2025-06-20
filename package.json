@@ -44,5 +44,6 @@
     "@events": "src/events",
     "@config": "src/config",
     "@structures": "src/structures"
+    "@giveawayButtons": "src/handlers/interactions/buttons/giveaway"
   }
 }
