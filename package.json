@@ -45,8 +45,7 @@
     "@config": "src/config",
     "@structures": "src/structures",
     "@buttons": "src/handlers/interactions/buttons",
-    "@commands": "src/commands",
-    "@models": "src/models"
+    "@package.json": "./package.json"
     
     
   }
