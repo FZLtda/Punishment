@@ -1,4 +1,5 @@
 require('dotenv').config();
+require('module-alias/register');
 const os = require('os');
 const logger = require('@src/utils/logger.js');
 const startBot = require('@src/bot.js');
