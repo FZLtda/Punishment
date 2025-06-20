@@ -1,6 +1,6 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const { yellow } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
+const { yellow } = require('@config/colors');
+const { icon_attention } = require('@config/emoji');
 
 module.exports = {
   name: 'guildCreate',
