@@ -38,11 +38,11 @@
     "eslint-plugin-promise": "^6.6.0"
   },
   "_moduleAliases": {
+    "@src": "src",
     "@utils": "src/utils",
     "@handlers": "src/handlers",
     "@events": "src/events",
     "@config": "src/config",
-    "@structures": "src/structures",
-    "@src": "src"
+    "@structures": "src/structures"
   }
 }
