@@ -44,6 +44,10 @@
     "@events": "src/events",
     "@config": "src/config",
     "@structures": "src/structures",
-    "@buttons": "src/handlers/interactions/buttons"
+    "@buttons": "src/handlers/interactions/buttons",
+    "@commands": "src/commands",
+    "@models": "src/models"
+    
+    
   }
 }
