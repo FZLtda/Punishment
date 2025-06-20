@@ -1,6 +1,6 @@
-const { handleSlashCommand } = require('../../slashCommandHandler');
-const logger = require('../../utils/logger');
-const { attent } = require('../../config/emoji.json');
+const { handleSlashCommand } = require('../../../slashCommandHandler');
+const logger = require('../../../utils/logger');
+const { attent } = require('../../../config/emoji.json');
 
 module.exports = async function handleCommand(interaction, client) {
   try {
