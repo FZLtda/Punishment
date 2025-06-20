@@ -1,11 +1,11 @@
 'use strict';
 
 const { Client, GatewayIntentBits, Collection } = require('discord.js');
-const { loadCommands, loadEvents } = require('@utils/loader.js');
-const { setPresence } = require('@utils/presence.js');
-const monitorBot = require('@utils/monitoring.js');
-const logger = require('@utils/logger.js');
-const { BOT_NAME } = require('@config/settings.json');
+const { loadCommands, loadEvents } = require('@utils/loader');
+const { setPresence } = require('@utils/presence');
+const monitorBot = require('@utils/monitoring');
+const logger = require('@utils/logger');
+const { BOT_NAME } = require('@config/settings');
 const { version } = require('@package.json');
 
 class ExtendedClient extends Client {
