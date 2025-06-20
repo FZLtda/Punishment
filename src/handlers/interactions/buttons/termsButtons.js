@@ -1,8 +1,8 @@
 const { EmbedBuilder } = require('discord.js');
-const Terms = require('../../../models/Terms');
-const { check, error } = require('../../../config/emoji.json');
-const { green } = require('../../../config/colors.json');
-const logger = require('../../../utils/logger');
+const Terms = require('@models/Terms');
+const { check, error } = require('@config/emoji.json');
+const { green } = require('@config/colors.json');
+const logger = require('@utils/logger');
 
 async function handleTermsButtons(interaction) {
   if (interaction.customId !== 'accept_terms') return;
