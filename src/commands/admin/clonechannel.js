@@ -1,6 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'clonechannel',
@@ -31,7 +30,7 @@ module.exports = {
       await novoCanal.setPosition(canalOriginal.position + 1).catch(() => null);
 
       const embedSucesso = new EmbedBuilder()
-        .setColor('Green')
+        .setColor(colors.green)
         .setAuthor({
           name: `O canal ${canalOriginal.name} foi clonado com sucesso.`,
           iconURL: message.author.displayAvatarURL({ dynamic: true })
@@ -41,10 +40,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível clonar o canal devido a um erro.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
