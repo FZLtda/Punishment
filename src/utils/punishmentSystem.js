@@ -1,7 +1,7 @@
-const { warnPunishments, logChannelId } = require('../config/settings.json');
 const { EmbedBuilder } = require('discord.js');
-const { yellow, red } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
+const { warnPunishments, logChannelId } = require('@config/settings');
+const { yellow, red } = require('@config/colors');
+const { icon_attention } = require('@config/emoji');
 const fs = require('fs');
 const path = require('path');
 
