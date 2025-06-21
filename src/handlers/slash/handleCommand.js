@@ -1,4 +1,4 @@
-const { handleSlashCommand } = require('@handleSlash');
+const { handleSlashCommand } = require('@handleSlash/slashCommandHandler');
 const logger = require('@utils/logger');
 const { emojis } = require('@config');
 
