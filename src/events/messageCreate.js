@@ -21,17 +21,17 @@ module.exports = {
       cooldown.add(message.author.id);
       setTimeout(() => cooldown.delete(message.author.id), 1000);
 
-      if (await handleAIResponse(message)) return;
-      if (await handleAntiLink(message)) return;
-      if (await handleAntiSpam(message, client)) return;
+      if (await aiHandler(message)) return;
+      if (await antiLinkHandler(message)) return;
+      if (await antiSpamHandler(message, client)) return;
 
       const prefix = await getPrefix(message.guild.id);
       if (!message.content.startsWith(prefix)) return;
 
-      const accepted = await checkTerms(message);
+      const accepted = await termsHandler(message);
       if (!accepted) return;
 
-      await handleCommands(message, client);
+      await commandHandler(message, client);
     } catch (error) {
       logger.error(`[messageCreate] ${error.message}`, {
         stack: error.stack,
