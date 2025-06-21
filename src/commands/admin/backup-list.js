@@ -16,10 +16,10 @@ module.exports = {
 
       if (!backups.length) {
         const embedAviso = new EmbedBuilder()
-          .setColor(yellow)
+          .setColor(colors.yellow)
           .setAuthor({
             name: 'Nenhum backup encontrado para este servidor.',
-            iconURL: icon_attention
+            iconURL: emojis.icon_attention
           });
 
         return message.channel.send({ embeds: [embedAviso] });
@@ -27,7 +27,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('<:Backup:1355721566582997054> Backups')
-        .setColor(green)
+        .setColor(colors.green)
         .setDescription(
           backups
             .map((backup, index) => {
@@ -49,10 +49,10 @@ module.exports = {
       console.error(error);
 
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Erro ao listar os backups.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.channel.send({ embeds: [embedErro] });
