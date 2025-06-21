@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow, green } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
-const Backup = require('../../models/Backup');
+const { yellow, green, icon_attention } = require('@config');
+const Backup = require('@models/Backup');
 
 module.exports = {
   name: 'backup-list',
