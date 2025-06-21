@@ -46,15 +46,15 @@
     "@models": "src/models",
     "@config": "src/config",
     "@modules": "src/modules",
-    "@commands": "src/commands",
-    "@admin": "src/commands/admin",
     "@mod": "src/commands/mod",
-    "@info": "src/commands/info",
+    "@commands": "src/commands",
     "@handlers": "src/handlers",
+    "@info": "src/commands/info",
+    "@admin": "src/commands/admin",
     "@structures": "src/structures",
     "@package.json": "./package.json",
-    "@interactions": "src/handlers/interactions",
     "@handleEvent": "src/handlers/events",
+    "@interactions": "src/handlers/interactions",
     "@handleButton": "src/handlers/interactions/buttons"
     
     
