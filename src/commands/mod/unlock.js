@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { logModerationAction } = require('../../utils/moderationUtils');
-const { yellow, green } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { logModerationAction } = require('@utils/moderationUtils');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'unlock',
@@ -31,7 +30,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setTitle('<:Desbloqueado:1355700557465125064> Canal Desbloqueado')
         .setDescription(`O canal ${channel} foi desbloqueado para envio de mensagens.`)
-        .setColor(green)
+        .setColor(colors.green)
         .setFooter({
           text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
@@ -42,10 +41,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível desbloquear o canal devido a um erro.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
