@@ -1,8 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const fetch = require('node-fetch');
-const { logModerationAction } = require('../../utils/moderationUtils');
-const { yellow, green } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { logModerationAction } = require('@utils/moderationUtils');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'emoji',
@@ -17,10 +16,10 @@ module.exports = {
     const action = args[0]?.toLowerCase();
     if (!['add', 'copy'].includes(action)) {
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Uso inválido! Use o comando corretamente: `emoji add <link> <nome>` ou `emoji copy <emoji> [nome opcional]`.',
-          iconURL: 'https://bit.ly/43PItSI',
+          iconURL: emojis.icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -29,10 +28,10 @@ module.exports = {
     const emojiInput = args[1];
     if (!emojiInput) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Você precisa fornecer um link ou um emoji válido.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -44,10 +43,10 @@ module.exports = {
       if (action === 'add') {
         if (!emojiInput.startsWith('http')) {
           const embedErro = new EmbedBuilder()
-            .setColor(yellow)
+            .setColor(colors.yellow)
             .setAuthor({
               name: 'O link fornecido não é válido.',
-              iconURL: icon_attention,
+              iconURL: emojis.icon_attention,
             });
 
           return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -55,10 +54,10 @@ module.exports = {
 
         if (!emojiName) {
           const embedErro = new EmbedBuilder()
-            .setColor(yellow)
+            .setColor(colors.yellow)
             .setAuthor({
               name: 'Você precisa fornecer um nome para o emoji.',
-              iconURL: icon_attention,
+              iconURL: emojis.icon_attention,
             });
 
           return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -69,10 +68,10 @@ module.exports = {
 
         if (buffer.byteLength > 256 * 1024) {
           const embedErro = new EmbedBuilder()
-            .setColor(yellow)
+            .setColor(colors.yellow)
             .setAuthor({
               name: 'O arquivo excede o limite de 256 KB.',
-              iconURL: icon_attention,
+              iconURL: emojis.icon_attention,
             });
 
           return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -93,7 +92,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
           .setTitle('<:emoji_33:1219788320234803250> Emoji Adicionado')
-          .setColor(green)
+          .setColor(colors.green)
           .addFields(
             { name: 'Nome', value: addedEmoji.name, inline: true },
             { name: 'ID', value: addedEmoji.id, inline: true },
@@ -110,10 +109,10 @@ module.exports = {
         const emojiMatch = emojiInput.match(/<a?:\w+:(\d+)>/);
         if (!emojiMatch) {
           const embedErro = new EmbedBuilder()
-            .setColor(yellow)
+            .setColor(colors.yellow)
             .setAuthor({
               name: 'O emoji fornecido não é válido.',
-              iconURL: icon_attention,
+              iconURL: emojis.icon_attention,
             });
 
           return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -133,10 +132,10 @@ module.exports = {
 
         if (buffer.byteLength > 256 * 1024) {
           const embedErro = new EmbedBuilder()
-            .setColor(yellow)
+            .setColor(colors.yellow)
             .setAuthor({
               name: 'O arquivo excede o limite de 256 KB.',
-              iconURL: icon_attention,
+              iconURL: emojis.icon_attention,
             });
 
           return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -157,7 +156,7 @@ module.exports = {
 
         const embed = new EmbedBuilder()
           .setTitle('<:emoji_33:1219788320234803250> Emoji Copiado')
-          .setColor(green)
+          .setColor(colors.green)
           .addFields(
             { name: 'Nome', value: copiedEmoji.name, inline: true },
             { name: 'ID', value: copiedEmoji.id, inline: true },
@@ -174,10 +173,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível adicionar ou copiar o emoji devido a um erro.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
