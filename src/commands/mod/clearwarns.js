@@ -1,8 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
-const db = require('../../data/database');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention, attent } = require('../../config/emoji.json');
-const { logModerationAction } = require('../../utils/moderationUtils');
+const db = require('@data/database');
+const { logModerationAction } = require('@utils/moderationUtils');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'clearwarns',
@@ -19,10 +18,10 @@ module.exports = {
 
     if (!user) {
       const embed = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Você precisa mencionar um usuário.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.channel.send({
@@ -37,10 +36,10 @@ module.exports = {
 
     if (totalWarnings === 0) {
       const embed = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Este usuário não possui avisos para remover.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.channel.send({
@@ -62,8 +61,8 @@ module.exports = {
       );
 
       const embed = new EmbedBuilder()
-        .setColor(yellow)
-        .setTitle(`${attent} Avisos Removidos`)
+        .setColor(colors.yellow)
+        .setTitle(`${emojis.attent} Avisos Removidos`)
         .setDescription(`${user} (\`${user.id}\`) teve \`${totalWarnings}\` aviso(s) removido(s).`)
         .setThumbnail(user.user.displayAvatarURL({ dynamic: true }))
         .setFooter({
@@ -81,10 +80,10 @@ module.exports = {
       console.error('Erro ao remover avisos:', error);
 
       const embed = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível remover os avisos devido a um erro interno.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.channel.send({
