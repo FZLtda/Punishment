@@ -1,34 +1,34 @@
 const fs = require('fs');
 const path = require('path');
 
-// Caminho absoluto para config.json
-const configPath = path.join(__dirname, 'config.json');
+// Caminho absoluto para settings.json
+const configPath = path.join(__dirname, 'settings.json');
 
-// Verifica se o config.json existe
+// Verifica se o settings.json existe
 if (!fs.existsSync(configPath)) {
-  throw new Error('[Config] Arquivo config.json não encontrado.');
+  throw new Error('[Config] Arquivo settings.json não encontrado.');
 }
 
-// Tenta carregar o config.json
+// Tenta carregar o settings.json
 let config;
 try {
-  config = require('./config.json');
+  config = require('./settings.json');
 } catch (error) {
-  throw new Error(`[Config] Erro ao carregar config.json: ${error.message}`);
+  throw new Error(`[Config] Erro ao carregar settings.json: ${error.message}`);
 }
 
-// Campos obrigatórios que precisam estar no config.json
+// Campos obrigatórios que precisam estar no settings.json
 const requiredFields = ['BOT_NAME', 'OWNER_ID', 'MAX_RETRIES', 'RETRY_DELAY'];
 const missingFields = requiredFields.filter(field => config[field] === undefined);
 
 if (missingFields.length > 0) {
-  throw new Error(`[Config] Campos ausentes em config.json: ${missingFields.join(', ')}`);
+  throw new Error(`[Config] Campos ausentes em settings.json: ${missingFields.join(', ')}`);
 }
 
 // Carrega arquivos adicionais da pasta config
 let emojis = {};
 let colors = {};
-let messages = {};
+let warnChannels = {};
 
 try {
   emojis = require('./emojis.json');
@@ -45,7 +45,7 @@ try {
 try {
   warnChannels = require('./warnChannels.json');
 } catch (error) {
-  console.warn('[Config] messages.js não encontrado ou inválido, ignorando...');
+  console.warn('[Config] warnChannels.json não encontrado ou inválido, ignorando...');
 }
 
 // Exporta tudo de forma centralizada
@@ -53,5 +53,5 @@ module.exports = {
   ...config,
   emojis,
   colors,
-  messages
+  warnChannels
 };
