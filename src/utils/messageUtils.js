@@ -1,6 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow } = require('@config/colors');
-const { icon_attention } = require('@config/emoji');
+const { colors, emojis } = require('@config');
 
 function parseDuration(input) {
   const match = input.match(/^(\d+)([smhd])$/);
@@ -15,8 +14,8 @@ function parseDuration(input) {
 
 function sendErrorEmbed(message, text) {
   const embed = new EmbedBuilder()
-    .setColor(yellow)
-    .setAuthor({ name: text, iconURL: icon_attention });
+    .setColor(colors.yellow)
+    .setAuthor({ name: text, iconURL: emojis.icon_attention });
 
   return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
 }
