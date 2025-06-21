@@ -1,7 +1,7 @@
 const logger = require('@utils/logger');
-const { attent } = require('@config/emoji');
+const { attent } = require('@config');
 const { checkTerms } = require('@handlers/termsHandler');
-const routeInteraction = require('@interactions/router');
+const routeInteraction = require('@buttons/router');
 
 module.exports = {
   name: 'interactionCreate',
