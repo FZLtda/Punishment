@@ -9,34 +9,44 @@ const {
 const { getPrefix } = require('@utils/prefixUtils');
 const logger = require('@utils/logger');
 
-const cooldown = new Set();
+const cooldowns = new Map();
 
 module.exports = {
   name: Events.MessageCreate,
+  /**
+   * @param {import('discord.js').Message} message
+   * @param {import('discord.js').Client} client
+   */
   async execute(message, client) {
+    if (!message.guild || message.author.bot) return;
+
     try {
-      if (!message.guild || message.author.bot) return;
+      
+      const userId = message.author.id;
+      if (cooldowns.has(userId)) return;
+      cooldowns.set(userId, Date.now());
+      setTimeout(() => cooldowns.delete(userId), 1000);
 
-      if (cooldown.has(message.author.id)) return;
-      cooldown.add(message.author.id);
-      setTimeout(() => cooldown.delete(message.author.id), 1000);
-
-      if (await aiHandler(message)) return;
-      if (await antiLinkHandler(message)) return;
-      if (await antiSpamHandler(message, client)) return;
+      if (await handleAIResponse(message)) return;
+      if (await handleAntiLink(message)) return;
+      if (await handleAntiSpam(message, client)) return;
 
       const prefix = await getPrefix(message.guild.id);
       if (!message.content.startsWith(prefix)) return;
 
-      const accepted = await termsHandler(message);
+      const accepted = await checkTerms(message);
       if (!accepted) return;
 
-      await commandHandler(message, client);
+      await handleCommands(message, client);
+
     } catch (error) {
       logger.error(`[messageCreate] ${error.message}`, {
         stack: error.stack,
         author: message.author?.tag,
+        userId: message.author?.id,
         guild: message.guild?.name,
+        guildId: message.guild?.id,
+        channelId: message.channel?.id,
         content: message.content,
       });
 
@@ -48,7 +58,7 @@ module.exports = {
             `<:Desbanido:1355718942076965016> Autor: \`${message.author?.tag}\`\n` +
             `<:Backup:1355721566582997054> Servidor: \`${message.guild?.name}\`\n` +
             `<:Desbloqueado:1355700557465125064> Mensagem: \`${message.content.slice(0, 100)}\`\n` +
-            '```js\n' + error.stack.slice(0, 1900) + '\n```',
+            '```js\n' + (error.stack?.slice(0, 1900) || 'Erro sem stack') + '\n```',
         });
       }
     }
