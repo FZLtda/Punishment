@@ -4,8 +4,7 @@ const {
   ButtonBuilder,
   ButtonStyle,
 } = require('discord.js');
-
-const { red, attent } = require('@config');
+const { colors, emojis } = require('@config');
 
 // !Formata números (ex: 1000 → 1.000)
 const formatNumber = (num) => new Intl.NumberFormat('pt-BR').format(num);
@@ -39,7 +38,7 @@ function gerarEmbedInicial(prize = 'Indefinido', winnerCount = 1, endTime = Date
       `🏆 **${winnerCount === 1 ? 'Ganhador' : 'Ganhadores'}:** \`${winnerCount}\`\n` +
       `⏰ **Termina:** <t:${Math.floor(endTime / 1000)}:f> — (<t:${Math.floor(endTime / 1000)}:R>)`
     )
-    .setColor(red)
+    .setColor(colors.red)
     .setFooter({ text: 'Clique no botão abaixo para participar!' });
 }
 
@@ -57,14 +56,14 @@ function gerarEmbedFinal(prize, total, winners = [], messageId = 'Desconhecido',
       `🏆 **${winners.length === 1 ? 'Ganhador' : 'Ganhadores'}:** ${mencoes}\n\n` +
       `🕔 **Encerrado:** <t:${Math.floor(endedAt.getTime() / 1000)}:f>`
     )
-    .setColor(red)
+    .setColor(colors.red)
     .setFooter({ text: 'Sorteio finalizado automaticamente.' });
 }
 
 // !Mensagem pública para os vencedores
 function gerarMensagemVencedores(winners = [], prize = 'Indefinido') {
   if (winners.length === 0) {
-    return `${attent} Nenhum vencedor foi escolhido, pois não houve participantes.`;
+    return `${emojis.attent} Nenhum vencedor foi escolhido, pois não houve participantes.`;
   }
 
   const mencoes = winners.map(id => `<@${id}>`).join(', ');
