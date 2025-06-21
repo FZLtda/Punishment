@@ -1,6 +1,6 @@
 const logger = require('@utils/logger');
 const { attent } = require('@config');
-const { checkTerms } = require('@handleEvent/termsButtons');
+const { checkTerms } = require('@handleButton/termsButtons');
 const router = require('@interactions/router');
 
 module.exports = {
