@@ -54,8 +54,8 @@
     "@structures": "src/structures",
     "@package.json": "./package.json",
     "@interactions": "src/handlers/interactions",
-    "@buttons": "src/handlers/interactions/buttons",
-    "@interac": "src/handlers/interactions/commands"
+    "@handleButton": "src/handlers/interactions/buttons",
+    "@handleCommand": "src/handlers/interactions/commands"
     
     
     
