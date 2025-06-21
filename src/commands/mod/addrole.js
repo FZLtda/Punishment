@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { logModerationAction } = require('../../utils/moderationUtils');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { logModerationAction } = require('@utils/moderationUtils');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'addrole',
@@ -17,10 +16,10 @@ module.exports = {
 
     if (!member || !role) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Argumentos inválidos. O formato correto do comando é: .addrole @membro @cargo',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -28,10 +27,10 @@ module.exports = {
 
     if (role.position >= message.guild.members.me.roles.highest.position) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não tenho permissão para adicionar este cargo, pois ele está acima do meu cargo mais alto.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -39,10 +38,10 @@ module.exports = {
 
     if (member.roles.cache.has(role.id)) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Este usuário já possui este cargo.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -62,7 +61,7 @@ module.exports = {
       return message.channel.send({
         embeds: [
           new EmbedBuilder()
-            .setColor('Green')
+            .setColor(colors.green)
             .setTitle('<:Adicionado:1355700382642208948> Cargo Adicionado')
             .setDescription(`O cargo ${role} foi adicionado a ${member}.`)
             .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
@@ -74,10 +73,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível adicionar o cargo.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
