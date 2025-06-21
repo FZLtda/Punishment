@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-const logger = require('./logger');
+const logger = require('@utils/logger');
 
 const SQUARE_TOKEN = process.env.SQUARE_TOKEN;
 const APP_ID = process.env.SQUARE_APP_ID;
