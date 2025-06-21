@@ -1,6 +1,5 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
-const { yellow, green, red } = require('../../config/colors.json');
-const { icon_attention, icon_success } = require('../../config/emoji.json');
+const { colors, emojis } = require('@config');
 
 const colorMapping = {
   RED: '#FF0000',
@@ -27,8 +26,8 @@ module.exports = {
     try {
       
       const errorEmbed = (desc) => new EmbedBuilder()
-        .setColor(yellow)
-        .setAuthor({ name: desc, iconURL: icon_attention });
+        .setColor(colors.yellow)
+        .setAuthor({ name: desc, iconURL: emojis.icon_attention });
 
       if (!args[0]) {
         return message.reply({
@@ -65,8 +64,8 @@ module.exports = {
         return message.reply({
           embeds: [
             new EmbedBuilder()
-              .setColor(yellow)
-              .setAuthor({ name: 'Permissões inválidas detectadas', iconURL: icon_attention })
+              .setColor(colors.yellow)
+              .setAuthor({ name: 'Permissões inválidas detectadas', iconURL: emojis.icon_attention })
               .setDescription(`\`${invalidPermissions.join(', ')}\``)
               .addFields({
                 name: 'Permissões válidas',
@@ -98,7 +97,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('<:emoji_33:1219788320234803250> Cargo Criado com Sucesso')
-        .setColor(green)
+        .setColor(colors.green)
         .setThumbnail(message.guild.iconURL({ dynamic: true }))
         .addFields(
           { name: 'Nome', value: `\`${newRole.name}\``, inline: true },
@@ -124,7 +123,7 @@ module.exports = {
       return message.reply({
         embeds: [
           new EmbedBuilder()
-            .setColor(yellow)
+            .setColor(colors.yellow)
             .setAuthor({ name: 'Ocorreu um erro ao criar o cargo.', iconURL: icon_attention })
         ],
         allowedMentions: { repliedUser: false }
