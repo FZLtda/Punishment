@@ -5,7 +5,7 @@ const {
   handleAntiSpam,
   handleCommands,
   checkTerms
-} = require('@handleEvent');
+} = require('@handler');
 const { getPrefix } = require('@utils/prefixUtils');
 const logger = require('@utils/logger');
 
