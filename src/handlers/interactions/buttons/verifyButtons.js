@@ -1,6 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { check, attent } = require('@config/emoji.json');
-const { green } = require('@config/colors.json');
+const { check, attent, green } = require('@config');
 const logger = require('@utils/logger');
 const { userAlreadyVerified, markUserVerified } = require('@utils/verifyUtils');
 
