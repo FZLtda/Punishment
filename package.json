@@ -39,6 +39,7 @@
   },
   "_moduleAliases": {
     "@src": "src",
+    "@core": "src/core",
     "@data": "src/data",
     "@utils": "src/utils",
     "@events": "src/events",
