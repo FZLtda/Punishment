@@ -1,7 +1,6 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const db = require('../../data/database');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention, attent } = require('../../config/emoji.json');
+const db = require('@data/database');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'warnings',
@@ -17,10 +16,10 @@ module.exports = {
 
       if (!target) {
         return sendEmbed(message, {
-          color: yellow,
+          color: colors.yellow,
           author: {
             name: 'Você deve mencionar um usuário para ver os avisos.',
-            iconURL: icon_attention,
+            iconURL: emojis.icon_attention,
           },
         });
       }
@@ -31,8 +30,8 @@ module.exports = {
 
       if (!warnings.length) {
         return sendEmbed(message, {
-          color: yellow,
-          title: `${attent} Nenhum Aviso Encontrado`,
+          color: colors.yellow,
+          title: `${emojis.attent} Nenhum Aviso Encontrado`,
           description: `${target} não possui avisos registrados.`,
           footer: {
             text: message.author.username,
@@ -62,10 +61,10 @@ module.exports = {
       console.error('[Punishment] Erro ao buscar avisos:', err);
 
       return sendEmbed(message, {
-        color: yellow,
+        color: colors.yellow,
         author: {
           name: 'Não foi possível obter os avisos.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         },
       });
     }
