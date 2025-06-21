@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { logModerationAction } = require('../../utils/moderationUtils');
-const { yellow, red } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { logModerationAction } = require('@utils/moderationUtils');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'removerole',
@@ -18,10 +17,10 @@ module.exports = {
 
     if (!member || !role) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Argumentos inválidos. O formato correto do comando é: removerole @membro @cargo',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -29,10 +28,10 @@ module.exports = {
 
     if (!member.roles.cache.has(role.id)) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Este usuário não possui este cargo.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -52,7 +51,7 @@ module.exports = {
       return message.channel.send({
         embeds: [
           new EmbedBuilder()
-            .setColor(red)
+            .setColor(colors.red)
             .setTitle('<:Removido:1355700154593710080> Cargo Removido')
             .setDescription(`O cargo ${role} foi removido de ${member}.`)
             .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
@@ -63,10 +62,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível remover o cargo.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
