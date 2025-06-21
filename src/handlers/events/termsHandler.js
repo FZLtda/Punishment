@@ -5,8 +5,7 @@ const {
   ButtonStyle,
 } = require('discord.js');
 
-const { TERMS } = require('@config/settings');
-const { check } = require('@config/emoji');
+const { TERMS, check } = require('@config');
 const logger = require('@utils/logger');
 
 const Terms = require('@models/Terms');
