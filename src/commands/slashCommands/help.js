@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { yellow, icon_attention } = require('@config');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -16,10 +16,10 @@ module.exports = {
 
     if (!commands || commands.size === 0) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(`${yellow}`)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Parece que os comandos não foram carregados.',
-          iconURL: `${icon_attention}`,
+          iconURL: emojis.icon_attention,
         });
 
       return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
@@ -35,10 +35,10 @@ module.exports = {
 
       if (!command) {
         const embedErroMinimo = new EmbedBuilder()
-          .setColor(`${yellow}`)
+          .setColor(colors.yellow)
           .setAuthor({
             name: 'Não encontrei esse comando no sistema.',
-            iconURL: `${icon_attention}`,
+            iconURL: emojis.icon_attention,
           });
 
         return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
@@ -47,7 +47,7 @@ module.exports = {
       const usage = command.usage ? command.usage.replace('${currentPrefix}', currentPrefix) : 'Não especificado.';
 
       const embed = new EmbedBuilder()
-        .setColor(0xfe3838)
+        .setColor(colors.red)
         .setTitle(`<:1000042965:1336131844718202942> ${command.name}`)
         .setDescription(command.description || '`Nenhuma descrição disponível.`')
         .addFields(
