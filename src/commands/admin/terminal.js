@@ -1,4 +1,4 @@
-const CommandExecutor = require('../../utils/executeCommand');
+const CommandExecutor = require('@utils/executeCommand');
 
 module.exports = {
     name: 't',
