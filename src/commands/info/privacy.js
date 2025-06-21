@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { red } = require('../../config/colors.json');
+const { colors } = require('@config');
 
 module.exports = {
   name: 'privacy',
@@ -14,7 +14,7 @@ module.exports = {
     const lastUpdated = '<t:1739725440:f>';
 
     const embed = new EmbedBuilder()
-      .setColor(red)
+      .setColor(colors.red)
       .setTitle('Política de Privacidade')
       .setDescription(
         'O Punishment **não armazena mensagens de texto** dos usuários. Ele apenas processa conteúdos em tempo real para aplicar punições e enviar notificações de moderação.\n\n' +
