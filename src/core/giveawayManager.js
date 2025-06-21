@@ -1,4 +1,4 @@
-const GiveawayModel = require('@models');
+const GiveawayModel = require('@models/Giveaway');
 const {
   gerarEmbedInicial,
   gerarEmbedFinal,
