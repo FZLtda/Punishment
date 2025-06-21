@@ -1,6 +1,5 @@
 const { EmbedBuilder, ChannelType } = require('discord.js');
-const { yellow, red } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'clearchannels',
@@ -18,10 +17,10 @@ module.exports = {
 
     if (allChannels.size === 0) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não há canais para apagar neste servidor.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -41,7 +40,7 @@ module.exports = {
       return newChannel.send({
         embeds: [
           new EmbedBuilder()
-            .setColor('Green')
+            .setColor(colors.green)
             .setTitle('<:Adicionado:1355700382642208948> Canais Resetados')
             .setDescription('Todos os canais foram apagados e este canal foi criado com sucesso.')
             .setFooter({ text: message.author.tag, iconURL: message.author.displayAvatarURL() })
@@ -54,10 +53,10 @@ module.exports = {
       console.error(error);
 
       const embedErro = new EmbedBuilder()
-        .setColor(red)
+        .setColor(colors.red)
         .setAuthor({
           name: 'Ocorreu um erro ao tentar apagar ou criar canais.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
