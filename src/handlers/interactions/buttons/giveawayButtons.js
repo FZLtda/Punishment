@@ -3,7 +3,7 @@ const {
   gerarComponentesInterativos,
   gerarMensagemVencedores,
 } = require('@utils/giveawayUtils');
-const { sucess, attent } = require('@config/emoji.json');
+const { sucess, attent } = require('@config');
 const logger = require('@utils/logger');
 
 module.exports = async function handleGiveawayButtons(interaction, client) {
