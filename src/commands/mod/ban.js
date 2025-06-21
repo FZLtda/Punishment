@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
-const { logModerationAction } = require('../../utils/moderationUtils');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { logModerationAction } = require('@utils/moderationUtils');
+const { colors, emojis } = require('@config');
+
 
 module.exports = {
   name: 'ban',
@@ -18,10 +18,10 @@ module.exports = {
 
     if (!membro) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Mencione um usuário para executar esta ação.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -29,10 +29,10 @@ module.exports = {
 
     if (!membro.bannable) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Este usuário não pode ser banido devido às suas permissões.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.chanel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -45,7 +45,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('<:Banido:1355700878056751244> Punição aplicada')
-        .setColor('Red')
+        .setColor(colors.red)
         .setDescription(`${membro} (\`${membro.id}\`) foi banido(a)!`)
         .addFields(
           { name: 'Motivo', value: `\`${motivo}\``, inline: false }
@@ -61,10 +61,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível banir o usuário devido a um erro.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
