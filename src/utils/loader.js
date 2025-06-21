@@ -6,7 +6,7 @@ const loadFiles = require('@utils/fileLoader');
 const chalk = require('chalk');
 
 async function loadCommands(client) {
-  const commandsPath = path.join(__dirname, '../commands');
+  const commandsPath = path.join(__dirname, '@commands');
   const commandFiles = loadFiles(commandsPath);
 
   for (const file of commandFiles) {
