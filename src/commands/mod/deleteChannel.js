@@ -1,6 +1,5 @@
 const { PermissionsBitField, EmbedBuilder } = require('discord.js');
-const { yellow, green} = require('../../config/colors.json');
-const { icon_attention, icon_success } = require('../../config/emoji.json');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'deletechannel',
@@ -13,13 +12,13 @@ module.exports = {
   async execute(message, args) {
     const errorEmbed = (desc) =>
       new EmbedBuilder()
-        .setColor(yellow)
-        .setAuthor({ name: desc, iconURL: icon_attention });
+        .setColor(colors.yellow)
+        .setAuthor({ name: desc, iconURL: emojis.icon_attention });
 
     const successEmbed = (desc) =>
       new EmbedBuilder()
-        .setColor(green)
-        .setAuthor({ name: desc, iconURL: icon_success });
+        .setColor(colors.green)
+        .setAuthor({ name: desc, iconURL: emojis.icon_success });
 
     const channel = message.mentions.channels.first() ||
       message.guild.channels.cache.get(args[0]) ||
@@ -47,8 +46,8 @@ module.exports = {
       });
 
     const confirmEmbed = new EmbedBuilder()
-      .setColor(yellow)
-      .setAuthor({ name: `Tem certeza que deseja excluir o canal "${channel.name}"?`, iconURL: icon_attention })
+      .setColor(colors.yellow)
+      .setAuthor({ name: `Tem certeza que deseja excluir o canal "${channel.name}"?`, iconURL: emojis.icon_attention })
       .setFooter({ text: 'Responda com "sim" em até 10 segundos para confirmar.' });
 
     const confirmationMessage = await message.reply({
@@ -76,8 +75,8 @@ module.exports = {
       }
     } catch (err) {
       const timeoutEmbed = new EmbedBuilder()
-        .setColor(yellow)
-        .setAuthor({ name: 'Tempo esgotado! Cancelando a exclusão.', iconURL: icon_attention });
+        .setColor(colors.yellow)
+        .setAuthor({ name: 'Tempo esgotado! Cancelando a exclusão.', iconURL: emojis.icon_attention });
 
       return message.channel.send({ embeds: [timeoutEmbed] });
     }
