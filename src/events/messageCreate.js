@@ -1,10 +1,10 @@
 const { Events } = require('discord.js');
 const {
-  aiHandler,
-  antiLinkHandler,
-  antiSpamHandler,
-  commandHandler,
-  termsHandler
+  handleAIResponse,
+  handleAntiLink,
+  handleAntiSpam,
+  handleCommands,
+  checkTerms
 } = require('@handleEvent');
 const { getPrefix } = require('@utils/prefixUtils');
 const logger = require('@utils/logger');
