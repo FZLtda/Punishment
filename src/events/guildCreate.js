@@ -1,6 +1,5 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const { yellow } = require('@config/colors');
-const { icon_attention } = require('@config/emoji');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'guildCreate',
@@ -20,7 +19,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setTitle('Punishment Monitoramento')
-      .setColor(yellow)
+      .setColor(colors.yellow)
       .setDescription(`O bot foi adicionado em um novo servidor!`)
       .addFields(
         { name: 'Nome', value: guild.name, inline: true },
