@@ -1,8 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'reload',
@@ -18,10 +17,10 @@ module.exports = {
     const commandName = args[0];
     if (!commandName) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Você precisa fornecer o nome do comando para recarregar.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -32,10 +31,10 @@ module.exports = {
 
     if (!command) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: `O comando "${commandName}" não foi encontrado.`,
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -51,7 +50,7 @@ module.exports = {
       message.client.commands.set(newCommand.name, newCommand);
 
       const embedSuccess = new EmbedBuilder()
-        .setColor('Green')
+        .setColor(colors.green)
         .setAuthor({
           name: `O comando "${newCommand.name}" foi recarregado com sucesso!`,
           iconURL: message.author.displayAvatarURL({ dynamic: true })
@@ -62,10 +61,10 @@ module.exports = {
       console.error(error);
 
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: `Erro ao recarregar o comando "${commandName}".`,
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         })
         .setFooter({ text: error.message });
 
