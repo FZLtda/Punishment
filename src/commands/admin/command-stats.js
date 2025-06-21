@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const db = require('../../data/database');
-const { icon_attention } = require('../../config/emoji.json');
-const { yellow, red } = require('../../config/colors.json');
+const db = require('@data/database');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'command-stats',
@@ -45,7 +44,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('Estatísticas de Comandos')
-        .setColor(red)
+        .setColor(colors.red)
         .addFields(
           {
             name: 'Total de Comandos Executados',
@@ -84,10 +83,10 @@ module.exports = {
       console.error('[ERRO] Falha ao gerar estatísticas de comandos:', err);
 
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível exibir as estatísticas.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
