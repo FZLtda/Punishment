@@ -1,8 +1,8 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow, red } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+require('dotenv').config()
+const { colors, emojis } = require('@config');
 const fetch = require('node-fetch');
-require('dotenv').config();
+;
 
 module.exports = {
   name: 'gif',
@@ -17,10 +17,10 @@ module.exports = {
 
     if (!query) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Você precisa fornecer um termo para buscar o GIF!',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -31,10 +31,10 @@ module.exports = {
 
       if (!apiKey) {
         const embedErroMinimo = new EmbedBuilder()
-          .setColor(yellow)
+          .setColor(colors.yellow)
           .setAuthor({
             name: 'A chave da API do Giphy não foi configurada.',
-            iconURL: icon_attention
+            iconURL: emojis.icon_attention
           });
 
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -47,10 +47,10 @@ module.exports = {
 
       if (!data.data.length) {
         const embedErroMinimo = new EmbedBuilder()
-          .setColor(yellow)
+          .setColor(colors.yellow)
           .setAuthor({
             name: 'Não encontrei nenhum GIF relacionado ao termo fornecido.',
-            iconURL: icon_attention
+            iconURL: emojis.icon_attention
           });
 
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -59,7 +59,7 @@ module.exports = {
       const gifUrl = data.data[0].images.original.url;
 
       const embed = new EmbedBuilder()
-        .setColor(red)
+        .setColor(colors.red)
         .setTitle(`Resultado para: ${query}`)
         .setImage(gifUrl)
         .setFooter({ text: 'Punishment | Giphy' });
@@ -68,10 +68,10 @@ module.exports = {
     } catch (error) {
       console.error('Erro ao buscar GIF:', error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Ocorreu um erro ao tentar buscar o GIF.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
