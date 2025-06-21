@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { logModerationAction } = require('../../utils/moderationUtils');
-const { yellow, red } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { logModerationAction } = require('@utils/moderationUtils');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'lock',
@@ -25,7 +24,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setTitle('<:Bloqueado:1355700508660076554> Canal Bloqueado')
         .setDescription(`O canal ${channel} foi bloqueado para envio de mensagens.`)
-        .setColor(red)
+        .setColor(colors.red)
         .setFooter({
           text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
@@ -36,10 +35,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível bloquear o canal devido a um erro.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
