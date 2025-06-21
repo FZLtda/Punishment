@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { logModerationAction } = require('../../utils/moderationUtils');
-const { yellow, red } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { logModerationAction } = require('@utils/moderationUtils');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'p',
@@ -15,10 +14,10 @@ module.exports = {
     const resposta = message.reference;
     if (!resposta) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Responda a uma mensagem para executar este comando.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -26,10 +25,10 @@ module.exports = {
     const mensagemOriginal = await message.channel.messages.fetch(resposta.messageId).catch(() => null);
     if (!mensagemOriginal) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível localizar a mensagem original.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -40,20 +39,20 @@ module.exports = {
 
     if (!membro) {
       const embedErro = new EmbedBuilder()
-        .setColor('#FF4C4C')
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Usuário não encontrado no servidor.',
-          iconURL: 'https://bit.ly/43PItSI'
+          iconURL: emojis.icon_attention
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     if (!membro.moderatable) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Este usuário não pode ser silenciado devido às suas permissões.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -64,7 +63,7 @@ module.exports = {
 
       const embedSucesso = new EmbedBuilder()
         .setTitle('<:Mutado:1355700779859574954> Punição aplicada')
-        .setColor(red)
+        .setColor(colors.red)
         .setDescription(`${membro} (\`${membro.id}\`) foi mutado(a) por resposta!`)
         .addFields(
           { name: 'Duração', value: `\`30m\``, inline: true },
@@ -81,10 +80,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Erro ao aplicar o mute.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
