@@ -1,4 +1,4 @@
-const db = require('../data/database');
+const db = require('@data/database');
 
 function userAlreadyVerified(userId) {
   const result = db.prepare('SELECT 1 FROM verified_users WHERE user_id = ?').get(userId);
