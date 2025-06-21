@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { logModerationAction } = require('../../utils/moderationUtils');
-const { yellow, green } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { logModerationAction } = require('@utils/moderationUtils');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'unban',
@@ -18,10 +17,10 @@ module.exports = {
 
     if (!userId) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Você precisa fornecer o ID do usuário para desbanir.',
-          iconURL: icon_attention
+          iconURL: emojisicon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -32,10 +31,10 @@ module.exports = {
 
       if (!user) {
         const embedErroMinimo = new EmbedBuilder()
-          .setColor(yellow)
+          .setColor(colors.yellow)
           .setAuthor({
             name: 'Não há registro de banimento para este usuário.',
-            iconURL: icon_attention
+            iconURL: emojis.icon_attention
           });
 
         return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -53,7 +52,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('<:Desbanido:1355718942076965016> Punição revogada')
-        .setColor(green)
+        .setColor(colors.green)
         .setDescription(`<@${userId}> (\`${userId}\`) foi desbanido(a)!`)
         .addFields(
           { name: 'Motivo', value: motivo, inline: false }
@@ -68,10 +67,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível desbanir o usuário devido a um erro.',
-          iconURL: icon_attention
+          iconURL: colors.icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
