@@ -1,5 +1,5 @@
 const logger = require('@utils/logger');
-const { attent } = require('@config');
+const { emojis } = require('@config');
 const { checkTerms } = require('@handleButton/termsButtons');
 const router = require('@interactions/router');
 
@@ -26,7 +26,7 @@ module.exports = {
       logger.error(`ERRO: interactionCreate - ${error.message}`, { stack: error.stack });
 
       const errorMessage = {
-        content: `${attent} Não foi possível processar essa ação.`,
+        content: `${emojis.attent} Não foi possível processar essa ação.`,
         ephemeral: true,
       };
 
