@@ -39,16 +39,19 @@
   },
   "_moduleAliases": {
     "@src": "src",
-    "@utils": "src/utils",
     "@data": "src/data",
-    "@models": "src/models",
-    "@handlers": "src/handlers",
+    "@utils": "src/utils",
     "@events": "src/events",
+    "@models": "src/models",
     "@config": "src/config",
+    "@modules": "src/modules",
+    "@commands": "src/commands",
+    "@handlers": "src/handlers",
     "@structures": "src/structures",
+    "@package.json": "./package.json",
     "@buttons": "src/handlers/interactions/buttons",
-    "@interactions": "src/handlers/interactions",
-    "@package.json": "./package.json"
+    "@interactions": "src/handlers/interactions"
+    
     
     
   }
