@@ -1,8 +1,7 @@
 const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
-const { yellow, green } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'backup-download',
@@ -16,10 +15,10 @@ module.exports = {
     const fileName = args[0];
     if (!fileName) {
       const embedAviso = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Você precisa informar o nome do backup.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.channel.send({ embeds: [embedAviso] });
@@ -31,10 +30,10 @@ module.exports = {
 
       if (!fs.existsSync(filePath)) {
         const embedErro = new EmbedBuilder()
-          .setColor(yellow)
+          .setColor(colors.yellow)
           .setAuthor({
             name: `O backup \`${fileName}\` não foi encontrado.`,
-            iconURL: icon_attention
+            iconURL: emojis.icon_attention
           });
 
         return message.channel.send({ embeds: [embedErro] });
@@ -42,7 +41,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('<:Backup:1355721566582997054> Backup Enviado')
-        .setColor(green)
+        .setColor(colors.green)
         .setDescription(`O arquivo \`${fileName}\` foi enviado abaixo.`)
         .setFooter({
           text: message.author.username,
@@ -58,10 +57,10 @@ module.exports = {
       console.error(error);
 
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível enviar o backup.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.channel.send({ embeds: [embedErro] });
