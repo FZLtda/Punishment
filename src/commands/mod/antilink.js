@@ -1,10 +1,9 @@
 const { EmbedBuilder } = require('discord.js');
-const { icon_attention } = require('../../config/emoji.json');
-const { yellow } = require('../../config/colors.json');
 const fs = require('fs');
 const path = require('path');
+const { colors, emojis } = require('@config');
 
-const dataDir = path.resolve(__dirname, '../../data');
+const dataDir = path.resolve(__dirname, '@data');
 const dataPath = path.join(dataDir, 'antilink.json');
 
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
@@ -26,10 +25,10 @@ module.exports = {
       return message.channel.send({
         embeds: [
           new EmbedBuilder()
-            .setColor(yellow)
+            .setColor(colors.yellow)
             .setAuthor({
               name: 'Use .antilink on para ativar ou .antilink off para desativar.',
-              iconURL: icon_attention,
+              iconURL: emojis.icon_attention,
             })
         ],
         allowedMentions: { repliedUser: false }
