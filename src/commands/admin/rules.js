@@ -4,8 +4,7 @@ const {
   ButtonBuilder,
   ButtonStyle
 } = require('discord.js');
-const { green } = require('../../config/colors.json');
-const { check } = require('../../config/emoji.json');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'rules',
@@ -19,7 +18,7 @@ module.exports = {
     if (message.author.id !== '1006909671908585586') return;
 
     const embed = new EmbedBuilder()
-      .setColor(green)
+      .setColor(colors.green)
       .setTitle('Regras do Servidor')
       .setDescription(
         `**1. Respeito** <:seta2:1325132415542231140> Trate todos com educação. Ofensas, discriminação e discussões desnecessárias não serão toleradas.\n\n` +
@@ -40,7 +39,7 @@ module.exports = {
         .setCustomId('verify_user')
         .setLabel('Aceitar Regras')
         .setStyle(ButtonStyle.Success)
-        .setEmoji(check)
+        .setEmoji(emojis.check)
     );
 
     await message.channel.send({ embeds: [embed], components: [row] });
