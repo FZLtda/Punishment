@@ -1,6 +1,8 @@
-const handleGiveawayButtons = require('@buttons/giveawayButtons');
-const handleTermsButtons = require('@buttons/termsButtons');
-const handleVerifyButtons = require('@buttons/verifyButtons');
+const {
+  handleGiveawayButtons,
+  handleTermsButtons,
+  handleVerifyButtons
+} = require('@andrke');
 const logger = require('@utils/logger');
 
 module.exports = async function handleButton(interaction, client) {
@@ -33,7 +35,7 @@ module.exports = async function handleButton(interaction, client) {
     });
 
     return interaction.reply({
-      content: '❌ Não foi possível processar esse botão.',
+      content: 'Não foi possível processar esse botão.',
       ephemeral: true,
     });
   }
