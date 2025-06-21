@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { logModerationAction } = require('../../utils/moderationUtils');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { logModerationAction } = require('@utils/moderationUtils');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'clearall',
@@ -37,10 +36,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível apagar as mensagens devido a um erro.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
