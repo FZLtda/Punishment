@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { red } = require('../../config/colors.json');
+const { colors } = require('@config');
 const moment = require('moment-timezone');
 
 module.exports = {
@@ -40,7 +40,7 @@ module.exports = {
         name: `${guild.name}`,
         iconURL: guild.iconURL({ dynamic: true, size: 1024 }) || null,
       })
-      .setColor(red)
+      .setColor(colors.red)
       .addFields(
         { name: 'Nome', value: guild.name, inline: true },
         { name: 'ID', value: guild.id, inline: true },
