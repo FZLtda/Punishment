@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow, icon_attention } = require('@config');
+const { colors, emojis } = require('@config');
 const { converterTempo } = require('@utils/giveawayUtils');
 const { criarSorteio, agendarEncerramento } = require('@core/giveawayManager');
 
@@ -57,8 +57,8 @@ module.exports = {
 
 function enviarErro(message, texto) {
   const embed = new EmbedBuilder()
-    .setColor(yellow)
-    .setAuthor({ name: texto, iconURL: icon_attention });
+    .setColor(colors.yellow)
+    .setAuthor({ name: texto, iconURL: emojis.icon_attention });
 
   return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
 }
