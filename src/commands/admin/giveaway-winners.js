@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const Giveaway = require('../../models/Giveaway');
-const { yellow, green } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const Giveaway = require('@models/Giveaway');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'giveaway-winners',
@@ -16,10 +15,10 @@ module.exports = {
 
     if (!messageId) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Você precisa fornecer o ID da mensagem do sorteio.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
       return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -29,10 +28,10 @@ module.exports = {
 
       if (!sorteio || !sorteio.ended) {
         const embedAviso = new EmbedBuilder()
-          .setColor(yellow)
+          .setColor(colors.yellow)
           .setAuthor({
             name: 'Sorteio não encontrado ou ainda está ativo.',
-            iconURL: icon_attention,
+            iconURL: emojis.icon_attention,
           });
         return message.channel.send({ embeds: [embedAviso], allowedMentions: { repliedUser: false } });
       }
@@ -50,7 +49,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle(`Sorteio ID: ${sorteio.messageId}`)
-        .setColor(green)
+        .setColor(colors.green)
         .addFields(
           { name: 'Prêmio', value: sorteio.prize, inline: true },
           { name: 'Ganhadores', value: ganhadores.length ? ganhadores.map(id => `<@${id}>`).join('\n') : 'Nenhum ganhador registrado', inline: false },
@@ -67,10 +66,10 @@ module.exports = {
     } catch (err) {
       console.error('Erro ao buscar ganhadores:', err);
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível buscar os ganhadores.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
       return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
