@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const Terms = require('@models/Terms');
-const { check, error } = require('@config/emoji.json');
-const { green } = require('@config/colors.json');
+const { check, error, green } = require('@config');
 const logger = require('@utils/logger');
 
 async function handleTermsButtons(interaction) {
