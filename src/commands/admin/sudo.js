@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
-const { getPrefix } = require('../../utils/prefixUtils');
+const { colors, emojis } = require('@config');
+const { getPrefix } = require('@utils/prefixUtils');
 
 module.exports = {
   name: 'sudo',
@@ -18,8 +17,10 @@ module.exports = {
     const membro = message.mentions.members.first();
     if (!membro) {
       const embed = new EmbedBuilder()
-        .setColor(yellow)
-        .setAuthor({ name: 'Você precisa mencionar um usuário para executar o comando como ele.', iconURL: icon_attention });
+        .setColor(colors.yellow)
+        .setAuthor({ 
+          name: 'Você precisa mencionar um usuário para executar o comando como ele.', 
+          iconURL: emojis.icon_attention });
       return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
@@ -27,16 +28,20 @@ module.exports = {
     const comandoNome = args.shift()?.toLowerCase();
     if (!comandoNome) {
       const embed = new EmbedBuilder()
-        .setColor(yellow)
-        .setAuthor({ name: 'Você precisa fornecer o nome do comando que deseja executar.', iconURL: icon_attention });
+        .setColor(colors.yellow)
+        .setAuthor({ 
+          name: 'Você precisa fornecer o nome do comando que deseja executar.', 
+          iconURL: emojis.icon_attention });
       return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
     const comando = message.client.commands.get(comandoNome);
     if (!comando) {
       const embed = new EmbedBuilder()
-        .setColor(yellow)
-        .setAuthor({ name: `O comando "${comandoNome}" não foi encontrado.`, iconURL: icon_attention });
+        .setColor(colors.yellow)
+        .setAuthor({ 
+          name: `O comando "${comandoNome}" não foi encontrado.`, 
+          iconURL: emojis.icon_attention });
       return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
 
@@ -60,8 +65,10 @@ module.exports = {
     } catch (err) {
       console.error(err);
       const embed = new EmbedBuilder()
-        .setColor(yellow)
-        .setAuthor({ name: 'Não foi possível executar o comando como outro usuário devido a um erro.', iconURL: icon_attention });
+        .setColor(colors.yellow)
+        .setAuthor({ 
+          name: 'Não foi possível executar o comando como outro usuário devido a um erro.', 
+          iconURL: emojis.icon_attention });
       return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
     }
   },
