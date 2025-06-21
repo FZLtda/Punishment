@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { red } = require('../../config/colors.json');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'ping',
@@ -15,7 +15,7 @@ module.exports = {
     const apiLatency = Math.round(message.client.ws.ping);
 
     const embed = new EmbedBuilder()
-      .setColor(red)
+      .setColor(colors.red)
       .setTitle('Pong!')
       .setDescription(
         `<:1000042776:1335945378029240412> **Latência:** \`${latency}ms\`\n` +
