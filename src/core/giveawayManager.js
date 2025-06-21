@@ -4,7 +4,7 @@ const {
   gerarEmbedFinal,
   gerarMensagemVencedores,
   gerarComponentesInterativos,
-} = require('@core/giveawayUtils');
+} = require('@utils/giveawayUtils');
 const logger = require('@utils/logger');
 
 async function criarSorteio({ client, guild, channel, durationMs, winnerCount, prize, hostId }) {
