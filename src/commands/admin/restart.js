@@ -1,8 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
-const { restartSquareApp } = require('../../utils/squareUtils');
-const { icon_shutdown } = require('../../config/emoji.json');
-const { red, green } = require('../../config/colors.json');
-const logger = require('../../utils/logger');
+const { restartSquareApp } = require('@utils/squareUtils');
+const { colors, emojis } = require('@config');
+const logger = require('@utils/logger');
 
 module.exports = {
   name: 'restart',
@@ -17,7 +16,7 @@ module.exports = {
       return message.reply({
         embeds: [
           new EmbedBuilder()
-            .setColor(red)
+            .setColor(colors.red)
             .setDescription('Você não tem permissão para reiniciar o bot.')
         ]
       });
@@ -28,7 +27,7 @@ module.exports = {
     const reply = await message.channel.send({
       embeds: [
         new EmbedBuilder()
-          .setColor(green)
+          .setColor(colorsgreen)
           .setDescription('Reiniciando a aplicação na SquareCloud...')
       ]
     });
@@ -40,7 +39,7 @@ module.exports = {
       return reply.edit({
         embeds: [
           new EmbedBuilder()
-            .setColor(red)
+            .setColor(colors.red)
             .setDescription(`Falha ao reiniciar o bot: ${result?.message || 'erro desconhecido'}`)
         ]
       });
