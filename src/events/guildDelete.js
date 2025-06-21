@@ -1,7 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow } = require('../config/colors.json');
-const { icon_attention } = require('../config/emoji.json');
-
+const { colors, emojis } = require('@config');
 module.exports = {
   name: 'guildDelete',
 
@@ -12,7 +10,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setTitle('Punishment Monitoramento')
-      .setColor(yellow)
+      .setColor(colors.yellow)
       .setDescription(`O bot foi removido de um servidor.`)
       .addFields(
         { name: 'Nome', value: guild.name || 'Desconhecido', inline: true },
