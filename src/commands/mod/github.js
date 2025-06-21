@@ -1,8 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow, red } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
 const axios = require('axios');
 require('dotenv').config();
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'github',
@@ -15,10 +14,10 @@ module.exports = {
   async execute(message, args) {
     if (!args[0] || typeof args[0] !== 'string') {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Você precisa fornecer o repositório no formato `usuário/repositório`',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -43,7 +42,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setTitle(`Repositório: ${data.full_name}`)
         .setURL(data.html_url)
-        .setColor(red)
+        .setColor(colors.red)
         .setDescription(data.description || 'Sem descrição disponível.')
         .addFields(
           { name: 'Autor', value: `[${data.owner.login}](${data.owner.html_url})`, inline: true },
@@ -70,10 +69,10 @@ module.exports = {
 
         if (status === 404) {
           const embedErroMinimo = new EmbedBuilder()
-            .setColor(yellow)
+            .setColor(colors.yellow)
             .setAuthor({
               name: 'Repositório não encontrado. Verifique o nome e tente novamente.',
-              iconURL: icon_attention
+              iconURL: emojis.icon_attention
             });
 
           return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -81,20 +80,20 @@ module.exports = {
 
         if (status === 403) {
           const embedErroMinimo = new EmbedBuilder()
-            .setColor(yellow)
+            .setColor(colors.yellow)
             .setAuthor({
               name: 'Limite de requisições da API do GitHub excedido. Tente novamente mais tarde.',
-              iconURL: icon_attention
+              iconURL: emojis.icon_attention
             });
 
           return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
         }
       }
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Ocorreu um erro ao buscar informações do repositório.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
