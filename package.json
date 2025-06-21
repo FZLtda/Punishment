@@ -53,6 +53,7 @@
     "@admin": "src/commands/admin",
     "@structures": "src/structures",
     "@package.json": "./package.json",
+    "@handleSlash": "src/handlers/slash",
     "@handleEvent": "src/handlers/events",
     "@interactions": "src/handlers/interactions",
     "@handleButton": "src/handlers/interactions/buttons"
