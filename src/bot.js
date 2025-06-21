@@ -4,7 +4,7 @@ const { performance } = require('perf_hooks');
 const ExtendedClient = require('@structures/ExtendedClient');
 const logger = require('@utils/logger');
 const validateEnv = require('@utils/validateEnv');
-const { settings } = require('@config');
+const settings = require('@config');
 
 validateEnv();
 
