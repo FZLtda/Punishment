@@ -1,9 +1,8 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow, green } = require('../../config/colors.json');
-const { icon_attention, icon_success } = require('../../config/emoji.json');
 const fetch = require('node-fetch');
 const FormData = require('form-data');
 const fs = require('fs');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'translatefile',
@@ -16,20 +15,20 @@ module.exports = {
   async execute(message, args) {
     if (!message.attachments.first()) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Você precisa enviar um arquivo para tradução junto com este comando.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     if (args.length === 0) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Você precisa especificar o idioma de destino. Exemplo: `.translatefile en`',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -62,10 +61,10 @@ module.exports = {
 
       if (!uploadData.document_id || !uploadData.document_key) {
         const embedErro = new EmbedBuilder()
-          .setColor(yellow)
+          .setColor(colors.yellow)
           .setAuthor({
             name: 'Ocorreu um erro ao enviar o arquivo para tradução.',
-            iconURL: icon_attention,
+            iconURL: emojis.icon_attention,
           });
         return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
       }
@@ -106,10 +105,10 @@ module.exports = {
 
       
       const embedSucesso = new EmbedBuilder()
-        .setColor(green)
+        .setColor(colors.green)
         .setAuthor({
           name: 'A tradução foi concluída! Enviando o arquivo traduzido...',
-          iconURL: icon_success,
+          iconURL: emojis.icon_success,
         });
 
       await message.channel.send({ embeds: [embedSucesso], allowedMentions: { repliedUser: false } });
@@ -124,10 +123,10 @@ module.exports = {
       console.error('Erro ao traduzir o arquivo:', error);
 
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível traduzir o arquivo. Verifique se o arquivo é suportado.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
