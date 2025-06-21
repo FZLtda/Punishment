@@ -1,5 +1,5 @@
 const { conversationHistory, fetchAIResponse } = require('@utils/aiUtils');
-const { attent } = require('@config/emoji');
+const { attent } = require('@config');
 const logger = require('@utils/logger');
 
 const RATE_LIMIT = new Map();
