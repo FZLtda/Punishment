@@ -1,14 +1,12 @@
 const { EmbedBuilder } = require('discord.js');
-const { warnPunishments, logChannelId } = require('@config/settings');
-const { yellow, red } = require('@config/colors');
-const { icon_attention } = require('@config/emoji');
+const { colors, emojis, settings } = require('@config');
 const fs = require('fs');
 const path = require('path');
 
 const warnChannelPath = path.join(__dirname, '..', 'data', 'warnChannels.json');
 
 async function applyPunishment(client, guild, user, warningsCount, moderatorId) {
-  const punishment = warnPunishments.find(p => p.count === warningsCount);
+  const punishment = settings.warnPunishments.find(p => p.count === warningsCount);
   if (!punishment) return;
 
   const member = await guild.members.fetch(user).catch(() => null);
@@ -37,7 +35,7 @@ async function applyPunishment(client, guild, user, warningsCount, moderatorId) 
 
     const embed = new EmbedBuilder()
       .setTitle('<:Mutado:1355700779859574954> Punição aplicada')
-      .setColor(red)
+      .setColor(colors.red)
       .setDescription(`${member} (\`${member.id}\`) recebeu uma punição automática!`)
       .addFields(
         { name: 'Ação', value: `\`${action}\``, inline: true },
@@ -50,7 +48,7 @@ async function applyPunishment(client, guild, user, warningsCount, moderatorId) 
       .setFooter({ text: guild.name, iconURL: guild.iconURL() })
       .setTimestamp();
 
-    const logChannel = guild.channels.cache.get(logChannelId);
+    const logChannel = guild.channels.cache.get(settings.logChannelId);
     if (logChannel) {
       await logChannel.send({ embeds: [embed] });
     }
