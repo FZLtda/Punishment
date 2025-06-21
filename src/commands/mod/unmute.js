@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const { logModerationAction } = require('../../utils/moderationUtils');
-const { yellow, green } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { logModerationAction } = require('@utils/moderationUtils');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'unmute',
@@ -17,10 +16,10 @@ module.exports = {
 
     if (!membro) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Mencione um usuário para executar esta ação.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } }); 
@@ -28,10 +27,10 @@ module.exports = {
 
     if (!membro.communicationDisabledUntilTimestamp) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Este usuário não está silenciado no momento.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -50,7 +49,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('<:Desmutado:1355700639681740880> Punição removida')
-        .setColor(green)
+        .setColor(colors.green)
         .setDescription(`${membro} (\`${membro.id}\`) foi desmutado(a)!`)
         .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
         .setFooter({
@@ -64,10 +63,10 @@ module.exports = {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
       
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível remover o mute do usuário devido a um erro.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
