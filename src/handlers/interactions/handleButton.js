@@ -2,7 +2,7 @@ const {
   handleGiveawayButtons,
   handleTermsButtons,
   handleVerifyButtons
-} = require('@andrke');
+} = require('@handleButton');
 const logger = require('@utils/logger');
 
 module.exports = async function handleButton(interaction, client) {
