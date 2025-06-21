@@ -1,6 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { colors, emojis } = require('@config');
 const Color = require('color');
 
 module.exports = {
@@ -14,10 +13,10 @@ module.exports = {
   async execute(message, args) {
     if (!args[0]) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Forneça o nome da cor ou um código hexadecimal.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -30,10 +29,10 @@ module.exports = {
       color = Color(colorInput);
     } catch {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível obter as informações da cor.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
