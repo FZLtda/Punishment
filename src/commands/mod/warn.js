@@ -1,10 +1,8 @@
 const { EmbedBuilder } = require('discord.js');
-const db = require('../../data/database');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention, attent } = require('../../config/emoji.json');
-const { logChannelId } = require('../../config/settings.json');
-const { applyPunishment } = require('../../utils/punishmentSystem');
-const { saveWarnChannel } = require('../../utils/warnChannelTracker');
+const db = require('@data/database');
+const { settings, colors, emojis } = require('@config');
+const { applyPunishment } = require('@utils/punishmentSystem');
+const { saveWarnChannel } = require('@utils/warnChannelTracker');
 
 module.exports = {
   name: 'warn',
@@ -21,10 +19,10 @@ module.exports = {
 
     if (!target) {
       const embed = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Você precisa mencionar um usuário para aplicar o aviso.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
@@ -32,10 +30,10 @@ module.exports = {
 
     if (target.user.bot || target.id === message.author.id) {
       const embed = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não é possível avisar bots ou a si mesmo.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
@@ -55,8 +53,8 @@ module.exports = {
       .get(target.id, message.guild.id).count;
 
     const embed = new EmbedBuilder()
-      .setColor(yellow)
-      .setTitle(`${attent} Aviso Aplicado`)
+      .setColor(colors.yellow)
+      .setTitle(`${emojis.attent} Aviso Aplicado`)
       .setDescription(`${target} (\`${target.id}\`) recebeu um aviso.\n\n**Motivo:** ${reason}`)
       .setFooter({
         text: message.author.tag,
@@ -69,11 +67,11 @@ module.exports = {
       allowedMentions: { repliedUser: false },
     });
 
-    const logChannel = message.guild.channels.cache.get(logChannelId);
+    const logChannel = message.guild.channels.cache.get(settings.logChannelId);
     if (logChannel) {
       const logEmbed = new EmbedBuilder()
-        .setColor(yellow)
-        .setTitle(`${attent} Advertência`)
+        .setColor(colors.yellow)
+        .setTitle(`${emojis.attent} Advertência`)
         .setDescription(
           `**Usuário:** ${target} (\`${target.id}\`)\n` +
           `**Moderador:** ${message.author} (\`${message.author.id}\`)\n` +
