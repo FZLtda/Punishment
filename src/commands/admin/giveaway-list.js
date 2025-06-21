@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const Giveaway = require('../../models/Giveaway');
+const Giveaway = require('@models/Giveaway');
 const { colors, emojis } = require('@config');
 
 module.exports = {
