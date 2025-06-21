@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const fetch = require('node-fetch');
-const { yellow, red } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'translate',
@@ -14,10 +13,10 @@ module.exports = {
   async execute(message, args) {
     if (args.length < 2) {
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Uso incorreto! O comando correto é: `.translate [idioma_destino] [texto]`.\nExemplo: `.translate en Olá, como vai?`',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
@@ -40,7 +39,7 @@ module.exports = {
         const translatedText = data.translations[0].text;
 
         const translateEmbed = new EmbedBuilder()
-          .setColor(red)
+          .setColor(colors.red)
           .setTitle('<:1000046512:1340411258427408444> Tradução')
           .setDescription(`\`\`\`\n${translatedText}\n\`\`\``)
           .setFooter({
@@ -65,10 +64,10 @@ module.exports = {
       console.error('Erro ao traduzir o texto:', error);
 
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível traduzir o texto devido a um erro.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
 
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
