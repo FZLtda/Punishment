@@ -1,8 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 const fetch = require('node-fetch');
-const logger = require('../../utils/logger');
-const { red, green } = require('../../config/colors.json');
-const { square_icon } = require('../../config/emoji.json');
+const logger = require('@utils/logger');
+const { colors, emojis } = require('@config');
 
 const SQUARE_TOKEN = process.env.SQUARE_TOKEN;
 const APP_ID = process.env.SQUARE_APP_ID;
@@ -21,7 +20,7 @@ module.exports = {
       return message.reply({
         embeds: [
           new EmbedBuilder()
-            .setColor(red)
+            .setColor(colors.red)
             .setTitle('Acesso negado')
             .setDescription('Este comando é restrito aos desenvolvedores autorizados.')
         ],
@@ -45,7 +44,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle('Informações da Aplicação')
-        .setColor(green)
+        .setColor(colors.green)
         .addFields(
           { name: 'Nome', value: name, inline: true },
           { name: 'ID', value: `\`${id}\``, inline: true },
@@ -57,7 +56,7 @@ module.exports = {
         )
         .setFooter({
           text: 'SquareCloud API v2',
-          iconURL: square_icon
+          iconURL: emojis.square_icon
         })
         .setTimestamp();
 
