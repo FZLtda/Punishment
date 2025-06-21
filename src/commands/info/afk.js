@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow, red, green } = require('../../config/colors.json');
+const { colors, emojis } = require('@config');
 const afkUsers = new Map();
 
 module.exports = {
@@ -26,7 +26,7 @@ module.exports = {
     await message.channel.send({
       embeds: [
         new EmbedBuilder()
-          .setColor(red)
+          .setColor(colors.red)
           .setTitle('<:emoji_50:1240119111284162644> Modo AFK Ativado')
           .setDescription(`Você agora está ausente.\n**Motivo:** ${reason}`)
           .setFooter({ text: `${message.author.tag}`, iconURL: message.author.displayAvatarURL() })
@@ -52,7 +52,7 @@ module.exports = {
         msg.channel.send({
           embeds: [
             new EmbedBuilder()
-              .setColor(green)
+              .setColor(colors.green)
               .setTitle('<:emoji_48:1207522369426423808> Bem-vindo de volta!')
               .setDescription('Seu status **AFK** foi removido.')
               .setFooter({ text: `${msg.author.tag}`, iconURL: msg.author.displayAvatarURL() })
@@ -70,7 +70,7 @@ module.exports = {
             msg.reply({
               embeds: [
                 new EmbedBuilder()
-                  .setColor(yellow)
+                  .setColor(colors.yellow)
                   .setTitle('<:emoji_50:1240119111284162644> Usuário AFK')
                   .setDescription(`**${mentionedUser.displayName}** está atualmente **AFK**.\n**Motivo:** ${reason}`)
                   .setThumbnail(mentionedUser.user.displayAvatarURL({ dynamic: true }))
