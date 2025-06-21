@@ -1,8 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
-const { converterTempo } = require('../../utils/giveawayUtils');
-const { criarSorteio, agendarEncerramento } = require('../../core/giveawayManager');
+const { yellow, icon_attention } = require('@config');
+const { converterTempo } = require('@utils/giveawayUtils');
+const { criarSorteio, agendarEncerramento } = require('@core/giveawayManager');
 
 module.exports = {
   name: 'giveaway',
