@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
-const Giveaway = require('../../models/Giveaway');
-const { green, yellow } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const Giveaway = require('@models/Giveaway');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'giveaway-pick',
@@ -43,7 +42,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle(`Sorteio Finalizado (ID: ${messageId})`)
-        .setColor(green)
+        .setColor(colors.green)
         .setDescription(
           `**Prêmio:** \`${sorteio.prize}\`\n` +
           `**Participantes:** \`${sorteio.participants.length + ganhadores.length}\`\n` +
@@ -78,7 +77,7 @@ module.exports = {
 
 function enviarErro(message, texto) {
   const embed = new EmbedBuilder()
-    .setColor(yellow)
-    .setAuthor({ name: texto, iconURL: icon_attention });
+    .setColor(colors.yellow)
+    .setAuthor({ name: texto, iconURL: emojis.icon_attention });
   return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
 }
