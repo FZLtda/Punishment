@@ -1,8 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
-const { logModerationAction } = require('../../utils/moderationUtils');
-const { yellow, green } = require('../../config/colors.json');
-const { icon_attention, success } = require('../../config/emoji.json');
-const Backup = require('../../models/Backup');
+const { logModerationAction } = require('@utils/moderationUtils');
+const { colors, emojis } = require('@config');
+const Backup = require('@models/Backup');
 
 module.exports = {
   name: 'restore',
@@ -17,10 +16,10 @@ module.exports = {
 
     if (!backupId) {
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Você precisa fornecer o ID do backup.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
@@ -30,10 +29,10 @@ module.exports = {
 
       if (!backupData) {
         const embedErro = new EmbedBuilder()
-          .setColor(yellow)
+          .setColor(colors.yellow)
           .setAuthor({
             name: 'Nenhum backup foi encontrado com esse ID.',
-            iconURL: icon_attention,
+            iconURL: emojis.icon_attention,
           });
         return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
       }
@@ -126,7 +125,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle(`${success} Restauração Completa`)
-        .setColor(green)
+        .setColor(colors.green)
         .setDescription('Servidor restaurado com sucesso!')
         .addFields(
           { name: 'Canais Restaurados', value: `${backupData.channels.length}`, inline: true },
@@ -143,10 +142,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErro = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível restaurar o backup devido a um erro.',
-          iconURL: icon_attention,
+          iconURL: emojis.icon_attention,
         });
       return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
