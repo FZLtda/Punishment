@@ -1,10 +1,10 @@
 const { EmbedBuilder } = require('discord.js');
-const logger = require('../utils/logger');
-const db = require('../data/database');
-const { getPrefix, setPrefix } = require('../utils/prefixUtils');
-const { yellow, red } = require('../config/colors.json');
-const { icon_attention, icon_error } = require('../config/emoji.json');
-const { checkTerms } = require('../handlers/termsHandler');
+const logger = require('@utils/logger');
+const db = require('@data/database');
+const { getPrefix, setPrefix } = require('@utils/prefixUtils');
+const { colors } = require('@config');
+const { emojis } = require('@config');
+const { checkTerms } = require('@handlers/termsHandler');
 
 async function handleCommandUsage(commandName) {
   const command = db
