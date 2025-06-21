@@ -1,6 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { yellow } = require('../../config/colors.json');
-const { icon_attention } = require('../../config/emoji.json');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'avatar',
@@ -28,10 +27,10 @@ module.exports = {
     } catch (error) {
       console.error(error);
       const embedErroMinimo = new EmbedBuilder()
-        .setColor(yellow)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Não foi possível obter o avatar do usuário devido a um erro.',
-          iconURL: icon_attention
+          iconURL: emojis.icon_attention
         });
 
       return message.reply({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
