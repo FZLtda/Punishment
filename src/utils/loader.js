@@ -28,10 +28,10 @@ async function loadCommands(client) {
 
       if (type === 'slash') {
         client.slashCommands.set(name, command);
-        logger.debug(chalk.blue(`[SLASH] ${name} carregado em ${(performance.now() - start).toFixed(1)}ms`));
+        logger.debug(chalk.greenBright(`[SLASH] ${name} carregado em ${(performance.now() - start).toFixed(1)}ms`));
       } else {
         client.commands.set(name, command);
-        logger.debug(chalk.cyan(`[PREFIX] ${name} carregado em ${(performance.now() - start).toFixed(1)}ms`));
+        logger.debug(chalk.greenBright(`[PREFIX] ${name} carregado em ${(performance.now() - start).toFixed(1)}ms`));
       }
 
       client.commandMetadata ??= [];
@@ -75,7 +75,7 @@ async function loadEvents(client) {
       const handler = (...args) => event.execute(...args, client);
       event.once ? client.once(event.name, handler) : client.on(event.name, handler);
 
-      logger.debug(chalk.magenta(`[EVENT] ${event.name} registrado em ${(performance.now() - start).toFixed(1)}ms`));
+      logger.debug(chalk.greenBright(`[EVENT] ${event.name} registrado em ${(performance.now() - start).toFixed(1)}ms`));
 
     } catch (err) {
       logger.error(`Erro ao carregar evento ${file}: ${err.message}`, {
