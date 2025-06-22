@@ -6,6 +6,15 @@ const logger = require('@utils/logger');
 const validateEnv = require('@utils/validateEnv');
 const { settings } = require('@config');
 
+// teste
+
+if (!settings || !settings.BOT_NAME) {
+  console.error('[Debug] settings está vazio ou incompleto:', settings);
+  process.exit(1);
+}
+
+// teste
+
 validateEnv();
 
 let retryCount = 0;
