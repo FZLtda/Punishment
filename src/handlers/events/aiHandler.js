@@ -1,5 +1,5 @@
 const { conversationHistory, fetchAIResponse } = require('@utils/aiUtils');
-const { attent } = require('@config');
+const { emojis } = require('@config');
 const logger = require('@utils/logger');
 
 const RATE_LIMIT = new Map();
@@ -41,7 +41,7 @@ async function handleAIResponse(message) {
 
     if (!response) {
       logger.warn(`Resposta vazia da IA para ${message.author.tag}`);
-      await message.channel.send(`${attent} A IA não conseguiu gerar uma resposta agora. Tente novamente em instantes.`);
+      await message.channel.send(`${emojis.attent} A IA não conseguiu gerar uma resposta agora. Tente novamente em instantes.`);
       return false;
     }
 
@@ -55,7 +55,7 @@ async function handleAIResponse(message) {
       stack: error.stack,
     });
 
-    await message.channel.send(`${attent} Houve um erro ao tentar consultar a IA.`);
+    await message.channel.send(`${emojis.attent} Houve um erro ao tentar consultar a IA.`);
     return false;
   }
 }
