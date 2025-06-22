@@ -2,21 +2,15 @@
   "BOT_NAME": "Punishment",
   "BOT_VERSION": "1.0.0",
   "OWNER_ID": "1006909671908585586",
-
   "PREFIX": ".",
   "DEFAULT_LANGUAGE": "pt-BR",
-
   "EMBED_COLOR": "#FE3838",
   "BOT_LOGO": "https://bit.ly/3Eci2wf",
-
   "MAX_RETRIES": 3,
   "RETRY_DELAY": 5000,
-
   "SUPPORT": "https://discord.gg/SW4zKzAhQa",
   "TERMS": "https://docs.google.com/document/d/12-nG-vY0bhgIzsaO2moSHjh7QeCrQLSGd7W2XYDMXsk/mobilebasic",
-
   "logChannelId": "1381065414246662286",
-
   "warnPunishments": [
     {
       "count": 3,
@@ -31,5 +25,21 @@
       "count": 7,
       "action": "ban"
     }
-  ]
+  ],
+  "colors": {
+    "red": "FE3838",
+    "green": "#2ecc71",
+    "yellow": "#FFD55D"
+  },
+  "emojis": {
+    "sucess": ":sucesso:",
+    "error": ":error:",
+    "check": ":1000056232:",
+    "attent": ":attention:",
+    "verified": ":1000042885:",
+    "icon_attention": "https://bit.ly/3Ypxwnl",
+    "icon_success": "https://bit.ly/3R8qteY",
+    "icon_error": "https://bit.ly/42jnCEX",
+    "square_icon": "https://bit.ly/3Zya73T"
+  }
 }
