@@ -40,10 +40,10 @@ async function handleCommands(message, client) {
       const botPerms = message.channel?.permissionsFor(client.user);
       if (!botPerms?.has(command.botPermissions)) {
         const embedErro = new EmbedBuilder()
-          .setColor(red)
+          .setColor(colors.red)
           .setAuthor({
             name: 'Permissões insuficientes para o bot executar esse comando.',
-            iconURL: icon_error,
+            iconURL: emojis.icon_error,
           });
 
         return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -54,10 +54,10 @@ async function handleCommands(message, client) {
       const userPerms = message.channel?.permissionsFor(message.member);
       if (!userPerms?.has(command.userPermissions)) {
         const embedErro = new EmbedBuilder()
-          .setColor(red)
+          .setColor(colors.red)
           .setAuthor({
             name: 'Você não tem permissões suficientes para usar esse comando.',
-            iconURL: icon_error,
+            iconURL: emojis.icon_error,
           });
 
         return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -82,10 +82,10 @@ async function handleCommands(message, client) {
     });
 
     const embedErro = new EmbedBuilder()
-      .setColor(yellow)
+      .setColor(colors.yellow)
       .setAuthor({
         name: 'Não foi possível processar o comando devido a um erro.',
-        iconURL: icon_attention,
+        iconURL: emojis.icon_attention,
       });
 
     await message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
