@@ -1,3 +1,5 @@
+'use strict';
+
 const logger = require('@utils/logger');
 const { emojis } = require('@config');
 const { checkTerms } = require('@handleButton/termsButtons');
@@ -5,6 +7,10 @@ const routeInteraction = require('@interactions/router');
 
 module.exports = {
   name: 'interactionCreate',
+  /**
+   * @param {import('discord.js').Interaction} interaction
+   * @param {import('discord.js').Client} client
+   */
   async execute(interaction, client) {
     try {
       const type = getInteractionType(interaction);
@@ -18,22 +24,27 @@ module.exports = {
       const isAcceptTerms = isButton && interaction.customId === 'accept_terms';
 
       if (!isAcceptTerms && (type === 'command' || type === 'button')) {
-        if (!(await checkTerms(interaction))) return;
+        const accepted = await checkTerms(interaction);
+        if (!accepted) return;
       }
 
       await routeInteraction(interaction, client, type);
     } catch (error) {
-      logger.error(`ERRO: interactionCreate - ${error.message}`, { stack: error.stack });
+      logger.error(`ERRO: interactionCreate - ${error.message}\nStack: ${error.stack}`);
 
       const errorMessage = {
         content: `${emojis.attent} Não foi possível processar essa ação.`,
         ephemeral: true,
       };
 
-      if (interaction.replied || interaction.deferred) {
-        await interaction.followUp(errorMessage).catch(() => {});
-      } else {
-        await interaction.reply(errorMessage).catch(() => {});
+      try {
+        if (interaction.replied || interaction.deferred) {
+          await interaction.followUp(errorMessage).catch(() => {});
+        } else {
+          await interaction.reply(errorMessage).catch(() => {});
+        }
+      } catch (replyError) {
+        logger.error(`Falha ao enviar resposta de erro: ${replyError.message}`);
       }
     }
   },
