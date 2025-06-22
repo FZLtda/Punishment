@@ -1,3 +1,5 @@
+'use strict';
+
 const {
   EmbedBuilder,
   ActionRowBuilder,
@@ -5,12 +7,11 @@ const {
   ButtonStyle,
 } = require('discord.js');
 
-const { emojis, colors } = require('@config');
+const { emojis, colors, TERMS } = require('@config');
 const logger = require('@utils/logger');
-
 const Terms = require('@models/Terms');
 
-async function checkTerms(context) {
+module.exports = async function checkTerms(context) {
   const user = context.user || context.author;
   if (!user || !user.id) {
     logger.warn('checkTerms: Contexto sem usuário válido.');
@@ -20,12 +21,10 @@ async function checkTerms(context) {
   const userId = user.id;
 
   try {
-    // [Verifica se o usuário já aceitou os termos]
     const alreadyAccepted = await Terms.exists({ userId });
 
     if (alreadyAccepted) return true;
 
-    // [Caso não tenha aceitado, envia o embed de aceitação]
     const embed = new EmbedBuilder()
       .setColor(colors.red)
       .setTitle('Termos de Uso')
@@ -46,10 +45,10 @@ async function checkTerms(context) {
       new ButtonBuilder()
         .setLabel('Ler Termos')
         .setStyle(ButtonStyle.Link)
-        .setURL(emojis.TERMS)
+        .setURL(TERMS)
     );
 
-    if (context.reply && typeof context.reply === 'function') {
+    if (typeof context.reply === 'function') {
       await context.reply({
         embeds: [embed],
         components: [row],
@@ -72,6 +71,4 @@ async function checkTerms(context) {
   }
 
   return false;
-}
-
-module.exports = { checkTerms };
+};
