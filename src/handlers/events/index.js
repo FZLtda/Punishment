@@ -11,13 +11,13 @@ const aliasMap = {
   antiLinkHandler: 'handleAntiLink',
   antiSpamHandler: 'handleAntiSpam',
   commandHandler: 'handleCommands',
+  commandSlash: 'handleCommand',
   termsHandler: 'checkTerms',
-  handleCommand: 'handleCommand', 
 };
 
 /**
  * Carrega todos os handlers de forma recursiva.
- * @param {string} dir - Diretório de onde carregar handlers
+ * @param {string} dir Diretório para carregar handlers
  */
 function loadHandlers(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -37,16 +37,16 @@ function loadHandlers(dir) {
 
     try {
       const mod = require(fullPath);
+
       const handlerFn = mod?.[exportName] || (typeof mod === 'function' ? mod : null);
 
       if (typeof handlerFn !== 'function') {
-        logger.warn(`[handlers] Handler inválido em '${entry.name}'. Esperado exportar função '${exportName}'`);
+        logger.warn(`[handlers] Handler inválido em '${entry.name}'. Exportação esperada: '${exportName}'`);
         continue;
       }
 
       handlers[exportName] = handlerFn;
-
-      logger.info(`[handlers] '${exportName}' carregado com sucesso de: ${fullPath.replace(process.cwd(), '.')}`);
+      logger.info(`[handlers] Handler '${exportName}' carregado de: ${fullPath.replace(process.cwd(), '.')}`);
     } catch (err) {
       logger.error(`[handlers] Erro ao carregar '${entry.name}': ${err.message}`, {
         stack: err.stack,
@@ -56,7 +56,6 @@ function loadHandlers(dir) {
   }
 }
 
-// Executa o carregamento
 loadHandlers(__dirname);
 
 module.exports = Object.freeze(handlers);
