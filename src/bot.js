@@ -6,7 +6,7 @@ const { performance } = require('perf_hooks');
 const ExtendedClient = require('@structures/ExtendedClient');
 const logger = require('@utils/logger');
 const validateEnv = require('@utils/validateEnv');
-const { settings } = require('@config');
+const { BOT_NAME, MAX_RETRIES, RETRY_DELAY } = require('@config');
 
 validateEnv();
 
@@ -16,14 +16,14 @@ const client = new ExtendedClient();
 const startBot = async () => {
   const startTime = performance.now();
 
-  logger.info(`[${settings.BOT_NAME}] Inicializando... (Tentativa ${retryCount + 1}/${settings.MAX_RETRIES})`);
-  logger.debug(`[${settings.BOT_NAME}] Ambiente: ${process.env.NODE_ENV || 'não especificado'}`);
+  logger.info(`[${BOT_NAME}] Inicializando... (Tentativa ${retryCount + 1}/${MAX_RETRIES})`);
+  logger.debug(`[${BOT_NAME}] Ambiente: ${process.env.NODE_ENV || 'não especificado'}`);
 
   try {
     await client.init();
-    logger.info(`[${settings.BOT_NAME}] Estruturas carregadas com sucesso.`);
+    logger.info(`[${BOT_NAME}] Estruturas carregadas com sucesso.`);
   } catch (error) {
-    logger.error(`[${settings.BOT_NAME}] Falha ao carregar estruturas: ${error.message}`, {
+    logger.error(`[${BOT_NAME}] Falha ao carregar estruturas: ${error.message}`, {
       stack: error.stack,
     });
     return retryLater();
@@ -32,10 +32,10 @@ const startBot = async () => {
   try {
     await client.login(process.env.TOKEN);
     const elapsed = Math.round(performance.now() - startTime);
-    logger.info(`[${settings.BOT_NAME}] Login bem-sucedido. Bot online em ${elapsed}ms.`);
+    logger.info(`[${BOT_NAME}] Login bem-sucedido. Bot online em ${elapsed}ms.`);
     retryCount = 0;
   } catch (error) {
-    logger.error(`[${settings.BOT_NAME}] Erro durante o login: ${error.message}`, {
+    logger.error(`[${BOT_NAME}] Erro durante o login: ${error.message}`, {
       stack: error.stack,
     });
     return retryLater();
@@ -45,31 +45,31 @@ const startBot = async () => {
 const retryLater = () => {
   retryCount++;
 
-  if (retryCount < settings.MAX_RETRIES) {
-    logger.warn(`[${settings.BOT_NAME}] Tentando novamente em ${settings.RETRY_DELAY / 1000}s... (${retryCount}/${settings.MAX_RETRIES})`);
-    return setTimeout(startBot, settings.RETRY_DELAY);
+  if (retryCount < MAX_RETRIES) {
+    logger.warn(`[${BOT_NAME}] Tentando novamente em ${RETRY_DELAY / 1000}s... (${retryCount}/${MAX_RETRIES})`);
+    return setTimeout(startBot, RETRY_DELAY);
   }
 
-  logger.fatal(`[${settings.BOT_NAME}] Número máximo de tentativas excedido. Encerrando processo.`);
+  logger.fatal(`[${BOT_NAME}] Número máximo de tentativas excedido. Encerrando processo.`);
   process.exit(1);
 };
 
 const gracefulShutdown = async (signal) => {
-  logger.warn(`[${settings.BOT_NAME}] Encerramento solicitado (${signal}). Liberando recursos...`);
+  logger.warn(`[${BOT_NAME}] Encerramento solicitado (${signal}). Liberando recursos...`);
 
   const shutdownTimer = setTimeout(() => {
-    logger.error(`[${settings.BOT_NAME}] Encerramento forçado após timeout.`);
+    logger.error(`[${BOT_NAME}] Encerramento forçado após timeout.`);
     process.exit(1);
   }, 10_000);
 
   try {
     await client.destroy();
     clearTimeout(shutdownTimer);
-    logger.info(`[${settings.BOT_NAME}] Recursos liberados com sucesso.`);
+    logger.info(`[${BOT_NAME}] Recursos liberados com sucesso.`);
     process.exit(0);
   } catch (error) {
     clearTimeout(shutdownTimer);
-    logger.error(`[${settings.BOT_NAME}] Erro ao encerrar: ${error.message}`, {
+    logger.error(`[${BOT_NAME}] Erro ao encerrar: ${error.message}`, {
       stack: error.stack,
     });
     process.exit(1);
@@ -81,14 +81,14 @@ const gracefulShutdown = async (signal) => {
 });
 
 process.on('uncaughtException', (error) => {
-  logger.fatal(`[${settings.BOT_NAME}] Erro não tratado: ${error.message}`, {
+  logger.fatal(`[${BOT_NAME}] Erro não tratado: ${error.message}`, {
     stack: error.stack,
   });
   process.exit(1);
 });
 
 process.on('unhandledRejection', (reason) => {
-  logger.fatal(`[${settings.BOT_NAME}] Rejeição não tratada: ${reason?.message || reason}`, {
+  logger.fatal(`[${BOT_NAME}] Rejeição não tratada: ${reason?.message || reason}`, {
     stack: reason?.stack,
     reason,
   });
