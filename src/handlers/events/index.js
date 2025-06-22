@@ -13,27 +13,34 @@ const aliasMap = {
   termsHandler: 'checkTerms'
 };
 
-const files = fs
-  .readdirSync(__dirname)
-  .filter(file => file !== 'index.js' && file.endsWith('.js'));
+function loadHandlers(dir) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
 
-for (const file of files) {
-  const baseName = path.basename(file, '.js');
-  const resolvedPath = path.join(__dirname, file);
-  const exportName = aliasMap[baseName] || baseName;
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
 
-  try {
-    const handler = require(resolvedPath);
+    if (entry.isDirectory()) {
+      loadHandlers(fullPath);
+    } else if (entry.isFile() && entry.name.endsWith('.js') && entry.name !== 'index.js') {
+      const baseName = path.basename(entry.name, '.js');
+      const exportName = aliasMap[baseName] || baseName;
 
-    if (typeof handler !== 'function' && typeof handler !== 'object') {
-      console.warn(`[Event Handler] '${file}' exporta tipo inválido (${typeof handler}).`);
-      continue;
+      try {
+        const handler = require(fullPath);
+
+        if (typeof handler !== 'function' && typeof handler !== 'object') {
+          console.warn(`[Event Handler] '${entry.name}' exporta tipo inválido (${typeof handler}).`);
+          continue;
+        }
+
+        handlers[exportName] = handler;
+      } catch (error) {
+        console.error(`[Event Handler] Erro ao carregar '${entry.name}': ${error.message}`);
+      }
     }
-
-    handlers[exportName] = handler;
-  } catch (error) {
-    console.error(`[Event Handler] Erro ao carregar '${file}': ${error.message}`);
   }
 }
+
+loadHandlers(__dirname);
 
 module.exports = Object.freeze(handlers);
