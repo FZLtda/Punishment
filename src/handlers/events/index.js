@@ -12,7 +12,7 @@ const aliasMap = {
   antiSpamHandler: 'handleAntiSpam',
   commandHandler: 'handleCommands',
   termsHandler: 'checkTerms',
-  
+  slashCommandHandler: 'handleSlashCommandsWrapper', 
 };
 
 /**
@@ -37,16 +37,16 @@ function loadHandlers(dir) {
 
     try {
       const mod = require(fullPath);
-
       const handlerFn = mod?.[exportName] || (typeof mod === 'function' ? mod : null);
 
       if (typeof handlerFn !== 'function') {
-        logger.warn(`[handlers] Handler inválido em '${entry.name}'. Exportação esperada: '${exportName}'`);
+        logger.warn(`[handlers] Handler inválido em '${entry.name}'. Esperado exportar função '${exportName}'`);
         continue;
       }
 
       handlers[exportName] = handlerFn;
-      logger.info(`[handlers] Handler '${exportName}' carregado de: ${fullPath.replace(process.cwd(), '.')}`);
+
+      logger.info(`[handlers] '${exportName}' carregado com sucesso de: ${fullPath.replace(process.cwd(), '.')}`);
     } catch (err) {
       logger.error(`[handlers] Erro ao carregar '${entry.name}': ${err.message}`, {
         stack: err.stack,
@@ -56,7 +56,7 @@ function loadHandlers(dir) {
   }
 }
 
-// Inicia carregamento
+// Executa o carregamento
 loadHandlers(__dirname);
 
 module.exports = Object.freeze(handlers);
