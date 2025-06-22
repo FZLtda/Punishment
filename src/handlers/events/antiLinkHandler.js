@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const { PermissionsBitField } = require('discord.js');
 const { loadSettings } = require('@utils/loadSettings');
@@ -5,7 +7,7 @@ const logger = require('@utils/logger');
 
 const ANTI_LINK_PATH = path.join(__dirname, '..', 'data', 'antilink.json');
 
-async function handleAntiLink(message) {
+module.exports = async function handleAntiLink(message) {
   if (!message.guild || !message.member || !message.channel || message.author.bot) return false;
 
   const settings = loadSettings(ANTI_LINK_PATH);
@@ -23,7 +25,7 @@ async function handleAntiLink(message) {
 
     const warnMsg = await message.channel.send({
       content: `${message.author}, links não são permitidos neste servidor.`,
-      allowedMentions: { users: [message.author.id], roles: [] },
+      allowedMentions: { users: [message.author.id] },
     });
 
     setTimeout(() => warnMsg.delete().catch(() => {}), 5000);
@@ -47,6 +49,4 @@ async function handleAntiLink(message) {
   }
 
   return false;
-}
-
-module.exports = { handleAntiLink };
+};
