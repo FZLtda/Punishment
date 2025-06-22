@@ -7,7 +7,7 @@ const os = require('os');
 const logger = require('@utils/logger');
 const connectDatabase = require('@utils/database');
 const startBot = require('@src/bot');
-const settings = require('@config');
+const config = require('@config');
 
 const processInfo = {
   pid: process.pid,
@@ -17,7 +17,7 @@ const processInfo = {
 };
 
 process.on('uncaughtException', (error) => {
-  logger.fatal(`[${settings.BOT_NAME}] Erro não tratado: ${error.message}`, {
+  logger.fatal(`[${config.BOT_NAME}] Erro não tratado: ${error.message}`, {
     ...processInfo,
     stack: error.stack,
     timestamp: new Date().toISOString(),
@@ -26,7 +26,7 @@ process.on('uncaughtException', (error) => {
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  logger.fatal(`[${settings.BOT_NAME}] Rejeição não tratada: ${reason?.message || reason}`, {
+  logger.fatal(`[${config.BOT_NAME}] Rejeição não tratada: ${reason?.message || reason}`, {
     ...processInfo,
     stack: reason?.stack,
     timestamp: new Date().toISOString(),
@@ -42,7 +42,7 @@ process.on('warning', (warning) => {
   ];
 
   if (criticalWarnings.includes(warning.name)) {
-    logger.warn(`[${settings.BOT_NAME}] [${warning.name}] ${warning.message}`, {
+    logger.warn(`[${config.BOT_NAME}] [${warning.name}] ${warning.message}`, {
       ...processInfo,
       stack: warning.stack,
       timestamp: new Date().toISOString(),
@@ -51,20 +51,20 @@ process.on('warning', (warning) => {
 });
 
 const gracefulShutdown = async (signal) => {
-  logger.warn(`[${settings.BOT_NAME}] Encerramento solicitado (${signal}). Finalizando recursos...`);
+  logger.warn(`[${config.BOT_NAME}] Encerramento solicitado (${signal}). Finalizando recursos...`);
 
   const shutdownTimer = setTimeout(() => {
-    logger.error(`[${settings.BOT_NAME}] Shutdown forçado após timeout.`);
+    logger.error(`[${config.BOT_NAME}] Shutdown forçado após timeout.`);
     process.exit(1);
   }, 10000);
 
   try {
     clearTimeout(shutdownTimer);
-    logger.info(`[${settings.BOT_NAME}] Encerramento concluído com sucesso.`);
+    logger.info(`[${config.BOT_NAME}] Encerramento concluído com sucesso.`);
     process.exit(0);
   } catch (err) {
     clearTimeout(shutdownTimer);
-    logger.error(`[${settings.BOT_NAME}] Erro no encerramento: ${err.message}`, {
+    logger.error(`[${config.BOT_NAME}] Erro no encerramento: ${err.message}`, {
       stack: err.stack
     });
     process.exit(1);
@@ -80,7 +80,7 @@ const gracefulShutdown = async (signal) => {
     await connectDatabase();
     await startBot();
   } catch (error) {
-    logger.fatal(`[${settings.BOT_NAME}] Falha crítica na inicialização: ${error.message}`, {
+    logger.fatal(`[${config.BOT_NAME}] Falha crítica na inicialização: ${error.message}`, {
       stack: error.stack,
     });
     process.exit(1);
