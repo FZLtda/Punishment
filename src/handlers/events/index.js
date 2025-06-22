@@ -12,7 +12,7 @@ const aliasMap = {
   antiSpamHandler: 'handleAntiSpam',
   commandHandler: 'handleCommands',
   termsHandler: 'checkTerms',
-  handleCommand: 'handleSlashCommandsWrapper', 
+  handleCommand: 'handleCommand', 
 };
 
 /**
