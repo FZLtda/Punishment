@@ -6,10 +6,6 @@ const logger = require('@utils/logger');
 const validateEnv = require('@utils/validateEnv');
 const { settings } = require('@config');
 
-// teste
-const settings = require('@config');
-console.log(settings.BOT_NAME);
-// teste
 validateEnv();
 
 let retryCount = 0;
