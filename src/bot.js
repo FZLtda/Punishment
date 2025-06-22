@@ -6,7 +6,7 @@ const { performance } = require('perf_hooks');
 const ExtendedClient = require('@structures/ExtendedClient');
 const logger = require('@utils/logger');
 const validateEnv = require('@utils/validateEnv');
-const { BOT_NAME, MAX_RETRIES, RETRY_DELAY } = require('@config/settings');
+const { BOT_NAME, MAX_RETRIES, RETRY_DELAY } = require('@config');
 
 validateEnv();
 
