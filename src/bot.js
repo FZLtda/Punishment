@@ -14,61 +14,61 @@ const client = new ExtendedClient();
 const startBot = async () => {
   const startTime = performance.now();
 
-  logger.info(`[${settings.BOT_NAME}] Inicializando (Tentativa ${retryCount + 1}/${settings.MAX_RETRIES})`);
+  logger.info(`[${settings.BOT_NAME}] Inicializando... (Tentativa ${retryCount + 1}/${settings.MAX_RETRIES})`);
   logger.debug(`[${settings.BOT_NAME}] Ambiente: ${process.env.NODE_ENV || 'não especificado'}`);
 
   try {
     await client.init();
-    logger.info(`[${settings.BOT_NAME}] Estruturas carregadas`);
-  } catch (err) {
-    logger.error(`[${settings.BOT_NAME}] Falha ao carregar estruturas: ${err.message}`, {
-      stack: err.stack
+    logger.info(`[${settings.BOT_NAME}] Estruturas carregadas com sucesso.`);
+  } catch (error) {
+    logger.error(`[${settings.BOT_NAME}] Falha ao carregar estruturas: ${error.message}`, {
+      stack: error.stack,
     });
-    return scheduleRetry();
+    return retryLater();
   }
 
   try {
     await client.login(process.env.TOKEN);
     const elapsed = Math.round(performance.now() - startTime);
-    logger.info(`[${settings.BOT_NAME}] Iniciado em ${elapsed}ms`);
+    logger.info(`[${settings.BOT_NAME}] Login bem-sucedido. Bot online em ${elapsed}ms.`);
     retryCount = 0;
-  } catch (err) {
-    logger.error(`[${settings.BOT_NAME}] Erro no login: ${err.message}`, {
-      stack: err.stack
+  } catch (error) {
+    logger.error(`[${settings.BOT_NAME}] Erro durante o login: ${error.message}`, {
+      stack: error.stack,
     });
-    return scheduleRetry();
+    return retryLater();
   }
 };
 
-const scheduleRetry = () => {
+const retryLater = () => {
   retryCount++;
 
   if (retryCount < settings.MAX_RETRIES) {
-    logger.warn(`[${settings.BOT_NAME}] Nova tentativa em ${settings.RETRY_DELAY / 1000}s (${retryCount}/${settings.MAX_RETRIES})`);
+    logger.warn(`[${settings.BOT_NAME}] Tentando novamente em ${settings.RETRY_DELAY / 1000}s... (${retryCount}/${settings.MAX_RETRIES})`);
     return setTimeout(startBot, settings.RETRY_DELAY);
   }
 
-  logger.fatal(`[${settings.BOT_NAME}] Limite de tentativas excedido`);
+  logger.fatal(`[${settings.BOT_NAME}] Número máximo de tentativas excedido. Encerrando processo.`);
   process.exit(1);
 };
 
 const gracefulShutdown = async (signal) => {
-  logger.warn(`[${settings.BOT_NAME}] Encerrando (${signal})`);
+  logger.warn(`[${settings.BOT_NAME}] Encerramento solicitado (${signal}). Liberando recursos...`);
 
-  const shutdownTimeout = setTimeout(() => {
-    logger.error(`[${settings.BOT_NAME}] Shutdown forçado`);
+  const shutdownTimer = setTimeout(() => {
+    logger.error(`[${settings.BOT_NAME}] Encerramento forçado após timeout.`);
     process.exit(1);
-  }, 10000);
+  }, 10_000);
 
   try {
     await client.destroy();
-    clearTimeout(shutdownTimeout);
-    logger.info(`[${settings.BOT_NAME}] Recursos liberados`);
+    clearTimeout(shutdownTimer);
+    logger.info(`[${settings.BOT_NAME}] Recursos liberados com sucesso.`);
     process.exit(0);
-  } catch (err) {
-    clearTimeout(shutdownTimeout);
-    logger.error(`[${settings.BOT_NAME}] Erro ao encerrar: ${err.message}`, {
-      stack: err.stack
+  } catch (error) {
+    clearTimeout(shutdownTimer);
+    logger.error(`[${settings.BOT_NAME}] Erro ao encerrar: ${error.message}`, {
+      stack: error.stack,
     });
     process.exit(1);
   }
@@ -78,17 +78,17 @@ const gracefulShutdown = async (signal) => {
   process.on(signal, () => gracefulShutdown(signal));
 });
 
-process.on('uncaughtException', (err) => {
-  logger.fatal(`[${settings.BOT_NAME}] Erro não tratado: ${err.message}`, {
-    stack: err.stack
+process.on('uncaughtException', (error) => {
+  logger.fatal(`[${settings.BOT_NAME}] Erro não tratado: ${error.message}`, {
+    stack: error.stack,
   });
   process.exit(1);
 });
 
-process.on('unhandledRejection', (reason, promise) => {
+process.on('unhandledRejection', (reason) => {
   logger.fatal(`[${settings.BOT_NAME}] Rejeição não tratada: ${reason?.message || reason}`, {
     stack: reason?.stack,
-    reason
+    reason,
   });
   process.exit(1);
 });
