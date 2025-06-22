@@ -14,52 +14,59 @@ function monitorBot(client) {
   logger.info('Monitorando o bot...');
 
   client.on('ready', () => {
-    logger.info(`[${BOT_NAME}] está online como: ${client.user.tag}`);
-    sendWebhookNotification('Estou online!', 'Tudo está funcionando perfeitamente.');
+    const tag = client.user?.tag || 'Desconhecido';
+    logger.info(`[${BOT_NAME}] está online como: ${tag}`);
+    sendWebhookNotification('🟢 Bot Online', `O bot **${tag}** foi iniciado com sucesso.`);
   });
 
-  client.on('shardDisconnect', (event, shardId) => {
+  client.on('shardDisconnect', (_event, shardId) => {
     logger.warn(`Shard ${shardId} desconectada!`);
     sendWebhookNotification(
-      `${BOT_NAME} desconectado!`,
-      `A shard ${shardId} foi desconectada. Verifique imediatamente.`
+      '🔴 Shard Desconectada',
+      `A shard **#${shardId}** foi desconectada. Verifique imediatamente.`
     );
   });
 
   client.on('error', (error) => {
     logger.error(`Erro detectado: ${error.message}`, { stack: error.stack });
-    sendWebhookNotification(`${BOT_NAME} erro!`, `Erro detectado: ${error.message}`);
+    sendWebhookNotification('Erro Detectado', `\`\`\`js\n${error.message}\n\`\`\``);
   });
 
   client.on('warn', (info) => {
     logger.warn(`Aviso: ${info}`);
-    sendWebhookNotification(`${BOT_NAME} aviso!`, `Aviso detectado: ${info}`);
+    sendWebhookNotification('Aviso do Sistema', `\`\`\`js\n${info}\n\`\`\``);
   });
 }
 
 async function sendWebhookNotification(title, description) {
   if (!WEBHOOK) {
-    logger.warn('URL do Webhook não configurada.');
+    logger.warn('Webhook não configurado. Ignorando notificação.');
     return;
   }
 
-  const embed = {
-    color: colors.green,
-    title,
-    description,
-    timestamp: new Date().toISOString(),
-    footer: {
-      text: `${BOT_NAME} Monitoramento`,
-    },
-  };
-
   try {
-    await axios.post(WEBHOOK, {
-      username: 'Punishment',
-      avatar_url: BOT_LOGO,
-      embeds: [embed],
-    });
+    const parsedColor = parseColor(colors.green);
 
+    const embed = {
+      color: parsedColor,
+      title: truncate(title, 256),
+      description: truncate(description, 4096),
+      timestamp: new Date().toISOString(),
+      footer: {
+        text: `${BOT_NAME} Monitoramento`,
+      },
+    };
+
+    const payload = {
+      username: BOT_NAME,
+      embeds: [embed],
+    };
+
+    if (isValidURL(BOT_LOGO)) {
+      payload.avatar_url = BOT_LOGO;
+    }
+
+    await axios.post(WEBHOOK, payload);
     logger.info('Notificação enviada via Webhook.');
   } catch (error) {
     logger.error(`Falha ao enviar notificação via Webhook: ${error.message}`, {
@@ -68,6 +75,24 @@ async function sendWebhookNotification(title, description) {
       response: error.response?.data,
     });
   }
+}
+
+function parseColor(value) {
+  if (typeof value === 'string') {
+    return parseInt(value.replace('#', ''), 16);
+  }
+  if (typeof value === 'number') return value;
+  return 0x2ecc71;
+}
+
+function truncate(text, maxLength) {
+  return typeof text === 'string' && text.length > maxLength
+    ? text.slice(0, maxLength - 3) + '...'
+    : text;
+}
+
+function isValidURL(url) {
+  return typeof url === 'string' && url.startsWith('http');
 }
 
 module.exports = monitorBot;
