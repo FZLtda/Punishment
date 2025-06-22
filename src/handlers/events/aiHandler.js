@@ -1,3 +1,5 @@
+'use strict';
+
 const { conversationHistory, fetchAIResponse } = require('@utils/aiUtils');
 const { emojis } = require('@config');
 const logger = require('@utils/logger');
@@ -6,16 +8,14 @@ const RATE_LIMIT = new Map();
 const COOLDOWN_MS = 5000;
 const THREAD_PREFIX = 'Punishment -';
 
-async function handleAIResponse(message) {
+module.exports = async function handleAIResponse(message) {
   if (
     !message.guild ||
     !message.channel ||
     !message.author ||
     !message.channel.isThread() ||
     !message.channel.name.startsWith(THREAD_PREFIX)
-  ) {
-    return false;
-  }
+  ) return false;
 
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
@@ -26,8 +26,7 @@ async function handleAIResponse(message) {
   const userId = message.author.id;
   const now = Date.now();
 
-  const lastUsed = RATE_LIMIT.get(userId) || 0;
-  if (now - lastUsed < COOLDOWN_MS) return false;
+  if (now - (RATE_LIMIT.get(userId) || 0) < COOLDOWN_MS) return false;
   RATE_LIMIT.set(userId, now);
 
   if (!conversationHistory[userId]) {
@@ -58,6 +57,4 @@ async function handleAIResponse(message) {
     await message.channel.send(`${emojis.attent} Houve um erro ao tentar consultar a IA.`);
     return false;
   }
-}
-
-module.exports = { handleAIResponse };
+};
