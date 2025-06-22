@@ -1,36 +1,6 @@
 
 
 'use strict';
-require('module-alias/register'); // ← IMPORTANTE!
-
-const fs = require('fs');
-const path = require('path');
-
-console.log('[DEBUG] Iniciando verificação do settings.json');
-
-const configPath = path.join(__dirname, 'src/config/settings.json');
-
-if (!fs.existsSync(configPath)) {
-  console.error('[ERRO] settings.json não encontrado em:', configPath);
-  process.exit(1);
-}
-
-try {
-  const settings = require('@config');
-  console.log('[DEBUG] settings:', settings);
-
-  if (!settings.BOT_NAME) {
-    console.error('[ERRO] BOT_NAME está ausente ou undefined!');
-    process.exit(1);
-  }
-
-  console.log('[DEBUG] Configurações carregadas com sucesso:', settings.BOT_NAME);
-} catch (err) {
-  console.error('[ERRO] Falha ao carregar configurações:', err);
-  process.exit(1);
-}
-
-// teste 
 
 const { performance } = require('perf_hooks');
 const ExtendedClient = require('@structures/ExtendedClient');
