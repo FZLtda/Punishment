@@ -15,8 +15,8 @@ const aliasMap = {
 };
 
 /**
- * Carrega todos os handlers de forma recursiva.
- * @param {string} dir Diretório onde buscar arquivos
+ * Carrega handlers de forma recursiva, inclusive subpastas.
+ * @param {string} dir - Caminho do diretório de onde carregar
  */
 function loadHandlers(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -36,21 +36,21 @@ function loadHandlers(dir) {
 
     try {
       const requiredModule = require(fullPath);
-      
+
       const handlerFn =
         typeof requiredModule === 'function'
           ? requiredModule
           : requiredModule[exportName];
 
       if (typeof handlerFn !== 'function') {
-        logger?.warn?.(`[handlers] Arquivo '${entry.name}' não exporta uma função válida como '${exportName}'.`);
+        logger?.warn?.(`[handlers] '${entry.name}' não exporta uma função válida como '${exportName}'.`);
         continue;
       }
 
       handlers[exportName] = handlerFn;
-      logger?.info?.(`[handlers] Handler '${exportName}' carregado de '${entry.name}'.`);
+      logger?.info?.(`[handlers] '${exportName}' carregado de '${fullPath.replace(process.cwd(), '')}'.`);
     } catch (error) {
-      logger?.error?.(`[handlers] Falha ao carregar '${entry.name}': ${error.message}`, {
+      logger?.error?.(`[handlers] Erro ao carregar '${entry.name}': ${error.message}`, {
         stack: error.stack,
         path: fullPath,
       });
