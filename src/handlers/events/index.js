@@ -1,5 +1,7 @@
-const path = require('path');
+'use strict';
+
 const fs = require('fs');
+const path = require('path');
 
 const handlers = {};
 
@@ -17,15 +19,21 @@ const files = fs
 
 for (const file of files) {
   const baseName = path.basename(file, '.js');
+  const resolvedPath = path.join(__dirname, file);
+  const exportName = aliasMap[baseName] || baseName;
 
   try {
-    const handler = require(path.join(__dirname, file));
-    const exportName = aliasMap[baseName] || baseName;
+    const handler = require(resolvedPath);
+
+    if (typeof handler !== 'function' && typeof handler !== 'object') {
+      console.warn(`[Event Handler] '${file}' exporta tipo inválido (${typeof handler}).`);
+      continue;
+    }
 
     handlers[exportName] = handler;
   } catch (error) {
-    console.error(`[Event Handler] Falha ao carregar '${file}': ${error.message}`);
+    console.error(`[Event Handler] Erro ao carregar '${file}': ${error.message}`);
   }
 }
 
-module.exports = handlers;
+module.exports = Object.freeze(handlers);
