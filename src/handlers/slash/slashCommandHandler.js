@@ -1,5 +1,5 @@
 const logger = require('@utils/logger');
-const { emoji } = require('@config');
+const { emojis } = require('@config');
 
 async function handleSlashCommand(interaction, client) {
   const command = client.slashCommands.get(interaction.commandName);
