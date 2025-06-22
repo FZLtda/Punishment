@@ -4,6 +4,7 @@ const {
   handleAntiLink,
   handleAntiSpam,
   handleCommands,
+  handleCommand,
   checkTerms
 } = require('@handleEvent');
 const { getPrefix } = require('@utils/prefixUtils');
