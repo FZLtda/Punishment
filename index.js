@@ -1,4 +1,13 @@
 require('module-alias/register');
+const settings = require('@config');
+
+if (!settings || !settings.BOT_NAME) {
+  console.error('[ERRO] BOT_NAME está ausente ou undefined:', settings);
+  process.exit(1);
+}
+
+// testes 
+
 require('dotenv').config();
 const os = require('os');
 const logger = require('@utils/logger');
