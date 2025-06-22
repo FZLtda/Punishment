@@ -5,7 +5,7 @@ const {
   ButtonStyle,
 } = require('discord.js');
 
-const { TERMS, check } = require('@config');
+const { emojis, colors } = require('@config');
 const logger = require('@utils/logger');
 
 const Terms = require('@models/Terms');
@@ -27,7 +27,7 @@ async function checkTerms(context) {
 
     // [Caso não tenha aceitado, envia o embed de aceitação]
     const embed = new EmbedBuilder()
-      .setColor('#FE3838')
+      .setColor(colors.red)
       .setTitle('Termos de Uso')
       .setDescription(
         'Antes de continuar, é necessário aceitar nossos **Termos de Uso**.\n\nClique em **Ler Termos** para visualizar o conteúdo, e em **Aceitar Termos** se estiver de acordo.'
@@ -42,11 +42,11 @@ async function checkTerms(context) {
         .setCustomId('accept_terms')
         .setLabel('Aceitar Termos')
         .setStyle(ButtonStyle.Success)
-        .setEmoji(check),
+        .setEmoji(emojis.check),
       new ButtonBuilder()
         .setLabel('Ler Termos')
         .setStyle(ButtonStyle.Link)
-        .setURL(TERMS)
+        .setURL(emojis.TERMS)
     );
 
     if (context.reply && typeof context.reply === 'function') {
