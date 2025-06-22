@@ -5,7 +5,7 @@ const { loadCommands, loadEvents } = require('@utils/loader');
 const { setPresence } = require('@utils/presence');
 const monitorBot = require('@utils/monitoring');
 const logger = require('@utils/logger');
-const settings = require('@config');
+const { BOT_NAME } = require('@config');
 const { version } = require('@package.json');
 
 class ExtendedClient extends Client {
@@ -27,12 +27,12 @@ class ExtendedClient extends Client {
 
   async init() {
     try {
-      logger.info(`[${settings.BOT_NAME}] Iniciando o carregamento das estruturas...`);
+      logger.info(`[${BOT_NAME}] Iniciando o carregamento das estruturas...`);
       await this.#loadCore();
       this.#attachLifecycleListeners();
-      logger.info(`[${settings.BOT_NAME}] Inicialização concluída.`);
+      logger.info(`[${BOT_NAME}] Inicialização concluída.`);
     } catch (error) {
-      logger.error(`[${settings.BOT_NAME}] Falha na inicialização: ${error.message}`, {
+      logger.error(`[${BOT_NAME}] Falha na inicialização: ${error.message}`, {
         stack: error.stack,
       });
       throw error;
@@ -59,15 +59,15 @@ class ExtendedClient extends Client {
 
   #attachLifecycleListeners() {
     this.on('disconnect', () => {
-      logger.warn(`[${settings.BOT_NAME}] Bot desconectado. Tentando reconectar...`);
+      logger.warn(`[${BOT_NAME}] Bot desconectado. Tentando reconectar...`);
     });
 
     this.on('reconnecting', () => {
-      logger.info(`[${settings.BOT_NAME}] Reconectando...`);
+      logger.info(`[${BOT_NAME}] Reconectando...`);
     });
 
     this.on('error', (error) => {
-      logger.error(`[${settings.BOT_NAME}] Erro inesperado: ${error.message}`, {
+      logger.error(`[${BOT_NAME}] Erro inesperado: ${error.message}`, {
         stack: error.stack,
         timestamp: new Date().toISOString(),
       });
