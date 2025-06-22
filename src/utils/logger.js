@@ -1,7 +1,11 @@
-const winston = require('winston');
-const path = require('path');
-const fs = require('fs');
+'use strict';
 
+const fs = require('fs');
+const path = require('path');
+const winston = require('winston');
+const moment = require('moment-timezone');
+
+// Diretório de logs
 const logDir = path.resolve(__dirname, '@logs');
 if (!fs.existsSync(logDir)) fs.mkdirSync(logDir);
 
@@ -15,7 +19,7 @@ const levels = {
 };
 
 const colors = {
-  fatal: 'magentaBG',
+  fatal: 'bgMagenta white',
   error: 'red',
   warn: 'yellow',
   info: 'green',
@@ -24,26 +28,28 @@ const colors = {
 };
 winston.addColors(colors);
 
+const timestampBR = () =>
+  moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm:ss');
+
 const consoleFormat = winston.format.combine(
   winston.format.colorize({ all: true }),
-  winston.format.timestamp({ format: 'DD/MM/YYYY HH:mm:ss' }),
-  winston.format.printf(({ timestamp, level, message }) => {
-    return `[${timestamp}] ${level}: ${message}`;
+  winston.format.printf(({ level, message }) => {
+    return `[${timestampBR()}] ${level}: ${message}`;
   })
 );
 
 const fileFormat = winston.format.combine(
-  winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-  winston.format.printf(({ timestamp, level, message }) => {
-    return `[${timestamp}] ${level.toUpperCase()}: ${message}`;
+  winston.format.printf(({ level, message }) => {
+    return `[${timestampBR()}] ${level.toUpperCase()}: ${message}`;
   })
 );
 
+// Criação do logger
 const logger = winston.createLogger({
   levels,
   level: 'debug',
-  format: winston.format.json(),
   transports: [
+
     new winston.transports.Console({
       format: consoleFormat,
     }),
@@ -53,19 +59,16 @@ const logger = winston.createLogger({
       level: 'fatal',
       format: fileFormat,
     }),
-
     new winston.transports.File({
       filename: path.join(logDir, 'error.log'),
       level: 'error',
       format: fileFormat,
     }),
-
     new winston.transports.File({
       filename: path.join(logDir, 'warn.log'),
       level: 'warn',
       format: fileFormat,
     }),
-
     new winston.transports.File({
       filename: path.join(logDir, 'combined.log'),
       format: fileFormat,
@@ -84,7 +87,7 @@ if (!logger.fatal) {
   logger.fatal = (message, meta = {}) => {
     logger.log({
       level: 'fatal',
-      message: `[FATAL] ${message}`,
+      message,
       ...meta,
     });
   };
