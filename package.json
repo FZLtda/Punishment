@@ -2,8 +2,10 @@
   "name": "punishment",
   "version": "1.0.0",
   "description": "Moderação inteligente com punições infalíveis.",
-  "main": "index.js",
+  "author": "FuncZero",
+  "license": "MIT",
   "type": "commonjs",
+  "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
@@ -11,9 +13,13 @@
     "lint:fix": "eslint . --fix",
     "postinstall": "npm install"
   },
-  "keywords": [],
-  "author": "FuncZero",
-  "license": "MIT",
+  "keywords": [
+    "discord",
+    "bot",
+    "moderation",
+    "punishment",
+    "discord.js"
+  ],
   "dependencies": {
     "axios": "^1.8.4",
     "better-sqlite3": "^11.9.1",
@@ -46,18 +52,16 @@
     "@models": "src/models",
     "@config": "src/config",
     "@modules": "src/modules",
-    "@mod": "src/commands/mod",
     "@commands": "src/commands",
-    "@handlers": "src/handlers",
-    "@info": "src/commands/info",
+    "@mod": "src/commands/mod",
     "@admin": "src/commands/admin",
+    "@info": "src/commands/info",
     "@structures": "src/structures",
-    "@package.json": "./package.json",
+    "@handlers": "src/handlers",
     "@handleSlash": "src/handlers/slash",
     "@handleEvent": "src/handlers/events",
     "@interactions": "src/handlers/interactions",
-    "@handleButton": "src/handlers/interactions/buttons"
-    
-    
+    "@handleButton": "src/handlers/interactions/buttons",
+    "@package.json": "./package.json"
   }
 }
