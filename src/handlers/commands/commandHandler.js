@@ -7,7 +7,7 @@ const { getPrefix, setPrefix } = require('@utils/prefixUtils');
 const { colors, emojis } = require('@config');
 const checkTerms = require('@handlers/termsHandler');
 
-const DEFAULT_PREFIX = '!';
+const DEFAULT_PREFIX = '.';
 
 const handleCommandUsage = (commandName) => {
   try {
