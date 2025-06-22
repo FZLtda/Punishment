@@ -86,9 +86,9 @@ process.on('uncaughtException', (err) => {
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  logger.fatal(`[${settings.BOT_NAME}] Rejeição não tratada`, {
-    reason,
-    promise
+  logger.fatal(`[${settings.BOT_NAME}] Rejeição não tratada: ${reason?.message || reason}`, {
+    stack: reason?.stack,
+    reason
   });
   process.exit(1);
 });
