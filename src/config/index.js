@@ -1,57 +1,58 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 
-// Caminho absoluto para settings.json
+// Caminho absoluto do arquivo settings
 const configPath = path.join(__dirname, 'settings.json');
 
-// Verifica se o settings.json existe
+// Verifica se o arquivo settings.json existe
 if (!fs.existsSync(configPath)) {
-  throw new Error('[Config] Arquivo settings.json não encontrado.');
+  throw new Error('[Config] Arquivo "settings.json" não encontrado no diretório /config.');
 }
 
-// Tenta carregar o settings.json
-let config;
+// Carrega o settings.json de forma segura (sem cache)
+let rawConfig;
 try {
-  config = require('./settings.json');
+  delete require.cache[require.resolve('./settings.json')];
+  rawConfig = require('./settings.json');
 } catch (error) {
-  throw new Error(`[Config] Erro ao carregar settings.json: ${error.message}`);
+  throw new Error(`[Config] Erro ao carregar "settings.json": ${error.message}`);
 }
 
-// Campos obrigatórios que precisam estar no settings.json
+// Validação de campos obrigatórios
 const requiredFields = ['BOT_NAME', 'OWNER_ID', 'MAX_RETRIES', 'RETRY_DELAY'];
-const missingFields = requiredFields.filter(field => config[field] === undefined);
+const missingFields = requiredFields.filter(field => rawConfig[field] === undefined || rawConfig[field] === null);
 
 if (missingFields.length > 0) {
-  throw new Error(`[Config] Campos ausentes em settings.json: ${missingFields.join(', ')}`);
+  throw new Error(`[Config] Campos obrigatórios ausentes em settings.json: ${missingFields.join(', ')}`);
 }
 
-// Carrega arquivos adicionais da pasta config
-let emojis = {};
-let colors = {};
-let warnChannels = {};
+// Função utilitária para carregar JSONs opcionais
+const loadOptionalJson = (filename, defaultValue = {}) => {
+  const filePath = path.join(__dirname, filename);
+  try {
+    if (fs.existsSync(filePath)) {
+      delete require.cache[require.resolve(filePath)];
+      return require(filePath);
+    } else {
+      console.warn(`[Config] ${filename} não encontrado. Usando valor padrão.`);
+    }
+  } catch (error) {
+    console.warn(`[Config] Falha ao carregar ${filename}: ${error.message}`);
+  }
+  return defaultValue;
+};
 
-try {
-  emojis = require('./emojis.json');
-} catch (error) {
-  console.warn('[Config] emojis.json não encontrado ou inválido, ignorando...');
-}
+// Carregamento de arquivos opcionais
+const emojis = loadOptionalJson('emojis.json');
+const colors = loadOptionalJson('colors.json');
+const warnChannels = loadOptionalJson('warnChannels.json');
 
-try {
-  colors = require('./colors.json');
-} catch (error) {
-  console.warn('[Config] colors.json não encontrado ou inválido, ignorando...');
-}
-
-try {
-  warnChannels = require('./warnChannels.json');
-} catch (error) {
-  console.warn('[Config] warnChannels.json não encontrado ou inválido, ignorando...');
-}
-
-// Exporta tudo de forma centralizada
-module.exports = {
-  ...config,
+// Exportação centralizada e imutável
+module.exports = Object.freeze({
+  ...rawConfig,
   emojis,
   colors,
   warnChannels
-};
+});
