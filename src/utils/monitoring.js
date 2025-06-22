@@ -1,7 +1,10 @@
+'use strict';
+
 const axios = require('axios');
 const logger = require('@utils/logger');
-const WEBHOOK = process.env.WEBHOOK;
 const { BOT_NAME, BOT_LOGO, colors } = require('@config');
+
+const WEBHOOK = process.env.WEBHOOK;
 
 function monitorBot(client) {
   if (!client || typeof client.on !== 'function') {
@@ -16,7 +19,7 @@ function monitorBot(client) {
   });
 
   client.on('shardDisconnect', (event, shardId) => {
-    logger.info(`Shard ${shardId} desconectada!`);
+    logger.warn(`Shard ${shardId} desconectada!`);
     sendWebhookNotification(
       `${BOT_NAME} desconectado!`,
       `A shard ${shardId} foi desconectada. Verifique imediatamente.`
@@ -24,19 +27,19 @@ function monitorBot(client) {
   });
 
   client.on('error', (error) => {
-    logger.error(`Erro detectado: ${error.message}`);
+    logger.error(`Erro detectado: ${error.message}`, { stack: error.stack });
     sendWebhookNotification(`${BOT_NAME} erro!`, `Erro detectado: ${error.message}`);
   });
 
   client.on('warn', (info) => {
-    logger.info(`${info}`);
+    logger.warn(`Aviso: ${info}`);
     sendWebhookNotification(`${BOT_NAME} aviso!`, `Aviso detectado: ${info}`);
   });
 }
 
 async function sendWebhookNotification(title, description) {
   if (!WEBHOOK) {
-    logger.info('URL do Webhook não configurada.');
+    logger.warn('URL do Webhook não configurada.');
     return;
   }
 
@@ -56,9 +59,14 @@ async function sendWebhookNotification(title, description) {
       avatar_url: BOT_LOGO,
       embeds: [embed],
     });
+
     logger.info('Notificação enviada via Webhook.');
   } catch (error) {
-    logger.info('Falha ao enviar notificação via Webhook:', error.message);
+    logger.error(`Falha ao enviar notificação via Webhook: ${error.message}`, {
+      stack: error.stack,
+      status: error.response?.status,
+      response: error.response?.data,
+    });
   }
 }
 
