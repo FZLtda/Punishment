@@ -5,7 +5,7 @@ const { loadCommands, loadEvents } = require('@utils/loader');
 const { setPresence } = require('@utils/presence');
 const monitorBot = require('@utils/monitoring');
 const logger = require('@utils/logger');
-const { settings } = require('@config');
+const settings = require('@config');
 const { version } = require('@package.json');
 
 class ExtendedClient extends Client {
