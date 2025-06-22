@@ -1,7 +1,7 @@
 const axios = require('axios');
 const logger = require('@utils/logger');
 const WEBHOOK = process.env.WEBHOOK;
-const { BOT_NAME, BOT_LOGO } = require('@config');
+const { BOT_NAME, BOT_LOGO, colors } = require('@config');
 
 function monitorBot(client) {
   if (!client || typeof client.on !== 'function') {
