@@ -1,38 +1,37 @@
-require('module-alias/register');
-const settings = require('@config');
-
-if (!settings || !settings.BOT_NAME) {
-  console.error('[ERRO] BOT_NAME está ausente ou undefined:', settings);
-  process.exit(1);
-}
-
-// testes 
+'use strict';
 
 require('dotenv').config();
+require('module-alias/register');
+
 const os = require('os');
 const logger = require('@utils/logger');
-const startBot = require('@src/bot');
 const connectDatabase = require('@utils/database');
+const startBot = require('@src/bot');
+const { settings } = require('@config');
 
 const processInfo = {
   pid: process.pid,
   hostname: os.hostname(),
+  platform: process.platform,
+  uptime: () => `${Math.floor(process.uptime())}s`
 };
 
 process.on('uncaughtException', (error) => {
-  logger.error(`Erro não tratado: ${error.message}`, {
+  logger.fatal(`[${settings.BOT_NAME}] Erro não tratado: ${error.message}`, {
     ...processInfo,
     stack: error.stack,
     timestamp: new Date().toISOString(),
   });
+  process.exit(1);
 });
 
 process.on('unhandledRejection', (reason, promise) => {
-  logger.warn(`Promessa rejeitada não tratada: ${reason}`, {
+  logger.fatal(`[${settings.BOT_NAME}] Rejeição não tratada: ${reason?.message || reason}`, {
     ...processInfo,
-    promise,
+    stack: reason?.stack,
     timestamp: new Date().toISOString(),
   });
+  process.exit(1);
 });
 
 process.on('warning', (warning) => {
@@ -43,7 +42,7 @@ process.on('warning', (warning) => {
   ];
 
   if (criticalWarnings.includes(warning.name)) {
-    logger.warn(`[${warning.name}] ${warning.message}`, {
+    logger.warn(`[${settings.BOT_NAME}] [${warning.name}] ${warning.message}`, {
       ...processInfo,
       stack: warning.stack,
       timestamp: new Date().toISOString(),
@@ -51,15 +50,39 @@ process.on('warning', (warning) => {
   }
 });
 
-const gracefulShutdown = async () => {
-  logger.info('Finalizando o bot com segurança...');
-  process.exit(0);
+const gracefulShutdown = async (signal) => {
+  logger.warn(`[${settings.BOT_NAME}] Encerramento solicitado (${signal}). Finalizando recursos...`);
+
+  const shutdownTimer = setTimeout(() => {
+    logger.error(`[${settings.BOT_NAME}] Shutdown forçado após timeout.`);
+    process.exit(1);
+  }, 10000);
+
+  try {
+    clearTimeout(shutdownTimer);
+    logger.info(`[${settings.BOT_NAME}] Encerramento concluído com sucesso.`);
+    process.exit(0);
+  } catch (err) {
+    clearTimeout(shutdownTimer);
+    logger.error(`[${settings.BOT_NAME}] Erro no encerramento: ${err.message}`, {
+      stack: err.stack
+    });
+    process.exit(1);
+  }
 };
 
-process.on('SIGINT', gracefulShutdown);
-process.on('SIGTERM', gracefulShutdown);
+['SIGINT', 'SIGTERM'].forEach(signal =>
+  process.on(signal, () => gracefulShutdown(signal))
+);
 
 (async () => {
-  await connectDatabase();
-  await startBot();
+  try {
+    await connectDatabase();
+    await startBot();
+  } catch (error) {
+    logger.fatal(`[${settings.BOT_NAME}] Falha crítica na inicialização: ${error.message}`, {
+      stack: error.stack,
+    });
+    process.exit(1);
+  }
 })();
