@@ -12,11 +12,12 @@ const aliasMap = {
   antiSpamHandler: 'handleAntiSpam',
   commandHandler: 'handleCommands',
   termsHandler: 'checkTerms',
+  
 };
 
 /**
- * Carrega handlers de forma recursiva, inclusive subpastas.
- * @param {string} dir - Caminho do diretório de onde carregar
+ * Carrega todos os handlers de forma recursiva.
+ * @param {string} dir - Diretório de onde carregar handlers
  */
 function loadHandlers(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -35,29 +36,27 @@ function loadHandlers(dir) {
     const exportName = aliasMap[baseName] || baseName;
 
     try {
-      const requiredModule = require(fullPath);
+      const mod = require(fullPath);
 
-      const handlerFn =
-        typeof requiredModule === 'function'
-          ? requiredModule
-          : requiredModule[exportName];
+      const handlerFn = mod?.[exportName] || (typeof mod === 'function' ? mod : null);
 
       if (typeof handlerFn !== 'function') {
-        logger?.warn?.(`[handlers] '${entry.name}' não exporta uma função válida como '${exportName}'.`);
+        logger.warn(`[handlers] Handler inválido em '${entry.name}'. Exportação esperada: '${exportName}'`);
         continue;
       }
 
       handlers[exportName] = handlerFn;
-      logger?.info?.(`[handlers] '${exportName}' carregado de '${fullPath.replace(process.cwd(), '')}'.`);
-    } catch (error) {
-      logger?.error?.(`[handlers] Erro ao carregar '${entry.name}': ${error.message}`, {
-        stack: error.stack,
-        path: fullPath,
+      logger.info(`[handlers] Handler '${exportName}' carregado de: ${fullPath.replace(process.cwd(), '.')}`);
+    } catch (err) {
+      logger.error(`[handlers] Erro ao carregar '${entry.name}': ${err.message}`, {
+        stack: err.stack,
+        file: fullPath,
       });
     }
   }
 }
 
+// Inicia carregamento
 loadHandlers(__dirname);
 
 module.exports = Object.freeze(handlers);
