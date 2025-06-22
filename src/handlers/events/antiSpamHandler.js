@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 const { PermissionsBitField } = require('discord.js');
 const { loadSettings } = require('@utils/loadSettings');
@@ -12,7 +14,7 @@ const TIMEOUT_DURATION_MS = 10 * 60 * 1000;
 const messageCounts = new Map();
 const punishedUsers = new Set();
 
-async function handleAntiSpam(message, client) {
+module.exports = async function handleAntiSpam(message, client) {
   if (!message.guild || !message.member || !message.channel || message.author.bot) return false;
 
   const settings = loadSettings(ANTI_SPAM_PATH);
@@ -81,6 +83,4 @@ async function handleAntiSpam(message, client) {
   }
 
   return false;
-}
-
-module.exports = { handleAntiSpam };
+};
