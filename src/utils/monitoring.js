@@ -56,7 +56,7 @@ async function sendWebhookNotification(title, description) {
   try {
     await axios.post(WEBHOOK, {
       username: 'Punishment',
-      avatar_url: `${BOT_LOGO}`,
+      avatar_url: 'https://bit.ly/3Eci2wf',
       embeds: [embed],
     });
 
