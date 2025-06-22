@@ -6,7 +6,7 @@ require('module-alias/register');
 const os = require('os');
 const logger = require('@utils/logger');
 const connectDatabase = require('@utils/database');
-const startBot = require('@src/bot.js');
+const startBot = require('@src/bot');
 const { settings } = require('@config');
 
 const processInfo = {
