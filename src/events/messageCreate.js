@@ -1,13 +1,7 @@
 'use strict';
 
 const { Events } = require('discord.js');
-const {
-  handleAIResponse,
-  handleAntiLink,
-  handleAntiSpam,
-  checkTerms,
-} = require('@handleEvent');
-const { handleCommands } = require('@handleCommands/commandHandler');
+const handlers = require('@handleEvent');
 const { getPrefix } = require('@utils/prefixUtils');
 const logger = require('@utils/logger');
 
@@ -23,12 +17,13 @@ async function getCachedPrefix(guildId) {
   if (prefixCache.has(guildId)) return prefixCache.get(guildId);
   const prefix = await getPrefix(guildId);
   prefixCache.set(guildId, prefix);
-  setTimeout(() => prefixCache.delete(guildId), 5 * 60 * 1000); // 5 minutos
+  setTimeout(() => prefixCache.delete(guildId), 5 * 60 * 1000);
   return prefix;
 }
 
 module.exports = {
   name: Events.MessageCreate,
+
   /**
    * Executa quando uma nova mensagem é criada.
    * @param {import('discord.js').Message} message
@@ -41,17 +36,18 @@ module.exports = {
       const now = Date.now();
       const userId = message.author.id;
 
+      // Sistema simples de cooldown global (1s)
       if (now - (cooldowns.get(userId) || 0) < 1000) return;
       cooldowns.set(userId, now);
 
-      if (await handleAIResponse(message)) return;
-      if (await handleAntiLink(message)) return;
-      if (await handleAntiSpam(message, client)) return;
+      if (await handlers.handleAIResponse?.(message)) return;
+      if (await handlers.handleAntiLink?.(message)) return;
+      if (await handlers.handleAntiSpam?.(message, client)) return;
 
       const prefix = await getCachedPrefix(message.guild.id);
       if (!message.content.startsWith(prefix)) return;
 
-      const accepted = await checkTerms(message);
+      const accepted = await handlers.checkTerms?.(message);
       if (!accepted) return;
 
       if (!client.commands) {
@@ -59,7 +55,7 @@ module.exports = {
         return;
       }
 
-      await handleCommands(message, client);
+      await handlers.handleCommands?.(message, client);
 
     } catch (error) {
       logger.error('[Events:messageCreate] Erro ao processar mensagem', {
