@@ -3,10 +3,9 @@ const {
   handleAIResponse,
   handleAntiLink,
   handleAntiSpam,
-  handleCommand,
   checkTerms
 } = require('@handleEvent');
-const { handleCommands } = require('tes');
+const { handleCommands } = require('@handleCommands');
 const { getPrefix } = require('@utils/prefixUtils');
 const logger = require('@utils/logger');
 
