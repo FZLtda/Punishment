@@ -91,7 +91,9 @@ async function handleCommands(message, client) {
     return true;
 
   } catch (err) {
-    logger.error(`Erro ao executar o comando "${commandName}" de ${message.author.tag}: ${err.message}`, {
+    // Aqui que pode ocorrer o problema, vamos separar o template literal da função para evitar erros
+    const logMessage = `Erro ao executar o comando "${commandName}" de ${message.author.tag}: ${err.message}`;
+    logger.error(logMessage, {
       stack: err.stack,
       guild: message.guild?.name,
       content: message.content,
