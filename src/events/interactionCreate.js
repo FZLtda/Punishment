@@ -33,7 +33,7 @@ module.exports = {
 
       await routeInteraction(interaction, client, type);
     } catch (error) {
-      logger.error('Erro no evento interactionCreate:', {
+      logger.error('Erro no evento interactionCreate', {
         message: error.message,
         stack: error.stack,
         user: interaction.user?.tag ?? 'N/A',
@@ -53,7 +53,7 @@ module.exports = {
           await interaction.reply({ embeds: [embed], ephemeral: true });
         }
       } catch (replyError) {
-        logger.error('Falha ao enviar mensagem de erro para usuário:', {
+        logger.error('Falha ao enviar mensagem de erro para usuário', {
           message: replyError.message,
           stack: replyError.stack,
         });
