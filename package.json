@@ -57,7 +57,7 @@
     "@admin": "src/commands/admin",
     "@info": "src/commands/info",
     "@structures": "src/structures",
-    "@handlers": "src/handlers",
+    "@handleCommands": "src/handlers/commands",
     "@handleSlash": "src/handlers/slash",
     "@handleEvent": "src/handlers/events",
     "@interactions": "src/handlers/interactions",
