@@ -65,9 +65,8 @@ async function checkTerms(context) {
       logger.warn('checkTerms: Contexto não pôde enviar a mensagem.');
     }
   } catch (err) {
-    logger.error(`checkTerms: Erro ao verificar ou enviar termos: ${err.message}`, {
-      stack: err.stack,
-    });
+    const msg = `checkTerms: Erro ao verificar ou enviar termos: ${err.message}`;
+    logger.error(msg, { stack: err.stack });
   }
 
   return false;
