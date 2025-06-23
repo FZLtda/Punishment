@@ -1,9 +1,11 @@
+'use strict';
+
 const { Events } = require('discord.js');
 const {
   handleAIResponse,
   handleAntiLink,
   handleAntiSpam,
-  checkTerms
+  checkTerms,
 } = require('@handleEvent');
 const { handleCommands } = require('@handleCommands/commandHandler');
 const { getPrefix } = require('@utils/prefixUtils');
@@ -12,17 +14,23 @@ const logger = require('@utils/logger');
 const cooldowns = new Map();
 const prefixCache = new Map();
 
+/**
+ * Obtém o prefixo com cache de 5 minutos por servidor.
+ * @param {string} guildId
+ * @returns {Promise<string>}
+ */
 async function getCachedPrefix(guildId) {
   if (prefixCache.has(guildId)) return prefixCache.get(guildId);
   const prefix = await getPrefix(guildId);
   prefixCache.set(guildId, prefix);
-  setTimeout(() => prefixCache.delete(guildId), 300000);
+  setTimeout(() => prefixCache.delete(guildId), 5 * 60 * 1000); // 5 minutos
   return prefix;
 }
 
 module.exports = {
   name: Events.MessageCreate,
   /**
+   * Executa quando uma nova mensagem é criada.
    * @param {import('discord.js').Message} message
    * @param {import('discord.js').Client} client
    */
@@ -58,6 +66,7 @@ module.exports = {
         message: error.message,
         stack: error.stack,
         author: message.author?.tag,
+        userId: message.author?.id,
         guild: message.guild?.name,
         guildId: message.guild?.id,
         channelId: message.channel?.id,
