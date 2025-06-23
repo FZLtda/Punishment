@@ -6,14 +6,14 @@ const { emojis, colors } = require('@config');
 const { checkTerms } = require('@handleButton/termsButtons');
 const routeInteraction = require('@interactions/router');
 
-/**
- * Evento disparado quando uma interação é criada no Discord.
- * @param {import('discord.js').Interaction} interaction
- * @param {import('discord.js').Client} client
- */
 module.exports = {
   name: 'interactionCreate',
 
+  /**
+   * Evento disparado quando uma interação é criada no Discord.
+   * @param {import('discord.js').Interaction} interaction
+   * @param {import('discord.js').Client} client
+   */
   async execute(interaction, client) {
     try {
       const type = getInteractionType(interaction);
@@ -33,7 +33,8 @@ module.exports = {
 
       await routeInteraction(interaction, client, type);
     } catch (error) {
-      logger.error(`Erro no evento interactionCreate: ${error.message}`, {
+      logger.error('Erro no evento interactionCreate:', {
+        message: error.message,
         stack: error.stack,
         user: interaction.user?.tag ?? 'N/A',
         interactionType: interaction.type,
@@ -52,7 +53,10 @@ module.exports = {
           await interaction.reply({ embeds: [embed], ephemeral: true });
         }
       } catch (replyError) {
-        logger.error(`Falha ao enviar mensagem de erro para usuário: ${replyError.message}`);
+        logger.error('Falha ao enviar mensagem de erro para usuário:', {
+          message: replyError.message,
+          stack: replyError.stack,
+        });
       }
     }
   },
