@@ -42,7 +42,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor(colors.red ?? '#FE3838')
-        .setTitle(`${emojis.attent} Erro ao processar interação`)
+        .setTitle(`${emojis.attent || '❗'} Erro ao processar interação`)
         .setDescription('Não foi possível processar esta ação. Tente novamente mais tarde.')
         .setTimestamp();
 
