@@ -5,7 +5,6 @@ const handlers = require('@handleEvent');
 const { getPrefix } = require('@utils/prefixUtils');
 const logger = require('@utils/logger');
 
-
 const cooldowns = new Map();
 const prefixCache = new Map();
 
@@ -23,7 +22,7 @@ async function getCachedPrefix(guildId) {
 }
 
 module.exports = {
-  name: Events.MessageCreate,
+  name: 'messageCreate',
 
   /**
    * Executa quando uma nova mensagem é criada.
@@ -37,7 +36,6 @@ module.exports = {
       const now = Date.now();
       const userId = message.author.id;
 
-      // Sistema simples de cooldown global (1s)
       if (now - (cooldowns.get(userId) || 0) < 1000) return;
       cooldowns.set(userId, now);
 
@@ -69,9 +67,6 @@ module.exports = {
         channelId: message.channel?.id,
         content: message.content,
       });
-      // teste
-      logger.debug(`[messageCreate] Mensagem recebida: ${message.content}`);
-      // teste
 
       const logChannel = client.channels.cache.get(process.env.LOG_CHANNEL);
       if (logChannel?.isTextBased?.()) {
