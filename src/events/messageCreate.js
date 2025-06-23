@@ -5,11 +5,20 @@ const {
   handleAntiSpam,
   checkTerms
 } = require('@handleEvent');
-const { handleCommands } = require('@handleCommands');
+const { handleCommands } = require('@handleCommands/handleCommands');
 const { getPrefix } = require('@utils/prefixUtils');
 const logger = require('@utils/logger');
 
 const cooldowns = new Map();
+const prefixCache = new Map();
+
+async function getCachedPrefix(guildId) {
+  if (prefixCache.has(guildId)) return prefixCache.get(guildId);
+  const prefix = await getPrefix(guildId);
+  prefixCache.set(guildId, prefix);
+  setTimeout(() => prefixCache.delete(guildId), 300000);
+  return prefix;
+}
 
 module.exports = {
   name: Events.MessageCreate,
@@ -21,29 +30,34 @@ module.exports = {
     if (!message.guild || message.author.bot) return;
 
     try {
-      
+      const now = Date.now();
       const userId = message.author.id;
-      if (cooldowns.has(userId)) return;
-      cooldowns.set(userId, Date.now());
-      setTimeout(() => cooldowns.delete(userId), 1000);
+
+      if (now - (cooldowns.get(userId) || 0) < 1000) return;
+      cooldowns.set(userId, now);
 
       if (await handleAIResponse(message)) return;
       if (await handleAntiLink(message)) return;
       if (await handleAntiSpam(message, client)) return;
 
-      const prefix = await getPrefix(message.guild.id);
+      const prefix = await getCachedPrefix(message.guild.id);
       if (!message.content.startsWith(prefix)) return;
 
       const accepted = await checkTerms(message);
       if (!accepted) return;
 
+      if (!client.commands) {
+        logger.warn('[messageCreate] client.commands está indefinido!');
+        return;
+      }
+
       await handleCommands(message, client);
 
     } catch (error) {
-      logger.error(`[messageCreate] ${error.message}`, {
+      logger.error('[Events:messageCreate] Erro ao processar mensagem', {
+        message: error.message,
         stack: error.stack,
         author: message.author?.tag,
-        userId: message.author?.id,
         guild: message.guild?.name,
         guildId: message.guild?.id,
         channelId: message.channel?.id,
