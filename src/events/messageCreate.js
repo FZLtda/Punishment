@@ -5,6 +5,7 @@ const handlers = require('@handleEvent');
 const { getPrefix } = require('@utils/prefixUtils');
 const logger = require('@utils/logger');
 
+
 const cooldowns = new Map();
 const prefixCache = new Map();
 
@@ -68,6 +69,9 @@ module.exports = {
         channelId: message.channel?.id,
         content: message.content,
       });
+      // teste
+      logger.debug(`[messageCreate] Mensagem recebida: ${message.content}`);
+      // teste
 
       const logChannel = client.channels.cache.get(process.env.LOG_CHANNEL);
       if (logChannel?.isTextBased?.()) {
