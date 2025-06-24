@@ -27,9 +27,9 @@
     }
   ],
   "colors": {
-    "red": "FE3838",
+    "red": "0xfe3838",
     "green": "0x2ecc71",
-    "yellow": "#FFD55D"
+    "yellow": "0xffd55d"
   },
   "emojis": {
     "sucess": "<:sucesso:1358918549846098201>",
