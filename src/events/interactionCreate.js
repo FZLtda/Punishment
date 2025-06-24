@@ -3,7 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const logger = require('@utils/logger');
 const { emojis, colors } = require('@config');
-const { checkTerms } = require('@handleButton/termsButtons');
+const checkTerms = require('@handleEvent');
 const routeInteraction = require('@interactions/router');
 
 module.exports = {
