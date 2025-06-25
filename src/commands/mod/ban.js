@@ -35,7 +35,7 @@ module.exports = {
           iconURL: emojis.icon_attention
         });
 
-      return message.chanel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+      return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
     }
 
     try {
