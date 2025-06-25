@@ -6,6 +6,7 @@ const logger = require('@utils/logger');
 
 const handlers = Object.create(null);
 
+// Mapear arquivos para nomes padronizados no código
 const aliasMap = {
   aiHandler: 'handleAIResponse',
   antiLinkHandler: 'handleAntiLink',
@@ -16,8 +17,8 @@ const aliasMap = {
 };
 
 /**
- * Carrega todos os handlers de forma recursiva.
- * @param {string} dir Diretório para carregar handlers
+ * Carrega recursivamente todos os handlers e os expõe com nomes padronizados.
+ * @param {string} dir Diretório base para leitura dos arquivos de handler.
  */
 function loadHandlers(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -38,17 +39,25 @@ function loadHandlers(dir) {
     try {
       const mod = require(fullPath);
 
-      const handlerFn = mod?.[exportName] || (typeof mod === 'function' ? mod : null);
+      // Suporte tanto para default export (function) quanto para objeto nomeado
+      const handlerFn =
+        typeof mod === 'function'
+          ? mod
+          : typeof mod?.[exportName] === 'function'
+          ? mod[exportName]
+          : null;
 
-      if (typeof handlerFn !== 'function') {
-        logger.warn(`[handlers] Handler inválido em '${entry.name}'. Exportação esperada: '${exportName}'`);
+      if (!handlerFn) {
+        logger.warn(`[handlers] Handler inválido em '${entry.name}'. Nenhuma exportação compatível encontrada para '${exportName}'.`);
         continue;
       }
 
       handlers[exportName] = handlerFn;
-      logger.info(`[handlers] Handler '${exportName}' carregado de: ${fullPath.replace(process.cwd(), '.')}`);
+
+      logger.debug(`[handlers] '${exportName}' carregado de: ${fullPath.replace(process.cwd(), '.')}`);
+
     } catch (err) {
-      logger.error(`[handlers] Erro ao carregar '${entry.name}': ${err.message}`, {
+      logger.error(`[handlers] Erro ao carregar handler '${entry.name}': ${err.message}`, {
         stack: err.stack,
         file: fullPath,
       });
@@ -56,6 +65,7 @@ function loadHandlers(dir) {
   }
 }
 
+// Inicializa o carregamento dos handlers no momento da importação
 loadHandlers(__dirname);
 
 module.exports = Object.freeze(handlers);
