@@ -14,6 +14,7 @@ const { checkTerms } = require('@handlers/termsHandler');
 async function handleCommandUsage(commandName) {
   try {
     const existing = db.prepare('SELECT * FROM command_usage WHERE command_name = ?').get(commandName);
+
     if (existing) {
       db.prepare('UPDATE command_usage SET usage_count = usage_count + 1 WHERE command_name = ?').run(commandName);
     } else {
@@ -31,13 +32,15 @@ async function handleCommandUsage(commandName) {
  * @returns {Promise<boolean>}
  */
 async function handleCommands(message, client) {
-  const prefix = await getPrefix(message.guild.id) || '!';
-  logger.debug(`[handleCommands] Prefixo da guild "${message.guild.name}": "${prefix}"`);
+  if (!message.guild || message.author.bot) return false;
 
+  const prefix = await getPrefix(message.guild.id) || '!';
   if (!message.content.startsWith(prefix)) return false;
 
-  const raw = message.content.slice(prefix.length).trim();
-  const [commandNameRaw, ...args] = raw.split(/\s+/);
+  logger.debug(`[handleCommands] Prefixo usado na guild "${message.guild.name}": "${prefix}"`);
+
+  const rawContent = message.content.slice(prefix.length).trim();
+  const [commandNameRaw, ...args] = rawContent.split(/\s+/);
   const commandName = commandNameRaw?.toLowerCase();
 
   logger.debug(`[handleCommands] Comando solicitado: "${commandName}"`);
@@ -47,71 +50,71 @@ async function handleCommands(message, client) {
 
   const command = client.commands.get(commandName);
   if (!command) {
-    logger.warn(`[handleCommands] Nenhum comando registrado corresponde a "${commandName}"`);
+    logger.warn(`[handleCommands] Nenhum comando encontrado para: "${commandName}"`);
     return false;
   }
 
   try {
-    logger.info(`[handleCommands] Executando comando "${commandName}" de ${message.author.tag} em "${message.guild.name}".`);
+    logger.info(`[handleCommands] Executando "${commandName}" de ${message.author.tag} em ${message.guild.name}`);
 
-    // Verifica termos
+    // Termos de uso
     const termsAccepted = await checkTerms?.(message);
     if (!termsAccepted) return false;
 
-    // Verifica permissões do bot
+    // Verificação de permissões do bot
     if (command.botPermissions) {
       const botPerms = message.channel?.permissionsFor(client.user);
       if (!botPerms?.has(command.botPermissions)) {
-        const embedErro = new EmbedBuilder()
+        const embed = new EmbedBuilder()
           .setColor(colors.red)
           .setAuthor({
             name: 'Permissões insuficientes para o bot executar esse comando.',
             iconURL: emojis.icon_error,
           });
 
-        return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
       }
     }
 
-    // Verifica permissões do usuário
+    // Verificação de permissões do usuário
     if (command.userPermissions) {
       const userPerms = message.channel?.permissionsFor(message.member);
       if (!userPerms?.has(command.userPermissions)) {
-        const embedErro = new EmbedBuilder()
+        const embed = new EmbedBuilder()
           .setColor(colors.red)
           .setAuthor({
             name: 'Você não tem permissões suficientes para usar esse comando.',
             iconURL: emojis.icon_error,
           });
 
-        return message.reply({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+        return message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
       }
     }
 
-    // Executa comando e registra uso
+    // Executa e registra uso
     await handleCommandUsage(commandName);
     await command.execute(message, args, { client, getPrefix, setPrefix });
 
     if (command.deleteMessage) {
       await message.delete().catch((err) => {
-        logger.warn(`[handleCommands] Falha ao deletar mensagem do comando "${commandName}": ${err.message}`);
+        logger.warn(`[handleCommands] Falha ao apagar a mensagem original do comando "${commandName}": ${err.message}`);
       });
     }
 
     return true;
 
   } catch (err) {
-    const logMessage = `Erro ao executar o comando "${commandName}" de ${message.author.tag}: ${err.message}`;
-    logger.error(logMessage, {
+    logger.error(`[handleCommands] Erro ao executar "${commandName}" de ${message.author.tag}: ${err.message}`, {
       stack: err.stack,
       guild: message.guild?.name,
+      channel: message.channel?.name,
       content: message.content,
     });
 
     const embedErro = new EmbedBuilder()
       .setColor(colors.yellow)
       .setAuthor({
-        name: 'Não foi possível processar o comando devido a um erro.',
+        name: 'Ocorreu um erro ao processar este comando.',
         iconURL: emojis.icon_attention,
       });
 
