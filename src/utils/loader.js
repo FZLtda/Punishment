@@ -7,10 +7,21 @@ const logger = require('@utils/logger');
 const loadFiles = require('@utils/fileLoader');
 
 /**
+ * Garante que as coleções do cliente existam.
+ * @param {import('discord.js').Client} client
+ */
+function ensureCollections(client) {
+  if (!client.commands) client.commands = new Map();
+  if (!client.slashCommands) client.slashCommands = new Map();
+}
+
+/**
  * Carrega e registra todos os comandos (prefix e slash).
  * @param {import('discord.js').Client} client
  */
 async function loadCommands(client) {
+  ensureCollections(client);
+
   const commandsPath = path.join(__dirname, '..', 'commands');
   const commandFiles = loadFiles(commandsPath);
 
@@ -20,6 +31,7 @@ async function loadCommands(client) {
 
   let prefixCount = 0;
   let slashCount = 0;
+  const commandNames = new Set();
 
   for (const file of commandFiles) {
     const start = performance.now();
@@ -34,6 +46,13 @@ async function loadCommands(client) {
         continue;
       }
 
+      if (commandNames.has(name)) {
+        logger.warn(`[Loader:Comando] Ignorado "${file}" → Nome duplicado: "${name}".`);
+        continue;
+      }
+
+      commandNames.add(name);
+
       if (isSlash) {
         client.slashCommands.set(name, command);
         slashCount++;
@@ -44,7 +63,6 @@ async function loadCommands(client) {
         logger.debug(chalk.magentaBright(`[PREFIX] ${name} carregado (${(performance.now() - start).toFixed(1)}ms)`));
       }
 
-      // Metadata opcional para debug externo
       client.commandMetadata ??= [];
       client.commandMetadata.push({
         name,
@@ -64,6 +82,9 @@ async function loadCommands(client) {
   logger.info(
     chalk.greenBright(`[Loader] ${prefixCount} comandos prefix e ${slashCount} slash carregados com sucesso.`)
   );
+
+  logger.debug(`📦 Prefix commands: ${[...client.commands.keys()].join(', ') || 'Nenhum'}`);
+  logger.debug(`📦 Slash commands: ${[...client.slashCommands.keys()].join(', ') || 'Nenhum'}`);
 }
 
 /**
