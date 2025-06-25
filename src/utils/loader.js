@@ -27,7 +27,8 @@ async function loadCommands(client) {
   const commandFiles = loadFiles(commandsPath);
 
   if (!Array.isArray(commandFiles) || commandFiles.length === 0) {
-    return logger.warn('[Loader:Comandos] Nenhum comando encontrado para carregar.');
+    logger.warn('[Loader:Comandos] Nenhum comando encontrado para carregar.');
+    return;
   }
 
   let prefixCount = 0;
@@ -36,13 +37,10 @@ async function loadCommands(client) {
 
   for (const file of commandFiles) {
     const start = performance.now();
-
     try {
       const command = require(file);
       const isSlash = !!command?.data;
-      const name = isSlash
-        ? command?.data?.name?.toLowerCase?.()
-        : command?.name?.toLowerCase?.();
+      const name = (isSlash ? command?.data?.name : command?.name)?.toLowerCase?.();
 
       if (!name || typeof command.execute !== 'function') {
         logger.warn(`[Loader:Comando] Ignorado "${file}" → Estrutura inválida.`);
@@ -86,9 +84,9 @@ async function loadCommands(client) {
     chalk.greenBright(`[Loader] ${prefixCount} comandos prefix e ${slashCount} comandos slash carregados com sucesso.`)
   );
 
-  // Debug final com nomes carregados
-  logger.debug(`Comandos prefix carregados: ${[...client.commands.keys()].join(', ') || 'Nenhum'}`);
-  logger.debug(`Comandos slash carregados: ${[...client.slashCommands.keys()].join(', ') || 'Nenhum'}`);
+  // Diagnóstico final
+  logger.debug(chalk.yellow(`Comandos prefix carregados: ${[...client.commands.keys()].join(', ') || 'Nenhum'}`));
+  logger.debug(chalk.yellow(`Comandos slash carregados: ${[...client.slashCommands.keys()].join(', ') || 'Nenhum'}`));
 }
 
 /**
@@ -100,7 +98,8 @@ async function loadEvents(client) {
   const eventFiles = loadFiles(eventsPath);
 
   if (!Array.isArray(eventFiles) || eventFiles.length === 0) {
-    return logger.warn('[Loader:Eventos] Nenhum evento encontrado para carregar.');
+    logger.warn('[Loader:Eventos] Nenhum evento encontrado para carregar.');
+    return;
   }
 
   let total = 0;
