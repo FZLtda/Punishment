@@ -12,16 +12,15 @@ const { checkTerms } = require('@handlers/termsHandler');
  * @param {string} commandName
  */
 async function handleCommandUsage(commandName) {
-  const command = db
-    .prepare('SELECT * FROM command_usage WHERE command_name = ?')
-    .get(commandName);
-
-  if (command) {
-    db.prepare('UPDATE command_usage SET usage_count = usage_count + 1 WHERE command_name = ?')
-      .run(commandName);
-  } else {
-    db.prepare('INSERT INTO command_usage (command_name, usage_count) VALUES (?, 1)')
-      .run(commandName);
+  try {
+    const existing = db.prepare('SELECT * FROM command_usage WHERE command_name = ?').get(commandName);
+    if (existing) {
+      db.prepare('UPDATE command_usage SET usage_count = usage_count + 1 WHERE command_name = ?').run(commandName);
+    } else {
+      db.prepare('INSERT INTO command_usage (command_name, usage_count) VALUES (?, 1)').run(commandName);
+    }
+  } catch (err) {
+    logger.warn(`[handleCommandUsage] Falha ao atualizar estatísticas para "${commandName}": ${err.message}`);
   }
 }
 
@@ -33,19 +32,30 @@ async function handleCommandUsage(commandName) {
  */
 async function handleCommands(message, client) {
   const prefix = await getPrefix(message.guild.id) || '!';
+  logger.debug(`[handleCommands] Prefixo da guild "${message.guild.name}": "${prefix}"`);
+
   if (!message.content.startsWith(prefix)) return false;
 
-  const args = message.content.slice(prefix.length).trim().split(/\s+/);
-  const commandName = args.shift()?.toLowerCase();
+  const raw = message.content.slice(prefix.length).trim();
+  const [commandNameRaw, ...args] = raw.split(/\s+/);
+  const commandName = commandNameRaw?.toLowerCase();
+
+  logger.debug(`[handleCommands] Comando solicitado: "${commandName}"`);
+  logger.debug(`[handleCommands] Comandos registrados: ${[...client.commands.keys()].join(', ')}`);
+
   if (!commandName) return false;
 
   const command = client.commands.get(commandName);
-  if (!command) return false;
+  if (!command) {
+    logger.warn(`[handleCommands] Nenhum comando registrado corresponde a "${commandName}"`);
+    return false;
+  }
 
   try {
-    logger.info(`Comando "${commandName}" usado por ${message.author.tag} em "${message.guild.name}".`);
+    logger.info(`[handleCommands] Executando comando "${commandName}" de ${message.author.tag} em "${message.guild.name}".`);
 
-    const termsAccepted = await checkTerms(message);
+    // Verifica termos
+    const termsAccepted = await checkTerms?.(message);
     if (!termsAccepted) return false;
 
     // Verifica permissões do bot
@@ -78,20 +88,19 @@ async function handleCommands(message, client) {
       }
     }
 
-    // Registra estatística e executa comando
+    // Executa comando e registra uso
     await handleCommandUsage(commandName);
     await command.execute(message, args, { client, getPrefix, setPrefix });
 
     if (command.deleteMessage) {
       await message.delete().catch((err) => {
-        logger.warn(`Não foi possível apagar a mensagem do comando "${commandName}": ${err.message}`);
+        logger.warn(`[handleCommands] Falha ao deletar mensagem do comando "${commandName}": ${err.message}`);
       });
     }
 
     return true;
 
   } catch (err) {
-    // Aqui que pode ocorrer o problema, vamos separar o template literal da função para evitar erros
     const logMessage = `Erro ao executar o comando "${commandName}" de ${message.author.tag}: ${err.message}`;
     logger.error(logMessage, {
       stack: err.stack,
