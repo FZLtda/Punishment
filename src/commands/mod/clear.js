@@ -1,70 +1,75 @@
-const { EmbedBuilder } = require('discord.js');
+'use strict';
+
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const { logModerationAction } = require('@utils/moderationUtils');
 const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'clear',
-  description: 'Apaga mensagens do chat, com suporte para apagar mensagens de um usuário específico.',
-  usage: '${currentPrefix}clear <quantidade>',
+  description: 'Apaga mensagens do canal, com opção de filtrar por usuário.',
+  usage: '${currentPrefix}clear <quantidade> [@usuário]',
+  category: 'Moderação',
   userPermissions: ['ManageMessages'],
   botPermissions: ['ManageMessages'],
   deleteMessage: true,
-    
-  async execute(message, args) {
 
+  /**
+   * Executa o comando de limpeza.
+   * @param {import('discord.js').Message} message
+   * @param {string[]} args
+   */
+  async execute(message, args) {
     const quantidade = parseInt(args[0], 10);
     const usuario = message.mentions.users.first();
 
-    if (!quantidade || isNaN(quantidade) || quantidade < 1 || quantidade > 100) {
-      const embedErroMinimo = new EmbedBuilder()
+    if (isNaN(quantidade) || quantidade < 1 || quantidade > 100) {
+      const embedErro = new EmbedBuilder()
         .setColor(colors.yellow)
         .setAuthor({
           name: 'Só é possível excluir de 1 a 100 mensagens por vez.',
           iconURL: emojis.icon_attention
         });
-      
-      return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+
+      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
 
     try {
       const mensagens = await message.channel.messages.fetch({ limit: 100 });
-      let mensagensParaApagar;
+      let mensagensParaApagar = mensagens.filter((msg) => !msg.pinned);
 
       if (usuario) {
-        mensagensParaApagar = Array.from(
-          mensagens.filter((msg) => msg.author.id === usuario.id && !msg.pinned).values()
-        ).slice(0, quantidade);
-      } else {
-        mensagensParaApagar = Array.from(mensagens.filter((msg) => !msg.pinned).values()).slice(0, quantidade);
+        mensagensParaApagar = mensagensParaApagar.filter((msg) => msg.author.id === usuario.id);
       }
 
-      const apagadas = await message.channel.bulkDelete(mensagensParaApagar, true);
+      const mensagensSelecionadas = mensagensParaApagar.first(quantidade);
 
-      logModerationAction(
+      const apagadas = await message.channel.bulkDelete(mensagensSelecionadas, true);
+
+      await logModerationAction(
         message.guild.id,
         message.author.id,
         'Clear',
-        usuario ? usuario.id : 'N/A',
+        usuario?.id || 'N/A',
         `${apagadas.size} mensagens apagadas${usuario ? ` de ${usuario.tag}` : ''}`
       );
 
-      const feedbackMessage = await message.channel.send(
-        `<:1000042885:1336044571125354496> ${apagadas.size} mensagens foram apagadas ${
-          usuario ? `de ${usuario}` : ''
-        }.`
-      );
+      const feedback = await message.channel.send({
+        content: `🧹 ${apagadas.size} mensagens foram apagadas${usuario ? ` de ${usuario}` : ''}.`,
+        allowedMentions: { repliedUser: false }
+      });
 
-      setTimeout(() => feedbackMessage.delete().catch(() => null), 4000);
+      setTimeout(() => feedback.delete().catch(() => null), 4000);
     } catch (error) {
-      console.error(error);
-      const embedErroMinimo = new EmbedBuilder()
-        .setColor(colors.yellow)
+      console.error('[Clear Command] Erro ao tentar apagar mensagens:', error);
+
+      const embedErro = new EmbedBuilder()
+        .setColor(colors.red)
         .setAuthor({
           name: 'Não foi possível apagar as mensagens devido a um erro.',
-          iconURL: emojis.icon_attention
+          iconURL: emojis.icon_error
         });
-      
-      return message.channel.send({ embeds: [embedErroMinimo], allowedMentions: { repliedUser: false } });
+
+      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
     }
   },
 };
