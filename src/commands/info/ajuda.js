@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 
 module.exports = {
-  name: 'help',
+  name: 'ajuda',
   description: 'Exibe informações detalhadas sobre os comandos.',
   usage: '${currentPrefix}help [comando]',
   userPermissions: ['SendMessages'],
