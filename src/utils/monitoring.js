@@ -16,7 +16,7 @@ function monitorBot(client) {
   client.on('ready', () => {
     const tag = client.user?.tag || 'Desconhecido';
     logger.info(`[${BOT_NAME}] está online como: ${tag}`);
-    sendWebhookNotification(`${emojis.status} ${BOT_NAME} Online`, `**${tag}** foi iniciado com sucesso.`);
+    sendWebhookNotification(`${BOT_NAME} Status`, `**${tag}** foi iniciado com sucesso.`);
   });
 
   client.on('shardDisconnect', (_event, shardId) => {
