@@ -3,16 +3,17 @@
 const path = require('path');
 const chalk = require('chalk');
 const { performance } = require('perf_hooks');
+const { Collection } = require('discord.js');
 const logger = require('@utils/logger');
 const loadFiles = require('@utils/fileLoader');
 
 /**
- * Garante que as coleções do cliente existam.
+ * Garante que as coleções do cliente existam com tipo correto.
  * @param {import('discord.js').Client} client
  */
 function ensureCollections(client) {
-  if (!client.commands) client.commands = new Map();
-  if (!client.slashCommands) client.slashCommands = new Map();
+  if (!(client.commands instanceof Collection)) client.commands = new Collection();
+  if (!(client.slashCommands instanceof Collection)) client.slashCommands = new Collection();
 }
 
 /**
@@ -39,7 +40,9 @@ async function loadCommands(client) {
     try {
       const command = require(file);
       const isSlash = !!command?.data;
-      const name = (isSlash ? command.data.name : command.name)?.toLowerCase?.();
+      const name = isSlash
+        ? command?.data?.name?.toLowerCase?.()
+        : command?.name?.toLowerCase?.();
 
       if (!name || typeof command.execute !== 'function') {
         logger.warn(`[Loader:Comando] Ignorado "${file}" → Estrutura inválida.`);
@@ -47,7 +50,7 @@ async function loadCommands(client) {
       }
 
       if (commandNames.has(name)) {
-        logger.warn(`[Loader:Comando] Ignorado "${file}" → Nome duplicado: "${name}".`);
+        logger.warn(`[Loader:Comando] Ignorado "${file}" → Nome duplicado detectado: "${name}".`);
         continue;
       }
 
@@ -80,11 +83,12 @@ async function loadCommands(client) {
   }
 
   logger.info(
-    chalk.greenBright(`[Loader] ${prefixCount} comandos prefix e ${slashCount} slash carregados com sucesso.`)
+    chalk.greenBright(`[Loader] ${prefixCount} comandos prefix e ${slashCount} comandos slash carregados com sucesso.`)
   );
 
-  logger.debug(`Prefix commands: ${[...client.commands.keys()].join(', ') || 'Nenhum'}`);
-  logger.debug(`Slash commands: ${[...client.slashCommands.keys()].join(', ') || 'Nenhum'}`);
+  // Debug final com nomes carregados
+  logger.debug(`Comandos prefix carregados: ${[...client.commands.keys()].join(', ') || 'Nenhum'}`);
+  logger.debug(`Comandos slash carregados: ${[...client.slashCommands.keys()].join(', ') || 'Nenhum'}`);
 }
 
 /**
