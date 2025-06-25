@@ -2,7 +2,7 @@
 
 const axios = require('axios');
 const logger = require('@utils/logger');
-const { BOT_NAME, BOT_LOGO, colors } = require('@config');
+const { BOT_NAME, BOT_LOGO, colors, emojis } = require('@config');
 
 const WEBHOOK = process.env.WEBHOOK;
 
@@ -16,7 +16,7 @@ function monitorBot(client) {
   client.on('ready', () => {
     const tag = client.user?.tag || 'Desconhecido';
     logger.info(`[${BOT_NAME}] está online como: ${tag}`);
-    sendWebhookNotification(`🟢 ${BOT_NAME} Online`, `**${tag}** foi iniciado com sucesso.`);
+    sendWebhookNotification(`${emojis.status} ${BOT_NAME} Online`, `**${tag}** foi iniciado com sucesso.`);
   });
 
   client.on('shardDisconnect', (_event, shardId) => {
