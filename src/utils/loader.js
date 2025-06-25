@@ -83,8 +83,8 @@ async function loadCommands(client) {
     chalk.greenBright(`[Loader] ${prefixCount} comandos prefix e ${slashCount} slash carregados com sucesso.`)
   );
 
-  logger.debug(`📦 Prefix commands: ${[...client.commands.keys()].join(', ') || 'Nenhum'}`);
-  logger.debug(`📦 Slash commands: ${[...client.slashCommands.keys()].join(', ') || 'Nenhum'}`);
+  logger.debug(`Prefix commands: ${[...client.commands.keys()].join(', ') || 'Nenhum'}`);
+  logger.debug(`Slash commands: ${[...client.slashCommands.keys()].join(', ') || 'Nenhum'}`);
 }
 
 /**
