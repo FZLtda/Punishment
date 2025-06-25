@@ -1,6 +1,13 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 
+/**
+ * Carrega (ou cria) um arquivo de configurações JSON.
+ * @param {string} relativePath - Caminho relativo ao diretório base.
+ * @returns {Record<string, any>} Objeto com as configurações carregadas.
+ */
 function loadSettings(relativePath) {
   try {
     const resolvedPath = path.resolve(__dirname, '..', relativePath);
@@ -11,12 +18,13 @@ function loadSettings(relativePath) {
     }
 
     if (!fs.existsSync(resolvedPath)) {
-      fs.writeFileSync(resolvedPath, JSON.stringify({}, null, 2), 'utf8');
+      fs.writeFileSync(resolvedPath, '{}', 'utf8');
     }
 
-    return JSON.parse(fs.readFileSync(resolvedPath, 'utf8'));
+    const content = fs.readFileSync(resolvedPath, 'utf8');
+    return JSON.parse(content);
   } catch (error) {
-    console.error(`Erro ao carregar configurações de ${relativePath}:`, error);
+    console.error(`[SettingsLoader] Falha ao carregar "${relativePath}":`, error);
     return {};
   }
 }
