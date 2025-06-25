@@ -7,131 +7,119 @@ const logger = require('@utils/logger');
 const loadFiles = require('@utils/fileLoader');
 
 /**
- * Garante que as coleções do cliente existam.
- * @param {import('discord.js').Client} client
- */
-function ensureCollections(client) {
-  if (!client.commands) client.commands = new Map();
-  if (!client.slashCommands) client.slashCommands = new Map();
-}
 
-/**
- * Carrega e registra todos os comandos (prefix e slash).
- * @param {import('discord.js').Client} client
- */
+Carrega e registra todos os comandos (prefix e slash).
+
+@param {import('discord.js').Client} client
+*/
 async function loadCommands(client) {
-  ensureCollections(client);
+const commandsPath = path.join(__dirname, '..', 'commands');
+const commandFiles = loadFiles(commandsPath);
 
-  const commandsPath = path.join(__dirname, '..', 'commands');
-  const commandFiles = loadFiles(commandsPath);
 
-  if (!Array.isArray(commandFiles) || commandFiles.length === 0) {
-    return logger.warn('[Loader:Comandos] Nenhum comando encontrado para carregar.');
-  }
+if (!Array.isArray(commandFiles) || commandFiles.length === 0) {
+return logger.warn('[Loader:Comandos] Nenhum comando encontrado para carregar.');
+}
 
-  let prefixCount = 0;
-  let slashCount = 0;
-  const commandNames = new Set();
+let prefixCount = 0;
+let slashCount = 0;
 
-  for (const file of commandFiles) {
-    const start = performance.now();
+for (const file of commandFiles) {
+const start = performance.now();
 
-    try {
-      const command = require(file);
-      const isSlash = !!command?.data;
-      const name = (isSlash ? command.data.name : command.name)?.toLowerCase?.();
+try {  
+  const command = require(file);  
+  const isSlash = !!command?.data;  
+  const name = (isSlash ? command.data.name : command.name)?.toLowerCase?.();  
 
-      if (!name || typeof command.execute !== 'function') {
-        logger.warn(`[Loader:Comando] Ignorado "${file}" → Estrutura inválida.`);
-        continue;
-      }
+  if (!name || typeof command.execute !== 'function') {  
+    logger.warn(`[Loader:Comando] Ignorado "${file}" → Estrutura inválida.`);  
+    continue;  
+  }  
 
-      if (commandNames.has(name)) {
-        logger.warn(`[Loader:Comando] Ignorado "${file}" → Nome duplicado: "${name}".`);
-        continue;
-      }
+  if (isSlash) {  
+    client.slashCommands.set(name, command);  
+    slashCount++;  
+    logger.debug(chalk.cyanBright(`[SLASH] /${name} carregado (${(performance.now() - start).toFixed(1)}ms)`));  
+  } else {  
+    client.commands.set(name, command);  
+    prefixCount++;  
+    logger.debug(chalk.magentaBright(`[PREFIX] ${name} carregado (${(performance.now() - start).toFixed(1)}ms)`));  
+  }  
 
-      commandNames.add(name);
+  // Metadata opcional para debug externo  
+  client.commandMetadata ??= [];  
+  client.commandMetadata.push({  
+    name,  
+    type: isSlash ? 'slash' : 'prefix',  
+    file: path.relative(process.cwd(), file),  
+    loadedAt: new Date(),  
+  });  
 
-      if (isSlash) {
-        client.slashCommands.set(name, command);
-        slashCount++;
-        logger.debug(chalk.cyanBright(`[SLASH] /${name} carregado (${(performance.now() - start).toFixed(1)}ms)`));
-      } else {
-        client.commands.set(name, command);
-        prefixCount++;
-        logger.debug(chalk.magentaBright(`[PREFIX] ${name} carregado (${(performance.now() - start).toFixed(1)}ms)`));
-      }
+} catch (err) {  
+  logger.error(`[Loader:Comando] Erro ao carregar "${file}": ${err.message}`, {  
+    stack: err.stack,  
+    file,  
+  });  
+}
 
-      client.commandMetadata ??= [];
-      client.commandMetadata.push({
-        name,
-        type: isSlash ? 'slash' : 'prefix',
-        file: path.relative(process.cwd(), file),
-        loadedAt: new Date(),
-      });
+}
 
-    } catch (err) {
-      logger.error(`[Loader:Comando] Erro ao carregar "${file}": ${err.message}`, {
-        stack: err.stack,
-        file,
-      });
-    }
-  }
-
-  logger.info(
-    chalk.greenBright(`[Loader] ${prefixCount} comandos prefix e ${slashCount} slash carregados com sucesso.`)
-  );
-
-  logger.debug(`📦 Prefix commands: ${[...client.commands.keys()].join(', ') || 'Nenhum'}`);
-  logger.debug(`📦 Slash commands: ${[...client.slashCommands.keys()].join(', ') || 'Nenhum'}`);
+logger.info(
+chalk.greenBright([Loader] ${prefixCount} comandos prefix e ${slashCount} slash carregados com sucesso.)
+);
 }
 
 /**
- * Carrega e registra todos os eventos.
- * @param {import('discord.js').Client} client
- */
+
+Carrega e registra todos os eventos.
+
+@param {import('discord.js').Client} client
+*/
 async function loadEvents(client) {
-  const eventsPath = path.join(__dirname, '..', 'events');
-  const eventFiles = loadFiles(eventsPath);
+const eventsPath = path.join(__dirname, '..', 'events');
+const eventFiles = loadFiles(eventsPath);
 
-  if (!Array.isArray(eventFiles) || eventFiles.length === 0) {
-    return logger.warn('[Loader:Eventos] Nenhum evento encontrado para carregar.');
-  }
 
-  let total = 0;
+if (!Array.isArray(eventFiles) || eventFiles.length === 0) {
+return logger.warn('[Loader:Eventos] Nenhum evento encontrado para carregar.');
+}
 
-  for (const file of eventFiles) {
-    const start = performance.now();
+let total = 0;
 
-    try {
-      const event = require(file);
-      const name = event?.name;
-      const once = !!event.once;
+for (const file of eventFiles) {
+const start = performance.now();
 
-      if (!name || typeof event.execute !== 'function') {
-        logger.warn(`[Loader:Evento] Ignorado "${file}" → Estrutura inválida.`);
-        continue;
-      }
+try {  
+  const event = require(file);  
+  const name = event?.name;  
+  const once = !!event.once;  
 
-      const handler = (...args) => event.execute(...args, client);
-      once ? client.once(name, handler) : client.on(name, handler);
+  if (!name || typeof event.execute !== 'function') {  
+    logger.warn(`[Loader:Evento] Ignorado "${file}" → Estrutura inválida.`);  
+    continue;  
+  }  
 
-      logger.debug(chalk.blueBright(`[EVENT] ${name} registrado (${(performance.now() - start).toFixed(1)}ms)`));
-      total++;
+  const handler = (...args) => event.execute(...args, client);  
+  once ? client.once(name, handler) : client.on(name, handler);  
 
-    } catch (err) {
-      logger.error(`[Loader:Evento] Erro ao carregar "${file}": ${err.message}`, {
-        stack: err.stack,
-        file,
-      });
-    }
-  }
+  logger.debug(chalk.blueBright(`[EVENT] ${name} registrado (${(performance.now() - start).toFixed(1)}ms)`));  
+  total++;  
 
-  logger.info(chalk.greenBright(`[Loader] ${total} eventos registrados com sucesso.`));
+} catch (err) {  
+  logger.error(`[Loader:Evento] Erro ao carregar "${file}": ${err.message}`, {  
+    stack: err.stack,  
+    file,  
+  });  
+}
+
+}
+
+logger.info(chalk.greenBright([Loader] ${total} eventos registrados com sucesso.));
 }
 
 module.exports = {
-  loadCommands,
-  loadEvents,
+loadCommands,
+loadEvents,
 };
+
