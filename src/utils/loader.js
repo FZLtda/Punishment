@@ -38,7 +38,12 @@ async function loadCommands(client) {
   for (const file of commandFiles) {
     const start = performance.now();
     try {
-      const command = require(file);
+      const commandPath = path.isAbsolute(file) ? file : path.resolve(file);
+      
+      // Limpa cache para recarregar se necessário
+      delete require.cache[require.resolve(commandPath)];
+      const command = require(commandPath);
+
       const isSlash = !!command?.data;
       const name = (isSlash ? command?.data?.name : command?.name)?.toLowerCase?.();
 
@@ -108,7 +113,10 @@ async function loadEvents(client) {
     const start = performance.now();
 
     try {
-      const event = require(file);
+      const eventPath = path.isAbsolute(file) ? file : path.resolve(file);
+      delete require.cache[require.resolve(eventPath)];
+      const event = require(eventPath);
+
       const name = event?.name;
       const once = !!event.once;
 
