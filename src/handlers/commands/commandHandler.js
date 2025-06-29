@@ -6,7 +6,6 @@ const db = require('@data/database');
 const { getPrefix, setPrefix } = require('@utils/prefixUtils');
 const { colors, emojis } = require('@config');
 const { checkTerms } = require('@handlers/termsHandler');
-logger.debug(`[handleCommands] Comandos carregados: FZ ${[...client.commands.keys()].join(', ')}`);
 
 /**
  * Atualiza ou insere estatísticas de uso de comandos no banco.
