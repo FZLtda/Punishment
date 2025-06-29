@@ -1,7 +1,7 @@
 
 
 'use strict';
-
+console.log('[DEBUG] bot.js foi executado');
 const { performance } = require('perf_hooks');
 const ExtendedClient = require('@structures/ExtendedClient');
 const logger = require('@utils/logger');
