@@ -3,7 +3,7 @@ const path = require('path');
 const Logger = require('@logger/index');
 
 async function loadCommands(client) {
-  const commandsPath = path.join(__dirname, '../../../commands');
+  const commandsPath = path.join(__dirname, '../../../src/commands');
   const categories = fs.readdirSync(commandsPath);
 
   for (const category of categories) {
