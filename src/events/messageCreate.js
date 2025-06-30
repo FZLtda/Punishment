@@ -1,6 +1,7 @@
 'use strict';
 
 const { Events } = require('discord.js');
+const commandHandler = require('@handleCommands/commandHandler');
 const eventHandlers = require('@handleEvent');
 const { getPrefix } = require('@utils/prefixUtils');
 const logger = require('@utils/logger');
