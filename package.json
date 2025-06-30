@@ -55,7 +55,6 @@
     "@events": "src/events",
     "@client": "src/client",
     "@commands": "src/commands",
-    "@services": "src/services",
     "@middleware": "src/bot/middleware",
     "@logger": "src/logger",
     "@handlers": "src/handlers",
