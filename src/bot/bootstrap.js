@@ -3,7 +3,7 @@ const client = require('@bot/client');
 const { validateEnvironment } = require('@bot/environment');
 const { loadCommands } = require('@handlers/commands/loader');
 const { loadEvents } = require('@handlers/events/loader');
-const { loadSlashCommands } = require('@handlers/slash/loader');
+const { loadSlashCommands } = require('@loadSlashCommands/loader');
 const { loadButtonInteractions } = require('@loadButtonInteractions/loader');
 
 module.exports = async function bootstrap() {
