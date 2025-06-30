@@ -55,6 +55,7 @@
     "@events": "src/events",
     "@client": "src/client",
     "@config": "src/config",
+    "@data": "src/data",
     "@commands": "src/commands",
     "@middleware": "src/bot/middleware",
     "@logger": "src/logger",
