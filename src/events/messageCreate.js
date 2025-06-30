@@ -1,7 +1,8 @@
 'use strict';
 
-const { Events, Message, Client } = require('discord.js');
-const handlers = require('@handleEvent');
+const { Events } = require('discord.js');
+const eventHandlers = require('@handleEvent');
+const commandHandler = require('@handleCommands');
 const { getPrefix } = require('@utils/prefixUtils');
 const logger = require('@utils/logger');
 
@@ -9,7 +10,7 @@ const cooldowns = new Map();
 const prefixCache = new Map();
 
 /**
- * Retorna o prefixo do servidor com cache temporário de 5 minutos.
+ * Retorna o prefixo da guilda com cache temporário.
  * @param {string} guildId
  * @returns {Promise<string>}
  */
@@ -17,12 +18,13 @@ async function getCachedPrefix(guildId) {
   if (prefixCache.has(guildId)) return prefixCache.get(guildId);
 
   try {
-    const prefix = (await getPrefix(guildId)) || '-';
+    const prefix = await getPrefix(guildId) || '-';
     prefixCache.set(guildId, prefix);
+
     setTimeout(() => prefixCache.delete(guildId), 5 * 60 * 1000);
     return prefix;
   } catch (err) {
-    logger.warn(`[PrefixCache] Erro ao obter prefixo da guild ${guildId}: ${err.message}`);
+    logger.warn(`[PrefixCache] Erro ao obter prefixo da guilda ${guildId}: ${err.message}`);
     return '-';
   }
 }
@@ -31,52 +33,54 @@ module.exports = {
   name: Events.MessageCreate,
 
   /**
-   * Evento disparado quando uma nova mensagem é criada.
-   * @param {Message} message - Mensagem recebida.
-   * @param {Client} client - Instância do bot.
+   * Lida com mensagens recebidas no servidor.
+   * @param {import('discord.js').Message} message
+   * @param {import('discord.js').Client} client
    */
   async execute(message, client) {
     if (!message.guild || message.author.bot) return;
 
     try {
       const { id: userId, tag } = message.author;
-      const now = Date.now();
+      const content = message.content.trim();
 
       // Cooldown global simples (1 segundo)
+      const now = Date.now();
       const lastUsage = cooldowns.get(userId) || 0;
       if (now - lastUsage < 1000) return;
       cooldowns.set(userId, now);
 
-      logger.debug(`[MessageCreate] ${tag} => "${message.content}"`);
+      logger.debug(`[MessageCreate] ${tag} => "${content}"`);
 
-      // Handlers independentes
-      if (await handlers.handleAIResponse?.(message)) return;
-      if (await handlers.handleAntiLink?.(message)) return;
-      if (await handlers.handleAntiSpam?.(message, client)) return;
+      // Handlers paralelos (AI, AntiLink, AntiSpam etc.)
+      if (await eventHandlers.handleAIResponse?.(message)) return;
+      if (await eventHandlers.handleAntiLink?.(message)) return;
+      if (await eventHandlers.handleAntiSpam?.(message, client)) return;
 
-      // Prefixo
+      // Verificar prefixo
       const prefix = await getCachedPrefix(message.guild.id);
-      logger.debug(`[MessageCreate] Prefixo usado: "${prefix}"`);
+      logger.debug(`[MessageCreate] Prefixo em uso: "${prefix}"`);
 
-      if (!message.content.startsWith(prefix)) return;
+      if (!content.startsWith(prefix)) return;
 
-      // Termos de uso
-      const accepted = await handlers.checkTerms?.(message);
+      // Termos de uso obrigatórios
+      const accepted = await eventHandlers.checkTerms?.(message);
       if (!accepted) return;
 
+      // Verificação de comandos carregados
       if (!client.commands?.size) {
-        logger.warn('[MessageCreate] Nenhum comando carregado em client.commands!');
+        logger.warn('[MessageCreate] Nenhum comando registrado em client.commands!');
         return;
       }
 
-      // Execução do comando
-      const success = await handlers.handleCommands?.(message, client);
-      if (!success) {
-        logger.debug(`[MessageCreate] Nenhum comando correspondente encontrado para: ${message.content}`);
+      // Executar comando
+      const executed = await commandHandler.handleCommands?.(message, client);
+      if (!executed) {
+        logger.debug(`[MessageCreate] Comando não encontrado para: "${content}"`);
       }
 
     } catch (error) {
-      logger.error('[MessageCreate] Erro ao processar mensagem', {
+      logger.error('[MessageCreate] Falha ao processar mensagem', {
         message: error.message,
         stack: error.stack,
         author: message.author?.tag,
@@ -91,7 +95,7 @@ module.exports = {
       if (logChannel?.isTextBased?.()) {
         logChannel.send({
           content: [
-            '**[MessageCreate]**',
+            '**[Erro: MessageCreate]**',
             `👤 Autor: \`${message.author?.tag}\``,
             `🛡️ Servidor: \`${message.guild?.name}\``,
             `💬 Mensagem: \`${message.content.slice(0, 100)}\``,
@@ -102,5 +106,5 @@ module.exports = {
         }).catch(() => {});
       }
     }
-  },
+  }
 };
