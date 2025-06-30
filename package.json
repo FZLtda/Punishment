@@ -1,7 +1,7 @@
 {
   "name": "punishment",
   "version": "1.0.0",
-  "description": "Moderação inteligente com punições infalíveis.",
+  "description": "Bot de moderação inteligente com arquitetura modular, punições escaláveis e integrações avançadas.",
   "author": "FuncZero",
   "license": "MIT",
   "type": "commonjs",
@@ -18,7 +18,12 @@
     "bot",
     "moderation",
     "punishment",
-    "discord.js"
+    "discord.js",
+    "modular",
+    "typescript-ready",
+    "winston",
+    "openai",
+    "deepl"
   ],
   "dependencies": {
     "axios": "^1.8.4",
@@ -45,29 +50,23 @@
     "nodemon": "^3.1.0"
   },
   "_moduleAliases": {
-    "@src": "src",
+    "@bot": "src/bot",
     "@core": "src/core",
     "@data": "src/data",
     "@utils": "src/utils",
     "@events": "src/events",
     "@models": "src/models",
     "@config": "src/config",
-    "@modules": "src/modules",
     "@commands": "src/commands",
-    "@mod": "src/commands/mod",
-    "@admin": "src/commands/admin",
-    "@info": "src/commands/info",
     "@structures": "src/structures",
+    "@services": "src/services",
+    "@middleware": "src/bot/middleware",
+    "@logger": "src/logger",
     "@handleCommands": "src/handlers/commands",
     "@handleSlash": "src/handlers/slash",
     "@handleEvent": "src/handlers/events",
-    "@interactions": "src/handlers/interactions",
     "@handleButton": "src/handlers/interactions/buttons",
-    "@logger": "src/logger",
     "@interactions": "src/interactions",
-    "@services": "src/services",
-    "@middleware": "src/bot/middleware",
-    "@bot": "src/bot",
     "@package.json": "./package.json"
   }
 }
