@@ -28,24 +28,22 @@ async function loadSlashCommands(client) {
     }
   }
 
-  // Publicação no Discord
-  const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
-  try {
-    Logger.info('Enviando slash commands para a API do Discord...');
+  // Aguarda login completo antes do deploy
+  client.once('ready', async () => {
+    const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
+    try {
+      Logger.info('Enviando slash commands para a API do Discord...');
 
-    // Registrar globalmente (recomenda-se durante deploy final)
-    // await rest.put(Routes.applicationCommands(client.user.id), { body: slashCommands });
+      await rest.put(
+        Routes.applicationGuildCommands(client.user.id, process.env.TEST_GUILD_ID),
+        { body: slashCommands }
+      );
 
-    // Registrar em guilda específica (mais rápido para testes)
-    await rest.put(
-      Routes.applicationGuildCommands(client.user.id, process.env.TEST_GUILD_ID),
-      { body: slashCommands }
-    );
-
-    Logger.success('Slash commands registrados com sucesso!');
-  } catch (err) {
-    Logger.error(`Erro ao registrar slash commands: ${err.message}`);
-  }
+      Logger.success('Slash commands registrados com sucesso!');
+    } catch (err) {
+      Logger.error(`Erro ao registrar slash commands: ${err.message}`);
+    }
+  });
 }
 
 module.exports = {
