@@ -20,7 +20,7 @@ module.exports = {
         .setColor(colors.warning)
         .setAuthor({
           name: 'Nenhum comando encontrado.',
-          iconURL: emojis.icon_attention || null
+          iconURL: emojis.attention || null
         });
 
       return interaction.reply({ embeds: [embedErro], ephemeral: true });
@@ -36,7 +36,7 @@ module.exports = {
           .setColor(colors.warning)
           .setAuthor({
             name: 'Esse comando não existe.',
-            iconURL: emojis.icon_attention || null
+            iconURL: emojis.attention || null
           });
 
         return interaction.reply({ embeds: [embedErro], ephemeral: true });
