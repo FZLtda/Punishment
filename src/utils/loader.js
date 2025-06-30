@@ -6,7 +6,6 @@ const { performance } = require('perf_hooks');
 const { Collection } = require('discord.js');
 const logger = require('@utils/logger');
 const loadFiles = require('@utils/fileLoader');
-const { validateCommandFile } = require('@utils/commandValidator');
 
 /**
  * Garante que as coleções do cliente existam com tipo correto.
@@ -32,37 +31,32 @@ async function loadCommands(client) {
     return;
   }
 
-  // Diagnóstico estrutural
-  const commandNamesValidation = new Set();
-  const validationResults = commandFiles.map(f => validateCommandFile(f, commandNamesValidation));
-  const failed = validationResults.filter(r => r.issues.length > 0);
-  if (failed.length > 0) {
-    console.warn('\n🔍 Diagnóstico de Comandos com Problemas:\n');
-    for (const result of failed) {
-      console.warn(`Arquivo: ${result.path}`);
-      result.issues.forEach(issue => console.warn(`   ${issue}`));
-    }
-    console.warn('\nAlguns comandos foram ignorados por falhas estruturais. Verifique os detalhes acima.\n');
-  }
-
   let prefixCount = 0;
   let slashCount = 0;
   const commandNames = new Set();
 
   for (const file of commandFiles) {
     const start = performance.now();
-
     try {
       const commandPath = path.isAbsolute(file) ? file : path.resolve(file);
+      
+      // Limpa cache para recarregar se necessário
       delete require.cache[require.resolve(commandPath)];
       const command = require(commandPath);
 
       const isSlash = !!command?.data;
       const name = (isSlash ? command?.data?.name : command?.name)?.toLowerCase?.();
 
-      // Ignorar comandos inválidos
-      if (!name || typeof command.execute !== 'function') continue;
-      if (commandNames.has(name)) continue;
+      if (!name || typeof command.execute !== 'function') {
+        logger.warn(`[Loader:Comando] Ignorado "${file}" → Estrutura inválida.`);
+        continue;
+      }
+
+      if (commandNames.has(name)) {
+        logger.warn(`[Loader:Comando] Ignorado "${file}" → Nome duplicado detectado: "${name}".`);
+        continue;
+      }
+
       commandNames.add(name);
 
       if (isSlash) {
@@ -91,7 +85,64 @@ async function loadCommands(client) {
     }
   }
 
-  logger.info(chalk.greenBright(`[Loader] ${prefixCount} comandos prefix e ${slashCount} comandos slash carregados com sucesso.`));
+  logger.info(
+    chalk.greenBright(`[Loader] ${prefixCount} comandos prefix e ${slashCount} comandos slash carregados com sucesso.`)
+  );
+
+  // Diagnóstico final
   logger.debug(chalk.yellow(`Comandos prefix carregados: ${[...client.commands.keys()].join(', ') || 'Nenhum'}`));
   logger.debug(chalk.yellow(`Comandos slash carregados: ${[...client.slashCommands.keys()].join(', ') || 'Nenhum'}`));
 }
+
+/**
+ * Carrega e registra todos os eventos.
+ * @param {import('discord.js').Client} client
+ */
+async function loadEvents(client) {
+  const eventsPath = path.join(__dirname, '..', 'events');
+  const eventFiles = loadFiles(eventsPath);
+
+  if (!Array.isArray(eventFiles) || eventFiles.length === 0) {
+    logger.warn('[Loader:Eventos] Nenhum evento encontrado para carregar.');
+    return;
+  }
+
+  let total = 0;
+
+  for (const file of eventFiles) {
+    const start = performance.now();
+
+    try {
+      const eventPath = path.isAbsolute(file) ? file : path.resolve(file);
+      delete require.cache[require.resolve(eventPath)];
+      const event = require(eventPath);
+
+      const name = event?.name;
+      const once = !!event.once;
+
+      if (!name || typeof event.execute !== 'function') {
+        logger.warn(`[Loader:Evento] Ignorado "${file}" → Estrutura inválida.`);
+        continue;
+      }
+
+      const handler = (...args) => event.execute(...args, client);
+      once ? client.once(name, handler) : client.on(name, handler);
+
+      logger.debug(chalk.blueBright(`[EVENT] ${name} registrado (${(performance.now() - start).toFixed(1)}ms)`));
+      total++;
+
+    } catch (err) {
+      logger.error(`[Loader:Evento] Erro ao carregar "${file}": ${err.message}`, {
+        stack: err.stack,
+        file,
+      });
+    }
+  }
+
+  logger.info(chalk.greenBright(`[Loader] ${total} eventos registrados com sucesso.`));
+}
+
+module.exports = {
+  loadCommands,
+  loadEvents,
+};
