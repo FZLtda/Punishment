@@ -4,7 +4,7 @@ const { validateEnvironment } = require('@bot/environment');
 const { loadCommands } = require('@handlers/commands/loader');
 const { loadEvents } = require('@handlers/events/loader');
 const { loadSlashCommands } = require('@handlers/slash/loader');
-const { loadButtonInteractions } = require('@handlers/interactions/buttons/loader');
+const { loadButtonInteractions } = require('@loadButtonInteractions/loader');
 
 module.exports = async function bootstrap() {
   try {
