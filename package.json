@@ -58,6 +58,7 @@
     "@services": "src/services",
     "@middleware": "src/bot/middleware",
     "@logger": "src/logger",
+    "@handlers": "src/handlers",
     "@handleCommands": "src/handlers/commands",
     "@handleSlash": "src/handlers/slash",
     "@handleEvent": "src/handlers/events",
