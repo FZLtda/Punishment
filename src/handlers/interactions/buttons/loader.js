@@ -3,7 +3,7 @@ const path = require('path');
 const Logger = require('@logger/index');
 
 async function loadButtonInteractions(client) {
-  const buttonsPath = path.join(__dirname, '../../../../interactions/buttons');
+  const buttonsPath = path.join(__dirname, '../../../../src/interactions/buttons');
   const files = fs.readdirSync(buttonsPath).filter(file => file.endsWith('.js'));
 
   for (const file of files) {
