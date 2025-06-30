@@ -8,25 +8,23 @@ module.exports = {
     .addStringOption(option =>
       option
         .setName('comando')
-        .setDescription('Nome do comando para obter informações')
+        .setDescription('Nome do comando para obter informações.')
         .setRequired(false)
     ),
+
   async execute(interaction) {
-    const commands = interaction.client.commands;
+    const commands = interaction.client.slashCommands;
 
     if (!commands || commands.size === 0) {
-      const embedErroMinimo = new EmbedBuilder()
-        .setColor(colors.yellow)
+      const embedErro = new EmbedBuilder()
+        .setColor(colors.warning)
         .setAuthor({
-          name: 'Parece que os comandos não foram carregados.',
-          iconURL: emojis.icon_attention,
+          name: 'Nenhum comando encontrado.',
+          iconURL: emojis.icon_attention || null
         });
 
-      return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
+      return interaction.reply({ embeds: [embedErro], ephemeral: true });
     }
-
-    const getPrefix = interaction.client.getPrefix;
-    const currentPrefix = getPrefix ? getPrefix(interaction.guild.id) : '.';
 
     const commandName = interaction.options.getString('comando');
 
@@ -34,60 +32,51 @@ module.exports = {
       const command = commands.get(commandName.toLowerCase());
 
       if (!command) {
-        const embedErroMinimo = new EmbedBuilder()
-          .setColor(colors.yellow)
+        const embedErro = new EmbedBuilder()
+          .setColor(colors.warning)
           .setAuthor({
-            name: 'Não encontrei esse comando no sistema.',
-            iconURL: emojis.icon_attention,
+            name: 'Esse comando não existe.',
+            iconURL: emojis.icon_attention || null
           });
 
-        return interaction.reply({ embeds: [embedErroMinimo], ephemeral: true });
+        return interaction.reply({ embeds: [embedErro], ephemeral: true });
       }
 
-      const usage = command.usage ? command.usage.replace('${currentPrefix}', currentPrefix) : 'Não especificado.';
-
-      const embed = new EmbedBuilder()
-        .setColor(colors.red)
-        .setTitle(`<:1000042965:1336131844718202942> ${command.name}`)
-        .setDescription(command.description || '`Nenhuma descrição disponível.`')
+      const embedDetalhes = new EmbedBuilder()
+        .setColor(colors.primary)
+        .setTitle(`${emojis.info || ''} Comando: /${command.data.name}`)
+        .setDescription(command.data.description || 'Nenhuma descrição disponível.')
         .addFields(
-          { name: '<:1000043157:1336324220770062497> Uso', value: `\`${usage}\``, inline: false },
-          { name: '<:1000042960:1336120845881442365> Permissões Necessárias', value: `\`${command.userPermissions || 'Nenhuma'}\``, inline: false }
+          {
+            name: `${emojis.arrow || '➡️'} Uso`,
+            value: `\`/${command.data.name}\``,
+            inline: true
+          }
         )
         .setFooter({
           text: 'Punishment',
-          iconURL: interaction.client.user.displayAvatarURL(),
+          iconURL: interaction.client.user.displayAvatarURL()
         });
 
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+      return interaction.reply({ embeds: [embedDetalhes], ephemeral: true });
     }
 
-    const embed = new EmbedBuilder()
-      .setColor(0xfe3838)
-      .setTitle('<:1000043167:1336329540502421576> Comandos Principais')
+    const embedLista = new EmbedBuilder()
+      .setColor(colors.primary)
+      .setTitle(`${emojis.info || ''} Comandos disponíveis`)
+      .setDescription('Use `/help <comando>` para detalhes.')
       .addFields(
-        { name: 'help', value: '`Exibe informações detalhadas sobre os comandos.`', inline: true },
-        { name: 'ping', value: '`Exibe os detalhes da conexão do bot.`', inline: true },
-        { name: 'privacy', value: '`Exibe a política de privacidade.`', inline: true },
-        { name: 'mod-stats', value: '`Exibe estatísticas da moderação no servidor.`', inline: true },
-        { name: 'stats', value: '`Exibe as estatísticas do bot.`', inline: true },
-        { name: 'undo', value: '`Desfaz o último comando executado.`', inline: true }
-      )
-      .addFields(
-        {
-          name: '<:1000043159:1336324177900077076> Ajuda',
-          value: 'Use `/help <comando>` para exibir mais informações sobre um comando.',
-        },
-        {
-          name: '<:1000043160:1336324162482081945> Suporte',
-          value: '[Visite nossa comunidade](https://discord.gg/SW4zKzAhQa)',
-        }
+        ...commands.map(cmd => ({
+          name: `/${cmd.data.name}`,
+          value: cmd.data.description || '`Sem descrição.`',
+          inline: true
+        }))
       )
       .setFooter({
         text: 'Punishment',
-        iconURL: interaction.client.user.displayAvatarURL(),
+        iconURL: interaction.client.user.displayAvatarURL()
       });
 
-    return interaction.reply({ embeds: [embed], ephemeral: true });
-  },
+    return interaction.reply({ embeds: [embedLista], ephemeral: true });
+  }
 };
