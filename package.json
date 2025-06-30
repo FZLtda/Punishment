@@ -62,7 +62,8 @@
     "@handleSlash": "src/handlers/slash",
     "@handleEvent": "src/handlers/events",
     "@handleButton": "src/handlers/interactions/buttons",
-    "@interactions": "src/interactions",
+    "@loadButtonInteractions": "src/handlers/interactions/buttons",
+    
     "@package.json": "./package.json"
   }
 }
