@@ -3,7 +3,7 @@ const path = require('path');
 const Logger = require('@logger/index');
 
 async function loadEvents(client) {
-  const eventsPath = path.join(__dirname, '../../../events');
+  const eventsPath = path.join(__dirname, '../../../src/events');
   const eventFiles = fs
     .readdirSync(eventsPath)
     .filter(file => file.endsWith('.js'));
