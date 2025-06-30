@@ -10,7 +10,7 @@ userPermissions: ['ManageMessages'],
 botPermissions: ['ManageMessages'],
 deleteMessage: true,
 
-async execute(message, args) {
+async execute(message, args, client) {
 
 const quantidade = parseInt(args[0], 10);  
 const usuario = message.mentions.users.first();  
