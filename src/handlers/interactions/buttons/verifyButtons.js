@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const { check, attent, green } = require('@config');
+const { colors, emojis } = require('@config');
 const logger = require('@utils/logger');
 const { userAlreadyVerified, markUserVerified } = require('@utils/verifyUtils');
 
@@ -13,7 +13,7 @@ async function handleVerifyButtons(interaction) {
     logger.warn(`Membro não encontrado: ${interaction.user.id}`);
     return interaction.reply({
       ephemeral: true,
-      content: `${attent} Não foi possível encontrar seu usuário no servidor.`,
+      content: `${emojis.attent} Não foi possível encontrar seu usuário no servidor.`,
     });
   }
 
@@ -23,7 +23,7 @@ async function handleVerifyButtons(interaction) {
   if (jaRegistrado && temCargo) {
     return interaction.reply({
       ephemeral: true,
-      content: `${attent} Você já foi verificado anteriormente.`,
+      content: `${emojis.attent} Você já foi verificado anteriormente.`,
     });
   }
 
@@ -32,13 +32,13 @@ async function handleVerifyButtons(interaction) {
 
   await interaction.reply({
     ephemeral: true,
-    content: `${check} Você foi verificado com sucesso!`,
+    content: `${emojis.check} Você foi verificado com sucesso!`,
   });
 
   const logChannel = interaction.guild.channels.cache.get(logChannelId);
   if (logChannel) {
     const embedLog = new EmbedBuilder()
-      .setColor(green)
+      .setColor(colors.green)
       .setTitle('Novo usuário verificado')
       .setDescription(`${interaction.user} (\`${interaction.user.id}\`)`)
       .setTimestamp();
