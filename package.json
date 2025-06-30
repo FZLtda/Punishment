@@ -44,7 +44,7 @@
     "eslint-plugin-promise": "^6.6.0"
   },
   "_moduleAliases": {
-    "@src": "src",
+    "@src": "src/bot.js",
     "@core": "src/core",
     "@data": "src/data",
     "@utils": "src/utils",
