@@ -2,7 +2,7 @@
 
 const { Events } = require('discord.js');
 const eventHandlers = require('@handleEvent');
-const commandHandler = require('@handleCommands');
+const commandHandler = require('@handleCommands/commandHandler');
 const { getPrefix } = require('@utils/prefixUtils');
 const logger = require('@utils/logger');
 
