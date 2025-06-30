@@ -41,7 +41,8 @@
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-n": "^16.6.2",
-    "eslint-plugin-promise": "^6.6.0"
+    "eslint-plugin-promise": "^6.6.0",
+    "nodemon": "^3.1.0"
   },
   "_moduleAliases": {
     "@src": "src",
@@ -62,6 +63,11 @@
     "@handleEvent": "src/handlers/events",
     "@interactions": "src/handlers/interactions",
     "@handleButton": "src/handlers/interactions/buttons",
+    "@logger": "src/logger",
+    "@interactions": "src/interactions",
+    "@services": "src/services",
+    "@middleware": "src/bot/middleware",
+    "@bot": "src/bot",
     "@package.json": "./package.json"
   }
 }
