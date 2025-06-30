@@ -23,7 +23,7 @@ async function handleVerifyButtons(interaction) {
   if (jaRegistrado && temCargo) {
     return interaction.reply({
       ephemeral: true,
-      content: `${emojis.attent} Você já foi verificado anteriormente.`,
+      content: `${emojis.attent} Você já aceitou as regras anteriormente.`,
     });
   }
 
@@ -32,7 +32,7 @@ async function handleVerifyButtons(interaction) {
 
   await interaction.reply({
     ephemeral: true,
-    content: `${emojis.check} Você foi verificado com sucesso!`,
+    content: `${emojis.check} Regras aceitas com sucesso. Seja bem-vindo!`,
   });
 
   const logChannel = interaction.guild.channels.cache.get(logChannelId);
