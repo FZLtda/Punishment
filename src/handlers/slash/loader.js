@@ -31,13 +31,16 @@ async function loadSlashCommands(client) {
   // Aguarda login completo antes do deploy
   client.once('ready', async () => {
     const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
-    try {
-      Logger.info('Enviando slash commands para a API do Discord...');
 
-      await rest.put(
-        Routes.applicationGuildCommands(client.user.id, process.env.TEST_GUILD_ID),
-        { body: slashCommands }
-      );
+    const isGlobal = process.env.COMMAND_SCOPE === 'global';
+    const route = isGlobal
+      ? Routes.applicationCommands(client.user.id)
+      : Routes.applicationGuildCommands(client.user.id, process.env.TEST_GUILD_ID);
+
+    try {
+      Logger.info(`Enviando slash commands para a API do Discord [${isGlobal ? 'GLOBAL' : 'GUILD'}]...`);
+
+      await rest.put(route, { body: slashCommands });
 
       Logger.success('Slash commands registrados com sucesso!');
     } catch (err) {
