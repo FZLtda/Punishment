@@ -1,7 +1,7 @@
 const Logger = require('@logger/index');
 const client = require('@bot/client');
 const { validateEnvironment } = require('@bot/environment');
-const { loadCommands } = require('@handlers/commands/loader');
+const { loadCommands } = require('@loadCommands/loader');
 const { loadEvents } = require('@loadEvents/loader');
 const { loadSlashCommands } = require('@loadSlashCommands/loader');
 const { loadButtonInteractions } = require('@loadButtonInteractions/loader');
