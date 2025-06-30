@@ -5,8 +5,8 @@ const handlers = require('@handleEvent');
 const { getPrefix } = require('@utils/prefixUtils');
 const logger = require('@utils/logger');
 
-const cooldowns = new Map();      // cooldown por user
-const prefixCache = new Map();    // cache de prefixo por guild
+const cooldowns = new Map();
+const prefixCache = new Map();
 
 /**
  * Retorna o prefixo do servidor com cache temporário de 5 minutos.
@@ -76,7 +76,7 @@ module.exports = {
       }
 
     } catch (error) {
-      logger.error('[Events:MessageCreate] Erro ao processar mensagem', {
+      logger.error('[MessageCreate] Erro ao processar mensagem', {
         message: error.message,
         stack: error.stack,
         author: message.author?.tag,
@@ -91,7 +91,7 @@ module.exports = {
       if (logChannel?.isTextBased?.()) {
         logChannel.send({
           content: [
-            '**[Erro: messageCreate]**',
+            '**[MessageCreate]**',
             `👤 Autor: \`${message.author?.tag}\``,
             `🛡️ Servidor: \`${message.guild?.name}\``,
             `💬 Mensagem: \`${message.content.slice(0, 100)}\``,
