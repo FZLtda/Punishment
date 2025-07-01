@@ -26,16 +26,16 @@ module.exports = {
       await membro.timeout(duracao, motivo);
 
       const embed = new EmbedBuilder()
-        .setTitle('🔇 Usuário silenciado com sucesso')
+        .setTitle('Punição aplicada')
         .setColor(colors.red)
         .setDescription(`${membro} (\`${membro.id}\`) foi silenciado.`)
         .addFields(
-          { name: '⏳ Duração', value: `\`${tempo}\``, inline: true },
-          { name: '📝 Motivo', value: `\`${motivo}\``, inline: true }
+          { name: 'Duração', value: `\`${tempo}\``, inline: true },
+          { name: 'Motivo', value: `\`${motivo}\``, inline: true }
         )
         .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
         .setFooter({
-          text: `Moderação por ${message.author.username}`,
+          text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
@@ -67,8 +67,8 @@ function convertToMilliseconds(tempo) {
 
 function sendError(message, texto) {
   const embed = new EmbedBuilder()
-    .setColor(colors.warning || colors.yellow)
-    .setAuthor({ name: texto, iconURL: emojis.icon_attention || null });
+    .setColor(colors.yellow)
+    .setAuthor({ name: texto, iconURL: emojis.attention });
 
   return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
 }
