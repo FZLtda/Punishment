@@ -6,10 +6,8 @@ module.exports = {
   name: 'messageCreate',
 
   async execute(message) {
-    // Ignora DMs e bots
     if (!message.guild || message.author.bot) return;
 
-    // Pega prefixo dinâmico por guilda
     const prefix = message.client.getPrefix
       ? await message.client.getPrefix(message.guild.id)
       : await getPrefix(message.guild.id);
@@ -19,42 +17,36 @@ module.exports = {
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const cmdName = args.shift()?.toLowerCase();
     const command = message.client.commands.get(cmdName);
-
     if (!command) return;
 
-    // Verifica permissões do usuário
     const member = await message.guild.members.fetch(message.author.id);
     if (command.userPermissions && !member.permissions.has(command.userPermissions)) {
       return message.channel.send({
-        embeds: [
-          new EmbedBuilder()
-            .setColor(colors.red)
-            .setAuthor({
-              name: 'Você não tem permissão para usar este comando.',
-              iconURL: emojis.attention
-            })
+        embeds: [new EmbedBuilder()
+          .setColor(colors.red)
+          .setAuthor({
+            name: 'Você não tem permissão para usar este comando.',
+            iconURL: emojis.attention || null
+          })
         ],
         allowedMentions: { repliedUser: false }
       });
     }
 
-    // Verifica permissões do bot
     const botMember = message.guild.members.me;
     if (command.botPermissions && !botMember.permissions.has(command.botPermissions)) {
       return message.channel.send({
-        embeds: [
-          new EmbedBuilder()
-            .setColor(colors.yellow')
-            .setAuthor({
-              name: 'Eu não tenho permissão suficiente para executar este comando.',
-              iconURL: emojis.attention
-            })
+        embeds: [new EmbedBuilder()
+          .setColor(colors.yellow)
+          .setAuthor({
+            name: 'Eu não tenho permissão suficiente para executar este comando.',
+            iconURL: emojis.attention || null
+          })
         ],
         allowedMentions: { repliedUser: false }
       });
     }
 
-    // Deleta mensagem do autor se desejado
     if (command.deleteMessage) {
       try {
         await message.delete();
@@ -63,7 +55,6 @@ module.exports = {
       }
     }
 
-    // Executa o comando
     try {
       await command.execute(message, args);
     } catch (error) {
@@ -71,7 +62,7 @@ module.exports = {
 
       const embedErro = new EmbedBuilder()
         .setColor(colors.yellow)
-        .setTitle(`${emojis.attent} Erro inesperado`)
+        .setTitle('Erro inesperado')
         .setDescription('Houve uma falha ao executar este comando.')
         .setFooter({
           text: 'Punishment • messageCreate',
