@@ -18,30 +18,39 @@ const { loadButtonInteractions } = require('@loadButtonInteractions/loader');
 
 module.exports = async function bootstrap() {
   try {
-    Logger.info('Validando variáveis de ambiente...');
+    // Validação
+    Logger.info('[INIT] Validando variáveis de ambiente...');
     validateEnvironment();
 
-    Logger.info('Conectando ao MongoDB...');
+    if (!process.env.TOKEN) {
+      Logger.fatal('A variável de ambiente TOKEN está ausente. Verifique o .env.');
+      process.exit(1);
+    }
+
+    // Banco de dados
+    Logger.info('[INIT] Conectando ao MongoDB...');
     await connectMongo();
 
-    Logger.info('Carregando comandos...');
+    // Componentes e recursos
+    Logger.info('[INIT] Carregando comandos...');
     await loadCommands(client);
 
-    Logger.info('Carregando eventos...');
+    Logger.info('[INIT] Carregando eventos...');
     await loadEvents(client);
 
-    Logger.info('Carregando Slash Commands...');
+    Logger.info('[INIT] Carregando Slash Commands...');
     await loadSlashCommands(client);
 
-    Logger.info('Carregando interações de botões...');
+    Logger.info('[INIT] Carregando interações de botões...');
     await loadButtonInteractions(client);
 
-    Logger.info('Conectando ao Discord...');
+    // Conectando ao Discord
+    Logger.info('[INIT] Conectando ao Discord...');
     await client.login(process.env.TOKEN);
 
-    Logger.success('Punishment inicializado com sucesso!');
+    Logger.success('[OK] Punishment inicializado com sucesso!');
   } catch (err) {
-    Logger.fatal(`Falha crítica na inicialização: ${err.stack || err.message}`);
+    Logger.fatal(`[FATAL] Falha crítica na inicialização: ${err.stack || err.message}`);
     process.exit(1);
   }
 };
