@@ -1,38 +1,64 @@
+'use strict';
+
 const winston = require('winston');
 const chalk = require('chalk');
 
+// Define os níveis personalizados
 const levels = {
-  error: 0,
-  warn: 1,
-  info: 2,
-  success: 3
+  fatal: 0,
+  error: 1,
+  warn: 2,
+  info: 3,
+  success: 4,
+  debug: 5
 };
 
-const customFormat = winston.format.printf(({ level, message, timestamp }) => {
-  const color =
-    level === 'error' ? chalk.red :
-    level === 'warn' ? chalk.yellow :
-    level === 'info' ? chalk.cyan :
-    level === 'success' ? chalk.green :
-    chalk.white;
+// Mapeia cores para os níveis
+const levelColors = {
+  fatal: chalk.bgRed.white.bold,
+  error: chalk.red.bold,
+  warn: chalk.yellow.bold,
+  info: chalk.cyan.bold,
+  success: chalk.green.bold,
+  debug: chalk.magenta.bold
+};
 
-  return `${chalk.gray(`[${timestamp}]`)} ${color(level.toUpperCase())} ▶ ${message}`;
+// Função que retorna o timestamp formatado com fuso horário de São Paulo (UTC-3)
+const getFormattedTimestamp = () => {
+  return new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  }).format(new Date());
+};
+
+// Formato customizado para exibição dos logs
+const customFormat = winston.format.printf(({ level, message }) => {
+  const color = levelColors[level] || chalk.white;
+  const timestamp = chalk.gray(`[${getFormattedTimestamp()}]`);
+  const levelStr = color(level.toUpperCase().padEnd(7));
+  return `${timestamp} ${levelStr} ▶ ${message}`;
 });
 
+// Criação do logger com configurações avançadas
 const logger = winston.createLogger({
   levels,
-  level: 'info',
+  level: process.env.LOG_LEVEL || 'info',
   format: winston.format.combine(
-    winston.format.timestamp({ format: 'HH:mm:ss' }),
+    winston.format.splat(),
+    winston.format.simple(),
     customFormat
   ),
   transports: [new winston.transports.Console()]
 });
 
-logger.success = (msg) => logger.log({ level: 'success', message: msg });
-logger.info = (msg) => logger.log({ level: 'info', message: msg });
-logger.warn = (msg) => logger.log({ level: 'warn', message: msg });
-logger.error = (msg) => logger.log({ level: 'error', message: msg });
+// Atalhos elegantes para cada nível
+for (const level of Object.keys(levels)) {
+  logger[level] = (msg) => logger.log({ level, message: msg });
+}
 
 module.exports = logger;
-
