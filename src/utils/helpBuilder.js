@@ -11,8 +11,8 @@ function buildHelpPages(commands, options = {}) {
     const comandosPagina = comandos.slice(inicio, fim);
 
     const embed = new options.EmbedBuilder()
-      .setColor(options.colors.primary)
-      .setTitle(`${options.emojis.info || '📖'} Lista de Comandos`)
+      .setColor(options.colors.green)
+      .setTitle('Lista de Comandos')
       .setDescription('Use `/help <comando>` para detalhes.')
       .addFields(
         ...comandosPagina.map(cmd => ({
