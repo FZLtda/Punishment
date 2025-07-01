@@ -9,7 +9,7 @@ async function setBotPresence(client) {
     status: 'dnd',
     activities: [
       {
-        name: '/help',
+        name: '.doar',
         type: 0
       }
     ]
