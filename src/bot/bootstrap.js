@@ -1,7 +1,7 @@
 const Logger = require('@logger/index');
 const client = require('@bot/client');
 const { validateEnvironment } = require('@bot/environment');
-const { connectMongo } = require('@data/database');
+const { connectMongo } = require('@database');
 const { loadCommands } = require('@loadCommands/loader');
 const { loadEvents } = require('@loadEvents/loader');
 const { loadSlashCommands } = require('@loadSlashCommands/loader');
