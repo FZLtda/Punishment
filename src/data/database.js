@@ -1,17 +1,28 @@
 const mongoose = require('mongoose');
-const Logger = require('@logger');
+const Logger = require('@logger/index');
 
-async function connect() {
+async function connectMongo() {
+  const uri = process.env.MONGO_URI;
+
+  if (!uri) {
+    Logger.error('MONGO_URI não foi definido no ambiente.');
+    process.exit(1);
+  }
+
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true
     });
+
     Logger.success('Conectado ao MongoDB com sucesso!');
-  } catch (err) {
-    Logger.error(`Erro ao conectar ao MongoDB: ${err.message}`);
+    mongoose.connection.on('disconnected', () =>
+      Logger.warn('Conexão MongoDB foi encerrada.')
+    );
+  } catch (error) {
+    Logger.error(`Falha ao conectar ao MongoDB: ${error.message}`);
     process.exit(1);
   }
 }
 
-module.exports = { connect };
+module.exports = { connectMongo };
