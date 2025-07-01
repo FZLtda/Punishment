@@ -57,6 +57,7 @@
     "@config": "src/config",
     "@data": "src/data",
     "@commands": "src/commands",
+    "@models": "src/models",
     "@middleware": "src/bot/middleware",
     "@logger": "src/logger",
     "@handlers": "src/handlers",
