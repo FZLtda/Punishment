@@ -40,7 +40,7 @@ module.exports = {
         .setColor(colors.green)
         .setDescription(`${emojis.success} O prefixo foi alterado para \`${novoPrefixo}\` com sucesso!`)
         .setFooter({
-          text: `Prefixo ajustado por ${message.author.username}`,
+          text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true })
         })
         .setTimestamp();
