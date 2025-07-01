@@ -1,16 +1,23 @@
-const { 
-   Client, 
-   GatewayIntentBits, 
-   Partials, 
-   Collection } = require('discord.js');
+'use strict';
 
+const { 
+  Client, 
+  GatewayIntentBits, 
+  Partials, 
+  Collection 
+} = require('discord.js');
+
+/**
+ * @type {Client}
+ * Cliente principal do Discord com intents e partials definidos
+ */
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildModeration
   ],
   partials: [
@@ -22,7 +29,10 @@ const client = new Client({
   ]
 });
 
-// Collections e estruturas auxiliares
+/**
+ * Estruturas auxiliares para comandos e interações
+ * Facilitam o carregamento modular e a execução dinâmica
+ */
 client.commands = new Collection();
 client.slashCommands = new Collection();
 client.buttons = new Collection();
