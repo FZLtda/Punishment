@@ -1,7 +1,6 @@
 const { EmbedBuilder } = require('discord.js');
 const { getPrefix } = require('@utils/prefixManager');
 const { paginate } = require('@utils/paginator');
-const { DEFAULT_PREFIX } = require('@config/constants');
 
 // Categorias organizadas (sem ícones por enquanto)
 const categories = {
