@@ -1,15 +1,14 @@
 'use strict';
 
-const { 
-  Client, 
-  GatewayIntentBits, 
-  Partials, 
-  Collection 
+const {
+  Client,
+  GatewayIntentBits,
+  Partials,
+  Collection
 } = require('discord.js');
 
 /**
- * @type {Client}
- * Cliente principal do Discord com intents e partials definidos
+ * Instância principal do bot com configurações otimizadas para produção
  */
 const client = new Client({
   intents: [
@@ -26,17 +25,20 @@ const client = new Client({
     Partials.GuildMember,
     Partials.Message,
     Partials.Reaction
-  ]
+  ],
+  presence: {
+    status: 'dnd',
+    activities: [{ name: '/help', type: 0 }]
+  }
 });
 
 /**
- * Estruturas auxiliares para comandos e interações
- * Facilitam o carregamento modular e a execução dinâmica
+ * Coleções auxiliares para modularidade e cache
  */
-client.commands = new Collection();
-client.slashCommands = new Collection();
-client.buttons = new Collection();
-client.contexts = new Collection();
-client.cooldowns = new Collection();
+client.commands = new Collection();         // Comandos de prefixo
+client.slashCommands = new Collection();    // Comandos de barra
+client.buttons = new Collection();          // Botões interativos
+client.contexts = new Collection();         // Menus contextuais
+client.cooldowns = new Collection();        // Controle de cooldown por comando
 
 module.exports = client;
