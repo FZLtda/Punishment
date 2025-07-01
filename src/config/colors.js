@@ -1,5 +1,5 @@
 module.exports = {
-  red: '#5865F2',
-  yellow: '#ED4245',
-  green: '#57F287'
+  red: '#FE3838',
+  yellow: '#F1C40F',
+  green: '#2ECC71'
 };
