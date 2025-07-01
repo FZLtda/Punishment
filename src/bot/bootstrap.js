@@ -1,4 +1,13 @@
-const Logger = require('@logger/index');
+'use strict';
+
+/**
+ * Inicializa todos os sistemas necessários do bot
+ * @async
+ * @function bootstrap
+ * @returns {Promise<void>}
+ */
+
+const Logger = require('@logger');
 const client = require('@bot/client');
 const { validateEnvironment } = require('@bot/environment');
 const { connectMongo } = require('@database');
@@ -21,16 +30,18 @@ module.exports = async function bootstrap() {
     Logger.info('Carregando eventos...');
     await loadEvents(client);
 
-    Logger.info('Carregando slash commands...');
+    Logger.info('Carregando Slash Commands...');
     await loadSlashCommands(client);
 
-    Logger.info('Carregando interações de botão...');
+    Logger.info('Carregando interações de botões...');
     await loadButtonInteractions(client);
 
     Logger.info('Conectando ao Discord...');
     await client.login(process.env.TOKEN);
+
+    Logger.success('Punishment inicializado com sucesso!');
   } catch (err) {
-    Logger.error(`Falha ao inicializar o bot: ${err.message}`);
+    Logger.fatal(`Falha crítica na inicialização: ${err.stack || err.message}`);
     process.exit(1);
   }
 };
