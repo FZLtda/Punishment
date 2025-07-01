@@ -24,15 +24,15 @@ module.exports = {
       if (!cmd) {
         return interaction.reply({
           embeds: [new EmbedBuilder()
-            .setColor(colors.warning)
+            .setColor(colors.yellow)
             .setAuthor({ name: 'Comando não encontrado.', iconURL: emojis.attention })],
           ephemeral: true
         });
       }
 
       const embed = new EmbedBuilder()
-        .setColor(colors.primary)
-        .setTitle(`${emojis.info || 'ℹ️'} /${cmd.data.name}`)
+        .setColor(colors.green)
+        .setTitle(`${cmd.data.name}`)
         .setDescription(cmd.data.description || 'Sem descrição.')
         .setFooter({
           text: 'Punishment • Help',
