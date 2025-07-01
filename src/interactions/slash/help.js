@@ -1,84 +1,54 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { colors, emojis } = require('@config');
+const {
+  SlashCommandBuilder,
+  EmbedBuilder
+} = require('discord.js');
+
+const { buildHelpPages } = require('@utils/helpBuilder');
+const { paginate } = require('@utils/paginator');
+const { emojis, colors } = require('@config');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('help')
-    .setDescription('Exibe informações detalhadas sobre os comandos disponíveis.')
-    .addStringOption(option =>
-      option
-        .setName('comando')
-        .setDescription('Nome exato de um comando para obter informações.')
-        .setRequired(false)
+    .setDescription('Exibe informações sobre os comandos.')
+    .addStringOption(opt =>
+      opt.setName('comando').setDescription('Ver detalhes de um comando')
     ),
 
   async execute(interaction) {
-    const commands = interaction.client.slashCommands;
+    const nome = interaction.options.getString('comando');
+    const comandos = interaction.client.slashCommands;
 
-    if (!commands || commands.size === 0) {
-      const embedErro = new EmbedBuilder()
-        .setColor(colors.warning)
-        .setAuthor({
-          name: 'Nenhum comando foi carregado no sistema.',
-          iconURL: emojis.icon_attention || null
+    if (nome) {
+      const cmd = comandos.get(nome.toLowerCase());
+      if (!cmd) {
+        return interaction.reply({
+          embeds: [new EmbedBuilder()
+            .setColor(colors.warning)
+            .setAuthor({ name: 'Comando não encontrado.', iconURL: emojis.attention })],
+          ephemeral: true
         });
-
-      return interaction.reply({ embeds: [embedErro], ephemeral: true });
-    }
-
-    const nomeComando = interaction.options.getString('comando');
-
-    // Caso o usuário tenha informado um comando específico
-    if (nomeComando) {
-      const command = commands.get(nomeComando.toLowerCase());
-
-      if (!command) {
-        const embedErro = new EmbedBuilder()
-          .setColor(colors.warning)
-          .setAuthor({
-            name: 'Comando não encontrado no sistema.',
-            iconURL: emojis.icon_attention || null
-          });
-
-        return interaction.reply({ embeds: [embedErro], ephemeral: true });
       }
 
-      const embedDetalhes = new EmbedBuilder()
+      const embed = new EmbedBuilder()
         .setColor(colors.primary)
-        .setTitle(`${emojis.info || 'ℹ️'} Detalhes do Comando: /${command.data.name}`)
-        .setDescription(command.data.description || 'Sem descrição disponível.')
-        .addFields(
-          {
-            name: `${emojis.arrow || '➡️'} Uso`,
-            value: `\`/${command.data.name}\``,
-            inline: true
-          }
-        )
+        .setTitle(`${emojis.info || 'ℹ️'} /${cmd.data.name}`)
+        .setDescription(cmd.data.description || 'Sem descrição.')
         .setFooter({
-          text: 'Punishment',
+          text: 'Punishment • Help',
           iconURL: interaction.client.user.displayAvatarURL()
         });
 
-      return interaction.reply({ embeds: [embedDetalhes], ephemeral: true });
+      return interaction.reply({ embeds: [embed], ephemeral: true });
     }
 
-    // Lista de comandos disponíveis
-    const embedLista = new EmbedBuilder()
-      .setColor(colors.primary)
-      .setTitle(`${emojis.info || 'ℹ️'} Lista de Comandos`)
-      .setDescription('Use `/help <comando>` para ver detalhes individuais.')
-      .addFields(
-        ...[...commands.values()].map(cmd => ({
-          name: `/${cmd.data.name}`,
-          value: cmd.data.description || 'Sem descrição.',
-          inline: true
-        }))
-      )
-      .setFooter({
-        text: 'Punishment',
-        iconURL: interaction.client.user.displayAvatarURL()
-      });
+    const pages = buildHelpPages(comandos, {
+      EmbedBuilder,
+      colors,
+      emojis,
+      clientAvatar: interaction.client.user.displayAvatarURL()
+    });
 
-    return interaction.reply({ embeds: [embedLista], ephemeral: true });
+    return paginate(interaction, pages, { timeout: 60_000 });
   }
 };
