@@ -55,7 +55,7 @@
     "@events": "src/events",
     "@client": "src/client",
     "@config": "src/config",
-    "@database": "src/data",
+    "@database": "src/database",
     "@commands": "src/commands",
     "@models": "src/models",
     "@middleware": "src/bot/middleware",
