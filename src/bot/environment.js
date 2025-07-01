@@ -1,23 +1,47 @@
-const Logger = require('@logger/index');
+'use strict';
 
-const REQUIRED_ENV_VARS = ['TOKEN', 'MONGO_URI'];
+const Logger = require('@logger');
 
+/**
+ * Lista de variáveis de ambiente obrigatórias agrupadas por responsabilidade
+ */
+const REQUIRED_ENV_VARS = {
+  Discord: ['TOKEN', 'CLIENT_ID', 'OWNER_ID', 'DEFAULT_PREFIX', 'COMMAND_SCOPE'],
+  MongoDB: ['MONGO_URI'],
+  Stripe: ['STRIPE_SECRET_KEY'],
+  Webhook: ['WEBHOOK', 'LOG_CHANNEL'],
+  Logging: ['LOG_LEVEL']
+};
+
+/**
+ * Valida se todas as variáveis de ambiente obrigatórias estão definidas.
+ * Encerra o processo em caso de ausência de qualquer uma.
+ * 
+ * @function validateEnvironment
+ * @returns {void}
+ */
 function validateEnvironment() {
-  let allGood = true;
+  const missing = [];
 
-  for (const variable of REQUIRED_ENV_VARS) {
-    if (!process.env[variable]) {
-      Logger.error(`Variável de ambiente ausente: ${variable}`);
-      allGood = false;
+  for (const [group, keys] of Object.entries(REQUIRED_ENV_VARS)) {
+    for (const key of keys) {
+      if (!process.env[key]) {
+        missing.push({ key, group });
+      }
     }
   }
 
-  if (!allGood) {
-    Logger.warn('Verifique o arquivo .env e defina todas as variáveis necessárias.');
+  if (missing.length > 0) {
+    missing.forEach(({ key, group }) => {
+      Logger.error(`Variável ausente [${group}]: ${key}`);
+    });
+
+    Logger.fatal(`Inicialização abortada. Variáveis faltando: ${missing.map(m => m.key).join(', ')}`);
+    Logger.warn('Verifique seu arquivo .env e defina as variáveis necessárias.');
     process.exit(1);
   }
 
-  Logger.success('Variáveis de ambiente validadas com sucesso.');
+  Logger.success('Todas as variáveis de ambiente obrigatórias foram validadas com sucesso.');
 }
 
 module.exports = {
