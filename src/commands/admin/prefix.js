@@ -15,7 +15,7 @@ module.exports = {
 
     if (!novoPrefixo || novoPrefixo.length > 5) {
       const embedErro = new EmbedBuilder()
-        .setColor(colors.warning)
+        .setColor(colors.yellow)
         .setAuthor({
           name: 'Forneça um prefixo válido com até 5 caracteres.',
           iconURL: emojis.attention
