@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Inicializa todos os sistemas necessários do bot
+ * Inicializa todos os sistemas essenciais do bot
  * @async
  * @function bootstrap
  * @returns {Promise<void>}
@@ -18,39 +18,39 @@ const { loadButtonInteractions } = require('@loadButtonInteractions/loader');
 
 module.exports = async function bootstrap() {
   try {
-    // Validação
-    Logger.info('[INIT] Validando variáveis de ambiente...');
+    // Validação do ambiente
+    Logger.info('Validando variáveis de ambiente...');
     validateEnvironment();
 
     if (!process.env.TOKEN) {
-      Logger.fatal('A variável de ambiente TOKEN está ausente. Verifique o .env.');
+      Logger.fatal('Variável TOKEN ausente. Verifique o arquivo .env.');
       process.exit(1);
     }
 
-    // Banco de dados
-    Logger.info('[INIT] Conectando ao MongoDB...');
+    // Conexão com a base de dados
+    Logger.info('Estabelecendo conexão com o MongoDB...');
     await connectMongo();
 
-    // Componentes e recursos
-    Logger.info('[INIT] Carregando comandos...');
+    // Carregamento de estruturas
+    Logger.info('Carregando comandos de prefixo...');
     await loadCommands(client);
 
-    Logger.info('[INIT] Carregando eventos...');
+    Logger.info('Carregando eventos...');
     await loadEvents(client);
 
-    Logger.info('[INIT] Carregando Slash Commands...');
+    Logger.info('Carregando comandos de barra (slash)...');
     await loadSlashCommands(client);
 
-    Logger.info('[INIT] Carregando interações de botões...');
+    Logger.info('Carregando interações de botões...');
     await loadButtonInteractions(client);
 
-    // Conectando ao Discord
-    Logger.info('[INIT] Conectando ao Discord...');
+    // Autenticação do bot
+    Logger.info('Iniciando conexão com a API do Discord...');
     await client.login(process.env.TOKEN);
 
-    Logger.info('[OK] Punishment inicializado com sucesso!');
+    Logger.info(`Punishment autenticado com sucesso como ${client.user.tag}`);
   } catch (err) {
-    Logger.fatal(`[FATAL] Falha crítica na inicialização: ${err.stack || err.message}`);
+    Logger.fatal(`Erro durante o processo de bootstrap: ${err.stack || err.message}`);
     process.exit(1);
   }
 };
