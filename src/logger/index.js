@@ -3,7 +3,6 @@
 const winston = require('winston');
 const chalk = require('chalk');
 
-// Níveis personalizados de log
 const levels = {
   fatal: 0,
   error: 1,
@@ -13,8 +12,7 @@ const levels = {
   debug: 5
 };
 
-// Cores para cada nível
-const levelColors = {
+const colors = {
   fatal: chalk.bgRed.white.bold,
   error: chalk.red.bold,
   warn: chalk.yellow.bold,
@@ -23,7 +21,7 @@ const levelColors = {
   debug: chalk.magenta.bold
 };
 
-// Timestamp com fuso horário de São Paulo
+// Timestamp com fuso horário São Paulo
 const getTimestamp = () => {
   return new Intl.DateTimeFormat('pt-BR', {
     timeZone: 'America/Sao_Paulo',
@@ -36,12 +34,11 @@ const getTimestamp = () => {
   }).format(new Date());
 };
 
-// Formato customizado com cores e timestamp
+// Formato customizado com chalk direto (não usa simple(), nem colorize())
 const customFormat = winston.format.printf(({ level, message }) => {
   const timestamp = chalk.gray(`[${getTimestamp()}]`);
-  const color = levelColors[level] || ((txt) => txt);
-  const label = color(level.toUpperCase().padEnd(7));
-  return `${timestamp} ${label} ▶ ${message}`;
+  const coloredLevel = colors[level] ? colors[level](level.toUpperCase().padEnd(7)) : level.toUpperCase();
+  return `${timestamp} ${coloredLevel} ▶ ${message}`;
 });
 
 // Criação do logger
@@ -49,18 +46,14 @@ const logger = winston.createLogger({
   levels,
   level: process.env.LOG_LEVEL || 'info',
   format: winston.format.combine(
-    winston.format.timestamp(),
     winston.format.errors({ stack: true }),
+    winston.format.splat(),
     customFormat
   ),
-  transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(customFormat)
-    })
-  ]
+  transports: [new winston.transports.Console()]
 });
 
-// Métodos diretos para cada nível
+// Atalhos diretos
 for (const level of Object.keys(levels)) {
   logger[level] = (msg) => logger.log({ level, message: msg });
 }
