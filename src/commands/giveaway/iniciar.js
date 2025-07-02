@@ -4,7 +4,7 @@ const { EmbedBuilder, ChannelType } = require('discord.js');
 const Giveaway = require('@models/Giveaway');
 const ms = require('ms');
 const { colors, emojis } = require('@config');
-const Logger = require('@logger');
+const logger = require('@logger');
 
 module.exports = {
   name: 'sorteio',
@@ -16,44 +16,41 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message, args) {
+    const conteudo = message.content.trim();
+
+    const regex = /["“](.+?)["”]\s+(\d+)\s+(\S+)\s+<#(\d+)>/;
+    const match = conteudo.match(regex);
+
+    if (!match) {
+      logger.warn(`[SORTEIO] Formato inválido por ${message.author.tag} (${message.author.id})`);
+      return erro(message, 'Formato inválido. Use: `!sorteio "Nitro 1 mês" 1 30m #sorteios`');
+    }
+
+    const [_, premio, vencedoresRaw, duracaoRaw, canalId] = match;
+    const vencedores = parseInt(vencedoresRaw, 10);
+    const duracao = ms(duracaoRaw);
+    const canal = message.guild.channels.cache.get(canalId);
+
+    if (!premio || !vencedores || !duracao || !canal) {
+      logger.warn(`[SORTEIO] Dados inválidos: premio=${premio}, vencedores=${vencedores}, duracao=${duracao}, canal=${canalId}`);
+      return erro(message, 'Parâmetros inválidos. Verifique todos os campos.');
+    }
+
+    if (canal.type !== ChannelType.GuildText) {
+      logger.warn(`[SORTEIO] Canal inválido (${canalId}) por ${message.author.tag}`);
+      return erro(message, 'O canal mencionado precisa ser um canal de texto.');
+    }
+
+    const terminaEm = new Date(Date.now() + duracao);
+
+    const embed = new EmbedBuilder()
+      .setTitle('🎉 Sorteio Iniciado!')
+      .setDescription(`Prêmio: **${premio}**\nReaja com 🎉 para participar!\nTermina <t:${Math.floor(terminaEm.getTime() / 1000)}:R>`)
+      .setColor(colors.red)
+      .setFooter({ text: `Serão ${vencedores} vencedor(es)!`, iconURL: message.client.user.displayAvatarURL() })
+      .setTimestamp();
+
     try {
-      // Validação de argumentos com aspas
-      const quoteStart = args.findIndex(arg => /^["“]/.test(arg));
-      const quoteEnd = args.findIndex((arg, i) => i > quoteStart && /["”]$/.test(arg));
-
-      if (quoteStart === -1 || quoteEnd === -1)
-        return erro(message, 'Prêmio inválido. Use aspas, ex: `"Nitro 1 mês"`');
-
-      const prize = args.slice(quoteStart, quoteEnd + 1).join(' ').replace(/^["“]|["”]$/g, '').trim();
-      const winnersRaw = args[quoteEnd + 1];
-      const durationRaw = args[quoteEnd + 2];
-      const canal = message.mentions.channels.first();
-
-      const winners = parseInt(winnersRaw, 10);
-      const duration = ms(durationRaw);
-
-      if (!prize || isNaN(winners) || winners <= 0 || !duration || !canal)
-        return erro(message, 'Uso incorreto. Exemplo: `!sorteio "Nitro 1 mês" 1 30m #sorteios`');
-
-      if (canal.type !== ChannelType.GuildText)
-        return erro(message, 'O canal mencionado precisa ser de texto.');
-
-      const endsAt = new Date(Date.now() + duration);
-
-      const embed = new EmbedBuilder()
-        .setTitle('🎉 Sorteio Iniciado!')
-        .setDescription([
-          `Prêmio: **${prize}**`,
-          `Reaja com 🎉 para participar!`,
-          `Término: <t:${Math.floor(endsAt.getTime() / 1000)}:R>`
-        ].join('\n'))
-        .setColor(colors.red)
-        .setFooter({
-          text: `Serão ${winners} vencedor(es)!`,
-          iconURL: message.client.user.displayAvatarURL()
-        })
-        .setTimestamp();
-
       const sorteioMsg = await canal.send({ embeds: [embed] });
       await sorteioMsg.react('🎉');
 
@@ -61,23 +58,18 @@ module.exports = {
         guildId: message.guild.id,
         channelId: canal.id,
         messageId: sorteioMsg.id,
-        prize,
-        winners,
-        endsAt,
-        createdBy: message.author.id,
-        status: 'ativo',
-        participants: []
+        prize: premio,
+        winners: vencedores,
+        endsAt: terminaEm,
+        createdBy: message.author.id
       });
 
-      Logger.success(`[SORTEIO] Sorteio criado por ${message.author.tag} em ${canal.name} (${message.guild.name})`);
-
-      return message.channel.send({
-        content: `${emojis.success} Sorteio iniciado com sucesso em ${canal}.`,
-        allowedMentions: { repliedUser: false }
-      });
+      const confirm = ` ${emojis.success} Sorteio criado com sucesso em ${canal}!`;
+      logger.info(`[SORTEIO] Novo sorteio criado por ${message.author.tag}: "${premio}" em ${canal.name}`);
+      return message.channel.send({ content: confirm });
 
     } catch (err) {
-      Logger.error(`[SORTEIO] Erro ao criar sorteio: ${err.stack || err.message}`);
+      logger.error(`[SORTEIO] Erro ao criar sorteio: ${err.stack || err.message}`);
       return erro(message, 'Não foi possível criar o sorteio devido a um erro interno.');
     }
   }
