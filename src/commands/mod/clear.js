@@ -1,3 +1,5 @@
+'use strict';
+
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 
@@ -29,13 +31,11 @@ module.exports = {
       const mensagensParaApagar = Array.from(filtradas.values()).slice(0, quantidade);
       const apagadas = await message.channel.bulkDelete(mensagensParaApagar, true);
 
-      const embedSucesso = new EmbedBuilder()
-        .setColor(colors.green)
-        .setDescription(`${emojis.success} ${apagadas.size} mensagens foram apagadas ${alvo ? `de ${alvo}` : ''}.`)
-        .setFooter({ text: `Punishment • Limpeza`, iconURL: message.client.user.displayAvatarURL() })
-        .setTimestamp();
+      const resposta = await message.channel.send({
+        content: `${emojis.success} ${apagadas.size} mensagens foram apagadas${alvo ? ` de ${alvo}.` : '.'}`,
+        allowedMentions: { users: [] }
+      });
 
-      const resposta = await message.channel.send({ embeds: [embedSucesso] });
       setTimeout(() => resposta.delete().catch(() => null), 4000);
 
     } catch (error) {
