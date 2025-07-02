@@ -58,6 +58,7 @@
     "@database": "src/database",
     "@commands": "src/commands",
     "@models": "src/models",
+    "@modules": "src/modules",
     "@core": "src/core",
     "@middleware": "src/bot/middleware",
     "@logger": "src/logger",
