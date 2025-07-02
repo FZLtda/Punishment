@@ -45,7 +45,7 @@ module.exports = {
           { name: '🧩 Node.js', value: `v${process.version}`, inline: true }
         )
         .setFooter({
-          text: `${client.user?.username || 'Bot'} • status`,
+          text: `${client.user?.username}`,
           iconURL: client.user?.displayAvatarURL()
         })
         .setTimestamp();
