@@ -59,6 +59,7 @@
     "@commands": "src/commands",
     "@models": "src/models",
     "@modules": "src/modules",
+    "@tasks": "src/tasks",
     "@core": "src/core",
     "@middleware": "src/bot/middleware",
     "@logger": "src/logger",
