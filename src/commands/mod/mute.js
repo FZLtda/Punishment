@@ -1,5 +1,8 @@
+'use strict';
+
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
+const { sendModLog } = require('@modules/modlog');
 
 module.exports = {
   name: 'mute',
@@ -26,9 +29,9 @@ module.exports = {
       await membro.timeout(duracao, motivo);
 
       const embed = new EmbedBuilder()
-        .setTitle(${emojis.mute} Punição aplicada)
+        .setTitle(`${emojis.mute} Punição aplicada`)
         .setColor(colors.red)
-        .setDescription(${membro} (\`${membro.id}\`) foi silenciado.)
+        .setDescription(`${membro} (\`${membro.id}\`) foi silenciado.`)
         .addFields(
           { name: 'Duração', value: `\`${tempo}\``, inline: true },
           { name: 'Motivo', value: `\`${motivo}\``, inline: true }
@@ -40,12 +43,22 @@ module.exports = {
         })
         .setTimestamp();
 
-      return message.channel.send({ embeds: [embed] });
+      await message.channel.send({ embeds: [embed] });
+
+      // Envia log de moderação
+      await sendModLog(message.guild, {
+        action: 'Mute',
+        target: membro.user,
+        moderator: message.author,
+        reason: motivo,
+        extraFields: [{ name: 'Duração', value: tempo, inline: true }]
+      });
+
     } catch (error) {
       console.error(error);
       return sendError(message, 'Não foi possível silenciar o usuário devido a um erro inesperado.');
     }
-  },
+  }
 };
 
 function convertToMilliseconds(tempo) {
