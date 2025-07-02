@@ -24,7 +24,7 @@ async function loadEvents(client) {
         client.on(event.name, (...args) => event.execute(...args, client));
       }
 
-      Logger.success(`Evento registrado: ${event.name}`);
+      Logger.info(`Evento registrado: ${event.name}`);
     } catch (err) {
       Logger.error(`Erro ao carregar evento ${file}: ${err.message}`);
     }
