@@ -33,7 +33,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle(`🎉 Sorteio Iniciado!`)
       .setDescription(`Prêmio: **${prize}**\nReaja com 🎉 para participar!\nTermina <t:${Math.floor(endsAt / 1000)}:R>`)
-      .setColor(colors.purple)
+      .setColor(colors.red)
       .setFooter({ text: `Serão ${winners} vencedor(es)!`, iconURL: message.client.user.displayAvatarURL() })
       .setTimestamp();
 
