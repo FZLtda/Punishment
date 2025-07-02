@@ -31,7 +31,7 @@ class Monitor extends EventEmitter {
    * @param {string} tag - Tag do bot conectado
    */
   onReady(tag) {
-    Logger.info('[MONITOR] Notificação enviada via webhook');
+    Logger.info('Notificação enviada via webhook');
     reportErrorToWebhook('Punishment Status', `**${tag}** foi iniciado com sucesso.`);
   }
 
