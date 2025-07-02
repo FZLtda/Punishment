@@ -2,6 +2,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
+const { sendModLog } = require('@modules/modlog');
 
 module.exports = {
   name: 'clear',
@@ -32,11 +33,19 @@ module.exports = {
       const apagadas = await message.channel.bulkDelete(mensagensParaApagar, true);
 
       const resposta = await message.channel.send({
-        content: `${emojis.success} ${apagadas.size} mensagens foram apagadas${alvo ? ` de ${alvo}.` : '.'}`,
+        content: `${emojis.success} ${apagadas.size} mensagens foram apagadas${alvo ? ` de ${alvo}` : ''}.`,
         allowedMentions: { users: [] }
       });
 
       setTimeout(() => resposta.delete().catch(() => null), 4000);
+
+      // Log da ação
+      await sendModLog(message.guild, {
+        action: 'Clear',
+        moderator: message.author,
+        channel: message.channel,
+        extra: `${apagadas.size} mensagens apagadas${alvo ? ` de ${alvo.tag}` : ''}`
+      });
 
     } catch (error) {
       console.error(error);
