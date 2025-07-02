@@ -22,7 +22,7 @@ async function loadSlashCommands(client) {
       client.slashCommands.set(command.data.name, command);
       slashCommands.push(command.data.toJSON());
 
-      Logger.success(`Slash carregado: /${command.data.name}`);
+      Logger.info(`Slash carregado: /${command.data.name}`);
     } catch (err) {
       Logger.error(`Erro ao carregar slash ${file}: ${err.message}`);
     }
@@ -42,7 +42,7 @@ async function loadSlashCommands(client) {
 
       await rest.put(route, { body: slashCommands });
 
-      Logger.success('Slash commands registrados com sucesso!');
+      Logger.info('Slash commands registrados com sucesso!');
     } catch (err) {
       Logger.error(`Erro ao registrar slash commands: ${err.message}`);
     }
