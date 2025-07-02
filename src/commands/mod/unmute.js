@@ -25,7 +25,7 @@ module.exports = {
       await membro.timeout(null);
 
       const embedSucesso = new EmbedBuilder()
-        .setTitle('Punição removida')
+        .setTitle(`${emojis.unmute} Punição removida`)
         .setColor(colors.green)
         .setDescription(`${membro} (\`${membro.id}\`) teve o mute removido com sucesso.`)
         .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
