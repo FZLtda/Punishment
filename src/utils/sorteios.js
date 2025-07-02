@@ -26,7 +26,7 @@ async function finalizarSorteio(giveaway, client) {
         ? `Prêmio: **${giveaway.prize}**\nVencedores: ${ganhadores.join(', ')}`
         : `Prêmio: **${giveaway.prize}**\nSem participantes suficientes. 😢`
     )
-    .setColor(colors.purple)
+    .setColor(colors.red)
     .setTimestamp();
 
   mensagem.edit({ embeds: [embed] }).catch(() => null);
