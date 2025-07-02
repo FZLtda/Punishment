@@ -27,7 +27,7 @@ async function loadCommands(client) {
         }
 
         client.commands.set(command.name, command);
-        Logger.success(`Comando carregado: ${category}/${command.name}`);
+        Logger.info(`Comando carregado: ${category}/${command.name}`);
       } catch (err) {
         Logger.error(`Erro ao carregar ${filePath}: ${err.message}`);
       }
