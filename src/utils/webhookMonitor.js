@@ -1,5 +1,9 @@
-const { WebhookClient } = require('discord.js');
+'use strict';
 
+const { WebhookClient } = require('discord.js');
+const { colors } = require('@config');
+
+const LOGO_BOT = process.env.LOGO_BOT;
 const MONITOR_WEBHOOK_URL = process.env.MONITOR_WEBHOOK_URL;
 
 /**
@@ -16,14 +20,17 @@ async function reportErrorToWebhook(title, content) {
 
   try {
     await webhook.send({
-      username: '🛡️ Monitor',
-      avatarURL: 'https://i.imgur.com/ZoYQm4J.png', // Opcional
+      username: 'Punishment',
+      avatarURL: LOGO_BOT,
       embeds: [
         {
-          title: `🚨 ${title}`,
+          title: `${title}`,
           description,
           color: 0xff5555,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
+          footer: {
+            text: 'Punishment'
+          }
         }
       ]
     });
