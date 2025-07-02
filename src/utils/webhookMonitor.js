@@ -26,7 +26,7 @@ async function reportErrorToWebhook(title, content) {
         {
           title: `${title}`,
           description,
-          color: 0xff5555,
+          color: colors.green,
           timestamp: new Date().toISOString(),
           footer: {
             text: 'Punishment'
