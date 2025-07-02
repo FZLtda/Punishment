@@ -27,16 +27,11 @@ module.exports = {
         { upsert: true, new: true }
       );
 
-      const embed = new EmbedBuilder()
-        .setColor(colors.green)
-        .setDescription(`${emojis.success} Canal de log definido para ${canal}.`)
-        .setFooter({
-          text: 'Punishment • Configuração de Log',
-          iconURL: message.client.user.displayAvatarURL()
-        })
-        .setTimestamp();
-
-      return message.channel.send({ embeds: [embed] });
+      // Mensagem de confirmação
+      return message.channel.send({
+        content: `${emojis.success} Canal de log definido para ${canal}.`,
+        allowedMentions: { parse: [] }
+      });
 
     } catch (error) {
       console.error(error);
