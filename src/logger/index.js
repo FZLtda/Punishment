@@ -5,82 +5,63 @@ const path = require('path');
 const winston = require('winston');
 const moment = require('moment-timezone');
 
-// Diretório de logs
+// Diretório de logs centralizado
 const logDir = path.resolve(__dirname, '../../logs');
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir, { recursive: true });
 }
 
-// Timestamp com timezone de São Paulo
+// Timestamp com timezone fixo
 const getTimestamp = () =>
   moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm:ss');
 
-// Cores personalizadas por nível para Console
-winston.addColors({
-  error: 'bold red',
+// Níveis e cores personalizadas
+const levels = {
+  fatal: 0,
+  error: 1,
+  warn: 2,
+  info: 3,
+  success: 4,
+  debug: 5
+};
+
+const colors = {
+  fatal: 'bold red',
+  error: 'red',
   warn: 'yellow',
   info: 'cyan',
-  debug: 'gray',
-  success: 'green'
-});
+  success: 'green',
+  debug: 'gray'
+};
 
-// Formato para arquivos (sem cor)
+winston.addColors(colors);
+
+// Formatos
 const fileFormat = winston.format.combine(
   winston.format.timestamp({ format: getTimestamp }),
-  winston.format.printf(({ level, message, timestamp }) => {
-    return `[${timestamp}] [${level.toUpperCase()}]: ${message}`;
-  })
+  winston.format.printf(({ level, message, timestamp }) => `[${timestamp}] [${level.toUpperCase()}]: ${message}`)
 );
 
-// Formato colorido para console
 const consoleFormat = winston.format.combine(
   winston.format.colorize({ all: true }),
   winston.format.timestamp({ format: getTimestamp }),
-  winston.format.printf(({ level, message, timestamp }) => {
-    return `[${timestamp}] [${level}]: ${message}`;
-  })
+  winston.format.printf(({ level, message, timestamp }) => `[${timestamp}] [${level}]: ${message}`)
 );
 
-// Criação do logger principal
+// Logger principal configurado
 const logger = winston.createLogger({
-  levels: {
-    fatal: 0,
-    error: 1,
-    warn: 2,
-    info: 3,
-    success: 4,
-    debug: 5
-  },
+  levels,
   level: process.env.LOG_LEVEL || 'debug',
+  format: winston.format.json(),
   transports: [
-    new winston.transports.Console({
-      format: consoleFormat
-    }),
-    new winston.transports.File({
-      filename: path.join(logDir, 'fatal.log'),
-      level: 'fatal',
+    new winston.transports.Console({ format: consoleFormat }),
+
+    ...Object.keys(levels).map((level) => new winston.transports.File({
+      filename: path.join(logDir, `${level}.log`),
+      level,
       format: fileFormat
-    }),
-    new winston.transports.File({
-      filename: path.join(logDir, 'error.log'),
-      level: 'error',
-      format: fileFormat
-    }),
-    new winston.transports.File({
-      filename: path.join(logDir, 'warn.log'),
-      level: 'warn',
-      format: fileFormat
-    }),
-    new winston.transports.File({
-      filename: path.join(logDir, 'info.log'),
-      level: 'info',
-      format: fileFormat
-    }),
-    new winston.transports.File({
-      filename: path.join(logDir, 'debug.log'),
-      level: 'debug',
-      format: fileFormat
-    }),
+    })),
+
     new winston.transports.File({
       filename: path.join(logDir, 'combined.log'),
       format: fileFormat
@@ -89,7 +70,7 @@ const logger = winston.createLogger({
   exitOnError: false
 });
 
-// Atalhos padronizados
+// Interface padronizada (com blindagem)
 const log = {
   debug: (msg) => logger.debug(msg),
   info: (msg) => logger.info(msg),
