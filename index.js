@@ -31,9 +31,9 @@ process
 // Processo de inicialização principal
 (async () => {
   try {
-    Logger.info('[BOOT] Inicializando bootstrap do bot...');
+    Logger.info('Inicializando bootstrap do bot...');
     await bootstrap();
-    Logger.success('[BOOT] Bootstrap concluído com êxito. Bot operacional.');
+    Logger.success('Bootstrap concluído com êxito. Punishment operacional.');
   } catch (error) {
     Logger.fatal(`Erro durante a inicialização do bot: ${error.stack || error}`);
     reportErrorToWebhook('Erro na inicialização do bot', error);
