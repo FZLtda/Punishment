@@ -1,6 +1,6 @@
 'use strict';
 
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder } = require('discord.js';
 const { getSystemHealth } = require('@utils/healthMonitor');
 const { colors, emojis } = require('@config');
 const Logger = require('@logger');
