@@ -9,27 +9,50 @@ const GuildSettings = require('@models/GuildSettings');
  * @param {import('discord.js').Guild} guild
  * @param {{
  *   action: string,
- *   target: import('discord.js').User,
+ *   target?: import('discord.js').User | null,
  *   moderator: import('discord.js').User,
  *   reason?: string,
+ *   channel?: import('discord.js').TextChannel,
  *   extraFields?: { name: string, value: string, inline?: boolean }[]
  * }} options
  */
-async function sendModLog(guild, { action, target, moderator, reason = 'Não especificado.', extraFields = [] }) {
+async function sendModLog(guild, {
+  action,
+  target = null,
+  moderator,
+  reason = 'Não especificado.',
+  channel = null,
+  extraFields = []
+}) {
   try {
     const config = await GuildSettings.findOne({ guildId: guild.id });
-    if (!config || !config.logChannelId) return;
+    if (!config?.logChannelId) return;
 
-    const canal = guild.channels.cache.get(config.logChannelId);
-    if (!canal || canal.type !== ChannelType.GuildText) return;
+    const logChannel = guild.channels.cache.get(config.logChannelId);
+    if (!logChannel || logChannel.type !== ChannelType.GuildText) return;
 
     const embed = new EmbedBuilder()
       .setTitle(`🔔 Ação de moderação: ${action}`)
       .setColor(colors.red)
       .addFields(
-        { name: '👤 Usuário', value: `${target} (\`${target.id}\`)`, inline: true },
-        { name: '🛠️ Moderador', value: `${moderator} (\`${moderator.id}\`)`, inline: true },
-        { name: '📄 Motivo', value: reason, inline: false },
+        {
+          name: '👤 Usuário',
+          value: target ? `${target.tag} (\`${target.id}\`)` : 'Não especificado',
+          inline: true
+        },
+        {
+          name: '🛠️ Moderador',
+          value: `${moderator.tag} (\`${moderator.id}\`)`,
+          inline: true
+        },
+        {
+          name: '📄 Motivo',
+          value: reason,
+          inline: false
+        },
+        ...(channel
+          ? [{ name: '💬 Canal', value: `${channel}`, inline: true }]
+          : []),
         ...extraFields
       )
       .setTimestamp()
@@ -38,7 +61,7 @@ async function sendModLog(guild, { action, target, moderator, reason = 'Não esp
         iconURL: moderator.displayAvatarURL({ dynamic: true })
       });
 
-    await canal.send({ embeds: [embed] }).catch(() => null);
+    await logChannel.send({ embeds: [embed] }).catch(() => null);
   } catch (err) {
     console.error(`[ModLog] Falha ao enviar log: ${err.stack || err.message}`);
   }
