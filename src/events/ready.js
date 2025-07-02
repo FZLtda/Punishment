@@ -5,24 +5,28 @@ const Logger = require('@logger');
 const monitor = require('@core/monitor');
 
 /**
- * Evento disparado quando o bot está totalmente pronto
+ * Evento executado uma única vez quando o bot está totalmente pronto.
  * @type {import('discord.js').ClientEvents}
  */
 module.exports = {
   name: 'ready',
   once: true,
 
+  /**
+   * Executa ações de inicialização após o bot estar pronto.
+   * @param {import('discord.js').Client} client
+   */
   async execute(client) {
+    global.client = client;
+
     try {
       await setBotPresence(client);
-      Logger.info('Presença configurada com sucesso.');
+      Logger.info(`Presença definida com sucesso para ${client.user.tag}.`);
 
-      global.client = client;
       monitor.emit('ready', client.user.tag);
-
-    } catch (error) {
-      Logger.fatal(`Erro durante a configuração de presença: ${error.stack || error.message}`);
-      monitor.emit('error', 'event:ready', error);
+    } catch (err) {
+      Logger.fatal(`Falha ao configurar presença: ${err.stack || err.message}`);
+      monitor.emit('error', 'event:ready', err);
     }
   }
 };
