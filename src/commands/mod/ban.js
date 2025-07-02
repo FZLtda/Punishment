@@ -2,6 +2,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
+const { sendModLog } = require('@modules/modlog');
 
 module.exports = {
   name: 'ban',
@@ -18,7 +19,7 @@ module.exports = {
     if (!membro) return sendError(message, 'Mencione um usuário para executar esta ação.');
     if (membro.id === message.author.id) return sendError(message, 'Você não pode banir a si mesmo.');
     if (membro.id === message.guild.ownerId) return sendError(message, 'Você não pode banir o dono do servidor.');
-    if (!membro.bannable) return sendError(message, 'Este usuário não pode ser banido devido às suas permissões ou posição hierárquica.');
+    if (!membro.bannable) return sendError(message, 'Este usuário não pode ser banido devido às permissões ou hierarquia.');
 
     try {
       await membro.ban({ reason: motivo });
@@ -27,9 +28,7 @@ module.exports = {
         .setTitle(`${emojis.ban} Punição aplicada`)
         .setColor(colors.red)
         .setDescription(`${membro} (\`${membro.id}\`) foi banido permanentemente.`)
-        .addFields(
-          { name: 'Motivo', value: `\`${motivo}\``, inline: true }
-        )
+        .addFields({ name: 'Motivo', value: `\`${motivo}\`` })
         .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
         .setFooter({
           text: `${message.author.username}`,
@@ -37,7 +36,16 @@ module.exports = {
         })
         .setTimestamp();
 
-      return message.channel.send({ embeds: [embed] });
+      await message.channel.send({ embeds: [embed] });
+
+      // Log no canal de moderação
+      await sendModLog(message.guild, {
+        action: 'Ban',
+        target: membro.user,
+        moderator: message.author,
+        reason: motivo
+      });
+
     } catch (error) {
       console.error(error);
       return sendError(message, 'Não foi possível banir o usuário devido a um erro inesperado.');
