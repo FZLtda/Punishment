@@ -26,7 +26,7 @@ module.exports = {
       await membro.timeout(duracao, motivo);
 
       const embed = new EmbedBuilder()
-        .setTitle('Punição aplicada')
+        .setTitle(`${emojis.mute} Punição aplicada`)
         .setColor(colors.red)
         .setDescription(`${membro} (\`${membro.id}\`) foi silenciado.`)
         .addFields(
