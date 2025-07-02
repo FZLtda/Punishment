@@ -48,7 +48,7 @@ module.exports = async function bootstrap() {
     Logger.info('[INIT] Conectando ao Discord...');
     await client.login(process.env.TOKEN);
 
-    Logger.success('[OK] Punishment inicializado com sucesso!');
+    Logger.info('[OK] Punishment inicializado com sucesso!');
   } catch (err) {
     Logger.fatal(`[FATAL] Falha crítica na inicialização: ${err.stack || err.message}`);
     process.exit(1);
