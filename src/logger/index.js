@@ -3,7 +3,7 @@
 const winston = require('winston');
 const chalk = require('chalk');
 
-// Define os níveis personalizados
+// Níveis personalizados de log
 const levels = {
   fatal: 0,
   error: 1,
@@ -13,7 +13,7 @@ const levels = {
   debug: 5
 };
 
-// Mapeia cores para os níveis
+// Cores para cada nível
 const levelColors = {
   fatal: chalk.bgRed.white.bold,
   error: chalk.red.bold,
@@ -23,8 +23,8 @@ const levelColors = {
   debug: chalk.magenta.bold
 };
 
-// Função que retorna o timestamp formatado com fuso horário de São Paulo (UTC-3)
-const getFormattedTimestamp = () => {
+// Timestamp com fuso horário de São Paulo
+const getTimestamp = () => {
   return new Intl.DateTimeFormat('pt-BR', {
     timeZone: 'America/Sao_Paulo',
     year: 'numeric',
@@ -36,27 +36,31 @@ const getFormattedTimestamp = () => {
   }).format(new Date());
 };
 
-// Formato customizado para exibição dos logs
+// Formato customizado com cores e timestamp
 const customFormat = winston.format.printf(({ level, message }) => {
-  const color = levelColors[level] || chalk.white;
-  const timestamp = chalk.gray(`[${getFormattedTimestamp()}]`);
-  const levelStr = color(level.toUpperCase().padEnd(7));
-  return `${timestamp} ${levelStr} ▶ ${message}`;
+  const timestamp = chalk.gray(`[${getTimestamp()}]`);
+  const color = levelColors[level] || ((txt) => txt);
+  const label = color(level.toUpperCase().padEnd(7));
+  return `${timestamp} ${label} ▶ ${message}`;
 });
 
-// Criação do logger com configurações avançadas
+// Criação do logger
 const logger = winston.createLogger({
   levels,
   level: process.env.LOG_LEVEL || 'info',
   format: winston.format.combine(
-    winston.format.splat(),
-    winston.format.simple(),
+    winston.format.timestamp(),
+    winston.format.errors({ stack: true }),
     customFormat
   ),
-  transports: [new winston.transports.Console()]
+  transports: [
+    new winston.transports.Console({
+      format: winston.format.combine(customFormat)
+    })
+  ]
 });
 
-// Atalhos elegantes para cada nível
+// Métodos diretos para cada nível
 for (const level of Object.keys(levels)) {
   logger[level] = (msg) => logger.log({ level, message: msg });
 }
