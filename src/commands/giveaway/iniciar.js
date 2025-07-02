@@ -15,15 +15,14 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message, args) {
-    const [prizeQuoted, winnersRaw, durationRaw, channelMention] = args;
-    const prize = args[0]?.replace(/^["“]|["”]$/g, '') || 'Prêmio não especificado';
-
-    const winners = parseInt(winnersRaw);
-    const duration = ms(durationRaw || '');
+    const prize = args[0]?.replace(/^["“]|["”]$/g, '');
+    const winners = parseInt(args[1]);
+    const durationRaw = args[2];
+    const duration = durationRaw && ms(durationRaw);
     const canal = message.mentions.channels.first();
 
-    if (!prize || isNaN(winners) || winners <= 0 || !duration || !canal)
-      return erro(message, 'Uso incorreto. Ex: !sorteio "Nitro 1 mês" 1 30m #sorteios');
+    if (!prize || !winners || !duration || !canal)
+      return erro(message, 'Uso incorreto. Exemplo: `!sorteio "Nitro 1 mês" 1 30m #sorteios`');
 
     if (canal.type !== ChannelType.GuildText)
       return erro(message, 'O canal mencionado precisa ser de texto.');
@@ -56,6 +55,7 @@ module.exports = {
         .setDescription(`${emojis.success} Sorteio iniciado com sucesso em ${canal}.`);
 
       return message.channel.send({ embeds: [confirm] });
+
     } catch (err) {
       console.error('[SORTEIO] Falha ao criar sorteio:', err);
       return erro(message, 'Não foi possível criar o sorteio.');
