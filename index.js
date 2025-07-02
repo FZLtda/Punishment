@@ -28,7 +28,7 @@ process
   try {
     Logger.info('Inicializando bootstrap do bot...');
     await bootstrap();
-    Logger.success('Bootstrap concluído com êxito. Bot operacional.');
+    Logger.info('Bootstrap concluído com êxito. Bot operacional.');
   } catch (error) {
     Logger.fatal(`Erro durante a inicialização do bot: ${error.stack || error}`);
   }
