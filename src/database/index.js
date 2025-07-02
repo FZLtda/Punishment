@@ -13,7 +13,7 @@ async function connectMongo() {
   try {
     await mongoose.connect(uri);
 
-    Logger.success('Conectado ao MongoDB com sucesso!');
+    Logger.info('Conectado ao MongoDB com sucesso!');
 
     mongoose.connection.on('disconnected', () =>
       Logger.warn('Conexão MongoDB foi encerrada.')
