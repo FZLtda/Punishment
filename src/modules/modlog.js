@@ -3,6 +3,7 @@
 const { EmbedBuilder, ChannelType } = require('discord.js');
 const { colors, emojis } = require('@config');
 const GuildSettings = require('@models/GuildSettings');
+const Logger = require('@logger');
 
 /**
  * Envia um log de moderação para o canal configurado no MongoDB
@@ -16,20 +17,29 @@ const GuildSettings = require('@models/GuildSettings');
  *   extraFields?: { name: string, value: string, inline?: boolean }[]
  * }} options
  */
-async function sendModLog(guild, {
-  action,
-  target = null,
-  moderator,
-  reason = 'Não especificado.',
-  channel = null,
-  extraFields = []
-}) {
+async function sendModLog(
+  guild,
+  {
+    action,
+    target = null,
+    moderator,
+    reason = 'Não especificado.',
+    channel = null,
+    extraFields = []
+  }
+) {
   try {
     const config = await GuildSettings.findOne({ guildId: guild.id });
-    if (!config?.logChannelId) return;
+    if (!config?.logChannelId) {
+      Logger.warn(`Canal de logs não configurado para o servidor ${guild.name} (${guild.id})`);
+      return;
+    }
 
     const logChannel = guild.channels.cache.get(config.logChannelId);
-    if (!logChannel || logChannel.type !== ChannelType.GuildText) return;
+    if (!logChannel || logChannel.type !== ChannelType.GuildText) {
+      Logger.warn(`Canal de log inválido para o servidor ${guild.name} (${guild.id})`);
+      return;
+    }
 
     const embed = new EmbedBuilder()
       .setTitle(`🔔 Ação de moderação: ${action}`)
@@ -61,9 +71,10 @@ async function sendModLog(guild, {
         iconURL: moderator.displayAvatarURL({ dynamic: true })
       });
 
-    await logChannel.send({ embeds: [embed] }).catch(() => null);
+    await logChannel.send({ embeds: [embed] });
+    Logger.info(`Log enviado para ${guild.name} (${guild.id}) → ${action}`);
   } catch (err) {
-    console.error(`[ModLog] Falha ao enviar log: ${err.stack || err.message}`);
+    Logger.error(`Falha ao enviar log para ${guild.name} (${guild.id}): ${err.stack || err.message}`);
   }
 }
 
