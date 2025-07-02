@@ -17,7 +17,7 @@ async function loadButtonInteractions(client) {
       }
 
       client.buttons.set(button.customId, button);
-      Logger.success(`Botão registrado: ${button.customId}`);
+      Logger.info(`Botão registrado: ${button.customId}`);
     } catch (err) {
       Logger.error(`Erro ao carregar botão ${file}: ${err.message}`);
     }
