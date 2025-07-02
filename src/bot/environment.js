@@ -41,7 +41,7 @@ function validateEnvironment() {
     process.exit(1);
   }
 
-  Logger.success('Todas as variáveis de ambiente obrigatórias foram validadas com sucesso.');
+  Logger.info('Todas as variáveis de ambiente obrigatórias foram validadas com sucesso.');
 }
 
 module.exports = {
