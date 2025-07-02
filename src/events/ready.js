@@ -8,7 +8,7 @@ module.exports = {
   async execute(client) {
     try {
       await setBotPresence(client);
-      Logger.success(`Punishment online como ${client.user.tag}`);
+      Logger.info(`Punishment online como ${client.user.tag}`);
     } catch (err) {
       Logger.fatal(`Falha ao configurar presença ou concluir inicialização: ${err.stack || err.message}`);
     }
