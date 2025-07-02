@@ -26,9 +26,9 @@ module.exports = {
       await membro.timeout(duracao, motivo);
 
       const embed = new EmbedBuilder()
-        .setTitle(`${emojis.mute} Punição aplicada`)
+        .setTitle(${emojis.mute} Punição aplicada)
         .setColor(colors.red)
-        .setDescription(`${membro} (\`${membro.id}\`) foi silenciado.`)
+        .setDescription(${membro} (\`${membro.id}\`) foi silenciado.)
         .addFields(
           { name: 'Duração', value: `\`${tempo}\``, inline: true },
           { name: 'Motivo', value: `\`${motivo}\``, inline: true }
