@@ -8,21 +8,30 @@ const { colors, emojis } = require('@config');
 module.exports = {
   name: 'sorteio',
   description: 'Cria um novo sorteio no canal especificado.',
-  usage: '${currentPrefix}sorteio "<prêmio>" <nº vencedores> <duração> <#canal>',
+  usage: '${currentPrefix}sorteio "<prêmio>" <vencedores> <duração> <#canal>',
   category: 'Utilidades',
   userPermissions: ['ManageMessages'],
   botPermissions: ['SendMessages', 'AddReactions'],
   deleteMessage: true,
 
   async execute(message, args) {
-    const prize = args[0]?.replace(/^["“]|["”]$/g, '');
-    const winners = parseInt(args[1]);
-    const durationRaw = args[2];
-    const duration = durationRaw && ms(durationRaw);
+    
+    const quoteStart = args.findIndex(arg => arg.startsWith('"') || arg.startsWith('“'));
+    const quoteEnd = args.findIndex(arg => arg.endsWith('"') || arg.endsWith('”'));
+
+    if (quoteStart === -1 || quoteEnd === -1 || quoteEnd <= quoteStart)
+      return erro(message, 'Prêmio inválido. Use aspas, ex: `"Nitro 1 mês"`');
+
+    const prize = args.slice(quoteStart, quoteEnd + 1).join(' ').replace(/^["“]|["”]$/g, '').trim();
+    const winnersRaw = args[quoteEnd + 1];
+    const durationRaw = args[quoteEnd + 2];
     const canal = message.mentions.channels.first();
 
+    const winners = parseInt(winnersRaw);
+    const duration = durationRaw && ms(durationRaw);
+
     if (!prize || !winners || !duration || !canal)
-      return erro(message, 'Uso incorreto. Exemplo: `!sorteio "Nitro 1 mês" 1 30m #sorteios`');
+      return erro(message, 'Uso incorreto. Ex: `!sorteio "Nitro 1 mês" 1 30m #sorteios`');
 
     if (canal.type !== ChannelType.GuildText)
       return erro(message, 'O canal mencionado precisa ser de texto.');
@@ -30,7 +39,7 @@ module.exports = {
     const endsAt = new Date(Date.now() + duration);
 
     const embed = new EmbedBuilder()
-      .setTitle(`🎉 Sorteio Iniciado!`)
+      .setTitle('🎉 Sorteio Iniciado!')
       .setDescription(`Prêmio: **${prize}**\nReaja com 🎉 para participar!\nTermina <t:${Math.floor(endsAt / 1000)}:R>`)
       .setColor(colors.red)
       .setFooter({ text: `Serão ${winners} vencedor(es)!`, iconURL: message.client.user.displayAvatarURL() })
