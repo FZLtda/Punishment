@@ -17,35 +17,41 @@ module.exports = {
 
   async execute(message, args) {
     const conteudo = message.content.trim();
-
-    const regex = /["“](.+?)["”]\s+(\d+)\s+(\S+)\s+<#(\d+)>/;
+    
+    // Regex aceita aspas duplas, curvas e espaços flexíveis
+    const regex = /["“”](.+?)["“”]\s+(\d+)\s+([^\s]+)\s+<#(\d+)>/;
     const match = conteudo.match(regex);
 
     if (!match) {
-      logger.warn(`[SORTEIO] Formato inválido por ${message.author.tag} (${message.author.id})`);
-      return erro(message, 'Formato inválido. Use: `!sorteio "Nitro 1 mês" 1 30m #sorteios`');
+      logger.warn(`Formato inválido por ${message.author.tag} (${message.author.id})`);
+      return sendError(message, `Formato inválido.\nUso correto: \`${this.usage.replace('${currentPrefix}', '!')}\``);
     }
 
     const [_, premio, vencedoresRaw, duracaoRaw, canalId] = match;
+
     const vencedores = parseInt(vencedoresRaw, 10);
     const duracao = ms(duracaoRaw);
     const canal = message.guild.channels.cache.get(canalId);
 
-    if (!premio || !vencedores || !duracao || !canal) {
-      logger.warn(`[SORTEIO] Dados inválidos: premio=${premio}, vencedores=${vencedores}, duracao=${duracao}, canal=${canalId}`);
-      return erro(message, 'Parâmetros inválidos. Verifique todos os campos.');
+    if (!premio || isNaN(vencedores) || !duracao || !canal) {
+      logger.warn(`Dados inválidos recebidos. premio=${premio}, vencedores=${vencedores}, duracao=${duracao}, canal=${canalId}`);
+      return sendError(message, 'Um ou mais parâmetros estão inválidos. Verifique se todos os campos foram preenchidos corretamente.');
     }
 
     if (canal.type !== ChannelType.GuildText) {
-      logger.warn(`[SORTEIO] Canal inválido (${canalId}) por ${message.author.tag}`);
-      return erro(message, 'O canal mencionado precisa ser um canal de texto.');
+      logger.warn(`Canal inválido mencionado (${canalId}) por ${message.author.tag}`);
+      return sendError(message, 'O canal mencionado precisa ser um **canal de texto**.');
     }
 
     const terminaEm = new Date(Date.now() + duracao);
 
     const embed = new EmbedBuilder()
-      .setTitle('🎉 Sorteio Iniciado!')
-      .setDescription(`Prêmio: **${premio}**\nReaja com 🎉 para participar!\nTermina <t:${Math.floor(terminaEm.getTime() / 1000)}:R>`)
+      .setTitle('🎉 Novo Sorteio Iniciado!')
+      .setDescription([
+        `**Prêmio:** ${premio}`,
+        `**Participação:** Reaja com 🎉`,
+        `**Duração:** termina <t:${Math.floor(terminaEm.getTime() / 1000)}:R>`,
+      ].join('\n'))
       .setColor(colors.red)
       .setFooter({ text: `Serão ${vencedores} vencedor(es)!`, iconURL: message.client.user.displayAvatarURL() })
       .setTimestamp();
@@ -64,21 +70,22 @@ module.exports = {
         createdBy: message.author.id
       });
 
-      const confirm = ` ${emojis.success} Sorteio criado com sucesso em ${canal}!`;
-      logger.info(`[SORTEIO] Novo sorteio criado por ${message.author.tag}: "${premio}" em ${canal.name}`);
-      return message.channel.send({ content: confirm });
+      const confirm = `${emojis.success} Sorteio criado com sucesso em ${canal}!`;
+      logger.info(`Sorteio criado por ${message.author.tag} | Prêmio: "${premio}" | Vencedores: ${vencedores} | Canal: ${canal.name}`);
+      return message.channel.send({ content: confirm, allowedMentions: { repliedUser: false } });
 
     } catch (err) {
-      logger.error(`[SORTEIO] Erro ao criar sorteio: ${err.stack || err.message}`);
-      return erro(message, 'Não foi possível criar o sorteio devido a um erro interno.');
+      logger.error(`Erro inesperado ao criar sorteio: ${err.stack || err.message}`);
+      return sendError(message, 'Não foi possível criar o sorteio devido a um erro interno. Tente novamente mais tarde.');
     }
   }
 };
 
-function erro(message, texto) {
+// Função utilitária de erro
+function sendError(message, texto) {
   const embed = new EmbedBuilder()
     .setColor(colors.red)
     .setDescription(`${emojis.error} ${texto}`);
-
+    
   return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
 }
