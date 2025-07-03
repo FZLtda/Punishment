@@ -17,14 +17,14 @@ module.exports = {
     const msgId = args[0];
 
     if (!msgId || !/^\d{17,20}$/.test(msgId)) {
-      logger.warn(`[REROLAR] ID inválido fornecido por ${message.author.tag}`);
+      logger.warn(`ID inválido fornecido por ${message.author.tag}`);
       return sendError(message, 'Forneça um **ID de mensagem válido** para rerolar o sorteio.');
     }
 
     const sorteio = await Giveaway.findOne({ messageId: msgId, status: 'encerrado' });
 
     if (!sorteio) {
-      logger.warn(`[REROLAR] Nenhum sorteio encerrado encontrado com ID ${msgId}`);
+      logger.warn(`Nenhum sorteio encerrado encontrado com ID ${msgId}`);
       return sendError(message, 'Nenhum sorteio **encerrado** foi encontrado com esse ID.');
     }
 
