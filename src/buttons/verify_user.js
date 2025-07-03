@@ -2,7 +2,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 const Logger = require('@logger');
-const { emojis, colors, channels } = require('@config');
+const { emojis, colors, channels, roles } = require('@config');
 
 module.exports = {
   id: 'verify_user',
@@ -17,27 +17,18 @@ module.exports = {
     const guild = interaction.guild;
 
     if (!guild || !member) {
-      return interaction.reply({
-        content: `${emojis.error} Erro interno. Tente novamente mais tarde.`,
-        ephemeral: true
-      });
+      return sendEphemeralError(interaction, 'Erro interno. Tente novamente mais tarde.');
     }
 
-    const cargo = guild.roles.cache.get(CARGO_VERIFICADO_ID);
+    const cargo = guild.roles.cache.get(roles.verified);
 
     if (!cargo) {
-      Logger.error(`[VERIFY] Cargo de verificado não encontrado (${CARGO_VERIFICADO_ID})`);
-      return interaction.reply({
-        content: `${emojis.error} Cargo de verificado não encontrado.`,
-        ephemeral: true
-      });
+      Logger.error(`[VERIFY] Cargo de verificado não encontrado (${roles.verified})`);
+      return sendEphemeralError(interaction, 'Cargo de verificado não encontrado.');
     }
 
-    if (member.roles.cache.has(CARGO_VERIFICADO_ID)) {
-      return interaction.reply({
-        content: `${emojis.attent} Você já está verificado.`,
-        ephemeral: true
-      });
+    if (member.roles.cache.has(roles.verified)) {
+      return sendEphemeralError(interaction, 'Você já está verificado.');
     }
 
     try {
@@ -50,7 +41,6 @@ module.exports = {
         ephemeral: true
       });
 
-      // Enviar log em canal (se configurado)
       const logEmbed = new EmbedBuilder()
         .setTitle('Verificação Concluída')
         .setColor(colors.green)
@@ -71,10 +61,20 @@ module.exports = {
 
     } catch (err) {
       Logger.error(`[VERIFY] Erro ao adicionar cargo de verificado: ${err.stack || err.message}`);
-      return interaction.reply({
-        content: `${emojis.error} Ocorreu um erro ao tentar verificar você.`,
-        ephemeral: true
-      });
+      return sendEphemeralError(interaction, 'Ocorreu um erro ao tentar verificar você.');
     }
   }
 };
+
+/**
+ * Envia erro discreto ao usuário via embed autor
+ * @param {import('discord.js').Interaction} interaction
+ * @param {string} texto
+ */
+function sendEphemeralError(interaction, texto) {
+  const embed = new EmbedBuilder()
+    .setColor(colors.yellow)
+    .setAuthor({ name: texto, iconURL: emojis.attention });
+
+  return interaction.reply({ embeds: [embed], ephemeral: true }).catch(() => {});
+}
