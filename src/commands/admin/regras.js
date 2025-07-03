@@ -21,7 +21,7 @@ module.exports = {
    * @param {import('discord.js').Message} message
    * @param {string[]} args
    */
-  async execute(client, message, args) {
+  async execute(message, args) {
     // Tenta pegar o canal das regras no servidor
     const channel = await client.channels.fetch(channels.rules).catch(() => null);
     if (!channel || channel.type !== ChannelType.GuildText) {
