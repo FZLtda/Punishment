@@ -5,17 +5,18 @@ const path = require('path');
 const winston = require('winston');
 const moment = require('moment-timezone');
 
-// Diretório central de logs
-const logDir = path.resolve(__dirname, '../../logs');
-if (!fs.existsSync(logDir)) {
-  fs.mkdirSync(logDir, { recursive: true });
-}
+// Detectar ambiente (produção = sem cor)
+const isProduction = process.env.NODE_ENV === 'production';
 
-// Timestamp com fuso horário fixo
+// Diretório de logs
+const logDir = path.resolve(__dirname, '../../logs');
+if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+
+// Timestamp
 const getTimestamp = () =>
   moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm:ss');
 
-// Níveis personalizados (ordem de severidade)
+// Níveis e cores
 const levels = {
   fatal: 0,
   error: 1,
@@ -25,7 +26,6 @@ const levels = {
   debug: 5
 };
 
-// Cores para o console
 const colors = {
   fatal: 'bold red',
   error: 'red',
@@ -37,21 +37,21 @@ const colors = {
 
 winston.addColors(colors);
 
-// Formato para arquivos de log
-const fileFormat = winston.format.combine(
-  winston.format.timestamp({ format: getTimestamp }),
-  winston.format.printf(({ level, message, timestamp }) =>
-    `[${timestamp}] [${level.toUpperCase()}]: ${message}`
-  )
+// Formato base
+const baseFormat = winston.format.printf(({ level, message, timestamp }) =>
+  `[${timestamp}] [${level.toUpperCase()}]: ${message}`
 );
 
-// Formato para o console com cor e timestamp
-const consoleFormat = winston.format.combine(
-  winston.format.colorize({ all: true }),
+// Formatos
+const fileFormat = winston.format.combine(
   winston.format.timestamp({ format: getTimestamp }),
-  winston.format.printf(({ level, message, timestamp }) =>
-    `[${timestamp}] [${level.toUpperCase()}]: ${message}`
-  )
+  baseFormat
+);
+
+const consoleFormat = winston.format.combine(
+  winston.format.timestamp({ format: getTimestamp }),
+  ...(isProduction ? [] : [winston.format.colorize({ all: true })]),
+  baseFormat
 );
 
 // Logger principal
@@ -61,7 +61,6 @@ const logger = winston.createLogger({
   transports: [
     new winston.transports.Console({ format: consoleFormat }),
 
-    // Logs individuais por nível
     ...Object.entries(levels).map(([level]) =>
       new winston.transports.File({
         filename: path.join(logDir, `${level}.log`),
@@ -70,7 +69,6 @@ const logger = winston.createLogger({
       })
     ),
 
-    // Log combinado (todos os níveis)
     new winston.transports.File({
       filename: path.join(logDir, 'combined.log'),
       level: 'debug',
@@ -80,7 +78,7 @@ const logger = winston.createLogger({
   exitOnError: false
 });
 
-// Interface segura e padronizada
+// Interface padronizada
 const log = {
   debug: (msg) => logger.debug(msg),
   info: (msg) => logger.info(msg),
