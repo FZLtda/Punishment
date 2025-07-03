@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const Logger = require('@logger/index');
-const button = require('@buttons/verify_user');
 
 async function loadButtonInteractions(client) {
   const buttonsPath = path.join(__dirname, '../../../../src/interactions/buttons');
