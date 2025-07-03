@@ -3,6 +3,7 @@
 const Giveaway = require('@models/Giveaway');
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
+const logger = require('@logger');
 
 module.exports = {
   name: 'rerolar',
@@ -14,17 +15,17 @@ module.exports = {
 
   async execute(message, args) {
     const msgId = args[0];
-    if (!msgId) {
-      return erro(message, 'Forneça o ID da mensagem do sorteio.');
+
+    if (!msgId || !/^\d{17,20}$/.test(msgId)) {
+      logger.warn(`[REROLAR] ID inválido fornecido por ${message.author.tag}`);
+      return sendError(message, 'Forneça um **ID de mensagem válido** para rerolar o sorteio.');
     }
 
-    const sorteio = await Giveaway.findOne({
-      messageId: msgId,
-      status: 'encerrado'
-    });
+    const sorteio = await Giveaway.findOne({ messageId: msgId, status: 'encerrado' });
 
     if (!sorteio) {
-      return erro(message, 'Nenhum sorteio encerrado foi encontrado com esse ID.');
+      logger.warn(`[REROLAR] Nenhum sorteio encerrado encontrado com ID ${msgId}`);
+      return sendError(message, 'Nenhum sorteio **encerrado** foi encontrado com esse ID.');
     }
 
     const participantes = [...sorteio.participants];
@@ -37,25 +38,24 @@ module.exports = {
       }
     }
 
-    const embed = new EmbedBuilder()
-      .setTitle('🔄 Sorteio Rerolado!')
+    const rerollEmbed = new EmbedBuilder()
+      .setTitle('Sorteio Rerolado!')
       .setDescription(
         ganhadores.length
-          ? `Prêmio: **${sorteio.prize}**\nNovos vencedores: ${ganhadores.join(', ')}`
-          : `Prêmio: **${sorteio.prize}**\nSem participantes suficientes. 😢`
+          ? `**Prêmio:** ${sorteio.prize}\n🎉 **Novos vencedores:** ${ganhadores.join(', ')}`
+          : `**Prêmio:** ${sorteio.prize}\n⚠️ Nenhum participante suficiente para rerolar.`
       )
       .setColor(colors.red)
       .setTimestamp()
-      .setFooter({
-        text: 'Punishment • Novo sorteio',
-        iconURL: message.client.user.displayAvatarURL()
-      });
+      .setFooter({ text: 'Punishment • Sorteios', iconURL: message.client.user.displayAvatarURL() });
 
-    return message.channel.send({ embeds: [embed] });
+    logger.info(`Sorteio rerolado por ${message.author.tag} | ID: ${msgId} | Ganhadores: ${ganhadores.length}`);
+    return message.channel.send({ embeds: [rerollEmbed], allowedMentions: { parse: [] } });
   }
 };
 
-function erro(message, texto) {
+// Função utilitária de erro
+function sendError(message, texto) {
   const embed = new EmbedBuilder()
     .setColor(colors.red)
     .setDescription(`${emojis.error} ${texto}`);
