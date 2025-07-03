@@ -7,6 +7,7 @@ module.exports = {
   ban: '<:Banido:1355700878056751244>',
   unban: '<:Desbanido:1355718942076965016>',
   kick: '<:Expulso:1355700922197606573>',
+  slow: '<:slowmode:1390132726035648562>',
   lock: '<:Bloqueado:1355700508660076554>',
   unlock: '<:Desbloqueado:1355700557465125064>',
   
