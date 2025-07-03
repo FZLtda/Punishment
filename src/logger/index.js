@@ -15,7 +15,7 @@ if (!fs.existsSync(logDir)) {
 const getTimestamp = () =>
   moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm:ss');
 
-// Níveis de log personalizados
+// Níveis personalizados (ordem de severidade)
 const levels = {
   fatal: 0,
   error: 1,
@@ -25,7 +25,7 @@ const levels = {
   debug: 5
 };
 
-// Cores para console
+// Cores para o console
 const colors = {
   fatal: 'bold red',
   error: 'red',
@@ -45,12 +45,12 @@ const fileFormat = winston.format.combine(
   )
 );
 
-// Formato para o console (colorido)
+// Formato para o console com cor e timestamp
 const consoleFormat = winston.format.combine(
   winston.format.colorize({ all: true }),
   winston.format.timestamp({ format: getTimestamp }),
   winston.format.printf(({ level, message, timestamp }) =>
-    `[${timestamp}] [${level}]: ${message}`
+    `[${timestamp}] [${level.toUpperCase()}]: ${message}`
   )
 );
 
@@ -58,7 +58,6 @@ const consoleFormat = winston.format.combine(
 const logger = winston.createLogger({
   levels,
   level: process.env.LOG_LEVEL || 'debug',
-  format: winston.format.json(),
   transports: [
     new winston.transports.Console({ format: consoleFormat }),
 
@@ -71,7 +70,7 @@ const logger = winston.createLogger({
       })
     ),
 
-    // Log combinado com todos os níveis
+    // Log combinado (todos os níveis)
     new winston.transports.File({
       filename: path.join(logDir, 'combined.log'),
       level: 'debug',
@@ -81,7 +80,7 @@ const logger = winston.createLogger({
   exitOnError: false
 });
 
-// Interface segura para uso externo
+// Interface segura e padronizada
 const log = {
   debug: (msg) => logger.debug(msg),
   info: (msg) => logger.info(msg),
