@@ -29,9 +29,9 @@ module.exports = {
       await message.channel.setRateLimitPerUser(segundos, motivo);
 
       const embed = new EmbedBuilder()
-        .setTitle('Modo lento')
+        .setTitle(`${emojis.slow} Modo lento`)
         .setColor(colors.red)
-        .setDescription(`${emojis.slow} O tempo entre mensagens neste canal foi definido para \`${tempo}\`.`)
+        .setDescription(`O tempo entre mensagens neste canal foi definido para \`${tempo}\`.`)
         .addFields({ name: 'Motivo', value: motivo, inline: false })
         .setTimestamp()
         .setFooter({ text: message.author.username, iconURL: message.author.displayAvatarURL({ dynamic: true }) });
