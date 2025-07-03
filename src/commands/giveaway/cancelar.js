@@ -3,6 +3,7 @@
 const Giveaway = require('@models/Giveaway');
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
+const logger = require('@logger');
 
 module.exports = {
   name: 'cancelar',
@@ -14,17 +15,17 @@ module.exports = {
 
   async execute(message, args) {
     const msgId = args[0];
-    if (!msgId) {
-      return erro(message, 'Informe o ID da mensagem do sorteio a ser cancelado.');
+
+    if (!msgId || !/^\d{17,20}$/.test(msgId)) {
+      logger.warn(`ID inválido fornecido por ${message.author.tag} (${message.author.id})`);
+      return sendError(message, 'Informe um **ID de mensagem válido** do sorteio que deseja cancelar.');
     }
 
-    const sorteio = await Giveaway.findOne({
-      messageId: msgId,
-      status: 'ativo'
-    });
+    const sorteio = await Giveaway.findOne({ messageId: msgId, status: 'ativo' });
 
     if (!sorteio) {
-      return erro(message, 'Não encontrei um sorteio ativo com esse ID.');
+      logger.warn(`Nenhum sorteio ativo encontrado com ID ${msgId}`);
+      return sendError(message, 'Nenhum sorteio **ativo** foi encontrado com esse ID.');
     }
 
     sorteio.status = 'cancelado';
@@ -35,31 +36,33 @@ module.exports = {
       const mensagem = await canal?.messages?.fetch(msgId).catch(() => null);
 
       if (mensagem) {
-        const embed = new EmbedBuilder()
-          .setTitle('⛔ Sorteio Cancelado')
-          .setDescription(`Este sorteio foi cancelado manualmente por um administrador.`)
-          .addFields({ name: 'Prêmio', value: sorteio.prize })
+        const embedCancelado = new EmbedBuilder()
+          .setTitle('Sorteio Cancelado')
+          .setDescription(`Este sorteio foi **cancelado manualmente** por um administrador.`)
+          .addFields({ name: '🎁 Prêmio', value: sorteio.prize })
           .setColor(colors.red)
-          .setTimestamp()
-          .setFooter({ text: 'Punishment • Sorteios', iconURL: message.client.user.displayAvatarURL() });
+          .setFooter({ text: 'Punishment • Sorteios', iconURL: message.client.user.displayAvatarURL() })
+          .setTimestamp();
 
-        await mensagem.edit({ embeds: [embed] }).catch(() => null);
+        await mensagem.edit({ embeds: [embedCancelado] }).catch(() => null);
       }
 
       const confirm = new EmbedBuilder()
         .setColor(colors.yellow)
-        .setDescription(`${emojis.attent} Sorteio cancelado com sucesso.`);
+        .setDescription(`${emojis.attent} O sorteio foi **cancelado com sucesso**.`);
 
-      return message.channel.send({ embeds: [confirm] });
+      logger.info(`Sorteio "${sorteio.prize}" cancelado por ${message.author.tag}`);
+      return message.channel.send({ embeds: [confirm], allowedMentions: { repliedUser: false } });
 
     } catch (err) {
-      console.error('[CANCELAR] Falha ao cancelar sorteio:', err);
-      return erro(message, 'Erro ao tentar editar a mensagem do sorteio.');
+      logger.error(`Erro ao cancelar sorteio: ${err.stack || err.message}`);
+      return sendError(message, 'Ocorreu um erro ao tentar editar a mensagem do sorteio.');
     }
   }
 };
 
-function erro(message, texto) {
+// Função utilitária de erro
+function sendError(message, texto) {
   const embed = new EmbedBuilder()
     .setColor(colors.red)
     .setDescription(`${emojis.error} ${texto}`);
