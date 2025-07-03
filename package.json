@@ -68,7 +68,7 @@
     "@loadCommands": "src/handlers/commands",
     "@handleSlash": "src/handlers/slash",
     "@loadEvents": "src/handlers/events",
-    "@handleInteraction": "src/handlers/interactions/core",
+    "@interactions": "src/handlers/interactions/core",
     "@loadSlashCommands": "src/handlers/slash",
     "@loadButtonInteractions": "src/handlers/interactions/buttons",
     
