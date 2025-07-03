@@ -2,6 +2,8 @@
 
 const { EmbedBuilder } = require('discord.js');
 const Logger = require('@logger');
+const handleInteraction = require('@handleInteraction/handleInteraction');
+
 const { emojis, colors } = require('@config');
 
 module.exports = {
