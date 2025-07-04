@@ -61,15 +61,13 @@
     "@modules": "src/modules",
     "@tasks": "src/tasks",
     "@core": "src/core",
-    "@middleware": "src/bot/middleware",
     "@logger": "src/logger",
     "@handlers": "src/handlers",
-    "@buttons": "src/handlers/interactions/buttons",
-    "@loadCommands": "src/handlers/commands",
     "@handleSlash": "src/handlers/slash",
     "@loadEvents": "src/handlers/events",
-    "@interactions": "src/handlers/interactions/core",
+    "@loadCommands": "src/handlers/commands",
     "@loadSlashCommands": "src/handlers/slash",
+    "@interactions": "src/handlers/interactions/core",
     "@loadButtonInteractions": "src/handlers/interactions/buttons",
     
     "@package.json": "./package.json"
