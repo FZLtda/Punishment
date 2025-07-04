@@ -64,7 +64,7 @@
     "@middleware": "src/bot/middleware",
     "@logger": "src/logger",
     "@handlers": "src/handlers",
-    "@buttons": "src/components/buttons",
+    "@buttons": "src/handlers/interactions/buttons",
     "@loadCommands": "src/handlers/commands",
     "@handleSlash": "src/handlers/slash",
     "@loadEvents": "src/handlers/events",
