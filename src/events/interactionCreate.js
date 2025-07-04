@@ -1,26 +1,48 @@
 'use strict';
 
-const { EmbedBuilder } = require('discord.js');
+const { InteractionType, EmbedBuilder } = require('discord.js');
 const Logger = require('@logger');
 const handleInteraction = require('@interactions/handleInteraction');
-
+const { sendInteractionError } = require('@utils/responses');
 const { emojis, colors } = require('@config');
 
 module.exports = {
   name: 'interactionCreate',
   once: false,
 
+  /**
+   * Manipulador central de interações do Discord
+   * @param {import('discord.js').Interaction} interaction
+   * @param {import('discord.js').Client} client
+   */
   async execute(interaction, client) {
+    const interactionLabel = getInteractionLabel(interaction);
+
     try {
       const handled = await handleInteraction(interaction, client);
 
       if (!handled) {
-        Logger.warn(`[INTERACTION] Tipo de interação não suportado ou manipulador ausente: ${interaction.type}`);
+        Logger.warn(`[INTERACTION] Não tratado: ${interactionLabel}`);
+        await sendInteractionError(interaction, 'Essa interação não pôde ser processada.');
       }
 
     } catch (err) {
-      Logger.error(`[INTERACTION] Erro ao processar interação: ${err.stack || err.message}`);
-      await sendInteractionError(interaction, 'Ocorreu um erro ao processar sua interação.');
+      Logger.error(`[INTERACTION] Erro em ${interactionLabel}: ${err.stack || err.message}`);
+      await sendInteractionError(interaction, 'Não foi possível processar sua interação.');
     }
   }
 };
+
+/**
+ * Retorna uma string identificadora da interação (para logs)
+ * @param {import('discord.js').Interaction} interaction
+ * @returns {string}
+ */
+function getInteractionLabel(interaction) {
+  if (interaction.isChatInputCommand()) return `SLASH /${interaction.commandName}`;
+  if (interaction.isButton()) return `BUTTON ${interaction.customId}`;
+  if (interaction.isSelectMenu?.()) return `MENU ${interaction.customId}`;
+  if (interaction.type === InteractionType.ModalSubmit) return `MODAL ${interaction.customId}`;
+  if (interaction.type === InteractionType.ApplicationCommandAutocomplete) return `AUTOCOMPLETE /${interaction.commandName}`;
+  return `UNKNOWN (${interaction.type})`;
+}
