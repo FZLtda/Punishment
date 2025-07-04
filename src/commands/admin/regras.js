@@ -8,7 +8,7 @@ const {
   ChannelType,
 } = require('discord.js');
 
-const { emojis, colors, channels } = require('@config');
+const { emojis, colors, channels, bot } = require('@config');
 
 module.exports = {
   name: 'regras',
@@ -22,6 +22,8 @@ module.exports = {
    * @param {string[]} args
    */
   async execute(message, args) {
+    if (message.author.id !== bot.owner) return;
+    
     // Tenta pegar o canal das regras no servidor
     const channel = await client.channels.fetch(channels.rules).catch(() => null);
     if (!channel || channel.type !== ChannelType.GuildText) {
