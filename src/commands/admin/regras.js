@@ -49,7 +49,7 @@ module.exports = {
         ``,
         `> **__Clique no botão abaixo para aceitar as regras.__**`,
       ].join('\n'))
-      .setFooter({ text: 'FuncZone', iconURL: interaction.guild.iconURL() });
+      .setFooter({ text: 'FuncZone', iconURL: message.guild.iconURL() });
 
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
