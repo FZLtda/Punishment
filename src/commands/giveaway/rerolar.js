@@ -7,7 +7,7 @@ const logger = require('@logger');
 
 module.exports = {
   name: 'rerolar',
-  description: 'Rerola (sorteia novamente) os vencedores de um sorteio encerrado.',
+  description: 'Sorteia novamente os vencedores de um sorteio encerrado.',
   usage: '${currentPrefix}rerolar <ID da mensagem>',
   category: 'Utilidades',
   userPermissions: ['ManageMessages'],
@@ -17,14 +17,14 @@ module.exports = {
     const msgId = args[0];
 
     if (!msgId || !/^\d{17,20}$/.test(msgId)) {
-      logger.warn(`ID inválido fornecido por ${message.author.tag}`);
+      logger.warn(`[REROLL] ID inválido fornecido por ${message.author.tag} (${message.author.id})`);
       return sendError(message, 'Forneça um **ID de mensagem válido** para rerolar o sorteio.');
     }
 
     const sorteio = await Giveaway.findOne({ messageId: msgId, status: 'encerrado' });
 
     if (!sorteio) {
-      logger.warn(`Nenhum sorteio encerrado encontrado com ID ${msgId}`);
+      logger.warn(`[REROLL] Sorteio encerrado não encontrado para o ID ${msgId}`);
       return sendError(message, 'Nenhum sorteio **encerrado** foi encontrado com esse ID.');
     }
 
@@ -38,18 +38,20 @@ module.exports = {
       }
     }
 
+    const plural = ganhadores.length === 1 ? 'vencedor' : 'vencedores';
+
     const rerollEmbed = new EmbedBuilder()
-      .setTitle('Sorteio Rerolado!')
+      .setTitle('🔁 Sorteio Rerolado')
       .setDescription(
         ganhadores.length
-          ? `**Prêmio:** ${sorteio.prize}\n🎉 **Novos vencedores:** ${ganhadores.join(', ')}`
-          : `**Prêmio:** ${sorteio.prize}\n⚠️ Nenhum participante suficiente para rerolar.`
+          ? `**Prêmio:** ${sorteio.prize}\n**Novos ${plural}:** ${ganhadores.join(', ')}`
+          : `**Prêmio:** ${sorteio.prize}\n${emojis.attent} Nenhum participante suficiente para rerolar.`
       )
       .setColor(colors.red)
       .setTimestamp()
       .setFooter({ text: 'Punishment • Sorteios', iconURL: message.client.user.displayAvatarURL() });
 
-    logger.info(`Sorteio rerolado por ${message.author.tag} | ID: ${msgId} | Ganhadores: ${ganhadores.length}`);
+    logger.info(`[REROLL] Sorteio rerolado por ${message.author.tag} | ID: ${msgId} | Ganhadores: ${ganhadores.length}`);
     return message.channel.send({ embeds: [rerollEmbed], allowedMentions: { parse: [] } });
   }
 };
