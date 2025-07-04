@@ -1,8 +1,8 @@
 'use strict';
 
-const { EmbedBuilder, Colors } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const Giveaway = require('@models/Giveaway');
-const { colors } = require('@config');
+const { colors, emojis } = require('@config');
 const Logger = require('@logger');
 
 /**
@@ -13,24 +13,25 @@ const Logger = require('@logger');
 async function finalizarSorteio(giveaway, client) {
   try {
     if (giveaway.status !== 'ativo') {
-      Logger.warn(`Tentativa de finalizar sorteio já encerrado: ${giveaway.messageId}`);
+      Logger.warn(`[SORTEIO] Tentativa de finalizar sorteio já encerrado: ${giveaway.messageId}`);
       return;
     }
 
     const canal = await client.channels.fetch(giveaway.channelId).catch(() => null);
     if (!canal || !canal.isTextBased()) {
-      Logger.warn(`Canal inválido ou inacessível (${giveaway.channelId})`);
+      Logger.warn(`[SORTEIO] Canal inválido ou inacessível (${giveaway.channelId})`);
       return;
     }
 
     const mensagem = await canal.messages.fetch(giveaway.messageId).catch(() => null);
-    if (!mensagem) {
-      Logger.warn(`Mensagem de sorteio não encontrada (${giveaway.messageId})`);
+    if (!messagem) {
+      Logger.warn(`[SORTEIO] Mensagem de sorteio não encontrada (${giveaway.messageId})`);
       return;
     }
 
     const participantes = Array.isArray(giveaway.participants) ? [...giveaway.participants] : [];
     const ganhadores = sortearParticipantes(participantes, giveaway.winners);
+    const plural = ganhadores.length === 1 ? 'vencedor' : 'vencedores';
 
     const embedEncerrado = new EmbedBuilder()
       .setTitle('🎉 Sorteio Encerrado')
@@ -38,7 +39,7 @@ async function finalizarSorteio(giveaway, client) {
       .setTimestamp()
       .setDescription(
         ganhadores.length
-          ? `**Prêmio:** ${giveaway.prize}\n**Vencedores:** ${ganhadores.map(id => `<@${id}>`).join(', ')}`
+          ? `**Prêmio:** ${giveaway.prize}\n**${plural.charAt(0).toUpperCase() + plural.slice(1)}:** ${ganhadores.map(id => `<@${id}>`).join(', ')}`
           : `**Prêmio:** ${giveaway.prize}\n${emojis.attent} Nenhum vencedor definido. Participações insuficientes.`
       )
       .setFooter({
@@ -47,15 +48,15 @@ async function finalizarSorteio(giveaway, client) {
       });
 
     await mensagem.edit({ embeds: [embedEncerrado] }).catch(err => {
-      Logger.error(`Falha ao editar mensagem do sorteio ${giveaway.messageId}: ${err.stack || err.message}`);
+      Logger.error(`[SORTEIO] Falha ao editar mensagem do sorteio ${giveaway.messageId}: ${err.stack || err.message}`);
     });
 
     giveaway.status = 'encerrado';
     await giveaway.save();
 
-    Logger.info(`Sorteio encerrado com sucesso: ${giveaway.messageId} | Vencedores: ${ganhadores.length}`);
+    Logger.info(`[SORTEIO] Encerrado com sucesso (${giveaway.messageId}) | Ganhadores: ${ganhadores.length}`);
   } catch (error) {
-    Logger.error(`Erro fatal ao encerrar sorteio ${giveaway.messageId}: ${error.stack || error.message}`);
+    Logger.error(`[SORTEIO] Erro ao encerrar sorteio ${giveaway.messageId}: ${error.stack || error.message}`);
   }
 }
 
