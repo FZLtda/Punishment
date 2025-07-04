@@ -10,6 +10,7 @@ module.exports = {
   slow: '<:slowmode:1390132726035648562>',
   lock: '<:Bloqueado:1355700508660076554>',
   unlock: '<:Desbloqueado:1355700557465125064>',
+  info: '<:1000046547:1340465282568945675>',
   
   attention: 'https://bit.ly/3Ypxwnl'
 };
