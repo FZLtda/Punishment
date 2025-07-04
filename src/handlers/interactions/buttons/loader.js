@@ -1,5 +1,3 @@
-const buttonsPath = require.resolve('@buttons');
-
 const fs = require('fs');
 const path = require('path');
 const Logger = require('@logger');
