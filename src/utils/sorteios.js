@@ -38,8 +38,8 @@ async function finalizarSorteio(giveaway, client) {
       .setTimestamp()
       .setDescription(
         ganhadores.length
-          ? `**Prêmio:** ${giveaway.prize}\n🎉 **Vencedores:** ${ganhadores.map(id => `<@${id}>`).join(', ')}`
-          : `**Prêmio:** ${giveaway.prize}\n⚠️ Nenhum vencedor definido. Participações insuficientes.`
+          ? `**Prêmio:** ${giveaway.prize}\n**Vencedores:** ${ganhadores.map(id => `<@${id}>`).join(', ')}`
+          : `**Prêmio:** ${giveaway.prize}\n${emojis.attent} Nenhum vencedor definido. Participações insuficientes.`
       )
       .setFooter({
         text: 'Punishment • Sorteios',
