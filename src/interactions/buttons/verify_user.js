@@ -34,7 +34,7 @@ module.exports = {
     try {
       await member.roles.add(cargo);
 
-      Logger.success(`[VERIFY] Cargo verificado adicionado para ${member.user.tag} (${member.id})`);
+      Logger.info(`[VERIFY] Cargo verificado adicionado para ${member.user.tag} (${member.id})`);
 
       await interaction.reply({
         content: `${emojis.success} Você foi verificado com sucesso!`,
