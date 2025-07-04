@@ -5,7 +5,7 @@ const Logger = require('@logger');
 const { emojis, colors, channels, roles } = require('@config');
 
 module.exports = {
-  id: 'verify_user',
+  customId: 'verify_user',
 
   /**
    * Executa o botão de verificação
