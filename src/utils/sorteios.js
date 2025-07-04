@@ -24,14 +24,15 @@ async function finalizarSorteio(giveaway, client) {
     }
 
     const mensagem = await canal.messages.fetch(giveaway.messageId).catch(() => null);
-    if (!messagem) {
+    if (!mensagem) {
       Logger.warn(`[SORTEIO] Mensagem de sorteio não encontrada (${giveaway.messageId})`);
       return;
     }
 
     const participantes = Array.isArray(giveaway.participants) ? [...giveaway.participants] : [];
     const ganhadores = sortearParticipantes(participantes, giveaway.winners);
-    const plural = ganhadores.length === 1 ? 'vencedor' : 'vencedores';
+
+    const plural = ganhadores.length === 1 ? 'Vencedor' : 'Vencedores';
 
     const embedEncerrado = new EmbedBuilder()
       .setTitle('🎉 Sorteio Encerrado')
@@ -39,7 +40,7 @@ async function finalizarSorteio(giveaway, client) {
       .setTimestamp()
       .setDescription(
         ganhadores.length
-          ? `**Prêmio:** ${giveaway.prize}\n**${plural.charAt(0).toUpperCase() + plural.slice(1)}:** ${ganhadores.map(id => `<@${id}>`).join(', ')}`
+          ? `**Prêmio:** ${giveaway.prize}\n**${plural}:** ${ganhadores.map(id => `<@${id}>`).join(', ')}`
           : `**Prêmio:** ${giveaway.prize}\n${emojis.attent} Nenhum vencedor definido. Participações insuficientes.`
       )
       .setFooter({
