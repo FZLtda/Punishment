@@ -1,13 +1,18 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
-const Logger = require('@logger/index');
+const Logger = require('@logger');
+
+// Usa o alias @buttons como caminho absoluto
+const buttonsPath = require.resolve('@buttons');
 
 async function loadButtonInteractions(client) {
-  const buttonsPath = path.join(__dirname, '../../../../src/interactions/buttons');
-  const files = fs.readdirSync(buttonsPath).filter(file => file.endsWith('.js'));
+  const dirPath = path.dirname(buttonsPath);
+  const files = fs.readdirSync(dirPath).filter(file => file.endsWith('.js'));
 
   for (const file of files) {
-    const filePath = path.join(buttonsPath, file);
+    const filePath = path.join(dirPath, file);
     try {
       const button = require(filePath);
 
@@ -23,6 +28,7 @@ async function loadButtonInteractions(client) {
     }
   }
 }
+
 module.exports = {
   loadButtonInteractions
 };
