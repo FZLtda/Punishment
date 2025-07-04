@@ -10,8 +10,7 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "postinstall": "rm -rf node_modules/@discordjs/builders"
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [
     "discord",
