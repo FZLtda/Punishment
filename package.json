@@ -11,7 +11,7 @@
     "dev": "nodemon src/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "postinstall": "npm install"
+    "postinstall": "rm -rf node_modules/@discordjs/builders"
   },
   "keywords": [
     "discord",
@@ -69,7 +69,6 @@
     "@loadSlashCommands": "src/handlers/slash",
     "@interactions": "src/handlers/interactions",
     "@loadButtonInteractions": "src/handlers/interactions/buttons",
-    
     "@package.json": "./package.json"
   }
 }
