@@ -17,22 +17,32 @@ module.exports = {
       || message.member;
 
     const user = membro.user;
-    const cargoMaisAlto = membro.roles?.highest?.name ?? 'Nenhum';
-    const boost = membro.premiumSince ? '<:boost:123456>' : '—';
+
+    const cargos = membro.roles.cache
+      .filter(role => role.id !== message.guild.id)
+      .map(role => role.toString())
+      .join(', ') || 'Nenhum';
+
+    const formatarData = timestamp => {
+      const data = new Date(timestamp);
+      return data.toLocaleDateString('pt-BR') + ' às ' + data.toLocaleTimeString('pt-BR');
+    };
 
     const embed = new EmbedBuilder()
-      .setAuthor({ name: `Informações de ${user.username}`, iconURL: user.displayAvatarURL({ dynamic: true }) })
+      .setTitle(`${emojis.info} Informações de ${user.username}`)
       .setColor(colors.red)
       .setThumbnail(user.displayAvatarURL({ dynamic: true }))
       .addFields(
-        { name: '🆔 ID', value: `\`${user.id}\``, inline: true },
-        { name: '🙋 Nome de usuário', value: `${user.tag}`, inline: true },
-        { name: '📅 Conta criada em', value: `<t:${Math.floor(user.createdTimestamp / 1000)}:F>`, inline: false },
-        { name: '📌 Entrou no servidor', value: `<t:${Math.floor(membro.joinedTimestamp / 1000)}:F>`, inline: true },
-        { name: '🏷️ Maior cargo', value: cargoMaisAlto, inline: true },
-        { name: '🚀 Impulsionador', value: boost, inline: true }
+        { name: '**Usuário**', value: `${user.tag}`, inline: false },
+        { name: '**ID**', value: `\`${user.id}\``, inline: false },
+        { name: '**Conta criada**', value: formatarData(user.createdAt), inline: false },
+        { name: '**Entrou no servidor**', value: formatarData(membro.joinedAt), inline: false },
+        { name: '**Cargos**', value: cargos, inline: false }
       )
-      .setFooter({ text: `Solicitado por ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+      .setFooter({
+        text: `${message.author.tag}`,
+        iconURL: message.author.displayAvatarURL({ dynamic: true })
+      })
       .setTimestamp();
 
     return message.channel.send({ embeds: [embed] });
