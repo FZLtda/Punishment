@@ -32,7 +32,7 @@ async function finalizarSorteio(giveaway, client) {
     const participantes = Array.isArray(giveaway.participants) ? [...giveaway.participants] : [];
     const ganhadores = sortearParticipantes(participantes, giveaway.winners);
 
-    const plural = ganhadores.length === 1 ? 'Vencedor' : 'Vencedores';
+    const tituloGanhadores = ganhadores.length === 1 ? 'Vencedor' : 'Vencedores';
 
     const embedEncerrado = new EmbedBuilder()
       .setTitle('🎉 Sorteio Encerrado')
@@ -40,11 +40,11 @@ async function finalizarSorteio(giveaway, client) {
       .setTimestamp()
       .setDescription(
         ganhadores.length
-          ? `**Prêmio:** ${giveaway.prize}\n**${plural}:** ${ganhadores.map(id => `<@${id}>`).join(', ')}`
+          ? `**Prêmio:** ${giveaway.prize}\n**${tituloGanhadores}:** ${ganhadores.map(id => `<@${id}>`).join(', ')}`
           : `**Prêmio:** ${giveaway.prize}\n${emojis.attent} Nenhum vencedor definido. Participações insuficientes.`
       )
       .setFooter({
-        text: 'Punishment • Sorteios',
+        text: 'Punishment',
         iconURL: client.user.displayAvatarURL()
       });
 
