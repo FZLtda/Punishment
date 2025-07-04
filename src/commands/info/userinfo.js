@@ -22,7 +22,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setAuthor({ name: `Informações de ${user.username}`, iconURL: user.displayAvatarURL({ dynamic: true }) })
-      .setColor(colors.purple)
+      .setColor(colors.red)
       .setThumbnail(user.displayAvatarURL({ dynamic: true }))
       .addFields(
         { name: '🆔 ID', value: `\`${user.id}\``, inline: true },
