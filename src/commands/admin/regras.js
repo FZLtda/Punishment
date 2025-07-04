@@ -15,6 +15,7 @@ module.exports = {
   description: 'Envia as regras do servidor com botão para aceitar',
   usage: '!regras',
   permissions: ['SendMessages', 'ViewChannel'],
+  deleteMessage: true,
 
   /**
    * @param {import('discord.js').Client} client
@@ -48,7 +49,7 @@ module.exports = {
         ``,
         `> **__Clique no botão abaixo para aceitar as regras.__**`,
       ].join('\n'))
-      .setFooter({ text: 'FuncZone', iconURL: 'https://funczero.xyz/favicon.png' });
+      .setFooter({ text: 'FuncZone', iconURL: interaction.guild.iconURL() });
 
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
@@ -61,7 +62,7 @@ module.exports = {
     try {
       await channel.send({ embeds: [embed], components: [row] });
       if (message.channel.id !== channel.id) {
-        await message.reply('Mensagem de regras enviada no canal apropriado.');
+        await message.channel.send(`${emojis.success} Mensagem de regras enviada.`);
       }
     } catch (error) {
       console.error('Erro ao enviar mensagem de regras:', error);
