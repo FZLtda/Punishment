@@ -9,6 +9,7 @@ module.exports = {
   usage: '${currentPrefix}ping',
   category: 'Utilidade',
   botPermissions: ['SendMessages'],
+  deleteMessage: true,
 
   async execute(message, args) {
     const msg = await message.channel.send('Pong!');
