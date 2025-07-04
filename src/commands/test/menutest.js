@@ -2,13 +2,14 @@
 
 const {
   ActionRowBuilder,
-  StringSelectMenuBuilder
+  ButtonBuilder,
+  ButtonStyle
 } = require('discord.js');
 
 module.exports = {
-  name: 'menutest',
-  description: 'Exibe um menu de seleção com opções fictícias.',
-  usage: '!menutest',
+  name: 'modaltest',
+  description: 'Exibe botão para abrir um modal de feedback',
+  usage: '!modaltest',
   permissions: ['SendMessages'],
 
   /**
@@ -17,32 +18,20 @@ module.exports = {
    * @param {string[]} args
    */
   async execute(message, args, client) {
-    const menu = new StringSelectMenuBuilder()
-      .setCustomId('example_menu')
-      .setPlaceholder('Escolha uma opção...')
-      .addOptions(
-        {
-          label: 'Informações',
-          description: 'Exibir informações úteis',
-          value: 'info'
-        },
-        {
-          label: 'Configurações',
-          description: 'Ajustar suas preferências',
-          value: 'settings'
-        },
-        {
-          label: 'Sair',
-          description: 'Fechar o menu',
-          value: 'exit'
-        }
-      );
+    try {
+      const button = new ButtonBuilder()
+        .setCustomId('open_example_modal')
+        .setLabel('Abrir Modal')
+        .setStyle(ButtonStyle.Primary);
 
-    const row = new ActionRowBuilder().addComponents(menu);
+      const row = new ActionRowBuilder().addComponents(button);
 
-    await message.channel.send({
-      content: 'Selecione uma opção no menu abaixo:',
-      components: [row]
-    });
+      await message.channel.send({
+        content: 'Clique no botão abaixo para abrir o modal:',
+        components: [row]
+      });
+    } catch (err) {
+      console.error('Erro ao enviar botão do modal:', err);
+    }
   }
 };
