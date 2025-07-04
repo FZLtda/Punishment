@@ -28,7 +28,7 @@ module.exports = {
     }
 
     if (member.roles.cache.has(roles.verified)) {
-      return sendEphemeralError(interaction, 'Você já está verificado.');
+      return sendEphemeralError(interaction, 'Você já está verificado em nosso servidor.');
     }
 
     try {
