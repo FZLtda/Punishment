@@ -20,8 +20,8 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(colors.red)
       .setDescription('🏓 Pong!\n\n'
-        + `📶 **Latência:** \`${pingBot}ms\`\n`
-        + `📶 **Latência da API:** \`${pingAPI}ms\``)
+        + `${emojis.ping} **Latência:** \`${pingBot}ms\`\n`
+        + `${emojis.ping} **Latência da API:** \`${pingAPI}ms\``)
       .setFooter({ text: message.client.user.username, iconURL: message.client.user.displayAvatarURL() })
       .setTimestamp();
 
