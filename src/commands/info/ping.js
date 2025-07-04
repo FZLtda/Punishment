@@ -10,18 +10,18 @@ module.exports = {
   category: 'Utilidade',
   botPermissions: ['SendMessages'],
 
-  async execute(message, args, client) {
+  async execute(message, args) {
     const msg = await message.channel.send('Pong!');
 
     const pingBot = msg.createdTimestamp - message.createdTimestamp;
-    const pingAPI = Math.round(client.ws.ping);
+    const pingAPI = Math.round(message.client.ws.ping);
 
     const embed = new EmbedBuilder()
       .setColor(colors.red)
       .setDescription('🏓 Pong!\n\n'
         + `📶 **Latência:** \`${pingBot}ms\`\n`
         + `📶 **Latência da API:** \`${pingAPI}ms\``)
-      .setFooter({ text: client.user.username, iconURL: client.user.displayAvatarURL() })
+      .setFooter({ text: message.client.user.username, iconURL: message.client.user.displayAvatarURL() })
       .setTimestamp();
 
     return msg.edit({ content: null, embeds: [embed] });
