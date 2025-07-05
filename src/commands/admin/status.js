@@ -3,7 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const os = require('os');
 const { getSystemHealth } = require('@utils/healthMonitor');
-const { colors, emojis } = require('@config');
+const { colors, emojis, bot } = require('@config');
 const Logger = require('@logger');
 
 module.exports = {
@@ -16,6 +16,8 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
+    if (message.author.id !== bot.owner) return;
+    
     try {
       const { client } = message;
 
@@ -34,15 +36,15 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor(colors.green)
-        .setTitle('📊 Diagnóstico do sistema')
+        .setTitle('Diagnóstico do sistema')
         .addFields(
-          { name: '🟢 MongoDB', value: mongoStatus, inline: true },
-          { name: '📡 Latência Discord', value: latency, inline: true },
-          { name: '📦 Comandos carregados', value: `Prefix: \`${prefixCount}\`\nSlash: \`${slashCount}\``, inline: true },
-          { name: '🧠 Uso de RAM', value: `${memoryUsage.toFixed(2)} MB`, inline: true },
-          { name: '⏱️ Uptime do processo', value: uptime, inline: true },
-          { name: '🧮 Carga da CPU', value: cpuLoad, inline: true },
-          { name: '🧩 Node.js', value: `v${process.version}`, inline: true }
+          { name: 'MongoDB', value: mongoStatus, inline: true },
+          { name: 'Latência Discord', value: latency, inline: true },
+          { name: 'Comandos carregados', value: `Prefix: \`${prefixCount}\`\nSlash: \`${slashCount}\``, inline: true },
+          { name: 'Uso de RAM', value: `${memoryUsage.toFixed(2)} MB`, inline: true },
+          { name: 'Uptime do processo', value: uptime, inline: true },
+          { name: 'Carga da CPU', value: cpuLoad, inline: true },
+          { name: 'Node.js', value: `v${process.version}`, inline: true }
         )
         .setFooter({
           text: `${client.user?.username}`,
