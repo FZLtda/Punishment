@@ -37,7 +37,7 @@ module.exports = {
 
       if (mensagem) {
         const embedCancelado = new EmbedBuilder()
-          .setTitle(`${emojis.error Sorteio Cancelado`)
+          .setTitle(`${emojis.error} Sorteio Cancelado`)
           .setDescription('Este sorteio foi **cancelado manualmente** por um administrador.')
           .addFields({ name: 'Prêmio', value: sorteio.prize })
           .setColor(colors.red)
