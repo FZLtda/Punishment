@@ -3,12 +3,14 @@
 const { EventEmitter } = require('node:events');
 const os = require('os');
 const Logger = require('@logger');
+const { bot } = require('@config');
 const { reportErrorToWebhook } = require('@utils/webhookMonitor');
 
 /**
  * Monitor central de eventos internos do bot, saúde do sistema
  * e alertas críticos. Projetado para ser escalável e robusto.
  */
+
 class Monitor extends EventEmitter {
   constructor() {
     super();
@@ -23,6 +25,7 @@ class Monitor extends EventEmitter {
   /**
    * Garante que os métodos mantenham o contexto da classe.
    */
+  
   _bindEvents() {
     this.onReady = this.onReady.bind(this);
     this.onCommandUsed = this.onCommandUsed.bind(this);
@@ -32,6 +35,7 @@ class Monitor extends EventEmitter {
   /**
    * Registra os eventos observados pelo monitor.
    */
+  
   _registerListeners() {
     this.on('ready', this.onReady);
     this.on('commandUsed', this.onCommandUsed);
@@ -42,15 +46,17 @@ class Monitor extends EventEmitter {
    * Disparado quando o bot fica online.
    * @param {string} tag - Tag do bot
    */
+  
   onReady(tag) {
-    Logger.info(`[MONITOR] Bot online: ${tag}`);
-    reportErrorToWebhook('Punishment Status', `**${tag}** foi iniciado com sucesso.`);
+    Logger.info(`${bot.name} online: ${tag}`);
+    reportErrorToWebhook(`${bot.name} Status`, `**${tag}** foi iniciado com sucesso.`);
   }
 
   /**
    * Disparado quando um comando é usado.
    * @param {{ user: import('discord.js').User, name: string, guild: import('discord.js').Guild }} data
    */
+  
   onCommandUsed({ user, name, guild }) {
     Logger.info(`[CMD] ${user.tag} usou /${name} em ${guild.name}`);
   }
@@ -60,6 +66,7 @@ class Monitor extends EventEmitter {
    * @param {string} context - Localização ou tipo de erro
    * @param {Error} error - Objeto do erro
    */
+  
   onError(context, error) {
     const msg = `[ERROR][${context}] ${error.stack || error.message}`;
     Logger.error(msg);
@@ -69,6 +76,7 @@ class Monitor extends EventEmitter {
   /**
    * Inicia o heartbeat para registrar estado atual do bot.
    */
+  
   _startHeartbeat() {
     setInterval(() => {
       try {
@@ -98,6 +106,7 @@ class Monitor extends EventEmitter {
    * @param {NodeJS.MemoryUsage} mem
    * @returns {string}
    */
+  
   _formatMemory(mem) {
     return `${(mem.rss / 1024 / 1024).toFixed(2)} MB`;
   }
@@ -107,6 +116,7 @@ class Monitor extends EventEmitter {
    * @param {[number, number, number]} load
    * @returns {string}
    */
+  
   _formatCPU(load) {
     return load.map(val => val.toFixed(2)).join(' / ') + ' (1m/5m/15m)';
   }
@@ -115,6 +125,7 @@ class Monitor extends EventEmitter {
    * Loga o heartbeat no console.
    * @param {string} info
    */
+  
   _logHeartbeat(info) {
     Logger.debug('[HEARTBEAT] Estado atual do bot:\n' + info);
   }
