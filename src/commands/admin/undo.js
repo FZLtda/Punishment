@@ -100,8 +100,8 @@ module.exports = {
 
 function sendError(message, texto) {
   const embed = new EmbedBuilder()
-    .setColor(colors.red)
-    .setDescription(`${emojis.error} ${texto}`);
+    .setColor(colors.yellow)
+    .setDescription(`${emojis.attent} ${texto}`);
 
   return message.channel.send({ embeds: [embed] });
 }
