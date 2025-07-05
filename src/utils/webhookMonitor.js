@@ -2,6 +2,7 @@
 
 const { WebhookClient, EmbedBuilder } = require('discord.js');
 const { colors } = require('@config');
+const Logger = require('@logger');
 
 const LOGO_BOT = process.env.LOGO_BOT || null;
 const MONITOR_WEBHOOK_URL = process.env.MONITOR_WEBHOOK_URL || null;
@@ -26,9 +27,16 @@ async function reportErrorToWebhook(title, content, type = 'error') {
     .setTimestamp()
     .setFooter({ text: 'Punishment', iconURL: LOGO_BOT });
 
+  // Log local com logger do projeto
+  const logMsg = `${title} — ${isError ? content.stack || content.message : content}`;
+  if (type === 'info') {
+    Logger.info(logMsg);
+  } else {
+    Logger.error(logMsg);
+  }
+
   if (!MONITOR_WEBHOOK_URL) {
-    console.warn('[Webhook Monitor] URL do webhook não definida. Log local:');
-    console.warn(`[${type.toUpperCase()}] ${title}\n${description}`);
+    Logger.warn('URL do webhook não definida. Enviando apenas log local.');
     return;
   }
 
@@ -40,8 +48,9 @@ async function reportErrorToWebhook(title, content, type = 'error') {
       avatarURL: LOGO_BOT,
       embeds: [embed]
     });
+    Logger.debug('Log enviado com sucesso para o webhook.');
   } catch (err) {
-    console.error('[Webhook Monitor] Falha ao enviar erro para o webhook:', err);
+    Logger.error('Falha ao enviar log para o webhook:', err);
   }
 }
 
