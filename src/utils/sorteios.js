@@ -55,6 +55,16 @@ async function finalizarSorteio(giveaway, client) {
     giveaway.status = 'encerrado';
     await giveaway.save();
 
+    // Mensagem de parabéns para os vencedores
+    if (ganhadores.length > 0) {
+      for (const userId of ganhadores) {
+        await canal.send({
+          content: `🎉 Parabéns <@${userId}>! Você ganhou o **${giveaway.prize}**!`,
+          allowedMentions: { users: [userId] }
+        }).catch(() => null);
+      }
+    }
+
     Logger.info(`[SORTEIO] Encerrado com sucesso (${giveaway.messageId}) | Ganhadores: ${ganhadores.length}`);
   } catch (error) {
     Logger.error(`[SORTEIO] Erro ao encerrar sorteio ${giveaway.messageId}: ${error.stack || error.message}`);
