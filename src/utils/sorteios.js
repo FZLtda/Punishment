@@ -52,10 +52,15 @@ async function finalizarSorteio(giveaway, client) {
       Logger.error(`[SORTEIO] Falha ao editar mensagem do sorteio ${giveaway.messageId}: ${err.stack || err.message}`);
     });
 
+    // Remove todas as reações da mensagem do sorteio
+    await mensagem.reactions.removeAll().catch(err => {
+      Logger.warn(`[SORTEIO] Não foi possível remover as reações: ${err.message}`);
+    });
+
     giveaway.status = 'encerrado';
     await giveaway.save();
 
-    // Mensagem de parabéns para cada ganhador
+    // Envia mensagem de parabéns individual para cada ganhador
     if (ganhadores.length > 0) {
       for (const userId of ganhadores) {
         const content = `🎉 Parabéns <@${userId}>! Você ganhou o **${giveaway.prize}**!`;
