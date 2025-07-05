@@ -1,7 +1,8 @@
 'use strict';
 
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const ModerationAction = require('@models/ModerationAction');
+const ModerationAction = require('../../models/ModerationAction');
+
 const { colors, emojis } = require('@config');
 const Logger = require('@logger');
 
