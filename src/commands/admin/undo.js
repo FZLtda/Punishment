@@ -1,6 +1,6 @@
 'use strict';
 
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const ModerationAction = require('@models/ModerationAction');
 const { colors, emojis } = require('@config');
 const Logger = require('@logger');
@@ -28,7 +28,9 @@ module.exports = {
     }
 
     const membro = await message.guild.members.fetch(action.targetId).catch(() => null);
-    if (!membro) return sendError(message, 'O membro alvo não está mais no servidor.');
+    if (!membro && action.type !== 'ban') {
+      return sendError(message, 'O membro alvo não está mais no servidor.');
+    }
 
     let sucesso = false;
     let acaoDesfeita = '';
@@ -40,23 +42,27 @@ module.exports = {
             await membro.roles.remove(action.roleId, 'Undo de mute');
             sucesso = true;
             acaoDesfeita = 'Mute removido';
+          } else {
+            acaoDesfeita = 'O usuário não está mutado ou a role não existe.';
           }
           break;
+
         case 'ban':
           await message.guild.bans.remove(action.targetId, 'Undo de banimento');
           sucesso = true;
           acaoDesfeita = 'Banimento revertido';
           break;
+
         case 'kick':
-          // Kick não pode ser desfeito, mas pode registrar a tentativa
           sucesso = false;
           acaoDesfeita = 'Kick não pode ser revertido.';
           break;
+
         case 'warn':
-          // Apenas remove a entrada de advertência
           sucesso = true;
           acaoDesfeita = 'Advertência anulada';
           break;
+
         default:
           acaoDesfeita = 'Tipo de ação não suportado para undo.';
           break;
@@ -70,9 +76,9 @@ module.exports = {
           .setColor(colors.green)
           .addFields(
             { name: 'Usuário', value: `<@${action.targetId}>`, inline: true },
-            { name: 'Ação', value: `${action.type}`, inline: true },
+            { name: 'Ação', value: action.type, inline: true },
             { name: 'Executor original', value: `<@${action.executorId}>`, inline: true },
-            { name: 'Status', value: `${acaoDesfeita}`, inline: true }
+            { name: 'Status', value: acaoDesfeita, inline: true }
           )
           .setFooter({
             text: 'Punishment • Sistema Undo',
@@ -96,5 +102,6 @@ function sendError(message, texto) {
   const embed = new EmbedBuilder()
     .setColor(colors.red)
     .setDescription(`${emojis.error} ${texto}`);
+
   return message.channel.send({ embeds: [embed] });
 }
