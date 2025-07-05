@@ -12,6 +12,7 @@ const MONITOR_WEBHOOK_URL = process.env.MONITOR_WEBHOOK_URL || null;
  * @param {string | Error} content - Mensagem ou erro capturado.
  * @param {'info' | 'error'} type - Tipo de mensagem (define cor e tom).
  */
+
 async function reportErrorToWebhook(title, content, type = 'error') {
   const isError = content instanceof Error;
   const description = isError
@@ -50,6 +51,7 @@ async function reportErrorToWebhook(title, content, type = 'error') {
  * @param {number} max
  * @returns {string}
  */
+
 function truncate(text, max) {
   return text.length > max ? text.slice(0, max - 3) + '...' : text;
 }
