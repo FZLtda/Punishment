@@ -59,7 +59,7 @@ module.exports = {
       ].join('\n'))
       .setColor(colors.red)
       .setFooter({
-        text: `Ser${vencedores === 1 ? 'á' : 'ão'} ${vencedores} ${plural}!`,
+        text: `Ser${vencedores === 1 ? 'á' : 'ão'} ${vencedores} ${plural}`,
         iconURL: message.client.user.displayAvatarURL()
       })
       .setTimestamp();
