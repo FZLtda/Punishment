@@ -4,6 +4,7 @@ const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { getPrefix } = require('@utils/prefixManager');
 const Logger = require('@logger');
+const checkTerms = require('@middlewares/checkTerms');
 
 module.exports = {
   name: 'messageCreate',
@@ -15,7 +16,6 @@ module.exports = {
   async execute(message) {
     if (!message.guild || message.author.bot) return;
 
-    // Prefixo customizado por servidor
     const prefix = message.client.getPrefix
       ? await message.client.getPrefix(message.guild.id)
       : await getPrefix(message.guild.id);
@@ -26,6 +26,19 @@ module.exports = {
     const cmdName = args.shift()?.toLowerCase();
     const command = message.client.commands.get(cmdName);
     if (!command) return;
+
+    // Verificação de aceite dos Termos de Uso
+    const fakeInteraction = {
+      user: message.author,
+      client: message.client,
+      reply: (options) => message.channel.send({ ...options, ephemeral: true }),
+    };
+
+    const accepted = await checkTerms(fakeInteraction);
+    if (!accepted) {
+      Logger.info(`[TERMS] Bloqueando ${message.author.tag} por não aceitar os termos.`);
+      return; // Usuário já recebeu a mensagem com botões
+    }
 
     // Verificação de permissões do usuário
     const member = await message.guild.members.fetch(message.author.id);
@@ -59,7 +72,7 @@ module.exports = {
       });
     }
 
-    // Opcional: deletar mensagem do usuário
+    // Deletar mensagem do usuário (se configurado)
     if (command.deleteMessage) {
       try {
         await message.delete();
