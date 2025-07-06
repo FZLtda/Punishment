@@ -13,7 +13,10 @@ module.exports = async function checkTerms(context) {
     .setColor(colors.green)
     .setTitle('Termos de Uso')
     .setDescription(`Para continuar utilizando o **${bot.name}**, você precisa aceitar os **Termos de Uso**.`)
-    .setFooter({ text: bot.name, iconURL: context.client.user.displayAvatarURL() });
+    .setFooter({
+      text: bot.name,
+      iconURL: context.client.user.displayAvatarURL()
+    });
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
@@ -32,16 +35,15 @@ module.exports = async function checkTerms(context) {
     allowedMentions: { repliedUser: false }
   };
 
+  // Slash commands (interactions)
   if (typeof context.reply === 'function' && 'deferReply' in context) {
     await context.reply({ ...payload, ephemeral: true });
     return false;
   }
 
-  if (typeof context.reply === 'function' && context.channel?.send) {
-    await context.channel.send({
-      ...payload,
-      reply: { messageReference: context.id }
-    });
+  // Prefix commands (mensagem normal)
+  if (typeof context.reply === 'function') {
+    await context.reply(payload);
     return false;
   }
 
