@@ -25,15 +25,22 @@ module.exports = async function checkTerms(context) {
       .setStyle(ButtonStyle.Success)
   );
 
-  // Se for interaction real
+  const payload = {
+    embeds: [embed],
+    components: [row],
+    allowedMentions: { repliedUser: false }
+  };
+
   if (typeof context.reply === 'function' && 'deferReply' in context) {
-    await context.reply({ embeds: [embed], components: [row], ephemeral: true });
+    await context.reply({ ...payload, ephemeral: true });
     return false;
   }
 
-  // Se for message simulada (prefix)
-  if (typeof context.reply === 'function') {
-    await context.reply({ embeds: [embed], components: [row] });
+  if (typeof context.reply === 'function' && context.channel?.send) {
+    await context.channel.send({
+      ...payload,
+      reply: { messageReference: context.id }
+    });
     return false;
   }
 
