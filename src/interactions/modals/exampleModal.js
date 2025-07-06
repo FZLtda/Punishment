@@ -6,7 +6,7 @@ const Logger = require('@logger');
 const { colors, emojis } = require('@config');
 
 module.exports = {
-  customId: 'example_modal',
+  customId: 'open_example_modal',
 
   /**
    * Executa um modal de exemplo
