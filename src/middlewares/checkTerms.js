@@ -11,7 +11,7 @@ module.exports = async function checkTerms(context) {
   const embed = new EmbedBuilder()
     .setColor('#FE3838')
     .setTitle('Termos de Uso')
-    .setDescription('Para continuar utilizando o Punishment, você precisa aceitar os termos de uso.')
+    .setDescription('Para continuar utilizando o **Punishment**, você precisa aceitar os **Termos de Uso**.')
     .setFooter({ text: 'Punishment', iconURL: context.client.user.displayAvatarURL() });
 
   const row = new ActionRowBuilder().addComponents(
@@ -21,7 +21,7 @@ module.exports = async function checkTerms(context) {
       .setURL(TERMS_URL),
     new ButtonBuilder()
       .setCustomId('terms_accept')
-      .setLabel('Li e Aceito os Termos')
+      .setLabel('Aceitar Termos de Uso')
       .setStyle(ButtonStyle.Success)
   );
 
