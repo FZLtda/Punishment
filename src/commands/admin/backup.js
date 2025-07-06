@@ -70,7 +70,6 @@ module.exports = {
       const filePath = path.join(backupDir, fileName);
 
       fs.mkdirSync(backupDir, { recursive: true });
-
       fs.writeFileSync(filePath, JSON.stringify(backupData, null, 2));
 
       const embed = new EmbedBuilder()
@@ -79,12 +78,14 @@ module.exports = {
         .setDescription('A estrutura do servidor foi salva com sucesso.')
         .addFields(
           { name: 'Servidor', value: guild.name, inline: true },
-          { name: 'Total de Cargos', value: `${backupData.roles.length}`, inline: true },
-          { name: 'Total de Canais', value: `${backupData.channels.length}`, inline: true }
+          { name: 'Cargos salvos', value: `${backupData.roles.length}`, inline: true },
+          { name: 'Canais salvos', value: `${backupData.channels.length}`, inline: true },
+          { name: 'Backup ID', value: `\`${timestamp}\``, inline: false },
+          { name: 'Restauração', value: `Use \`${message.client.prefix}restore ${timestamp}\` para restaurar este backup.`, inline: false }
         )
         .setFooter({
-          text: `Backup ID: ${timestamp}`,
-          iconURL: guild.iconURL()
+          text: `${message.author.username}`,
+          iconURL: message.author.displayAvatarURL({ dynamic: true })
         })
         .setTimestamp();
 
@@ -97,7 +98,8 @@ module.exports = {
         reason: 'Backup manual solicitado.',
         extraFields: [
           { name: 'Cargos salvos', value: `${backupData.roles.length}`, inline: true },
-          { name: 'Canais salvos', value: `${backupData.channels.length}`, inline: true }
+          { name: 'Canais salvos', value: `${backupData.channels.length}`, inline: true },
+          { name: 'Backup ID', value: `${timestamp}`, inline: false }
         ]
       });
 
