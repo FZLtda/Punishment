@@ -1,6 +1,6 @@
 'use strict';
 
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
 const fs = require('fs');
@@ -28,7 +28,7 @@ module.exports = {
         channels: [],
       };
 
-      // Salva cargos
+      // Cargos
       guild.roles.cache
         .filter(role => !role.managed)
         .sort((a, b) => b.position - a.position)
@@ -38,13 +38,13 @@ module.exports = {
             name: role.name,
             color: role.hexColor,
             hoist: role.hoist,
-            permissions: role.permissions.bitfield,
+            permissions: role.permissions.bitfield.toString(),
             position: role.position,
             mentionable: role.mentionable
           });
         });
 
-      // Salva canais
+      // Canais
       guild.channels.cache
         .sort((a, b) => a.position - b.position)
         .forEach(channel => {
@@ -58,20 +58,19 @@ module.exports = {
             permissionOverwrites: channel.permissionOverwrites.cache.map(perm => ({
               id: perm.id,
               type: perm.type,
-              allow: perm.allow.bitfield,
-              deny: perm.deny.bitfield
+              allow: perm.allow.bitfield.toString(),
+              deny: perm.deny.bitfield.toString()
             }))
           });
         });
 
       const timestamp = Date.now();
       const fileName = `backup-${guild.id}-${timestamp}.json`;
-      const filePath = path.join(__dirname, `../../../backups/${fileName}`);
+      const backupDir = path.join(__dirname, '../../../backups');
+      const filePath = path.join(backupDir, fileName);
 
-      // Garante que o diretório exista
-      fs.mkdirSync(path.dirname(filePath), { recursive: true });
+      fs.mkdirSync(backupDir, { recursive: true });
 
-      // Escreve backup no arquivo
       fs.writeFileSync(filePath, JSON.stringify(backupData, null, 2));
 
       const embed = new EmbedBuilder()
@@ -91,7 +90,6 @@ module.exports = {
 
       await message.channel.send({ embeds: [embed] });
 
-      // Log de moderação
       await sendModLog(guild, {
         action: 'Backup de Servidor',
         target: message.author,
@@ -105,7 +103,7 @@ module.exports = {
 
     } catch (error) {
       console.error('[BACKUP ERROR]', error);
-      return sendError(message, 'Não foi possível gerar o backup. Tente novamente mais tarde.');
+      return sendError(message, 'Não foi possível gerar o backup. Verifique o erro no console.');
     }
   }
 };
