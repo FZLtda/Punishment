@@ -16,7 +16,8 @@ module.exports = async function checkTerms(context) {
     .setFooter({
       text: bot.name,
       iconURL: context.client.user.displayAvatarURL()
-    });
+    })
+    .setTimestamp();
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
