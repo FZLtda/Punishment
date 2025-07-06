@@ -29,7 +29,8 @@ module.exports = {
       .setFooter({
         text: bot.name,
         iconURL: interaction.client.user.displayAvatarURL()
-      });
+      })
+      .setTimestamp();
 
     await interaction.reply({
       embeds: [embed],
