@@ -1,37 +1,47 @@
 'use strict';
 
-const {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle
-} = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
+const Logger = require('@logger');
+const { colors } = require('@config');
 
 module.exports = {
-  name: 'modaltest',
-  description: 'Exibe botão para abrir um modal de feedback',
-  usage: '!modaltest',
-  permissions: ['SendMessages'],
+  customId: 'open_example_modal',
 
   /**
+   * Executa um modal de exemplo
+   * @param {import('discord.js').ModalSubmitInteraction} interaction
    * @param {import('discord.js').Client} client
-   * @param {import('discord.js').Message} message
-   * @param {string[]} args
    */
-  async execute(message, args, client) {
+  async execute(interaction, client) {
     try {
-      const button = new ButtonBuilder()
-        .setCustomId('open_example_modal')
-        .setLabel('Abrir Modal')
-        .setStyle(ButtonStyle.Primary);
+      const name = interaction.fields.getTextInputValue('name_input');
+      const feedback = interaction.fields.getTextInputValue('feedback_input');
 
-      const row = new ActionRowBuilder().addComponents(button);
+      Logger.info(`[MODAL] Feedback recebido de ${interaction.user.tag}: ${name} — ${feedback}`);
 
-      await message.channel.send({
-        content: 'Clique no botão abaixo para abrir o modal:',
-        components: [row]
-      });
-    } catch (err) {
-      console.error('Erro ao enviar botão do modal:', err);
+      const embed = new EmbedBuilder()
+        .setTitle('📬 Feedback Recebido!')
+        .setColor(colors.green)
+        .setDescription([
+          `Obrigado, **${name}**!`,
+          `Recebemos seu feedback com sucesso:`,
+          `> ${feedback}`
+        ].join('\n'))
+        .setFooter({
+          text: 'Formulário de Feedback',
+          iconURL: client.user.displayAvatarURL()
+        });
+
+      await interaction.reply({ embeds: [embed], ephemeral: true });
+    } catch (error) {
+      Logger.error(`[MODAL] Erro ao processar feedback: ${error.stack || error}`);
+
+      if (!interaction.replied && !interaction.deferred) {
+        await interaction.reply({
+          content: 'Ocorreu um erro ao processar seu feedback. Tente novamente.',
+          ephemeral: true
+        });
+      }
     }
   }
 };
