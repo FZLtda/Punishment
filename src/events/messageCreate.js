@@ -1,6 +1,6 @@
 'use strict';
 
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { getPrefix } = require('@utils/prefixManager');
 const Logger = require('@logger');
@@ -10,97 +10,112 @@ module.exports = {
   name: 'messageCreate',
 
   /**
-   * Manipulador do evento messageCreate
-   * @param {import('discord.js').Message} message
+   * Evento que escuta mensagens e executa comandos prefixados.
+   * @param {import('discord.js').Message} message - A mensagem recebida.
+   * @returns {Promise<void>}
    */
   async execute(message) {
-    if (!message.guild || message.author.bot) return;
-
-    const prefix = message.client.getPrefix
-      ? await message.client.getPrefix(message.guild.id)
-      : await getPrefix(message.guild.id);
-
-    if (!message.content.startsWith(prefix)) return;
-
-    const args = message.content.slice(prefix.length).trim().split(/ +/);
-    const cmdName = args.shift()?.toLowerCase();
-    const command = message.client.commands.get(cmdName);
-    if (!command) return;
-
-    // Verificação de aceite dos Termos de Uso
-    const fakeInteraction = {
-      user: message.author,
-      client: message.client,
-      reply: (options) => message.channel.send({ ...options, ephemeral: true }),
-    };
-
-    const accepted = await checkTerms(fakeInteraction);
-    if (!accepted) {
-      Logger.info(`[TERMS] Bloqueando ${message.author.tag} por não aceitar os termos.`);
-      return; // Usuário já recebeu a mensagem com botões
-    }
-
-    // Verificação de permissões do usuário
-    const member = await message.guild.members.fetch(message.author.id);
-    if (command.userPermissions && !member.permissions.has(command.userPermissions)) {
-      return message.channel.send({
-        embeds: [
-          new EmbedBuilder()
-            .setColor(colors.red)
-            .setAuthor({
-              name: 'Você não tem permissão para usar este comando.',
-              iconURL: emojis.attention || null
-            })
-        ],
-        allowedMentions: { repliedUser: false }
-      });
-    }
-
-    // Verificação de permissões do bot
-    const botMember = message.guild.members.me;
-    if (command.botPermissions && !botMember.permissions.has(command.botPermissions)) {
-      return message.channel.send({
-        embeds: [
-          new EmbedBuilder()
-            .setColor(colors.yellow)
-            .setAuthor({
-              name: 'Eu não tenho permissão suficiente para executar este comando.',
-              iconURL: emojis.attention || null
-            })
-        ],
-        allowedMentions: { repliedUser: false }
-      });
-    }
-
-    // Deletar mensagem do usuário (se configurado)
-    if (command.deleteMessage) {
-      try {
-        await message.delete();
-      } catch (err) {
-        Logger.warn(`Não foi possível deletar a mensagem de ${message.author.tag}: ${err.message}`);
-      }
-    }
-
-    // Execução do comando
     try {
+      // Ignora mensagens de bots e DMs
+      if (!message.guild || message.author.bot) return;
+
+      // Obtém o prefixo do servidor
+      const prefix = message.client.getPrefix
+        ? await message.client.getPrefix(message.guild.id)
+        : await getPrefix(message.guild.id);
+
+      if (!message.content.startsWith(prefix)) return;
+
+      const args = message.content.slice(prefix.length).trim().split(/\s+/);
+      const commandName = args.shift()?.toLowerCase();
+      if (!commandName) return;
+
+      const command = message.client.commands.get(commandName);
+      if (!command) return;
+
+      // Check de Termos de Uso
+      const accepted = await checkTerms({
+        user: message.author,
+        client: message.client,
+        reply: opts => message.channel.send({ ...opts, ephemeral: true })
+      });
+
+      if (!accepted) {
+        Logger.info(`[TERMS] Usuário ${message.author.tag} bloqueado por não aceitar os termos.`);
+        return;
+      }
+
+      const member = await message.guild.members.fetch(message.author.id);
+      const botMember = message.guild.members.me;
+
+      // Validação de permissões do usuário
+      if (command.userPermissions) {
+        const missing = command.userPermissions.filter(p => !member.permissions.has(p));
+        if (missing.length > 0) {
+          return message.channel.send({
+            embeds: [
+              new EmbedBuilder()
+                .setColor(colors.red)
+                .setAuthor({
+                  name: 'Permissão negada',
+                  iconURL: emojis.attention || null
+                })
+                .setDescription(`Você precisa das permissões: \`${missing.join(', ')}\``)
+            ],
+            allowedMentions: { repliedUser: false }
+          });
+        }
+      }
+
+      // Validação de permissões do bot
+      if (command.botPermissions) {
+        const missing = command.botPermissions.filter(p => !botMember.permissions.has(p));
+        if (missing.length > 0) {
+          return message.channel.send({
+            embeds: [
+              new EmbedBuilder()
+                .setColor(colors.yellow)
+                .setAuthor({
+                  name: 'Permissão insuficiente',
+                  iconURL: emojis.attention || null
+                })
+                .setDescription(`Eu preciso das permissões: \`${missing.join(', ')}\``)
+            ],
+            allowedMentions: { repliedUser: false }
+          });
+        }
+      }
+
+      // Deleta a mensagem do usuário (caso configurado no comando)
+      if (command.deleteMessage) {
+        try {
+          await message.delete();
+        } catch (err) {
+          Logger.warn(`[DELETE] Não foi possível apagar a mensagem de ${message.author.tag}: ${err.message}`);
+        }
+      }
+
+      // Executa o comando
       await command.execute(message, args);
     } catch (error) {
-      Logger.error(`Erro ao executar o comando "${command.name}" em ${message.guild.name}: ${error.stack || error}`);
+      Logger.error(`[EXEC] Erro ao executar comando: ${error.stack || error}`);
 
       const errorEmbed = new EmbedBuilder()
         .setColor(colors.yellow)
         .setTitle('Erro inesperado')
-        .setDescription('Ocorreu um erro durante a execução deste comando.')
+        .setDescription('Houve um problema ao executar este comando. A equipe foi notificada.')
         .setFooter({
           text: 'Punishment • messageCreate',
           iconURL: message.client.user.displayAvatarURL()
         })
         .setTimestamp();
 
-      return message.channel.send({
-        embeds: [errorEmbed],
-        allowedMentions: { repliedUser: false }
-      });
+      if (message.channel && message.channel.send) {
+        await message.channel.send({
+          embeds: [errorEmbed],
+          allowedMentions: { repliedUser: false }
+        });
+      }
     }
   }
 };
