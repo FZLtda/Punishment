@@ -11,8 +11,8 @@ module.exports = async function checkTerms(context) {
   const embed = new EmbedBuilder()
     .setColor('#FE3838')
     .setTitle('Termos de Uso')
-    .setDescription('Para continuar utilizando o bot, você precisa aceitar os termos de uso.')
-    .setFooter({ text: 'Punishment • Sistema de Termos', iconURL: context.client.user.displayAvatarURL() });
+    .setDescription('Para continuar utilizando o Punishment, você precisa aceitar os termos de uso.')
+    .setFooter({ text: 'Punishment', iconURL: context.client.user.displayAvatarURL() });
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
