@@ -1,4 +1,4 @@
-const TermsAgreement = require('@database/models/TermsAgreement');
+const TermsAgreement = require('@models/TermsAgreement');
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { TERMS_URL } = process.env;
 
