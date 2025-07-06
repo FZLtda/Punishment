@@ -39,7 +39,7 @@ module.exports = {
     if (interaction.message?.deletable) {
       setTimeout(() => {
         interaction.message.delete().catch(() => {});
-      }, 5000);
+      }, 1000);
     }
   }
 };
