@@ -63,6 +63,7 @@
 "@core": "src/core",
 "@logger": "src/logger",
 "@handlers": "src/handlers",
+"@middlewares": "src/middlewares",
 "@handleSlash": "src/handlers/slash",
 "@loadEvents": "src/handlers/events",
 "@loadCommands": "src/handlers/commands",
