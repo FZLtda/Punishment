@@ -12,7 +12,7 @@ const path = require('path');
 
 module.exports = {
   name: 'restore',
-  description: 'Restaura a estrutura de um servidor a partir de um backup existente.',
+  description: 'Restaura cargos e canais ausentes do servidor mantendo posições e hierarquia.',
   usage: '${currentPrefix}restore <backupId>',
   userPermissions: ['Administrator'],
   botPermissions: ['ManageGuild', 'ManageChannels', 'ManageRoles'],
@@ -20,15 +20,13 @@ module.exports = {
 
   async execute(message, args) {
     const backupId = args[0];
-    if (!backupId) {
-      return sendError(message, 'Você precisa fornecer o ID do backup.');
-    }
+    if (!backupId) return sendError(message, 'Você precisa fornecer o ID do backup.');
 
     const fileName = `backup-${message.guild.id}-${backupId}.json`;
     const filePath = path.join(__dirname, '../../../backups', fileName);
 
     if (!fs.existsSync(filePath)) {
-      return sendError(message, `Nenhum backup com ID \`${backupId}\` foi encontrado para este servidor.`);
+      return sendError(message, `Backup com ID \`${backupId}\` não encontrado.`);
     }
 
     let backupData;
@@ -36,90 +34,128 @@ module.exports = {
       const raw = fs.readFileSync(filePath, 'utf8');
       backupData = JSON.parse(raw);
     } catch (err) {
-      console.error('[RESTORE-READ-ERROR]', err);
+      console.error('[RESTORE-PARSE]', err);
       return sendError(message, 'Erro ao ler o backup. O arquivo pode estar corrompido.');
     }
 
-    // Confirmação de ação crítica
-    await message.channel.send({
-      content: `${emojis.attent} **Atenção:** Este comando irá recriar canais e cargos no servidor.\n\nRestaurando backup: \`${backupId}\``,
-      allowedMentions: { repliedUser: false }
-    });
+    const guild = message.guild;
+    const existingRoles = guild.roles.cache;
+    const existingChannels = guild.channels.cache;
 
     const roleMap = new Map();
+    const categoryMap = new Map();
 
-    // Recria os cargos
-    for (const roleData of backupData.roles.reverse()) {
+    const restoredRoles = [];
+    const restoredCategories = [];
+    const restoredChannels = [];
+
+    // 1. Restaurar cargos ausentes
+    for (const roleData of backupData.roles.sort((a, b) => a.position - b.position)) {
+      if (existingRoles.has(roleData.id)) continue;
+
       try {
-        const created = await message.guild.roles.create({
+        const role = await guild.roles.create({
           name: roleData.name,
           color: roleData.color,
           hoist: roleData.hoist,
           permissions: new PermissionsBitField(BigInt(roleData.permissions)),
-          position: roleData.position,
           mentionable: roleData.mentionable,
-          reason: `Restaurando backup ${backupId}`
+          reason: `Restaurando cargo ausente do backup ${backupId}`
         });
-        roleMap.set(roleData.id, created.id);
+
+        await role.setPosition(roleData.position).catch(() => {});
+        roleMap.set(roleData.id, role.id);
+        restoredRoles.push(role);
       } catch (err) {
-        console.error(`[RESTORE-ROLE] Erro ao criar cargo "${roleData.name}":`, err.message);
+        console.error(`[RESTORE-ROLE] ${roleData.name}:`, err.message);
       }
     }
 
-    const categoryMap = new Map();
+    // 2. Restaurar categorias ausentes primeiro (para vincular canais depois)
+    const categories = backupData.channels
+      .filter(c => c.type === ChannelType.GuildCategory)
+      .sort((a, b) => a.position - b.position);
 
-    // Recria os canais
-    for (const channelData of backupData.channels) {
+    for (const category of categories) {
+      if (existingChannels.has(category.id)) continue;
+
       try {
-        const overwrites = channelData.permissionOverwrites.map(perm => ({
-          id: roleMap.get(perm.id) || perm.id,
-          type: perm.type,
-          allow: new PermissionsBitField(BigInt(perm.allow)),
-          deny: new PermissionsBitField(BigInt(perm.deny))
-        }));
+        const created = await guild.channels.create({
+          name: category.name,
+          type: ChannelType.GuildCategory,
+          permissionOverwrites: category.permissionOverwrites.map(perm => ({
+            id: roleMap.get(perm.id) || perm.id,
+            type: perm.type,
+            allow: new PermissionsBitField(BigInt(perm.allow)),
+            deny: new PermissionsBitField(BigInt(perm.deny))
+          })),
+          reason: `Restaurando categoria do backup ${backupId}`
+        });
 
-        const createdChannel = await message.guild.channels.create({
+        await created.setPosition(category.position).catch(() => {});
+        categoryMap.set(category.id, created.id);
+        restoredCategories.push(created);
+      } catch (err) {
+        console.error(`[RESTORE-CATEGORY] ${category.name}:`, err.message);
+      }
+    }
+
+    // 3. Restaurar canais normais (textuais, de voz etc.)
+    const nonCategories = backupData.channels
+      .filter(c => c.type !== ChannelType.GuildCategory)
+      .sort((a, b) => a.position - b.position);
+
+    for (const channelData of nonCategories) {
+      if (existingChannels.has(channelData.id)) continue;
+
+      try {
+        const created = await guild.channels.create({
           name: channelData.name,
           type: channelData.type,
           parent: categoryMap.get(channelData.parentId) || null,
           nsfw: channelData.nsfw || false,
-          position: channelData.position,
-          permissionOverwrites: overwrites,
-          reason: `Restaurando backup ${backupId}`
+          permissionOverwrites: channelData.permissionOverwrites.map(perm => ({
+            id: roleMap.get(perm.id) || perm.id,
+            type: perm.type,
+            allow: new PermissionsBitField(BigInt(perm.allow)),
+            deny: new PermissionsBitField(BigInt(perm.deny))
+          })),
+          reason: `Restaurando canal do backup ${backupId}`
         });
 
-        if (createdChannel.type === ChannelType.GuildCategory) {
-          categoryMap.set(channelData.id, createdChannel.id);
-        }
+        await created.setPosition(channelData.position).catch(() => {});
+        restoredChannels.push(created);
       } catch (err) {
-        console.error(`[RESTORE-CHANNEL] Erro ao criar canal "${channelData.name}":`, err.message);
+        console.error(`[RESTORE-CHANNEL] ${channelData.name}:`, err.message);
       }
     }
 
     const embed = new EmbedBuilder()
-      .setTitle(`${emojis.success} Backup restaurado com sucesso`)
+      .setTitle(`${emojis.success} Restauração concluída`)
       .setColor(colors.green)
-      .setDescription(`O servidor foi restaurado a partir do backup \`${backupId}\`.`)
+      .setDescription(`Itens ausentes restaurados com sucesso do backup \`${backupId}\`.`)
       .addFields(
-        { name: 'Cargos recriados', value: `${backupData.roles.length}`, inline: true },
-        { name: 'Canais recriados', value: `${backupData.channels.length}`, inline: true }
+        { name: 'Cargos restaurados', value: `${restoredRoles.length}`, inline: true },
+        { name: 'Categorias restauradas', value: `${restoredCategories.length}`, inline: true },
+        { name: 'Canais restaurados', value: `${restoredChannels.length}`, inline: true }
       )
       .setFooter({
-        text: `${message.author.tag}`,
+        text: `Solicitado por ${message.author.tag}`,
         iconURL: message.author.displayAvatarURL({ dynamic: true })
       })
       .setTimestamp();
 
     await message.channel.send({ embeds: [embed] });
 
-    await sendModLog(message.guild, {
-      action: 'Restore de Backup',
+    await sendModLog(guild, {
+      action: 'Restore Estrutural',
       target: message.author,
       moderator: message.author,
-      reason: `Restore do backup ID ${backupId}`,
+      reason: `Restore de itens ausentes mantendo hierarquia (Backup ${backupId})`,
       extraFields: [
-        { name: 'Cargos restaurados', value: `${backupData.roles.length}`, inline: true },
-        { name: 'Canais restaurados', value: `${backupData.channels.length}`, inline: true }
+        { name: 'Cargos', value: `${restoredRoles.length}`, inline: true },
+        { name: 'Categorias', value: `${restoredCategories.length}`, inline: true },
+        { name: 'Canais', value: `${restoredChannels.length}`, inline: true }
       ]
     });
   }
