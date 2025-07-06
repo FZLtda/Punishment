@@ -1,5 +1,6 @@
 const TermsAgreement = require('@models/TermsAgreement');
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { bot, colors } = require('@config');
 const { TERMS_URL } = process.env;
 
 module.exports = async function checkTerms(context) {
@@ -9,10 +10,10 @@ module.exports = async function checkTerms(context) {
   if (alreadyAccepted) return true;
 
   const embed = new EmbedBuilder()
-    .setColor('#FE3838')
+    .setColor(colors.green)
     .setTitle('Termos de Uso')
-    .setDescription('Para continuar utilizando o **Punishment**, você precisa aceitar os **Termos de Uso**.')
-    .setFooter({ text: 'Punishment', iconURL: context.client.user.displayAvatarURL() });
+    .setDescription(`Para continuar utilizando o **${bot.name}**, você precisa aceitar os **Termos de Uso**.`)
+    .setFooter({ text: bot.name, iconURL: context.client.user.displayAvatarURL() });
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
