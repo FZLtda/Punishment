@@ -1,5 +1,6 @@
 const TermsAgreement = require('@models/TermsAgreement');
 const { EmbedBuilder } = require('discord.js');
+const { bot, emojis, colors } = require('@config');
 
 module.exports = {
   customId: 'terms_accept',
@@ -14,7 +15,7 @@ module.exports = {
     const alreadyAccepted = await TermsAgreement.findOne({ userId });
     if (alreadyAccepted) {
       return interaction.reply({
-        content: 'Você já aceitou os termos anteriormente.',
+        content: `${emojis.attent} Você já aceitou os termos anteriormente.`,
         ephemeral: true
       });
     }
@@ -22,14 +23,23 @@ module.exports = {
     await TermsAgreement.create({ userId });
 
     const embed = new EmbedBuilder()
-      .setColor('Green')
-      .setTitle('Termos aceitos')
-      .setDescription('Agora você tem acesso completo aos comandos do Punishment.')
-      .setFooter({ text: 'Punishment' });
+      .setColor(colors.green)
+      .setTitle(`${emojis.success} Termos aceitos`)
+      .setDescription('Agora você tem acesso completo aos meus comandos.')
+      .setFooter({
+        text: bot.name,
+        iconURL: interaction.client.user.displayAvatarURL()
+      });
 
     await interaction.reply({
       embeds: [embed],
       ephemeral: true
     });
+
+    if (interaction.message?.deletable) {
+      setTimeout(() => {
+        interaction.message.delete().catch(() => {});
+      }, 5000);
+    }
   }
 };
