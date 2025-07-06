@@ -16,12 +16,12 @@ module.exports = async function checkTerms(context) {
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-      .setLabel('Ver Termos')
+      .setLabel('Ler Termos de Uso')
       .setStyle(ButtonStyle.Link)
       .setURL(TERMS_URL),
     new ButtonBuilder()
       .setCustomId('terms_accept')
-      .setLabel('Concordo')
+      .setLabel('Li e Aceito os Termos')
       .setStyle(ButtonStyle.Success)
   );
 
