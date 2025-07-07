@@ -19,7 +19,7 @@ module.exports = {
     const prefix = await getPrefix(message.guild?.id);
     const comandoNome = args[0]?.toLowerCase();
 
-    // Detalhes de um comando específico
+    // Mostrar detalhes de um comando específico
     if (comandoNome) {
       const comando =
         client.commands.get(comandoNome) ||
@@ -37,8 +37,16 @@ module.exports = {
       const embed = embedAviso({
         descricao: `Informações sobre o comando \`${comando.name}\`:`,
         campos: [
-          { name: 'Descrição', value: comando.description || 'Sem descrição.', inline: false },
-          { name: 'Uso', value: `\`${usage}\``, inline: false },
+          {
+            name: 'Descrição',
+            value: comando.description || 'Sem descrição disponível.',
+            inline: false
+          },
+          {
+            name: 'Uso',
+            value: `\`${usage}\``,
+            inline: false
+          },
           {
             name: 'Permissões',
             value: `Usuário: ${comando.userPermissions?.join(', ') || 'Nenhuma'}\nBot: ${comando.botPermissions?.join(', ') || 'Nenhuma'}`,
@@ -55,8 +63,7 @@ module.exports = {
     const categorias = fs.readdirSync(categoriasPath);
 
     const embed = embedAviso({
-      descricao: `Use \`${prefix}help <comando>\` para ver mais detalhes sobre um comando específico.`,
-      campos: [],
+      descricao: `Lista de comandos disponíveis. Use \`${prefix}help <comando>\` para ver detalhes.`,
     });
 
     for (const categoria of categorias) {
@@ -73,7 +80,7 @@ module.exports = {
       }
 
       if (comandos.length > 0) {
-        embed.data.fields.push({
+        embed.addFields({
           name: categoria.charAt(0).toUpperCase() + categoria.slice(1),
           value: comandos.join(', '),
           inline: false
