@@ -8,7 +8,7 @@ const { getPrefix } = require('@utils/prefixManager');
 
 module.exports = {
   name: 'help',
-  description: 'Exibe todos os comandos ou detalhes sobre um comando específico.',
+  description: 'Exibe todos os comandos disponíveis ou informações detalhadas de um comando específico.',
   usage: '${currentPrefix}help [comando]',
   deleteMessage: true,
 
@@ -25,32 +25,31 @@ module.exports = {
 
       if (!command) {
         return message.channel.send({
-          embeds: [
-            embedErro({ descricao: `O comando \`${input}\` não foi encontrado.` })
-          ]
+          embeds: [embedErro({ descricao: `❌ O comando \`${input}\` não foi encontrado.` })],
         });
       }
 
       const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
-      const embed = embedSucesso({
-        descricao: `Informações sobre o comando \`${command.name}\`:`,
+
+      const embed = embedAviso({
+        descricao: `🔎 Informações sobre o comando \`${command.name}\`:`,
         campos: [
           {
             name: 'Descrição',
             value: command.description || 'Sem descrição disponível.',
-            inline: false
+            inline: false,
           },
           {
             name: 'Uso',
             value: `\`${usage}\``,
-            inline: false
+            inline: false,
           },
           {
             name: 'Permissões',
-            value: `Usuário: ${command.userPermissions?.join(', ') || 'Nenhuma'}\nBot: ${command.botPermissions?.join(', ') || 'Nenhuma'}`,
-            inline: false
-          }
-        ]
+            value: `👤 Usuário: ${command.userPermissions?.join(', ') || 'Nenhuma'}\n🤖 Bot: ${command.botPermissions?.join(', ') || 'Nenhuma'}`,
+            inline: false,
+          },
+        ],
       });
 
       return message.channel.send({ embeds: [embed] });
@@ -58,39 +57,48 @@ module.exports = {
 
     // Informações gerais
     const categoriasPath = path.join(__dirname, '..');
-    const categorias = fs.readdirSync(categoriasPath).filter(folder =>
-      fs.lstatSync(path.join(categoriasPath, folder)).isDirectory()
-    );
-
-    const embed = embedSucesso({
-      descricao: `Lista de comandos disponíveis. Use \`${prefix}help <comando>\` para detalhes.`,
+    const categorias = fs.readdirSync(categoriasPath).filter(folder => {
+      const fullPath = path.join(categoriasPath, folder);
+      return fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory();
     });
 
-    for (const categoria of categorias) {
+    const embed = embedAviso({
+      descricao: `📚 Lista de comandos disponíveis.\nUse \`${prefix}help <comando>\` para ver detalhes específicos.`,
+    });
+
+    for (const categoria of categorias.sort()) {
       const comandos = [];
-
       const categoriaPath = path.join(categoriasPath, categoria);
-      const arquivos = fs.readdirSync(categoriaPath).filter(f => f.endsWith('.js'));
 
-      for (const file of arquivos) {
+      const arquivos = fs.readdirSync(categoriaPath).filter(file => file.endsWith('.js'));
+
+      for (const file of arquivos.sort()) {
         try {
           const comando = require(path.join(categoriaPath, file));
           if (!comando?.name || comando.private) continue;
           comandos.push(`\`${comando.name}\``);
         } catch (err) {
-          console.warn(`[Help] Erro ao carregar comando ${file}: ${err.message}`);
+          console.warn(`[Help] Erro ao carregar comando "${file}": ${err.message}`);
+          continue;
         }
       }
 
       if (comandos.length > 0) {
         embed.addFields({
-          name: categoria.charAt(0).toUpperCase() + categoria.slice(1),
+          name: `📂 ${capitalize(categoria)}`,
           value: comandos.join(', '),
-          inline: false
+          inline: false,
         });
       }
     }
 
     return message.channel.send({ embeds: [embed] });
-  }
+  },
 };
+
+/**
+ * Capitaliza a primeira letra da string.
+ */
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
