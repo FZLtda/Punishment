@@ -2,13 +2,14 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const { EmbedBuilder } = require('discord.js');
+const { colors } = require('@config');
 const { formatUsage } = require('@utils/formatUsage');
 const { getPrefix } = require('@utils/prefixManager');
-const { embedSucesso, embedErro } = require('@utils/embeds');
 
 module.exports = {
   name: 'help',
-  description: 'Exibe todos os comandos disponíveis ou informações detalhadas de um comando específico.',
+  description: 'Exibe todos os comandos disponíveis ou detalhes de um comando específico.',
   usage: '${currentPrefix}help [comando]',
   deleteMessage: true,
 
@@ -17,56 +18,55 @@ module.exports = {
     const prefix = await getPrefix(message.guild?.id);
     const input = args[0]?.toLowerCase();
 
-    // Ajuda para um comando específico
+    // Detalhes de um comando específico
     if (input) {
       const command =
         client.commands.get(input) ||
         client.commands.find(cmd => cmd.aliases?.includes(input));
 
       if (!command) {
-        return message.channel.send({
-          embeds: [
-            embedErro({ descricao: `O comando \`${input}\` não foi encontrado.` })
-          ],
-        });
+        const erro = new EmbedBuilder()
+          .setColor(colors.red)
+          .setAuthor({ name: `Comando "${input}" não encontrado.`, iconURL: 'https://bit.ly/42jnCEX' })
+          .setTimestamp();
+
+        return message.channel.send({ embeds: [erro] });
       }
 
       const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
 
-      const embed = embedSucesso({
-        descricao: `📖 Informações sobre o comando \`${command.name}\`:`,
-        campos: [
-          {
-            name: 'Descrição',
-            value: command.description || 'Sem descrição disponível.',
-            inline: false
-          },
-          {
-            name: 'Uso',
-            value: `\`${usage}\``,
-            inline: false
-          },
+      const embed = new EmbedBuilder()
+        .setColor(colors.green)
+        .setTitle(`📖 Comando: ${command.name}`)
+        .setDescription(`Abaixo estão os detalhes completos para o comando \`${command.name}\`.`)
+        .addFields(
+          { name: 'Descrição', value: command.description || 'Sem descrição.', inline: false },
+          { name: 'Uso', value: `\`${usage}\``, inline: false },
           {
             name: 'Permissões',
             value: `👤 Usuário: ${command.userPermissions?.join(', ') || 'Nenhuma'}\n🤖 Bot: ${command.botPermissions?.join(', ') || 'Nenhuma'}`,
             inline: false
           }
-        ]
-      });
+        )
+        .setFooter({ text: `Requisitado por ${message.author.username}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+        .setTimestamp();
 
       return message.channel.send({ embeds: [embed] });
     }
 
-    // Ajuda geral
+    // Ajuda geral com todas as categorias
     const categoriasPath = path.join(__dirname, '..');
     const categorias = fs.readdirSync(categoriasPath).filter(folder => {
       const fullPath = path.join(categoriasPath, folder);
       return fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory();
     });
 
-    const embed = embedSucesso({
-      descricao: `📚 Lista de comandos disponíveis.\nUse \`${prefix}help <comando>\` para mais detalhes.`,
-    });
+    const embed = new EmbedBuilder()
+      .setColor(colors.blue)
+      .setTitle('📚 Central de Comandos')
+      .setDescription(`Use \`${prefix}help <comando>\` para obter detalhes sobre um comando específico.`)
+      .setTimestamp()
+      .setFooter({ text: `Requisitado por ${message.author.username}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) });
 
     for (const categoria of categorias.sort()) {
       const comandos = [];
@@ -80,8 +80,7 @@ module.exports = {
           if (!comando?.name || comando.private) continue;
           comandos.push(`\`${comando.name}\``);
         } catch (err) {
-          console.warn(`[Help] Erro ao carregar comando "${file}": ${err.message}`);
-          continue;
+          console.warn(`[Help] Falha ao carregar "${file}": ${err.message}`);
         }
       }
 
