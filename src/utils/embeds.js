@@ -3,12 +3,20 @@
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 
-const successEmoji = emojis?.success || '';
-const errorEmoji = emojis?.error || '';
-const attentEmoji = emojis?.attent || '';
-const errorIcon = emojis?.erroricon || '';
-const attentionIcon = emojis?.attention || '';
+// Emojis de status
+const successEmoji   = emojis?.successEmoji   ?? '';
+const errorIcon      = emojis?.errorIcon      ?? '';
+const attentionIcon  = emojis?.attentionIcon  ?? '';
 
+/**
+ * Gera uma embed de sucesso padrão
+ * @param {Object} params
+ * @param {string} [params.titulo] - Título da embed
+ * @param {string} params.descricao - Descrição principal
+ * @param {User} [params.autor] - Autor opcional (para footer)
+ * @param {Array} [params.campos] - Campos adicionais
+ * @param {string} [params.thumbnail] - Thumbnail opcional
+ */
 function embedSucesso({ titulo = `${successEmoji} Sucesso`, descricao, autor, campos = [], thumbnail }) {
   const embed = new EmbedBuilder()
     .setTitle(titulo)
@@ -16,13 +24,26 @@ function embedSucesso({ titulo = `${successEmoji} Sucesso`, descricao, autor, ca
     .setColor(colors.green)
     .setTimestamp();
 
-  if (autor) embed.setFooter({ text: autor.username, iconURL: autor.displayAvatarURL({ dynamic: true }) });
+  if (autor?.username && autor?.displayAvatarURL) {
+    embed.setFooter({
+      text: autor.username,
+      iconURL: autor.displayAvatarURL({ dynamic: true })
+    });
+  }
+
   if (campos.length) embed.addFields(...campos);
   if (thumbnail) embed.setThumbnail(thumbnail);
 
   return embed;
 }
 
+/**
+ * Gera uma embed de erro com o texto no autor
+ * @param {Object} params
+ * @param {string} params.descricao - Mensagem de erro
+ * @param {Array} [params.campos] - Campos adicionais
+ * @param {string} [params.thumbnail] - Thumbnail opcional
+ */
 function embedErro({ descricao, campos = [], thumbnail }) {
   const embed = new EmbedBuilder()
     .setColor(colors.red)
@@ -35,6 +56,13 @@ function embedErro({ descricao, campos = [], thumbnail }) {
   return embed;
 }
 
+/**
+ * Gera uma embed de aviso com o texto no autor
+ * @param {Object} params
+ * @param {string} params.descricao - Mensagem de atenção
+ * @param {Array} [params.campos] - Campos adicionais
+ * @param {string} [params.thumbnail] - Thumbnail opcional
+ */
 function embedAviso({ descricao, campos = [], thumbnail }) {
   const embed = new EmbedBuilder()
     .setColor(colors.yellow)
