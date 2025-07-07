@@ -18,7 +18,7 @@ module.exports = {
         .setColor(colors.yellow)
         .setAuthor({
           name: 'Forneça um prefixo válido com até 5 caracteres.',
-          iconURL: emojis.attention
+          iconURL: emojis.attentionIcon
         });
 
       return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
@@ -38,7 +38,7 @@ module.exports = {
 
       const embedSucesso = new EmbedBuilder()
         .setColor(colors.green)
-        .setDescription(`${emojis.success} O prefixo foi alterado para \`${novoPrefixo}\` com sucesso!`)
+        .setDescription(`${emojis.successEmoji} O prefixo foi alterado para \`${novoPrefixo}\` com sucesso!`)
         .setFooter({
           text: `${message.author.username}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true })
@@ -53,7 +53,7 @@ module.exports = {
         .setColor(colors.yellow)
         .setAuthor({
           name: 'Ocorreu um erro ao salvar o novo prefixo.',
-          iconURL: emojis.attention
+          iconURL: emojis.attentionIcon
         });
 
       return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
