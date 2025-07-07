@@ -16,6 +16,9 @@ module.exports = {
   async execute(message) {
     const client = message.client;
 
+    // Garante que os dados da aplicação estejam atualizados
+    await client.application.fetch();
+
     const uptime = formatUptime(process.uptime());
     const memoryUsage = process.memoryUsage();
     const totalMemoryMB = Math.round(os.totalmem() / 1024 / 1024);
@@ -25,14 +28,14 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(colors.red)
       .setTitle(`${emojis.ping || '📊'} Estatísticas do Bot`)
-      .setDescription(`Aqui estão algumas informações úteis sobre o estado atual do bot.`)
+      .setDescription('Abaixo estão as estatísticas atuais do sistema e da aplicação.')
       .addFields(
         { name: '🧠 Memória Utilizada', value: `\`${usedMemoryMB}MB / ${totalMemoryMB}MB\``, inline: true },
         { name: '📡 Ping da API', value: `\`${ping}ms\``, inline: true },
         { name: '⏱️ Uptime', value: `\`${uptime}\``, inline: true },
         { name: '🧩 Versão', value: `\`v${packageJson.version}\``, inline: true },
         { name: '📁 Servidores', value: `\`${client.guilds.cache.size.toLocaleString()}\``, inline: true },
-        { name: '👥 Usuários', value: `\`${client.users.cache.size.toLocaleString()}\``, inline: true },
+        { name: '👤 Instalações', value: `\`${client.application.approximateInstallCount?.toLocaleString() || 'Indisponível'}\``, inline: true },
       )
       .setFooter({
         text: `Requisitado por ${message.author.username}`,
@@ -44,9 +47,6 @@ module.exports = {
   }
 };
 
-/**
- * Converte segundos em uma string formatada de tempo legível.
- */
 function formatUptime(seconds) {
   const pad = s => (s < 10 ? '0' : '') + s;
   const d = Math.floor(seconds / (60 * 60 * 24));
