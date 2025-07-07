@@ -31,8 +31,8 @@ module.exports = {
 
       const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
 
-      const embed = embedAviso({
-        descricao: `🔎 Informações sobre o comando \`${command.name}\`:`,
+      const embed = embedSucesso({
+        descricao: `Informações sobre o comando \`${command.name}\`:`,
         campos: [
           {
             name: 'Descrição',
@@ -46,7 +46,7 @@ module.exports = {
           },
           {
             name: 'Permissões',
-            value: `👤 Usuário: ${command.userPermissions?.join(', ') || 'Nenhuma'}\n🤖 Bot: ${command.botPermissions?.join(', ') || 'Nenhuma'}`,
+            value: `Usuário: ${command.userPermissions?.join(', ') || 'Nenhuma'}\n🤖 Bot: ${command.botPermissions?.join(', ') || 'Nenhuma'}`,
             inline: false,
           },
         ],
@@ -62,8 +62,8 @@ module.exports = {
       return fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory();
     });
 
-    const embed = embedAviso({
-      descricao: `📚 Lista de comandos disponíveis.\nUse \`${prefix}help <comando>\` para ver detalhes específicos.`,
+    const embed = embedSucesso({
+      descricao: `Lista de comandos disponíveis.\nUse \`${prefix}help <comando>\` para ver detalhes específicos.`,
     });
 
     for (const categoria of categorias.sort()) {
@@ -85,7 +85,7 @@ module.exports = {
 
       if (comandos.length > 0) {
         embed.addFields({
-          name: `📂 ${capitalize(categoria)}`,
+          name: `${capitalize(categoria)}`,
           value: comandos.join(', '),
           inline: false,
         });
