@@ -7,7 +7,8 @@ const { colors } = require('@config');
 const { getPrefix } = require('@utils/prefixManager');
 const { formatUsage } = require('@utils/formatUsage');
 const { embedAviso, embedErro } = require('@utils/embeds');
-const { client } = require('@bot/client');
+
+const client = message.client;
 
 module.exports = {
   name: 'help',
