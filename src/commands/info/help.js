@@ -32,7 +32,7 @@ module.exports = {
       }
 
       const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
-      const embed = embedAviso({
+      const embed = embedSucesso({
         descricao: `Informações sobre o comando \`${command.name}\`:`,
         campos: [
           {
@@ -62,7 +62,7 @@ module.exports = {
       fs.lstatSync(path.join(categoriasPath, folder)).isDirectory()
     );
 
-    const embed = embedAviso({
+    const embed = embedSucesso({
       descricao: `Lista de comandos disponíveis. Use \`${prefix}help <comando>\` para detalhes.`,
     });
 
