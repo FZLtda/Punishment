@@ -1,21 +1,31 @@
-// Emojis personalizados do Punishment
+'use strict';
+
+/**
+ * Emojis personalizados do Punishment
+ */
 module.exports = {
-  success: '<:1000073996:1390632563181228112>',
-  error: '<:1000055989:1358918322770677971>',
-  attent: '<:1000055967:1358918618808717704>',
-  mute: '<:1000055914:1355700779859574954>',
-  unmute: '<:1000055905:1355700639681740880>',
-  ban: '<:1000055879:1355700878056751244>',
-  unban: '<:1000055943:1355718942076965016>',
-  kick: '<:1000055869:1355700922197606573>',
-  slow: '<:1000055887:1390132726035648562>',
-  lock: '<:1000055896:1355700508660076554>',
-  unlock: '<:1000055947:1355700557465125064>',
+  // Emojis de status e feedback
+  successEmoji: '<:1000073996:1390632563181228112>',
+  errorEmoji: '<:1000055989:1358918322770677971>',
+  attentionEmoji: '<:1000055967:1358918618808717704>',
+
+  // Emojis de comandos de moderação
+  mute:    '<:1000055914:1355700779859574954>',
+  unmute:  '<:1000055905:1355700639681740880>',
+  ban:     '<:1000055879:1355700878056751244>',
+  unban:   '<:1000055943:1355718942076965016>',
+  kick:    '<:1000055869:1355700922197606573>',
+  slow:    '<:1000055887:1390132726035648562>',
+  lock:    '<:1000055896:1355700508660076554>',
+  unlock:  '<:1000055947:1355700557465125064>',
+
+  // Emojis de utilitários e informações
   info: '<:1000046547:1340465282568945675>',
   ping: '<:1000042776:1335945378029240412>',
   time: '<:1000074183:1390829704516210811>',
-  
-  // Emojis por imagem (URL)
-  erroricon: 'https://bit.ly/42jnCEX',
-  attention: 'https://bit.ly/3Ypxwnl'
+
+  // Emojis como URLs para uso em embeds
+  successIcon: 'https://bit.ly/3R8qteY',
+  errorIcon: 'https://bit.ly/42jnCEX',
+  attentionIcon: 'https://bit.ly/3Ypxwnl'
 };
