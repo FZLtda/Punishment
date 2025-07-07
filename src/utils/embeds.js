@@ -6,6 +6,8 @@ const { colors, emojis } = require('@config');
 const successEmoji = emojis?.success || '';
 const errorEmoji = emojis?.error || '';
 const attentEmoji = emojis?.attent || '';
+const errorIcon = emojis?.erroricon || '';
+const attentionIcon = emojis?.attention || '';
 
 function embedSucesso({ titulo = `${successEmoji} Sucesso`, descricao, autor, campos = [], thumbnail }) {
   const embed = new EmbedBuilder()
@@ -21,12 +23,11 @@ function embedSucesso({ titulo = `${successEmoji} Sucesso`, descricao, autor, ca
   return embed;
 }
 
-function embedErro({ titulo = `${errorEmoji} Erro`, descricao, campos = [], thumbnail }) {
+function embedErro({ descricao, campos = [], thumbnail }) {
   const embed = new EmbedBuilder()
-    .setTitle(titulo)
-    .setDescription(descricao)
     .setColor(colors.red)
-    .setTimestamp();
+    .setTimestamp()
+    .setAuthor({ name: descricao, iconURL: errorIcon });
 
   if (campos.length) embed.addFields(...campos);
   if (thumbnail) embed.setThumbnail(thumbnail);
@@ -34,12 +35,11 @@ function embedErro({ titulo = `${errorEmoji} Erro`, descricao, campos = [], thum
   return embed;
 }
 
-function embedAviso({ titulo = `${attentEmoji} Aviso`, descricao, campos = [], thumbnail }) {
+function embedAviso({ descricao, campos = [], thumbnail }) {
   const embed = new EmbedBuilder()
-    .setTitle(titulo)
-    .setDescription(descricao)
     .setColor(colors.yellow)
-    .setTimestamp();
+    .setTimestamp()
+    .setAuthor({ name: descricao, iconURL: attentionIcon });
 
   if (campos.length) embed.addFields(...campos);
   if (thumbnail) embed.setThumbnail(thumbnail);
