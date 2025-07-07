@@ -1,8 +1,9 @@
 'use strict';
 
-const { EmbedBuilder, ChannelType } = require('discord.js');
-const { colors, emojis } = require('@config');
+const { ChannelType } = require('discord.js');
+const { emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
+const { embedSucesso, embedErro, embedAviso } = require('@utils/embeds');
 
 module.exports = {
   name: 'slowmode',
@@ -17,32 +18,32 @@ module.exports = {
     const motivo = args.slice(1).join(' ').trim() || 'Sem motivo fornecido.';
 
     if (!tempo)
-      return sendError(message, 'Você deve fornecer um tempo válido. Ex: `10s`, `5m`, `0s`.');
+      return sendEmbed(message, embedAviso({ descricao: 'Você deve fornecer um tempo válido. Ex: `10s`, `5m`, `0s`.' }));
 
     const segundos = parseTempo(tempo);
     if (segundos === null || segundos < 0 || segundos > 21600)
-      return sendError(message, 'Tempo inválido. O valor deve estar entre `0s` e `6h` (21600 segundos).');
+      return sendEmbed(message, embedErro({ descricao: 'Tempo inválido. O valor deve estar entre `0s` e `6h` (21600 segundos).' }));
 
     if (message.channel.type !== ChannelType.GuildText)
-      return sendError(message, 'Este comando só pode ser executado em canais de texto.');
+      return sendEmbed(message, embedAviso({ descricao: 'Este comando só pode ser executado em canais de texto.' }));
 
     const canalAtual = message.channel;
 
     if (canalAtual.rateLimitPerUser === segundos)
-      return sendError(message, `O modo lento já está definido como \`${tempo}\` neste canal.`);
+      return sendEmbed(message, embedAviso({ descricao: `O modo lento já está definido como \`${tempo}\` neste canal.` }));
 
     try {
       await canalAtual.setRateLimitPerUser(segundos, motivo);
 
       const descricao = segundos === 0
-        ? 'O tempo entre mensagens neste canal foi **desativado** com sucesso.'
+        ? 'O tempo entre mensagens neste canal foi desativado com sucesso.'
         : `O tempo entre mensagens neste canal foi definido para \`${tempo}\`.`;
 
-      const embed = createSuccessEmbed({
-        titulo: `${emojis.slow} Modo Lento Atualizado`,
+      const embed = embedSucesso({
+        titulo: `${emojis?.slow || ''} Modo Lento Atualizado`,
         descricao,
         autor: message.author,
-        motivo
+        campos: [{ name: 'Motivo', value: motivo }]
       });
 
       await canalAtual.send({ embeds: [embed] });
@@ -61,14 +62,11 @@ module.exports = {
 
     } catch (error) {
       console.error('Erro ao aplicar modo lento:', error);
-      return sendError(message, 'Ocorreu um erro ao aplicar o modo lento. Verifique se o bot tem as permissões adequadas.');
+      return sendEmbed(message, embedErro({ descricao: 'Ocorreu um erro ao aplicar o modo lento. Verifique se o bot tem as permissões adequadas.' }));
     }
   }
 };
 
-/**
- * Converte uma string como "10s", "1m", "2h" em segundos.
- */
 function parseTempo(tempo) {
   const match = tempo.match(/^(\d+)(s|m|h)$/i);
   if (!match) return null;
@@ -80,28 +78,6 @@ function parseTempo(tempo) {
   return fatores[unidade] ? valor * fatores[unidade] : null;
 }
 
-/**
- * Cria embed de sucesso padrão.
- */
-function createSuccessEmbed({ titulo, descricao, autor, motivo }) {
-  return new EmbedBuilder()
-    .setTitle(titulo)
-    .setDescription(descricao)
-    .addFields({ name: 'Motivo', value: motivo })
-    .setColor(colors.red)
-    .setTimestamp()
-    .setFooter({ text: `${autor.username}`, iconURL: autor.displayAvatarURL({ dynamic: true }) });
-}
-
-/**
- * Envia uma embed de erro padrão.
- */
-function sendError(message, texto) {
-  const embed = new EmbedBuilder()
-    .setTitle(`${emojis.attent} Aviso`)
-    .setDescription(texto)
-    .setColor(colors.yellow)
-    .setTimestamp();
-
+function sendEmbed(message, embed) {
   return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
 }
