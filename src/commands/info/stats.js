@@ -23,7 +23,7 @@ module.exports = {
     const ping = Math.round(client.ws.ping);
 
     const embed = new EmbedBuilder()
-      .setColor(colors.blue)
+      .setColor(colors.red)
       .setTitle(`${emojis.ping || '📊'} Estatísticas do Bot`)
       .setDescription(`Aqui estão algumas informações úteis sobre o estado atual do bot.`)
       .addFields(
