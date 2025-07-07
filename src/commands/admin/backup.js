@@ -81,7 +81,7 @@ module.exports = {
       fs.writeFileSync(filePath, JSON.stringify(backupData, null, 2));
 
       const embed = new EmbedBuilder()
-        .setTitle(`${emojis.success} Backup criado com sucesso`)
+        .setTitle(`${emojis.successEmoji} Backup criado com sucesso`)
         .setColor(colors.green)
         .setDescription('A estrutura do servidor foi salva com segurança.')
         .addFields(
@@ -121,7 +121,7 @@ module.exports = {
 function sendError(message, texto) {
   const embed = new EmbedBuilder()
     .setColor(colors.yellow)
-    .setAuthor({ name: texto, iconURL: emojis.attention });
+    .setAuthor({ name: texto, iconURL: emojis.attentionIcon });
 
   return message.channel.send({
     embeds: [embed],
