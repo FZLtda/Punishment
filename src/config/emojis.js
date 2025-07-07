@@ -16,5 +16,6 @@ module.exports = {
   time: '<:1000074183:1390829704516210811>',
   
   // Emojis por imagem (URL)
+  erroricon: 'https://bit.ly/42jnCEX',
   attention: 'https://bit.ly/3Ypxwnl'
 };
