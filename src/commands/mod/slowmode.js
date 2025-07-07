@@ -1,7 +1,7 @@
 'use strict';
 
 const { EmbedBuilder, ChannelType } = require('discord.js');
-const { colors } = require('@config');
+const { colors, emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
 
 module.exports = {
@@ -39,7 +39,7 @@ module.exports = {
         : `O tempo entre mensagens neste canal foi definido para \`${tempo}\`.`;
 
       const embed = createSuccessEmbed({
-        titulo: 'Modo Lento Atualizado',
+        titulo: `${emojis.slow} Modo Lento Atualizado`,
         descricao,
         autor: message.author,
         motivo
@@ -98,7 +98,7 @@ function createSuccessEmbed({ titulo, descricao, autor, motivo }) {
  */
 function sendError(message, texto) {
   const embed = new EmbedBuilder()
-    .setTitle('Aviso')
+    .setTitle(`${emojis.attent} Aviso`)
     .setDescription(texto)
     .setColor(colors.yellow)
     .setTimestamp();
