@@ -2,45 +2,42 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { Collection } = require('discord.js');
-const { colors } = require('@config');
-const { getPrefix } = require('@utils/prefixManager');
 const { formatUsage } = require('@utils/formatUsage');
 const { embedAviso, embedErro } = require('@utils/embeds');
-
-const client = message.client;
+const { getPrefix } = require('@utils/prefixManager');
 
 module.exports = {
   name: 'help',
-  description: 'Mostra todos os comandos disponíveis ou informações de um comando específico.',
+  description: 'Exibe todos os comandos ou detalhes sobre um comando específico.',
   usage: '${currentPrefix}help [comando]',
   deleteMessage: true,
 
   async execute(message, args) {
+    const client = message.client;
     const prefix = await getPrefix(message.guild?.id);
-    const comandoNome = args[0]?.toLowerCase();
+    const input = args[0]?.toLowerCase();
 
-    // Mostrar detalhes de um comando específico
-    if (comandoNome) {
-      const comando =
-        client.commands.get(comandoNome) ||
-        client.commands.find(cmd => cmd.aliases?.includes(comandoNome));
+    // Informações de um comando específico
+    if (input) {
+      const command =
+        client.commands.get(input) ||
+        client.commands.find(cmd => cmd.aliases?.includes(input));
 
-      if (!comando) {
+      if (!command) {
         return message.channel.send({
           embeds: [
-            embedErro({ descricao: `O comando \`${comandoNome}\` não foi encontrado.` })
+            embedErro({ descricao: `O comando \`${input}\` não foi encontrado.` })
           ]
         });
       }
 
-      const usage = formatUsage(comando.usage || 'Sem uso especificado.', prefix);
+      const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
       const embed = embedAviso({
-        descricao: `Informações sobre o comando \`${comando.name}\`:`,
+        descricao: `Informações sobre o comando \`${command.name}\`:`,
         campos: [
           {
             name: 'Descrição',
-            value: comando.description || 'Sem descrição disponível.',
+            value: command.description || 'Sem descrição disponível.',
             inline: false
           },
           {
@@ -50,7 +47,7 @@ module.exports = {
           },
           {
             name: 'Permissões',
-            value: `Usuário: ${comando.userPermissions?.join(', ') || 'Nenhuma'}\nBot: ${comando.botPermissions?.join(', ') || 'Nenhuma'}`,
+            value: `Usuário: ${command.userPermissions?.join(', ') || 'Nenhuma'}\nBot: ${command.botPermissions?.join(', ') || 'Nenhuma'}`,
             inline: false
           }
         ]
@@ -59,25 +56,30 @@ module.exports = {
       return message.channel.send({ embeds: [embed] });
     }
 
-    // Mostrar todos os comandos organizados por categoria
+    // Informações gerais
     const categoriasPath = path.join(__dirname, '..');
-    const categorias = fs.readdirSync(categoriasPath);
+    const categorias = fs.readdirSync(categoriasPath).filter(folder =>
+      fs.lstatSync(path.join(categoriasPath, folder)).isDirectory()
+    );
 
     const embed = embedAviso({
-      descricao: `Lista de comandos disponíveis. Use \`${prefix}help <comando>\` para ver detalhes.`,
+      descricao: `Lista de comandos disponíveis. Use \`${prefix}help <comando>\` para detalhes.`,
     });
 
     for (const categoria of categorias) {
       const comandos = [];
 
       const categoriaPath = path.join(categoriasPath, categoria);
-      if (!fs.lstatSync(categoriaPath).isDirectory()) continue;
+      const arquivos = fs.readdirSync(categoriaPath).filter(f => f.endsWith('.js'));
 
-      const arquivos = fs.readdirSync(categoriaPath).filter(file => file.endsWith('.js'));
       for (const file of arquivos) {
-        const comando = require(path.join(categoriaPath, file));
-        if (!comando?.name || comando.private) continue;
-        comandos.push(`\`${comando.name}\``);
+        try {
+          const comando = require(path.join(categoriaPath, file));
+          if (!comando?.name || comando.private) continue;
+          comandos.push(`\`${comando.name}\``);
+        } catch (err) {
+          console.warn(`[Help] Erro ao carregar comando ${file}: ${err.message}`);
+        }
       }
 
       if (comandos.length > 0) {
