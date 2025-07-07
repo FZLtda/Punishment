@@ -13,7 +13,7 @@ const { emojis, colors, channels, bot } = require('@config');
 module.exports = {
   name: 'regras',
   description: 'Envia as regras do servidor com botão para aceitar',
-  usage: '!regras',
+  usage: '.regras',
   permissions: ['SendMessages', 'ViewChannel'],
   deleteMessage: true,
 
@@ -28,7 +28,7 @@ module.exports = {
     // Tenta pegar o canal das regras no servidor
     const channel = await client.channels.fetch(channels.rules).catch(() => null);
     if (!channel || channel.type !== ChannelType.GuildText) {
-      return message.reply('Canal de regras não encontrado ou não é um canal de texto.');
+      return message.channel.send(`${emojis.attentionEmoji} Canal de regras não encontrado ou não é um canal de texto.`);
     }
 
     const embed = new EmbedBuilder()
@@ -62,17 +62,17 @@ module.exports = {
         .setCustomId('verify_user')
         .setLabel('Aceitar Regras')
         .setStyle(ButtonStyle.Success)
-        .setEmoji(emojis.success)
+        .setEmoji(emojis.successEmoji)
     );
 
     try {
       await channel.send({ embeds: [embed], components: [row] });
       if (message.channel.id !== channel.id) {
-        await message.channel.send(`${emojis.success} Mensagem de regras enviada.`);
+        await message.channel.send(`${emojis.successEmoji} Mensagem de regras enviada.`);
       }
     } catch (error) {
       console.error('Erro ao enviar mensagem de regras:', error);
-      await message.reply('Não foi possível enviar a mensagem no canal de regras.');
+      await message.channel.send(`${emojis.attentionEmoji} Não foi possível enviar a mensagem no canal de regras.`);
     }
   }
 };
