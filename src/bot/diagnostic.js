@@ -2,11 +2,12 @@
 
 const os = require('os');
 const Logger = require('@logger');
+const { bot } = require('@config');
 const packageJson = require('@package.json');
 
 module.exports = {
   /**
-   * Exibe informações diagnósticas detalhadas sobre o estado do bot.
+   * Exibe informações diagnósticas sobre o estado do bot.
    * @param {import('discord.js').Client} client
    */
   async showStartupDiagnostic(client) {
@@ -15,16 +16,16 @@ module.exports = {
     const totalGuilds = client.guilds.cache.size;
     const totalUsers = client.users.cache.size;
     const platformInfo = `${os.type()} ${os.arch()}`;
-    const versionInfo = `Node.js ${process.version} | Discord.js v${packageJson.dependencies['discord.js']?.replace('^', '') || 'Desconhecida'}`;
+    const discordJsVersion = packageJson.dependencies['discord.js']?.replace('^', '') || 'Desconhecida';
+    const versionInfo = `Node.js ${process.version} | Discord.js v${discordJsVersion}`;
 
-    Logger.box(`${client.user.username} iniciado com sucesso`, [
-      `Usuário conectado     : ${client.user.tag}`,
-      `Servidores ativos     : ${totalGuilds}`,
-      `Usuários em cache     : ${totalUsers}`,
-      `Uso de memória        : ${memoryUsageMB} MB`,
-      `Uptime do processo    : ${uptime}s`,
-      `Plataforma            : ${platformInfo}`,
-      `Versões               : ${versionInfo}`
-    ]);
+    Logger.info(` ${bot.name} foi iniciado como ${client.user.username}`);
+    Logger.info(`Usuário conectado     : ${client.user.tag}`);
+    Logger.info(`Servidores ativos     : ${totalGuilds}`);
+    Logger.info(`Usuários em cache     : ${totalUsers}`);
+    Logger.info(`Uso de memória        : ${memoryUsageMB} MB`);
+    Logger.info(`Uptime do processo    : ${uptime}s`);
+    Logger.info(`Plataforma            : ${platformInfo}`);
+    Logger.info(`Versões               : ${versionInfo}`);
   }
 };
