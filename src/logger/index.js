@@ -14,10 +14,11 @@ if (!fs.existsSync(logDir)) {
 // Ambiente
 const isProduction = process.env.NODE_ENV === 'production';
 
-// Timezone de São Paulo
-const getTimestamp = () => moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss');
+// Timestamp formatado (fuso horário de São Paulo)
+const getTimestamp = () =>
+  moment().tz('America/Sao_Paulo').format('YYYY-MM-DD HH:mm:ss');
 
-// Níveis customizados
+// Níveis de log personalizados
 const levels = {
   fatal: 0,
   error: 1,
@@ -27,7 +28,7 @@ const levels = {
   debug: 5
 };
 
-// Cores no console
+// Cores para o console
 const colors = {
   fatal: 'bold red',
   error: 'red',
@@ -39,7 +40,7 @@ const colors = {
 
 winston.addColors(colors);
 
-// Formato padronizado
+// Formato base para exibição de logs
 const formatter = winston.format.printf(({ level, message, timestamp }) => {
   return `[${timestamp}] [${level.toUpperCase()}]: ${message}`;
 });
@@ -47,7 +48,7 @@ const formatter = winston.format.printf(({ level, message, timestamp }) => {
 // Formatos para console e arquivos
 const consoleFormat = winston.format.combine(
   winston.format.timestamp({ format: getTimestamp }),
-  !isProduction && winston.format.colorize({ all: true }),
+  ...(isProduction ? [] : [winston.format.colorize({ all: true })]),
   formatter
 );
 
@@ -57,18 +58,20 @@ const fileFormat = winston.format.combine(
   formatter
 );
 
-// Logger principal
+// Criação do logger
 const logger = winston.createLogger({
   levels,
   level: process.env.LOG_LEVEL || 'debug',
   exitOnError: false,
   transports: [
     new winston.transports.Console({ format: consoleFormat }),
+
     new winston.transports.File({
       filename: path.join(logDir, 'combined.log'),
       level: 'debug',
       format: fileFormat
     }),
+
     ...Object.keys(levels).map((level) =>
       new winston.transports.File({
         filename: path.join(logDir, `${level}.log`),
@@ -79,7 +82,7 @@ const logger = winston.createLogger({
   ]
 });
 
-// Interface simplificada
+// Interface simplificada para uso no código
 const log = {};
 for (const level of Object.keys(levels)) {
   log[level] = (input) => {
@@ -90,6 +93,6 @@ for (const level of Object.keys(levels)) {
       process.exit(1);
     }
   };
-}
+};
 
 module.exports = log;
