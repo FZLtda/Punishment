@@ -26,7 +26,7 @@ const levels = {
   debug: 5
 };
 
-// Cores
+// Cores customizadas para o console
 const colors = {
   fatal: 'bold red',
   error: 'red',
@@ -54,7 +54,7 @@ const consoleFormat = winston.format.combine(
   baseFormat
 );
 
-// Logger Winston
+// Instância Winston
 const logger = winston.createLogger({
   levels,
   level: process.env.LOG_LEVEL || 'debug',
@@ -80,14 +80,40 @@ const logger = winston.createLogger({
   exitOnError: false
 });
 
-// Interface de uso simplificada
+// Interface final do logger
 const log = {};
+
+// Métodos principais: .info, .debug, .warn, .fatal etc
 for (const level of Object.keys(levels)) {
   log[level] = (msg) => {
-    if (typeof msg !== 'string') msg = JSON.stringify(msg);
+    if (typeof msg !== 'string') msg = JSON.stringify(msg, null, 2);
     logger.log({ level, message: msg });
     if (level === 'fatal') process.exit(1);
   };
 }
+
+// Box visual pro console
+log.box = (title, lines = []) => {
+  const width = Math.max(...lines.map(l => l.length), title.length) + 4;
+
+  const top = `╔${'═'.repeat(width)}╗`;
+  const separator = `╠${'═'.repeat(width)}╣`;
+  const bottom = `╚${'═'.repeat(width)}╝`;
+
+  const formatLine = (line) => {
+    const padding = width - line.length - 2;
+    return `║ ${line}${' '.repeat(padding)}║`;
+  };
+
+  const content = [
+    top,
+    formatLine(title),
+    separator,
+    ...lines.map(formatLine),
+    bottom
+  ].join('\n');
+
+  console.log('\x1b[32m%s\x1b[0m', content);
+};
 
 module.exports = log;
