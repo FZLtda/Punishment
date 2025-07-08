@@ -5,18 +5,18 @@ const path = require('path');
 const winston = require('winston');
 const moment = require('moment-timezone');
 
-// Detectar ambiente
+// Detecta se o ambiente é produção
 const isProduction = process.env.NODE_ENV === 'production';
 
-// Diretório de logs
+// Cria diretório de logs se não existir
 const logDir = path.resolve(__dirname, '../../logs');
 if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
 
-// Timestamp São Paulo
+// Timestamp no fuso de São Paulo
 const getTimestamp = () =>
   moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm:ss');
 
-// Níveis customizados
+// Níveis personalizados
 const levels = {
   fatal: 0,
   error: 1,
@@ -26,7 +26,7 @@ const levels = {
   debug: 5
 };
 
-// Cores customizadas para o console
+// Cores para o console
 const colors = {
   fatal: 'bold red',
   error: 'red',
@@ -38,7 +38,7 @@ const colors = {
 
 winston.addColors(colors);
 
-// Formatos
+// Formatos base
 const baseFormat = winston.format.printf(({ level, message, timestamp }) =>
   `[${timestamp}] [${level.toUpperCase()}]: ${message}`
 );
@@ -60,8 +60,6 @@ const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'debug',
   transports: [
     new winston.transports.Console({ format: consoleFormat }),
-
-    // Logs por nível individual
     ...Object.entries(levels).map(([level]) =>
       new winston.transports.File({
         filename: path.join(logDir, `${level}.log`),
@@ -69,8 +67,6 @@ const logger = winston.createLogger({
         format: fileFormat
       })
     ),
-
-    // Log combinado
     new winston.transports.File({
       filename: path.join(logDir, 'combined.log'),
       level: 'debug',
@@ -80,26 +76,23 @@ const logger = winston.createLogger({
   exitOnError: false
 });
 
-// Interface final do logger
+// Interface simplificada
 const log = {};
-
-// Métodos principais: .info, .debug, .warn, .fatal etc
 for (const level of Object.keys(levels)) {
   log[level] = (msg) => {
-    if (typeof msg !== 'string') msg = JSON.stringify(msg, null, 2);
-    logger.log({ level, message: msg });
+    const message = typeof msg === 'string' ? msg : JSON.stringify(msg, null, 2);
+    logger.log({ level, message });
     if (level === 'fatal') process.exit(1);
   };
 }
 
-// Box visual pro console
+// Estilização de caixa visual no console
 log.box = (title, lines = []) => {
-  const width = Math.max(...lines.map(l => l.length), title.length) + 4;
+  const allLines = [title, ...lines];
+  const width = Math.max(...allLines.map(line => line.length)) + 4;
 
   const top = `╔${'═'.repeat(width)}╗`;
-  const separator = `╠${'═'.repeat(width)}╣`;
   const bottom = `╚${'═'.repeat(width)}╝`;
-
   const formatLine = (line) => {
     const padding = width - line.length - 2;
     return `║ ${line}${' '.repeat(padding)}║`;
@@ -107,9 +100,7 @@ log.box = (title, lines = []) => {
 
   const content = [
     top,
-    formatLine(title),
-    separator,
-    ...lines.map(formatLine),
+    ...allLines.map(formatLine),
     bottom
   ].join('\n');
 
