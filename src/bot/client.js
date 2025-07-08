@@ -8,8 +8,7 @@ const {
 } = require('discord.js');
 
 /**
- * Instância principal do bot.
- * Sem presença estática — controlada externamente por setBotPresence.
+ * Instância principal do bot com intents e coleções configuradas.
  */
 const client = new Client({
   intents: [
@@ -29,13 +28,11 @@ const client = new Client({
   ]
 });
 
-/**
- * Coleções utilitárias para modularidade e gerenciamento de estado.
- */
-client.commands = new Collection();         // Comandos de prefixo
-client.slashCommands = new Collection();    // Comandos de barra (/)
-client.buttons = new Collection();          // Botões interativos
-client.contexts = new Collection();         // Comandos contextuais
-client.cooldowns = new Collection();        // Controle de cooldown
+// Coleções utilitárias
+client.commands = new Collection();
+client.slashCommands = new Collection();
+client.buttons = new Collection();
+client.contexts = new Collection();
+client.cooldowns = new Collection();
 
 module.exports = client;
