@@ -23,7 +23,7 @@ module.exports = {
       const alreadyAccepted = await TermsAgreement.findOne({ userId });
       if (alreadyAccepted) {
         return await interaction.reply({
-          content: `${emojis.attent} Você já aceitou os termos anteriormente.`,
+          content: `${emojis.attentionEmoji} Você já aceitou os termos anteriormente.`,
           ephemeral: true
         });
       }
@@ -32,7 +32,7 @@ module.exports = {
 
       const successEmbed = new EmbedBuilder()
         .setColor(colors.green)
-        .setTitle(`${emojis.success} Termos Aceitos`)
+        .setTitle(`${emojis.successEmoji} Termos Aceitos`)
         .setDescription('Agora você tem acesso completo aos meus comandos.')
         .setFooter({
           text: bot.name,
@@ -45,7 +45,7 @@ module.exports = {
         ephemeral: true
       });
 
-      // Opcional: deleta a mensagem original após aceitar
+      // Deleta a mensagem original após aceitar
       if (message?.deletable) {
         setTimeout(() => {
           message.delete().catch(() => {});
@@ -55,7 +55,7 @@ module.exports = {
       console.error(`[TERMS_BUTTON] Erro ao processar aceitação de termos:`, error);
       if (!interaction.replied) {
         await interaction.reply({
-          content: 'Não foi possível processar sua aceitação dos termos.',
+          content: `${emoji.attention} Não foi possível processar sua aceitação dos termos.`,
           ephemeral: true
         });
       }
