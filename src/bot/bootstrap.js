@@ -11,26 +11,20 @@ const { showStartupDiagnostic } = require('@bot/diagnostic');
 
 /**
  * Inicializa todos os subsistemas essenciais do bot.
- * Logs, status e métricas de diagnóstico são gerenciados em @bot/diagnostic.
  */
 module.exports = async function bootstrap() {
-  try {
-    validateEnvironment();
+  validateEnvironment();
 
-    if (!process.env.TOKEN) {
-      throw new Error('A variável de ambiente TOKEN está ausente.');
-    }
-
-    await connectMongo();
-    await loadCommands(client);
-    await loadEvents(client);
-    await loadSlashCommands(client);
-    await loadButtonInteractions(client);
-    await client.login(process.env.TOKEN);
-
-    await showStartupDiagnostic(client);
-
-  } catch (error) {
-    throw new Error(`Erro ao inicializar o bot: ${error.stack || error.message}`);
+  if (!process.env.TOKEN) {
+    throw new Error('A variável de ambiente TOKEN está ausente.');
   }
+
+  await connectMongo();
+  await loadCommands(client);
+  await loadEvents(client);
+  await loadSlashCommands(client);
+  await loadButtonInteractions(client);
+  await client.login(process.env.TOKEN);
+
+  await showStartupDiagnostic(client);
 };
