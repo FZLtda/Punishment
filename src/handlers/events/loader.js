@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const Logger = require('@logger/index');
+const Logger = require('@logger');
 
 async function loadEvents(client) {
   const eventsPath = path.join(__dirname, '../../../src/events');
