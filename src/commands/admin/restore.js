@@ -1,11 +1,11 @@
 'use strict';
 
 const {
-  EmbedBuilder,
   ChannelType,
   PermissionsBitField
 } = require('discord.js');
 const { colors, emojis } = require('@config');
+const { sendEmbed } = require('@utils/embedReply');
 const { sendModLog } = require('@modules/modlog');
 const fs = require('fs');
 const path = require('path');
@@ -20,13 +20,14 @@ module.exports = {
 
   async execute(message, args) {
     const backupId = args[0];
-    if (!backupId) return sendError(message, 'Você precisa fornecer o ID do backup.');
+    if (!backupId)
+      return sendEmbed('yellow', message, 'Você precisa fornecer o ID do backup.');
 
     const fileName = `backup-${message.guild.id}-${backupId}.json`;
     const filePath = path.join(__dirname, '../../../backups', fileName);
 
     if (!fs.existsSync(filePath)) {
-      return sendError(message, `Backup com ID \`${backupId}\` não encontrado.`);
+      return sendEmbed('yellow', message, `Backup com ID \`${backupId}\` não encontrado.`);
     }
 
     let backupData;
@@ -35,7 +36,7 @@ module.exports = {
       backupData = JSON.parse(raw);
     } catch (err) {
       console.error('[RESTORE-PARSE]', err);
-      return sendError(message, 'Erro ao ler o backup. O arquivo pode estar corrompido.');
+      return sendEmbed('yellow', message, 'Erro ao ler o backup. O arquivo pode estar corrompido.');
     }
 
     const guild = message.guild;
@@ -49,7 +50,7 @@ module.exports = {
     const restoredCategories = [];
     const restoredChannels = [];
 
-    // 1. Restaurar cargos ausentes
+    // Restaurar cargos ausentes
     for (const roleData of backupData.roles.sort((a, b) => a.position - b.position)) {
       if (existingRoles.has(roleData.id)) continue;
 
@@ -71,7 +72,7 @@ module.exports = {
       }
     }
 
-    // 2. Restaurar categorias ausentes primeiro (para vincular canais depois)
+    // Restaurar categorias
     const categories = backupData.channels
       .filter(c => c.type === ChannelType.GuildCategory)
       .sort((a, b) => a.position - b.position);
@@ -100,7 +101,7 @@ module.exports = {
       }
     }
 
-    // 3. Restaurar canais normais (textuais, de voz etc.)
+    // Restaurar canais
     const nonCategories = backupData.channels
       .filter(c => c.type !== ChannelType.GuildCategory)
       .sort((a, b) => a.position - b.position);
@@ -160,14 +161,3 @@ module.exports = {
     });
   }
 };
-
-function sendError(message, texto) {
-  const embed = new EmbedBuilder()
-    .setColor(colors.yellow)
-    .setAuthor({ name: texto, iconURL: emojis.attention });
-
-  return message.channel.send({
-    embeds: [embed],
-    allowedMentions: { repliedUser: false }
-  });
-}
