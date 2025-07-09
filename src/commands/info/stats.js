@@ -4,6 +4,7 @@ const os = require('os');
 const { EmbedBuilder } = require('discord.js');
 const { getSystemHealth } = require('@utils/healthMonitor');
 const { colors, emojis, bot } = require('@config');
+const { sendEmbed } = require('@utils/embedReply');
 const packageJson = require('@package.json');
 const Logger = require('@logger');
 
@@ -20,7 +21,9 @@ module.exports = {
   async execute(message) {
     const { client } = message;
 
-    if (message.author.id !== bot.owner) return;
+    if (message.author.id !== bot.owner) {
+      return sendEmbed('yellow', message, 'Apenas o desenvolvedor pode executar este comando.');
+    }
 
     try {
       await client.application.fetch();
@@ -62,22 +65,9 @@ module.exports = {
 
       return message.channel.send({ embeds: [embed] });
 
-    } catch (err) {
-      Logger.error(`Erro ao executar comando stats: ${err.stack || err.message}`);
-
-      const errorEmbed = new EmbedBuilder()
-        .setColor(colors.red)
-        .setTitle(`${emojis.attent || '⚠️'} Erro ao obter estatísticas`)
-        .setDescription('Ocorreu um erro inesperado ao tentar carregar as informações de status.')
-        .setFooter({
-          text: 'Punishment • erro interno',
-          iconURL: client.user.displayAvatarURL()
-        })
-        .setTimestamp();
-
-      return message.channel.send({ embeds: [errorEmbed] }).catch(() => {
-        message.reply('Erro interno ao tentar enviar o embed.');
-      });
+    } catch (error) {
+      Logger.error(`[STATS] Erro ao executar comando stats: ${error.stack || error.message}`);
+      return sendEmbed('yellow', message, 'Não foi possível obter as estatísticas do sistema.');
     }
   }
 };
