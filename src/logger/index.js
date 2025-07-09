@@ -41,20 +41,22 @@ const colors = {
 winston.addColors(colors);
 
 // Formato base para exibição de logs
-const formatter = winston.format.printf(({ level, message, timestamp }) => {
-  return `[${timestamp}] [${level.toUpperCase()}]: ${message}`;
+const formatter = winston.format.printf(({ level, message, timestamp, stack }) => {
+  return `[${timestamp}] [${level.toUpperCase()}]: ${stack || message}`;
 });
 
 // Formatos para console e arquivos
 const consoleFormat = winston.format.combine(
   winston.format.timestamp({ format: getTimestamp }),
   ...(isProduction ? [] : [winston.format.colorize({ all: true })]),
+  winston.format.errors({ stack: true }),
   formatter
 );
 
 const fileFormat = winston.format.combine(
   winston.format.timestamp({ format: getTimestamp }),
   winston.format.uncolorize(),
+  winston.format.errors({ stack: true }),
   formatter
 );
 
@@ -85,14 +87,18 @@ const logger = winston.createLogger({
 // Interface simplificada para uso no código
 const log = {};
 for (const level of Object.keys(levels)) {
-  log[level] = (input) => {
-    const message = typeof input === 'string' ? input : JSON.stringify(input, null, 2);
-    logger.log({ level, message });
+  log[level] = (message, error) => {
+    const isError = error instanceof Error;
+    const finalMessage = isError
+      ? `${message}\n${error.stack}`
+      : typeof message === 'string'
+      ? message
+      : JSON.stringify(message, null, 2);
 
-    if (level === 'fatal') {
-      process.exit(1);
-    }
+    logger.log({ level, message: finalMessage });
+
+    if (level === 'fatal') process.exit(1);
   };
-};
+}
 
 module.exports = log;
