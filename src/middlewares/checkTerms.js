@@ -27,8 +27,7 @@ module.exports = async function checkTerms(context) {
       .setColor(colors.green)
       .setTitle('Termos de Uso')
       .setDescription([
-        `Para continuar utilizando o **${bot.name}**, é necessário aceitar nossos **[Termos de Uso](${TERMS_URL})**.`,
-        '\nClique nos botões abaixo para visualizar ou aceitar.'
+        `Para continuar utilizando o **${bot.name}**, é necessário aceitar nossos **[Termos de Uso](${TERMS_URL})**.`
       ].join('\n'))
       .setFooter({
         text: bot.name,
