@@ -11,7 +11,6 @@ module.exports = {
   name: 'doar',
   description: 'Faça uma doação para apoiar o Punishment!',
   usage: '${currentPrefix}doar <valor>',
-  userPermissions: ['SendMessages'],
   botPermissions: ['SendMessages'],
   deleteMessage: true,
 
