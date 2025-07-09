@@ -1,5 +1,6 @@
 'use strict';
 
+const { sendEmbed } = require('@utils/embedReply');
 const Giveaway = require('@models/Giveaway');
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
@@ -18,14 +19,14 @@ module.exports = {
 
     if (!msgId || !/^\d{17,20}$/.test(msgId)) {
       logger.warn(`[CANCELAR] ID inválido fornecido por ${message.author.tag} (${message.author.id})`);
-      return sendError(message, 'Informe um **ID de mensagem válido** do sorteio que deseja cancelar.');
+      return sendEmbed('yellow', message, 'Informe um **ID de mensagem válido** do sorteio que deseja cancelar.');
     }
 
     const sorteio = await Giveaway.findOne({ messageId: msgId, status: 'ativo' });
 
     if (!sorteio) {
       logger.warn(`[CANCELAR] Nenhum sorteio ativo encontrado com o ID ${msgId}`);
-      return sendError(message, 'Nenhum sorteio **ativo** foi encontrado com esse ID.');
+      return sendEmbed('yellow', message, 'Nenhum sorteio **ativo** foi encontrado com esse ID.');
     }
 
     sorteio.status = 'cancelado';
@@ -56,16 +57,7 @@ module.exports = {
 
     } catch (err) {
       logger.error(`[CANCELAR] Erro ao cancelar sorteio: ${err.stack || err.message}`);
-      return sendError(message, 'Ocorreu um erro ao tentar editar a mensagem do sorteio.');
+      return sendEmbed('yellow', message, 'Ocorreu um erro ao tentar editar a mensagem do sorteio.');
     }
   }
 };
-
-// Função utilitária de erro
-function sendError(message, texto) {
-  const embed = new EmbedBuilder()
-    .setColor(colors.red)
-    .setDescription(`${emojis.error} ${texto}`);
-
-  return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
-}
