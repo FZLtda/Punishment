@@ -1,10 +1,11 @@
 'use strict';
 
 const { EmbedBuilder, ChannelType } = require('discord.js');
+const { sendEmbed } = require('@utils/embedReply');
 const Giveaway = require('@models/Giveaway');
-const ms = require('ms');
 const { colors, emojis } = require('@config');
 const logger = require('@logger');
+const ms = require('ms');
 
 module.exports = {
   name: 'sorteio',
@@ -24,9 +25,7 @@ module.exports = {
 
     if (!match) {
       logger.warn(`[SORTEIO] Formato inválido por ${message.author.tag} (${message.author.id})`);
-      return sendError(
-        message,
-        `Formato inválido.\nUso correto: \`${this.usage.replace('${currentPrefix}', '!')}\``
+      return sendEmbed('yellow', message,`Formato inválido.\nUso correto: \`${this.usage.replace('${currentPrefix}', '.')}\``
       );
     }
 
@@ -39,12 +38,12 @@ module.exports = {
       logger.warn(
         `[SORTEIO] Dados inválidos recebidos por ${message.author.tag} (${message.author.id}) | prêmio=${premio}, vencedores=${vencedores}, duração=${duracaoRaw}, canal=${canalId}`
       );
-      return sendError(message, 'Um ou mais parâmetros são inválidos. Verifique se todos os campos foram preenchidos corretamente.');
+      return sendEmbed('yellow', message, 'Um ou mais parâmetros são inválidos. Verifique se todos os campos foram preenchidos corretamente.');
     }
 
     if (canal.type !== ChannelType.GuildText) {
       logger.warn(`[SORTEIO] Canal inválido mencionado (${canalId}) por ${message.author.tag}`);
-      return sendError(message, 'O canal mencionado precisa ser um **canal de texto**.');
+      return sendEmbed('yellow', message, 'O canal mencionado precisa ser um **canal de texto**.');
     }
 
     const terminaEm = new Date(Date.now() + duracao);
@@ -78,22 +77,13 @@ module.exports = {
         createdBy: message.author.id
       });
 
-      const confirm = `${emojis.success} Sorteio criado com sucesso em ${canal}!`;
+      const confirm = `${emojis.successEmoji} Sorteio criado com sucesso em ${canal}!`;
       logger.info(`[SORTEIO] Criado por ${message.author.tag} | Prêmio: "${premio}" | Vencedores: ${vencedores} | Canal: ${canal.name}`);
       return message.channel.send({ content: confirm, allowedMentions: { repliedUser: false } });
 
     } catch (err) {
       logger.error(`[SORTEIO] Erro ao criar sorteio: ${err.stack || err.message}`);
-      return sendError(message, 'Não foi possível criar o sorteio devido a um erro interno. Tente novamente mais tarde.');
+      return sendEmbed('yellow', message, 'Não foi possível criar o sorteio devido a um erro interno. Tente novamente mais tarde.');
     }
   }
 };
-
-// Utilitário de erro com embed padronizado
-function sendError(message, texto) {
-  const embed = new EmbedBuilder()
-    .setColor(colors.red)
-    .setDescription(`${emojis.error} ${texto}`);
-
-  return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
-}
