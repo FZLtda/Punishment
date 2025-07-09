@@ -6,6 +6,7 @@ const { EmbedBuilder } = require('discord.js');
 const { colors } = require('@config');
 const { formatUsage } = require('@utils/formatUsage');
 const { getPrefix } = require('@utils/prefixManager');
+const { sendEmbed } = require('@utils/embedReply');
 
 module.exports = {
   name: 'help',
@@ -25,12 +26,7 @@ module.exports = {
         client.commands.find(cmd => cmd.aliases?.includes(input));
 
       if (!command) {
-        const erro = new EmbedBuilder()
-          .setColor(colors.red)
-          .setAuthor({ name: `Comando "${input}" não encontrado.`, iconURL: 'https://bit.ly/42jnCEX' })
-          .setTimestamp();
-
-        return message.channel.send({ embeds: [erro] });
+        return sendEmbed('yellow', message,`Não foi possível encontrar este comando.`);
       }
 
       const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
@@ -48,7 +44,10 @@ module.exports = {
             inline: false
           }
         )
-        .setFooter({ text: `Requisitado por ${message.author.username}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+        .setFooter({
+          text: `${message.author.username}`,
+          iconURL: message.author.displayAvatarURL({ dynamic: true })
+        })
         .setTimestamp();
 
       return message.channel.send({ embeds: [embed] });
@@ -64,9 +63,12 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(colors.red)
       .setTitle('📚 Central de Comandos')
-      .setDescription(`Use \`${prefix}help <comando>\` para obter detalhes sobre um comando específico.`)
+      .setDescription('Use `/help <comando>` para obter detalhes sobre um comando específico.')
       .setTimestamp()
-      .setFooter({ text: `Requisitado por ${message.author.username}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) });
+      .setFooter({
+        text: `${message.author.username}`,
+        iconURL: message.author.displayAvatarURL({ dynamic: true })
+      });
 
     for (const categoria of categorias.sort()) {
       const comandos = [];
@@ -97,9 +99,6 @@ module.exports = {
   }
 };
 
-/**
- * Capitaliza a primeira letra de uma string.
- */
 function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
