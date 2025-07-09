@@ -22,14 +22,14 @@ async function loadCommands(client) {
         const command = require(filePath);
 
         if (!command.name || typeof command.execute !== 'function') {
-          Logger.warn(`Comando inválido em ${filePath}`);
+          Logger.warn(`[loadCommands] Comando inválido em: ${filePath}`);
           continue;
         }
 
         client.commands.set(command.name, command);
-        Logger.info(`Comando carregado: ${category}/${command.name}`);
+        Logger.info(`[loadCommands] Comando carregado: ${category}/${command.name}`);
       } catch (err) {
-        Logger.error(`Erro ao carregar ${filePath}: ${err.message}`);
+        Logger.error(`[loadCommands] Não foi possível carregar: ${filePath}: ${err.message}`);
       }
     }
   }
