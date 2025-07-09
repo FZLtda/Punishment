@@ -65,7 +65,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(colors.red)
       .setTitle('📚 Central de Comandos')
-      .setDescription('Use `/help <comando>` para obter detalhes sobre um comando específico.')
+      .setDescription('Use `${prefix}help <comando>` para obter detalhes sobre um comando específico.')
       .setFooter({
         text: `${message.author.username}`,
         iconURL: message.author.displayAvatarURL({ dynamic: true })
