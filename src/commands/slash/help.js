@@ -43,7 +43,7 @@ module.exports = {
       const usage = command.usage?.replace('${currentPrefix}', '/') || `/${command.data.name}`;
 
       const embed = new EmbedBuilder()
-        .setColor(colors.green)
+        .setColor(colors.red)
         .setTitle(`📖 Comando: ${command.data?.name || command.name}`)
         .setDescription(`Abaixo estão os detalhes completos para o comando \`${command.data?.name || command.name}\`.`)
         .addFields(
@@ -56,7 +56,7 @@ module.exports = {
           }
         )
         .setFooter({
-          text: `Requisitado por ${interaction.user.username}`,
+          text: `${interaction.user.username}`,
           iconURL: interaction.user.displayAvatarURL({ dynamic: true })
         })
         .setTimestamp();
@@ -72,12 +72,12 @@ module.exports = {
     });
 
     const embed = new EmbedBuilder()
-      .setColor(colors.blue)
+      .setColor(colors.red)
       .setTitle('📚 Central de Comandos')
       .setDescription(`Use \`/help <comando>\` para obter detalhes sobre um comando específico.`)
       .setTimestamp()
       .setFooter({
-        text: `Requisitado por ${interaction.user.username}`,
+        text: `${interaction.user.username}`,
         iconURL: interaction.user.displayAvatarURL({ dynamic: true })
       });
 
