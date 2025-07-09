@@ -14,7 +14,7 @@ async function loadEvents(client) {
       const event = require(filePath);
 
       if (!event.name || typeof event.execute !== 'function') {
-        Logger.warn(`Evento inválido em ${file}`);
+        Logger.warn(`[loadEvents] Evento inválido em: ${file}`);
         continue;
       }
 
@@ -24,9 +24,9 @@ async function loadEvents(client) {
         client.on(event.name, (...args) => event.execute(...args, client));
       }
 
-      Logger.info(`Evento registrado: ${event.name}`);
+      Logger.info(`[loadEvents] Evento registrado: ${event.name}`);
     } catch (err) {
-      Logger.error(`Erro ao carregar evento ${file}: ${err.message}`);
+      Logger.error(`[loadEvents] Não foi possível carregar: ${file}: ${err.message}`);
     }
   }
 }
