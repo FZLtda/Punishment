@@ -49,7 +49,7 @@ async function reportErrorToWebhook(title, content, type = TYPES.ERROR) {
       avatarURL: LOGO_BOT,
       embeds: [embed]
     });
-    Logger.info('Notificação enviada ao webhook com sucesso.');
+    Logger.info('Notificação enviada via webhook.');
   } catch (err) {
     Logger.error('Não foi possível enviar log ao webhook:', err);
   }
