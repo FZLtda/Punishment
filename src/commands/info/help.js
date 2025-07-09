@@ -19,7 +19,7 @@ module.exports = {
     const prefix = await getPrefix(message.guild?.id);
     const input = args[0]?.toLowerCase();
 
-    // Se for ajuda de comando específico
+    // Ajuda de um comando específico
     if (input) {
       const command =
         client.commands.get(input) ||
@@ -53,7 +53,7 @@ module.exports = {
       return message.channel.send({ embeds: [embed] });
     }
 
-    // Ajuda geral
+    // Ajuda geral com categorias ordenadas
     const categoriasPath = path.join(__dirname, '..');
 
     const ordemCategorias = ['admin', 'mod', 'info', 'util', 'giveaway'];
@@ -65,7 +65,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(colors.red)
       .setTitle('📚 Central de Comandos')
-      .setDescription('Use `${prefix}help <comando>` para obter detalhes sobre um comando específico.')
+      .setDescription(`Use \`${prefix}help <comando>\` para obter detalhes sobre um comando específico.`)
       .setFooter({
         text: `${message.author.username}`,
         iconURL: message.author.displayAvatarURL({ dynamic: true })
@@ -101,7 +101,7 @@ module.exports = {
 };
 
 /**
- * Capitaliza categorias com nomes bonitos.
+ * Capitaliza e formata nomes de categoria.
  */
 function formatCategoria(str) {
   const map = {
