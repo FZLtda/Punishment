@@ -19,14 +19,14 @@ module.exports = {
     const prefix = await getPrefix(message.guild?.id);
     const input = args[0]?.toLowerCase();
 
-    // Detalhes de um comando específico
+    // Se for ajuda de comando específico
     if (input) {
       const command =
         client.commands.get(input) ||
         client.commands.find(cmd => cmd.aliases?.includes(input));
 
       if (!command) {
-        return sendEmbed('yellow', message,`Não foi possível encontrar este comando.`);
+        return sendEmbed('yellow', message, `Não foi possível encontrar este comando.`);
       }
 
       const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
@@ -53,10 +53,12 @@ module.exports = {
       return message.channel.send({ embeds: [embed] });
     }
 
-    // Ajuda geral com todas as categorias
+    // Ajuda geral
     const categoriasPath = path.join(__dirname, '..');
-    const categorias = fs.readdirSync(categoriasPath).filter(folder => {
-      const fullPath = path.join(categoriasPath, folder);
+
+    const ordemCategorias = ['admin', 'mod', 'info', 'util', 'giveaway'];
+    const categorias = ordemCategorias.filter(cat => {
+      const fullPath = path.join(categoriasPath, cat);
       return fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory();
     });
 
@@ -64,15 +66,14 @@ module.exports = {
       .setColor(colors.red)
       .setTitle('📚 Central de Comandos')
       .setDescription('Use `/help <comando>` para obter detalhes sobre um comando específico.')
-      .setTimestamp()
       .setFooter({
         text: `${message.author.username}`,
         iconURL: message.author.displayAvatarURL({ dynamic: true })
-      });
+      })
+      .setTimestamp();
 
-    for (const categoria of categorias.sort()) {
+    for (const categoria of categorias) {
       const comandos = [];
-
       const categoriaPath = path.join(categoriasPath, categoria);
       const arquivos = fs.readdirSync(categoriaPath).filter(file => file.endsWith('.js'));
 
@@ -88,7 +89,7 @@ module.exports = {
 
       if (comandos.length > 0) {
         embed.addFields({
-          name: `📂 ${capitalize(categoria)}`,
+          name: `📂 ${formatCategoria(categoria)}`,
           value: comandos.join(', '),
           inline: false
         });
@@ -99,6 +100,16 @@ module.exports = {
   }
 };
 
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+/**
+ * Capitaliza categorias com nomes bonitos.
+ */
+function formatCategoria(str) {
+  const map = {
+    admin: 'Adm',
+    mod: 'Mod',
+    info: 'Info',
+    util: 'Util',
+    giveaway: 'Giveaway'
+  };
+  return map[str] || str.charAt(0).toUpperCase() + str.slice(1);
 }
