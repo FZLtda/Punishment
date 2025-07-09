@@ -22,7 +22,7 @@ module.exports = {
     const prefix = await getPrefix(interaction.guild?.id);
     const input = interaction.options.getString('comando')?.toLowerCase();
 
-    // Detalhes de um comando específico
+    // Ajuda de comando específico
     if (input) {
       const command =
         client.slashCommands.get(input) ||
@@ -65,10 +65,12 @@ module.exports = {
       });
     }
 
-    // Ajuda geral com todas as categorias
+    // Ajuda geral com categorias em ordem personalizada
     const categoriasPath = path.join(__dirname, '..');
-    const categorias = fs.readdirSync(categoriasPath).filter(folder => {
-      const fullPath = path.join(categoriasPath, folder);
+
+    const ordemCategorias = ['admin', 'mod', 'info', 'util', 'giveaway'];
+    const categorias = ordemCategorias.filter(cat => {
+      const fullPath = path.join(categoriasPath, cat);
       return fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory();
     });
 
@@ -79,7 +81,7 @@ module.exports = {
       .setTimestamp()
       .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) });
 
-    for (const categoria of categorias.sort()) {
+    for (const categoria of categorias) {
       const comandos = [];
 
       const categoriaPath = path.join(categoriasPath, categoria);
@@ -100,7 +102,7 @@ module.exports = {
 
       if (comandos.length > 0) {
         embed.addFields({
-          name: `📂 ${capitalize(categoria)}`,
+          name: `📂 ${formatCategoria(categoria)}`,
           value: comandos.join(', '),
           inline: false
         });
@@ -114,6 +116,13 @@ module.exports = {
   }
 };
 
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+function formatCategoria(str) {
+  const map = {
+    admin: 'Adm',
+    mod: 'Mod',
+    info: 'Info',
+    util: 'Util',
+    giveaway: 'Giveaway'
+  };
+  return map[str] || str.charAt(0).toUpperCase() + str.slice(1);
 }
