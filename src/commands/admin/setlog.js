@@ -1,8 +1,9 @@
 'use strict';
 
-const { EmbedBuilder, ChannelType } = require('discord.js');
+const { ChannelType } = require('discord.js');
 const GuildSettings = require('@models/GuildSettings');
-const { colors, emojis } = require('@config');
+const { emojis } = require('@config');
+const { sendEmbed } = require('@utils/embedReply');
 
 module.exports = {
   name: 'setlog',
@@ -13,12 +14,14 @@ module.exports = {
   botPermissions: ['ManageChannels'],
   deleteMessage: true,
 
-  async execute(message, args) {
+  async execute(message) {
     const canal = message.mentions.channels.first();
-    
-    if (!canal) return sendError(message, 'Mencione um canal válido.');
+
+    if (!canal)
+      return sendEmbed('yellow', message, 'Mencione um canal válido.');
+
     if (canal.type !== ChannelType.GuildText)
-      return sendError(message, 'O canal precisa ser de texto.');
+      return sendEmbed('yellow', message, 'O canal precisa ser de texto.');
 
     try {
       await GuildSettings.findOneAndUpdate(
@@ -27,23 +30,14 @@ module.exports = {
         { upsert: true, new: true }
       );
 
-      // Mensagem de confirmação
       return message.channel.send({
-        content: `${emojis.success} Canal de log definido para ${canal}.`,
+        content: `${emojis.successEmoji} Canal de log definido para ${canal}.`,
         allowedMentions: { parse: [] }
       });
 
     } catch (error) {
       console.error(error);
-      return sendError(message, 'Não foi possível salvar a configuração.');
+      return sendEmbed('yellow', message, 'Não foi possível salvar a configuração.');
     }
   }
 };
-
-function sendError(message, texto) {
-  const embed = new EmbedBuilder()
-    .setColor(colors.yellow)
-    .setAuthor({ name: texto, iconURL: emojis.attention });
-
-  return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
-}
