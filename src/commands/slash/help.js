@@ -1,51 +1,52 @@
 'use strict';
 
-const {
-  SlashCommandBuilder,
-  EmbedBuilder
-} = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
+const { EmbedBuilder, InteractionResponseFlags } = require('discord.js');
 const { colors } = require('@config');
+const { formatUsage } = require('@utils/formatUsage');
+const { getPrefix } = require('@utils/prefixManager');
 
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('help')
-    .setDescription('Exibe todos os comandos disponíveis ou detalhes de um comando específico.')
-    .addStringOption(option =>
-      option.setName('comando')
-        .setDescription('Nome do comando para obter detalhes específicos')
-        .setRequired(false)
-    ),
+  data: {
+    name: 'help',
+    description: 'Exibe todos os comandos disponíveis ou detalhes de um comando específico.',
+    options: [
+      {
+        name: 'comando',
+        type: 3,
+        description: 'Nome do comando para ver detalhes',
+        required: false
+      }
+    ]
+  },
 
   async execute(interaction) {
     const client = interaction.client;
+    const prefix = await getPrefix(interaction.guild?.id);
     const input = interaction.options.getString('comando')?.toLowerCase();
 
-    // Detalhes de um comando específico
     if (input) {
       const command =
         client.slashCommands.get(input) ||
-        client.commands?.get(input) ||
-        client.commands?.find(cmd => cmd.aliases?.includes(input));
+        client.commands.get(input) ||
+        client.commands.find(cmd => cmd.aliases?.includes(input));
 
       if (!command) {
         const erro = new EmbedBuilder()
           .setColor(colors.red)
-          .setAuthor({
-            name: `Comando "${input}" não encontrado.`,
-            iconURL: 'https://bit.ly/42jnCEX'
-          });
+          .setAuthor({ name: `Comando "${input}" não encontrado.`, iconURL: 'https://bit.ly/42jnCEX' })
+          .setTimestamp();
 
-        return interaction.reply({ embeds: [erro], ephemeral: true });
+        return interaction.reply({ embeds: [erro], flags: InteractionResponseFlags.Ephemeral });
       }
 
-      const usage = command.usage?.replace('${currentPrefix}', '/') || `/${command.data.name}`;
+      const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
 
       const embed = new EmbedBuilder()
-        .setColor(colors.red)
-        .setTitle(`📖 Comando: ${command.data?.name || command.name}`)
-        .setDescription(`Abaixo estão os detalhes completos para o comando \`${command.data?.name || command.name}\`.`)
+        .setColor(colors.green)
+        .setTitle(`📖 Comando: ${command.name}`)
+        .setDescription(`Abaixo estão os detalhes completos para o comando \`${command.name}\`.`)
         .addFields(
           { name: 'Descrição', value: command.description || 'Sem descrição.', inline: false },
           { name: 'Uso', value: `\`${usage}\``, inline: false },
@@ -55,31 +56,25 @@ module.exports = {
             inline: false
           }
         )
-        .setFooter({
-          text: `${interaction.user.username}`,
-          iconURL: interaction.user.displayAvatarURL({ dynamic: true })
-        })
+        .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
         .setTimestamp();
 
-      return interaction.reply({ embeds: [embed], ephemeral: true });
+      return interaction.reply({ embeds: [embed], flags: InteractionResponseFlags.Ephemeral });
     }
 
     // Ajuda geral
-    const categoriasPath = path.join(__dirname, '../../commands');
+    const categoriasPath = path.join(__dirname, '..');
     const categorias = fs.readdirSync(categoriasPath).filter(folder => {
       const fullPath = path.join(categoriasPath, folder);
       return fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory();
     });
 
     const embed = new EmbedBuilder()
-      .setColor(colors.red)
+      .setColor(colors.blue)
       .setTitle('📚 Central de Comandos')
-      .setDescription(`Use \`/help <comando>\` para obter detalhes sobre um comando específico.`)
+      .setDescription(`Use \`${prefix}help <comando>\` para obter detalhes sobre um comando específico.`)
       .setTimestamp()
-      .setFooter({
-        text: `${interaction.user.username}`,
-        iconURL: interaction.user.displayAvatarURL({ dynamic: true })
-      });
+      .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) });
 
     for (const categoria of categorias.sort()) {
       const comandos = [];
@@ -90,10 +85,14 @@ module.exports = {
       for (const file of arquivos.sort()) {
         try {
           const comando = require(path.join(categoriaPath, file));
-          if (!comando?.data?.name || comando.private) continue;
-          comandos.push(`\`/${comando.data.name}\``);
+          if (!comando?.data?.name && !comando?.name) continue;
+          if (comando.private) continue;
+
+          const nome = comando.data?.name || comando.name;
+          comandos.push(`\`${nome}\``);
         } catch (err) {
-          console.warn(`[Slash Help] Falha ao carregar "${file}": ${err.message}`);
+          // Não para execução, só loga aviso
+          console.warn(`[Help] Falha ao carregar "${file}": ${err.message}`);
         }
       }
 
@@ -106,7 +105,7 @@ module.exports = {
       }
     }
 
-    return interaction.reply({ embeds: [embed], ephemeral: true });
+    return interaction.reply({ embeds: [embed], flags: InteractionResponseFlags.Ephemeral });
   }
 };
 
