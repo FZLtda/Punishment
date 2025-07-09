@@ -1,13 +1,11 @@
 'use strict';
 
-const {
-  EmbedBuilder,
-  PermissionsBitField
-} = require('discord.js');
-const { colors, emojis } = require('@config');
-const { sendModLog } = require('@modules/modlog');
 const fs = require('fs');
 const path = require('path');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { colors, emojis } = require('@config');
+const { sendModLog } = require('@modules/modlog');
+const { sendEmbed } = require('@utils/embedReply');
 
 module.exports = {
   name: 'backup',
@@ -37,7 +35,7 @@ module.exports = {
         channels: []
       };
 
-      // CARGOS
+      // Cargos
       guild.roles.cache
         .filter(role => !role.managed && role.id !== guild.id)
         .sort((a, b) => a.position - b.position)
@@ -53,7 +51,7 @@ module.exports = {
           });
         });
 
-      // CANAIS
+      // Canais
       guild.channels.cache
         .sort((a, b) => a.position - b.position)
         .forEach(channel => {
@@ -113,18 +111,7 @@ module.exports = {
 
     } catch (error) {
       console.error('[BACKUP ERROR]', error);
-      return sendError(message, `${emojis.attentionEmoji} Não foi possível criar o backup.`);
+      return sendEmbed('yellow', message, `${emojis.attentionEmoji} Não foi possível criar o backup.`);
     }
   }
 };
-
-function sendError(message, texto) {
-  const embed = new EmbedBuilder()
-    .setColor(colors.yellow)
-    .setAuthor({ name: texto, iconURL: emojis.attentionIcon });
-
-  return message.channel.send({
-    embeds: [embed],
-    allowedMentions: { repliedUser: false }
-  });
-}
