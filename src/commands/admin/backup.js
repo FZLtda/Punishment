@@ -81,7 +81,7 @@ module.exports = {
       fs.writeFileSync(filePath, JSON.stringify(backupData, null, 2));
 
       const embed = new EmbedBuilder()
-        .setTitle(`${emojis.successEmoji} Backup criado com sucesso`)
+        .setTitle(`${emojis.backupEmoji} Backup criado com sucesso`)
         .setColor(colors.green)
         .setDescription('A estrutura do servidor foi salva com segurança.')
         .addFields(
@@ -113,7 +113,7 @@ module.exports = {
 
     } catch (error) {
       console.error('[BACKUP ERROR]', error);
-      return sendError(message, 'Erro ao criar o backup. Verifique o console para mais detalhes.');
+      return sendError(message, `${emojis.attentionEmoji} Não foi possível criar o backup.`);
     }
   }
 };
