@@ -36,7 +36,7 @@ module.exports = {
       const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
 
       const embed = new EmbedBuilder()
-        .setColor(colors.green)
+        .setColor(colors.red)
         .setTitle(`📖 Comando: ${command.name}`)
         .setDescription(`Abaixo estão os detalhes completos para o comando \`${command.name}\`.`)
         .addFields(
@@ -62,7 +62,7 @@ module.exports = {
     });
 
     const embed = new EmbedBuilder()
-      .setColor(colors.blue)
+      .setColor(colors.red)
       .setTitle('📚 Central de Comandos')
       .setDescription(`Use \`${prefix}help <comando>\` para obter detalhes sobre um comando específico.`)
       .setTimestamp()
