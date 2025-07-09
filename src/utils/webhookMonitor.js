@@ -1,7 +1,7 @@
 'use strict';
 
 const { WebhookClient, EmbedBuilder } = require('discord.js');
-const { colors, bot} = require('@config');
+const { colors, bot } = require('@config');
 const Logger = require('@logger');
 
 const LOGO_BOT = process.env.LOGO_BOT ?? null;
@@ -21,7 +21,10 @@ const TYPES = Object.freeze({
  */
 async function reportErrorToWebhook(title, content, type = TYPES.ERROR) {
   const isError = content instanceof Error;
-  const normalizedType = TYPES[type?.toUpperCase()] ?? TYPES.ERROR;
+
+  const normalizedType = (typeof type === 'string' && ['info', 'error'].includes(type.toLowerCase()))
+    ? type.toLowerCase()
+    : TYPES.ERROR;
 
   const description = isError
     ? wrapInCodeBlock(truncate(content.stack || content.message, 1900))
