@@ -5,7 +5,6 @@ module.exports = {
   name: 'privacy',
   description: 'Exibe a Política de Privacidade do Punishment.',
   usage: '${currentPrefix}privacy',
-  userPermissions: ['SendMessages'],
   botPermissions: ['SendMessages'],
   deleteMessage: true,
 
