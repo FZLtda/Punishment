@@ -49,6 +49,9 @@ async function loadSlashCommands(client) {
       : Routes.applicationGuildCommands(client.user.id, process.env.TEST_GUILD_ID);
 
     try {
+      // teste
+      await rest.put(Routes.applicationCommands(client.user.id), { body: [] });
+      // teste
       Logger.info(`[loadSlashCommands] Enviando slash commands para API [${isGlobal ? 'GLOBAL' : 'GUILD'}]...`);
       await rest.put(route, { body: slashCommands });
       Logger.info('[loadSlashCommands] Slash commands registrados com sucesso!');
