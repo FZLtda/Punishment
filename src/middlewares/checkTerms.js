@@ -24,7 +24,7 @@ module.exports = async function checkTerms(context) {
     if (alreadyAccepted) return true;
 
     const termsEmbed = new EmbedBuilder()
-      .setColor(colors.green)
+      .setColor(colors.red)
       .setTitle('Termos de Uso')
       .setDescription([
         `Para continuar utilizando o **${bot.name}**, é necessário aceitar nossos **[Termos de Uso](${TERMS_URL})**.`
