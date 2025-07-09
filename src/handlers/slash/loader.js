@@ -6,7 +6,7 @@ const { REST, Routes } = require('discord.js');
 const Logger = require('@logger');
 
 async function loadSlashCommands(client) {
-  const commandsPath = path.join(__dirname, '../../../src/handlers/slash');
+  const commandsPath = path.join(__dirname, '../../../src/commands/slash');
 
   if (!fs.existsSync(commandsPath)) {
     Logger.warn(`[loadSlashCommands] Pasta não encontrada: ${commandsPath}`);
