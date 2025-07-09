@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { REST, Routes } = require('discord.js');
-const Logger = require('@logger/index');
+const Logger = require('@logger');
 
 async function loadSlashCommands(client) {
   const commandsPath = path.join(__dirname, '../../../src/interactions/slash');
