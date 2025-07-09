@@ -1,8 +1,9 @@
 'use strict';
 
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const ModerationAction = require('@models/ModerationAction');
 const { colors, emojis } = require('@config');
+const { sendEmbed } = require('@utils/embedReply');
 const Logger = require('@logger');
 
 module.exports = {
@@ -24,12 +25,13 @@ module.exports = {
     const action = await ModerationAction.findOne(filtro).sort({ createdAt: -1 });
 
     if (!action) {
-      return sendError(message, 'Nenhuma ação encontrada para desfazer.');
+      return sendEmbed('yellow', message, 'Nenhuma ação encontrada para desfazer.');
     }
 
-    const membro = await message.guild.members.fetch(action.targetId).catch(() => null);
-    if (!membro && action.type !== 'ban') {
-      return sendError(message, 'O membro alvo não está mais no servidor.');
+    let membro = null;
+    if (action.type !== 'ban') {
+      membro = await message.guild.members.fetch(action.targetId).catch(() => null);
+      if (!membro) return sendEmbed('yellow', message, 'O membro alvo não está mais no servidor.');
     }
 
     let sucesso = false;
@@ -38,12 +40,13 @@ module.exports = {
     try {
       switch (action.type) {
         case 'mute':
-          if (action.roleId && membro.roles.cache.has(action.roleId)) {
-            await membro.roles.remove(action.roleId, 'Undo de mute');
+        case 'timeout':
+          if (membro?.communicationDisabledUntilTimestamp) {
+            await membro.timeout(null, 'Undo de mute');
             sucesso = true;
-            acaoDesfeita = 'Mute removido';
+            acaoDesfeita = 'Mute (timeout) removido';
           } else {
-            acaoDesfeita = 'O usuário não está mutado ou a role não existe.';
+            acaoDesfeita = 'O usuário não está mutado.';
           }
           break;
 
@@ -53,18 +56,17 @@ module.exports = {
           acaoDesfeita = 'Banimento revertido';
           break;
 
-        case 'kick':
-          sucesso = false;
-          acaoDesfeita = 'Kick não pode ser revertido.';
-          break;
-
         case 'warn':
           sucesso = true;
           acaoDesfeita = 'Advertência anulada';
           break;
 
+        case 'kick':
+          acaoDesfeita = 'Ações de kick não podem ser desfeitas.';
+          break;
+
         default:
-          acaoDesfeita = 'Tipo de ação não suportado para undo.';
+          acaoDesfeita = 'Tipo de ação não suportado para desfazer.';
           break;
       }
 
@@ -72,13 +74,13 @@ module.exports = {
         await ModerationAction.deleteOne({ _id: action._id });
 
         const embed = new EmbedBuilder()
-          .setTitle('Ação desfeita com sucesso')
+          .setTitle(`${emojis.undo || '↩️'} Ação desfeita com sucesso`)
           .setColor(colors.green)
+          .setDescription(`A ação \`${action.type}\` foi revertida com sucesso.`)
           .addFields(
-            { name: 'Usuário', value: `<@${action.targetId}>`, inline: true },
-            { name: 'Ação', value: action.type, inline: true },
-            { name: 'Executor original', value: `<@${action.executorId}>`, inline: true },
-            { name: 'Status', value: acaoDesfeita, inline: true }
+            { name: '👤 Usuário', value: `<@${action.targetId}> (\`${action.targetId}\`)`, inline: true },
+            { name: '👮 Executor original', value: `<@${action.executorId}>`, inline: true },
+            { name: '📄 Status', value: acaoDesfeita, inline: true }
           )
           .setFooter({
             text: 'Punishment • Sistema Undo',
@@ -86,22 +88,15 @@ module.exports = {
           })
           .setTimestamp();
 
-        Logger.info(`[UNDO] ${acaoDesfeita} de ${action.type} em ${action.targetId} por ${message.author.tag}`);
+        Logger.info(`[UNDO] ${acaoDesfeita} em ${action.targetId} por ${message.author.tag}`);
         return message.channel.send({ embeds: [embed] });
       } else {
-        return sendError(message, acaoDesfeita);
+        return sendEmbed('yellow', message, acaoDesfeita);
       }
+
     } catch (err) {
-      Logger.error(`[UNDO] Falha ao desfazer ação: ${err.stack || err.message}`);
-      return sendError(message, 'Erro ao tentar desfazer a ação. Verifique os logs.');
+      Logger.error(`[UNDO] Erro ao desfazer ação: ${err.stack || err.message}`);
+      return sendEmbed('red', message, 'Erro ao tentar desfazer a ação. Verifique os logs.');
     }
   }
 };
-
-function sendError(message, texto) {
-  const embed = new EmbedBuilder()
-    .setColor(colors.yellow)
-    .setDescription(`${emojis.attent} ${texto}`);
-
-  return message.channel.send({ embeds: [embed] });
-}
