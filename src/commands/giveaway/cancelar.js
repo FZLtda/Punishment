@@ -50,7 +50,7 @@ module.exports = {
 
       const confirm = new EmbedBuilder()
         .setColor(colors.yellow)
-        .setDescription(`${emojis.attent} O sorteio foi **cancelado com sucesso**.`);
+        .setDescription(`${emojis.attentionEmoji} O sorteio foi **cancelado com sucesso**.`);
 
       logger.info(`[CANCELAR] Sorteio "${sorteio.prize}" cancelado por ${message.author.tag}`);
       return message.channel.send({ embeds: [confirm], allowedMentions: { repliedUser: false } });
