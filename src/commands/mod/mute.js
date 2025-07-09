@@ -3,6 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
+const { sendEmbed } = require('@utils/embedReply');
 
 module.exports = {
   name: 'mute',
@@ -17,13 +18,13 @@ module.exports = {
     const tempo = args[1];
     const motivo = args.slice(2).join(' ') || 'Não especificado.';
 
-    if (!membro) return sendError(message, 'Mencione um usuário para executar esta ação.');
-    if (!tempo) return sendError(message, 'Defina um tempo de duração para prosseguir (ex: 1m, 1h, 1d).');
+    if (!membro) return sendEmbed('yellow', message, 'Mencione um usuário para executar esta ação.');
+    if (!tempo) return sendEmbed('yellow', message, 'Defina um tempo de duração para prosseguir (ex: 1m, 1h, 1d).');
 
     const duracao = convertToMilliseconds(tempo);
-    if (!duracao) return sendError(message, 'Duração inválida. Forneça um valor válido (ex: 1m, 1h, 1d).');
+    if (!duracao) return sendEmbed('yellow', message, 'Duração inválida. Forneça um valor válido (ex: 1m, 1h, 1d).');
 
-    if (!membro.moderatable) return sendError(message, 'Este usuário não pode ser silenciado devido às suas permissões.');
+    if (!membro.moderatable) return sendEmbed('yellow', message, 'Este usuário não pode ser silenciado devido às suas permissões.');
 
     try {
       await membro.timeout(duracao, motivo);
@@ -45,7 +46,6 @@ module.exports = {
 
       await message.channel.send({ embeds: [embed] });
 
-      // Envia log de moderação
       await sendModLog(message.guild, {
         action: 'Mute',
         target: membro.user,
@@ -56,7 +56,7 @@ module.exports = {
 
     } catch (error) {
       console.error(error);
-      return sendError(message, 'Não foi possível silenciar o usuário devido a um erro inesperado.');
+      return sendEmbed('yellow', message, 'Não foi possível silenciar o usuário devido a um erro inesperado.');
     }
   }
 };
@@ -76,12 +76,4 @@ function convertToMilliseconds(tempo) {
     case 'd': return valor * 24 * 60 * 60 * 1000;
     default: return null;
   }
-}
-
-function sendError(message, texto) {
-  const embed = new EmbedBuilder()
-    .setColor(colors.yellow)
-    .setAuthor({ name: texto, iconURL: emojis.attention });
-
-  return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
 }
