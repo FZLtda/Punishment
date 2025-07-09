@@ -1,6 +1,9 @@
+'use strict';
+
 const GuildConfig = require('@models/GuildConfig');
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
+const { sendEmbed } = require('@utils/embedReply');
 
 module.exports = {
   name: 'prefix',
@@ -14,14 +17,7 @@ module.exports = {
     const guildId = message.guild.id;
 
     if (!novoPrefixo || novoPrefixo.length > 5) {
-      const embedErro = new EmbedBuilder()
-        .setColor(colors.yellow)
-        .setAuthor({
-          name: 'Forneça um prefixo válido com até 5 caracteres.',
-          iconURL: emojis.attentionIcon
-        });
-
-      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+      return sendEmbed('yellow', message, 'Forneça um prefixo válido com até 5 caracteres.');
     }
 
     try {
@@ -31,32 +27,24 @@ module.exports = {
         { upsert: true, new: true }
       );
 
-      // Atualiza cache local se houver método
       if (message.client.setPrefix) {
         message.client.setPrefix(guildId, novoPrefixo);
       }
 
-      const embedSucesso = new EmbedBuilder()
+      const embed = new EmbedBuilder()
         .setColor(colors.green)
         .setDescription(`${emojis.successEmoji} O prefixo foi alterado para \`${novoPrefixo}\` com sucesso!`)
         .setFooter({
-          text: `${message.author.username}`,
+          text: message.author.username,
           iconURL: message.author.displayAvatarURL({ dynamic: true })
         })
         .setTimestamp();
 
-      return message.channel.send({ embeds: [embedSucesso] });
+      return message.channel.send({ embeds: [embed] });
+
     } catch (error) {
-      console.error(`[MongoError] Prefix update failed:`, error);
-
-      const embedErro = new EmbedBuilder()
-        .setColor(colors.yellow)
-        .setAuthor({
-          name: 'Ocorreu um erro ao salvar o novo prefixo.',
-          iconURL: emojis.attentionIcon
-        });
-
-      return message.channel.send({ embeds: [embedErro], allowedMentions: { repliedUser: false } });
+      console.error('[PREFIX-ERROR]', error);
+      return sendEmbed('yellow', message, 'Não foi possível salvar o novo prefixo.');
     }
   }
 };
