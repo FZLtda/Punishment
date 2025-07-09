@@ -22,9 +22,9 @@ async function loadSlashCommands(client) {
       client.slashCommands.set(command.data.name, command);
       slashCommands.push(command.data.toJSON());
 
-      Logger.info(`Slash carregado: /${command.data.name}`);
+      Logger.info(`[loadSlashCommands] Slash carregado: /${command.data.name}`);
     } catch (err) {
-      Logger.error(`Erro ao carregar slash ${file}: ${err.message}`);
+      Logger.error(`[loadSlashCommands] Não foi possível carregar slash: ${file}: ${err.message}`);
     }
   }
 
@@ -38,13 +38,13 @@ async function loadSlashCommands(client) {
       : Routes.applicationGuildCommands(client.user.id, process.env.TEST_GUILD_ID);
 
     try {
-      Logger.info(`Enviando slash commands para a API do Discord [${isGlobal ? 'GLOBAL' : 'GUILD'}]...`);
+      Logger.info(`[loadSlashCommands] Enviando slash commands para a API do Discord [${isGlobal ? 'GLOBAL' : 'GUILD'}]...`);
 
       await rest.put(route, { body: slashCommands });
 
-      Logger.info('Slash commands registrados com sucesso!');
+      Logger.info('[loadSlashCommands] Slash commands registrados com sucesso');
     } catch (err) {
-      Logger.error(`Erro ao registrar slash commands: ${err.message}`);
+      Logger.error(`[loadSlashCommands] Não foi possível registrar slash commands: ${err.message}`);
     }
   });
 }
