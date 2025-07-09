@@ -75,7 +75,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(colors.red)
       .setTitle('📚 Central de Comandos')
-      .setDescription(`Use \`${prefix}help <comando>\` para obter detalhes sobre um comando específico.`)
+      .setDescription('Use `/help <comando>` para obter detalhes sobre um comando específico.')
       .setTimestamp()
       .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) });
 
