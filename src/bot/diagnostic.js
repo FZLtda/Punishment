@@ -19,7 +19,6 @@ module.exports = {
     const discordJsVersion = packageJson.dependencies['discord.js']?.replace('^', '') || 'Desconhecida';
     const versionInfo = `Node.js ${process.version} | Discord.js v${discordJsVersion}`;
 
-    Logger.info(` ${bot.name} foi iniciado com sucesso`);
     Logger.info(`Servidores ativos     : ${totalGuilds}`);
     Logger.info(`Usuários em cache     : ${totalUsers}`);
     Logger.info(`Uso de memória        : ${memoryUsageMB} MB`);
