@@ -5,8 +5,8 @@
  */
 module.exports = {
   // Emojis de status e feedback
-  successEmoji: '<:1000073996:1390632563181228112>',
-  errorEmoji: '<:1000055989:1358918322770677971>',
+  successEmoji:   '<:1000073996:1390632563181228112>',
+  errorEmoji:     '<:1000055989:1358918322770677971>',
   attentionEmoji: '<:1000055967:1358918618808717704>',
 
   // Emojis de comandos de moderação
@@ -18,6 +18,7 @@ module.exports = {
   slow:    '<:1000055887:1390132726035648562>',
   lock:    '<:1000055896:1355700508660076554>',
   unlock:  '<:1000055947:1355700557465125064>',
+  backup:  '<:1000055934:1355721566582997054>',
 
   // Emojis de utilitários e informações
   info: '<:1000046547:1340465282568945675>',
@@ -25,7 +26,7 @@ module.exports = {
   time: '<:1000074183:1390829704516210811>',
 
   // Emojis como URLs para uso em embeds
-  successIcon: 'https://bit.ly/3R8qteY',
-  errorIcon: 'https://bit.ly/42jnCEX',
+  successIcon:   'https://bit.ly/3R8qteY',
+  errorIcon:     'https://bit.ly/42jnCEX',
   attentionIcon: 'https://bit.ly/3Ypxwnl'
 };
