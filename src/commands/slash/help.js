@@ -2,7 +2,7 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { EmbedBuilder, InteractionResponseFlags } = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const { colors } = require('@config');
 const { formatUsage } = require('@utils/formatUsage');
 const { getPrefix } = require('@utils/prefixManager');
@@ -26,6 +26,7 @@ module.exports = {
     const prefix = await getPrefix(interaction.guild?.id);
     const input = interaction.options.getString('comando')?.toLowerCase();
 
+    // Se especificar um comando
     if (input) {
       const command =
         client.slashCommands.get(input) ||
@@ -38,7 +39,10 @@ module.exports = {
           .setAuthor({ name: `Comando "${input}" não encontrado.`, iconURL: 'https://bit.ly/42jnCEX' })
           .setTimestamp();
 
-        return interaction.reply({ embeds: [erro], flags: InteractionResponseFlags.Ephemeral });
+        return interaction.reply({
+          embeds: [erro],
+          flags: 1 << 6
+        });
       }
 
       const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
@@ -59,7 +63,10 @@ module.exports = {
         .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
         .setTimestamp();
 
-      return interaction.reply({ embeds: [embed], flags: InteractionResponseFlags.Ephemeral });
+      return interaction.reply({
+        embeds: [embed],
+        flags: 1 << 6
+      });
     }
 
     // Ajuda geral
@@ -91,7 +98,6 @@ module.exports = {
           const nome = comando.data?.name || comando.name;
           comandos.push(`\`${nome}\``);
         } catch (err) {
-          // Não para execução, só loga aviso
           console.warn(`[Help] Falha ao carregar "${file}": ${err.message}`);
         }
       }
@@ -105,7 +111,10 @@ module.exports = {
       }
     }
 
-    return interaction.reply({ embeds: [embed], flags: InteractionResponseFlags.Ephemeral });
+    return interaction.reply({
+      embeds: [embed],
+      flags: 1 << 6
+    });
   }
 };
 
