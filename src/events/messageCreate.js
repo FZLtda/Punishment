@@ -58,7 +58,7 @@ module.exports = {
                 .setColor(colors.red)
                 .setAuthor({
                   name: 'Permissão negada',
-                  iconURL: emojis.attention || null
+                  iconURL: emojis.errorIcon
                 })
                 .setDescription(`Você precisa das permissões: \`${missing.join(', ')}\``)
             ],
@@ -74,10 +74,10 @@ module.exports = {
           return message.channel.send({
             embeds: [
               new EmbedBuilder()
-                .setColor(colors.yellow)
+                .setColor(colors.red)
                 .setAuthor({
                   name: 'Permissão insuficiente',
-                  iconURL: emojis.attention || null
+                  iconURL: emojis.errorIcon
                 })
                 .setDescription(`Eu preciso das permissões: \`${missing.join(', ')}\``)
             ],
@@ -98,14 +98,14 @@ module.exports = {
       // Executa o comando
       await command.execute(message, args);
     } catch (error) {
-      Logger.error(`[EXEC] Erro ao executar comando: ${error.stack || error}`);
+      Logger.error(`[EXEC] Não foi possível processar o comando.: ${error.stack || error}`);
 
       const errorEmbed = new EmbedBuilder()
         .setColor(colors.yellow)
         .setTitle('Erro inesperado')
-        .setDescription('Houve um problema ao executar este comando. A equipe foi notificada.')
+        .setDescription('Não foi possível processar este comando.')
         .setFooter({
-          text: 'Punishment • messageCreate',
+          text: bot.name,
           iconURL: message.client.user.displayAvatarURL()
         })
         .setTimestamp();
