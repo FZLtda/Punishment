@@ -21,10 +21,6 @@ module.exports = {
   async execute(message) {
     const { client } = message;
 
-    if (message.author.id !== bot.owner) {
-      return sendEmbed('yellow', message, 'Apenas o desenvolvedor pode executar este comando.');
-    }
-
     try {
       await client.application.fetch();
       const health = await getSystemHealth(client);
