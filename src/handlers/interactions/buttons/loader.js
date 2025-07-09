@@ -12,14 +12,14 @@ try {
 const button = require(filePath);
 
 if (!button.customId || typeof button.execute !== 'function') {  
-    Logger.warn(`Botão inválido em ${file}`);  
+    Logger.warn(`[loadButtonInteractions] Botão inválido em: ${file}`);  
     continue;  
   }  
 
   client.buttons.set(button.customId, button);  
-  Logger.info(`Botão registrado: ${button.customId}`);  
+  Logger.info(`[loadButtonInteractions] Botão registrado: ${button.customId}`);  
 } catch (err) {  
-  Logger.error(`Erro ao carregar botão ${file}: ${err.message}`);  
+  Logger.error(`[loadButtonInteractions] Não foi possível carregar: ${file}: ${err.message}`);  
 }
 
 }
