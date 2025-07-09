@@ -34,7 +34,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setColor(colors.red)
         .setTitle(`📖 Comando: ${command.name}`)
-        .setDescription(`Abaixo estão os detalhes completos para o comando \`${command.name}\`.`)
+        .setDescription('Abaixo estão os detalhes do comando.')
         .addFields(
           { name: 'Descrição', value: command.description || 'Sem descrição.', inline: false },
           { name: 'Uso', value: `\`${usage}\``, inline: false },
