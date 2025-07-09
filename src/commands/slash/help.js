@@ -2,31 +2,27 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const { colors } = require('@config');
 const { formatUsage } = require('@utils/formatUsage');
 const { getPrefix } = require('@utils/prefixManager');
 
 module.exports = {
-  data: {
-    name: 'help',
-    description: 'Exibe todos os comandos disponíveis ou detalhes de um comando específico.',
-    options: [
-      {
-        name: 'comando',
-        type: 3,
-        description: 'Nome do comando para ver detalhes',
-        required: false
-      }
-    ]
-  },
+  data: new SlashCommandBuilder()
+    .setName('help')
+    .setDescription('Exibe todos os comandos disponíveis ou detalhes de um comando específico.')
+    .addStringOption(option =>
+      option.setName('comando')
+        .setDescription('Nome do comando para ver detalhes')
+        .setRequired(false)
+    ),
 
   async execute(interaction) {
     const client = interaction.client;
     const prefix = await getPrefix(interaction.guild?.id);
     const input = interaction.options.getString('comando')?.toLowerCase();
 
-    // Se especificar um comando
+    // Detalhes de um comando específico
     if (input) {
       const command =
         client.slashCommands.get(input) ||
@@ -69,7 +65,7 @@ module.exports = {
       });
     }
 
-    // Ajuda geral
+    // Ajuda geral com todas as categorias
     const categoriasPath = path.join(__dirname, '..');
     const categorias = fs.readdirSync(categoriasPath).filter(folder => {
       const fullPath = path.join(categoriasPath, folder);
