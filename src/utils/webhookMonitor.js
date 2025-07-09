@@ -1,7 +1,7 @@
 'use strict';
 
 const { WebhookClient, EmbedBuilder } = require('discord.js');
-const { colors } = require('@config');
+const { colors, bot} = require('@config');
 const Logger = require('@logger');
 
 const LOGO_BOT = process.env.LOGO_BOT ?? null;
@@ -32,7 +32,7 @@ async function reportErrorToWebhook(title, content, type = TYPES.ERROR) {
     .setDescription(description)
     .setColor(normalizedType === TYPES.INFO ? colors.green : colors.red)
     .setTimestamp()
-    .setFooter({ text: 'Punishment', iconURL: LOGO_BOT });
+    .setFooter({ text: bot.name, iconURL: LOGO_BOT });
 
   const logMsg = `${title} — ${isError ? content.stack || content.message : content}`;
   Logger[normalizedType](logMsg);
@@ -45,13 +45,13 @@ async function reportErrorToWebhook(title, content, type = TYPES.ERROR) {
   try {
     const webhook = new WebhookClient({ url: MONITOR_WEBHOOK_URL });
     await webhook.send({
-      username: 'Punishment',
+      username: bot.name,
       avatarURL: LOGO_BOT,
       embeds: [embed]
     });
-    Logger.debug('Log enviado com sucesso ao webhook.');
+    Logger.debug('Notificação enviada ao webhook com sucesso.');
   } catch (err) {
-    Logger.error('Falha ao enviar log ao webhook:', err);
+    Logger.error('Não foi possível enviar log ao webhook:', err);
   }
 }
 
