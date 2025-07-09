@@ -6,6 +6,7 @@ const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const { colors } = require('@config');
 const { formatUsage } = require('@utils/formatUsage');
 const { getPrefix } = require('@utils/prefixManager');
+const { sendEmbed } = require('@utils/embedReply');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -30,15 +31,7 @@ module.exports = {
         client.commands.find(cmd => cmd.aliases?.includes(input));
 
       if (!command) {
-        const erro = new EmbedBuilder()
-          .setColor(colors.red)
-          .setAuthor({ name: `Comando "${input}" não encontrado.`, iconURL: 'https://bit.ly/42jnCEX' })
-          .setTimestamp();
-
-        return interaction.reply({
-          embeds: [erro],
-          flags: 1 << 6
-        });
+        return sendEmbed('yellow', interaction, `Não foi possível encontrar o comando \`${input}\`.`);
       }
 
       const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
@@ -46,7 +39,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setColor(colors.red)
         .setTitle(`📖 Comando: ${command.name}`)
-        .setDescription(`Abaixo estão os detalhes completos para o comando \`${command.name}\`.`)
+        .setDescription('Abaixo estão os detalhes do comando')
         .addFields(
           { name: 'Descrição', value: command.description || 'Sem descrição.', inline: false },
           { name: 'Uso', value: `\`${usage}\``, inline: false },
@@ -56,13 +49,13 @@ module.exports = {
             inline: false
           }
         )
-        .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
+        .setFooter({
+          text: `${interaction.user.username}`,
+          iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+        })
         .setTimestamp();
 
-      return interaction.reply({
-        embeds: [embed],
-        flags: 1 << 6
-      });
+      return interaction.reply({ embeds: [embed], flags: 1 << 6 });
     }
 
     // Ajuda geral com categorias em ordem personalizada
@@ -79,7 +72,10 @@ module.exports = {
       .setTitle('📚 Central de Comandos')
       .setDescription('Use `/help <comando>` para obter detalhes sobre um comando específico.')
       .setTimestamp()
-      .setFooter({ text: `Requisitado por ${interaction.user.username}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) });
+      .setFooter({
+        text: `${interaction.user.username}`,
+        iconURL: interaction.user.displayAvatarURL({ dynamic: true })
+      });
 
     for (const categoria of categorias) {
       const comandos = [];
@@ -109,10 +105,7 @@ module.exports = {
       }
     }
 
-    return interaction.reply({
-      embeds: [embed],
-      flags: 1 << 6
-    });
+    return interaction.reply({ embeds: [embed], flags: 1 << 6 });
   }
 };
 
