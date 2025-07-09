@@ -1,12 +1,19 @@
+'use strict';
+
 const fs = require('fs');
 const path = require('path');
 const { REST, Routes } = require('discord.js');
 const Logger = require('@logger');
 
 async function loadSlashCommands(client) {
-  const commandsPath = path.join(__dirname, '../../src/interactions/slash');
-  const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+  const commandsPath = path.join(__dirname, '../../../src/handlers/slash');
 
+  if (!fs.existsSync(commandsPath)) {
+    Logger.warn(`[loadSlashCommands] Pasta não encontrada: ${commandsPath}`);
+    return;
+  }
+
+  const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
   const slashCommands = [];
 
   for (const file of commandFiles) {
@@ -15,7 +22,7 @@ async function loadSlashCommands(client) {
       const command = require(filePath);
 
       if (!command.data || typeof command.execute !== 'function') {
-        Logger.warn(`Slash inválido em ${file}`);
+        Logger.warn(`[loadSlashCommands] Slash inválido: ${file}`);
         continue;
       }
 
@@ -24,11 +31,15 @@ async function loadSlashCommands(client) {
 
       Logger.info(`[loadSlashCommands] Slash carregado: /${command.data.name}`);
     } catch (err) {
-      Logger.error(`[loadSlashCommands] Não foi possível carregar slash: ${file}: ${err.message}`);
+      Logger.error(`[loadSlashCommands] Erro ao carregar ${file}: ${err.message}`);
     }
   }
 
-  // Aguarda login completo antes do deploy
+  if (!slashCommands.length) {
+    Logger.warn('[loadSlashCommands] Nenhum slash carregado. Deploy abortado.');
+    return;
+  }
+
   client.once('ready', async () => {
     const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
@@ -38,13 +49,11 @@ async function loadSlashCommands(client) {
       : Routes.applicationGuildCommands(client.user.id, process.env.TEST_GUILD_ID);
 
     try {
-      Logger.info(`[loadSlashCommands] Enviando slash commands para a API do Discord [${isGlobal ? 'GLOBAL' : 'GUILD'}]...`);
-
+      Logger.info(`[loadSlashCommands] Enviando slash commands para API [${isGlobal ? 'GLOBAL' : 'GUILD'}]...`);
       await rest.put(route, { body: slashCommands });
-
-      Logger.info('[loadSlashCommands] Slash commands registrados com sucesso');
+      Logger.info('[loadSlashCommands] Slash commands registrados com sucesso!');
     } catch (err) {
-      Logger.error(`[loadSlashCommands] Não foi possível registrar slash commands: ${err.message}`);
+      Logger.error(`[loadSlashCommands] Falha ao registrar slash commands: ${err.message}`);
     }
   });
 }
