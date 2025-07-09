@@ -4,7 +4,7 @@ const { REST, Routes } = require('discord.js');
 const Logger = require('@logger');
 
 async function loadSlashCommands(client) {
-  const commandsPath = path.join(__dirname, '../../../src/interactions/slash');
+  const commandsPath = path.join(__dirname, '../../src/interactions/slash');
   const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
   const slashCommands = [];
