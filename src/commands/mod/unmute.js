@@ -4,6 +4,7 @@ const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
 const { sendEmbed } = require('@utils/embedReply');
+const { checkMemberGuard } = require('@utils/memberGuards');
 
 module.exports = {
   name: 'unmute',
@@ -17,8 +18,8 @@ module.exports = {
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
     const motivo = args.slice(1).join(' ') || 'Não especificado.';
 
-    if (!membro)
-      return sendEmbed('yellow', message, 'Mencione um usuário para executar esta ação.');
+    const isValid = await checkMemberGuard(message, membro, 'unmute');
+    if (!isValid) return;
 
     if (!membro.communicationDisabledUntilTimestamp)
       return sendEmbed('yellow', message, 'Este usuário não está silenciado no momento.');
@@ -40,7 +41,6 @@ module.exports = {
 
       await message.channel.send({ embeds: [embed] });
 
-      // Log no canal de moderação
       await sendModLog(message.guild, {
         action: 'Unmute',
         target: membro.user,
@@ -50,9 +50,7 @@ module.exports = {
 
     } catch (error) {
       console.error(error);
-      return sendEmbed('yellow', message, 'Não foi possível remover o mute do usuário devido a um erro inesperado.');
+      return sendEmbed('red', message, 'Não foi possível remover o mute do usuário devido a um erro inesperado.');
     }
   }
 };
-
-
