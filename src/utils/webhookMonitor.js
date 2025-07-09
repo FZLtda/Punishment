@@ -37,9 +37,6 @@ async function reportErrorToWebhook(title, content, type = TYPES.ERROR) {
     .setTimestamp()
     .setFooter({ text: bot.name, iconURL: LOGO_BOT });
 
-  const logMsg = `${title} — ${isError ? content.stack || content.message : content}`;
-  Logger[normalizedType](logMsg);
-
   if (!MONITOR_WEBHOOK_URL) {
     Logger.warn('Webhook de monitoramento não configurado. Envio remoto ignorado.');
     return;
@@ -52,7 +49,7 @@ async function reportErrorToWebhook(title, content, type = TYPES.ERROR) {
       avatarURL: LOGO_BOT,
       embeds: [embed]
     });
-    Logger.info('Notificação enviada ao webhook com sucesso.');
+    Logger.debug('Notificação enviada ao webhook com sucesso.');
   } catch (err) {
     Logger.error('Não foi possível enviar log ao webhook:', err);
   }
