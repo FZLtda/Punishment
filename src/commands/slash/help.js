@@ -3,7 +3,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
-const { colors } = require('@config');
+const { colors, emojis } = require('@config');
 const { formatUsage } = require('@utils/formatUsage');
 const { getPrefix } = require('@utils/prefixManager');
 const { sendEmbed } = require('@utils/embedReply');
@@ -69,7 +69,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(colors.red)
-      .setTitle('📚 Central de Comandos')
+      .setTitle(`${emojis.home} Central de Comandos`)
       .setDescription('Use `/help <comando>` para obter detalhes sobre um comando específico.')
       .setTimestamp()
       .setFooter({
@@ -98,7 +98,7 @@ module.exports = {
 
       if (comandos.length > 0) {
         embed.addFields({
-          name: `📂 ${formatCategoria(categoria)}`,
+          name: `${formatCategoria(categoria)}`,
           value: comandos.join(', '),
           inline: false
         });
@@ -111,11 +111,11 @@ module.exports = {
 
 function formatCategoria(str) {
   const map = {
-    admin: 'Adm',
-    mod: 'Mod',
-    info: 'Info',
-    util: 'Util',
-    giveaway: 'Giveaway'
+    admin: `${emojis.adm} Adm`,
+    mod: `${emojis.mod} Mod`,
+    info: `${emojis.info} Info`,
+    util: `${emojis.util} Util`,
+    giveaway: `${emojis.give} Giveaway`
   };
   return map[str] || str.charAt(0).toUpperCase() + str.slice(1);
 }
