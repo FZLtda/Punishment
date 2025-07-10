@@ -33,14 +33,14 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor(colors.red)
-        .setTitle(`📖 Comando: ${command.name}`)
+        .setTitle(`${emojis.search} Comando: ${command.name}`)
         .setDescription('Abaixo estão os detalhes do comando.')
         .addFields(
           { name: 'Descrição', value: command.description || 'Sem descrição.', inline: false },
           { name: 'Uso', value: `\`${usage}\``, inline: false },
           {
             name: 'Permissões',
-            value: `👤 Usuário: ${command.userPermissions?.join(', ') || 'Nenhuma'}\n🤖 Bot: ${command.botPermissions?.join(', ') || 'Nenhuma'}`,
+            value: `${emojis.user} Usuário: ${command.userPermissions?.join(', ') || 'Nenhuma'}\n${emojis.bot} Bot: ${command.botPermissions?.join(', ') || 'Nenhuma'}`,
             inline: false
           }
         )
