@@ -29,7 +29,7 @@ module.exports = {
     };
 
     const embed = new EmbedBuilder()
-      .setTitle(`${emojis.1nfo} Informações de ${user.displayName}`)
+      .setTitle(`${emojis.information} Informações de ${user.displayName}`)
       .setColor(colors.red)
       .setThumbnail(user.displayAvatarURL({ dynamic: true }))
       .addFields(
