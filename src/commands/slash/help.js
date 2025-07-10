@@ -45,7 +45,7 @@ module.exports = {
           { name: 'Uso', value: `\`${usage}\``, inline: false },
           {
             name: 'Permissões',
-            value: `${emojis.user} Usuário: -# ${command.userPermissions?.join(', ') || 'Nenhuma'}\n${emojis.bot} Bot: -# ${command.botPermissions?.join(', ') || '-# Nenhuma'}`,
+            value: `-# ${emojis.user} Usuário: ${command.userPermissions?.join(', ') || 'Nenhuma'}\n-# ${emojis.bot} Bot: ${command.botPermissions?.join(', ') || '-# Nenhuma'}`,
             inline: false
           }
         )
