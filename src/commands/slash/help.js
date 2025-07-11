@@ -19,9 +19,12 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    const client = interaction.client;
-    const prefix = await getPrefix(interaction.guild?.id);
-    const input = interaction.options.getString('comando')?.toLowerCase();
+    const isBanned = await checkGlobalBan(message);
+    if (isBanned) return;
+    
+     const client = interaction.client;
+     const prefix = await getPrefix(interaction.guild?.id);
+     const input = interaction.options.getString('comando')?.toLowerCase();
 
     // Ajuda para um comando específico
     if (input) {
