@@ -4,47 +4,38 @@ const mongoose = require('mongoose');
 const Logger = require('@logger');
 const { performance } = require('perf_hooks');
 
+/**
+ * Conecta o bot ao banco de dados MongoDB.
+ */
 async function connectMongo() {
   const uri = process.env.MONGO_URI;
 
   if (!uri) {
-    Logger.error('Variável MONGO_URI não encontrada no ambiente.');
+    Logger.error('A variável de ambiente MONGO_URI não foi definida.');
     return process.exit(1);
   }
 
-  const startTime = performance.now();
+  const start = performance.now();
 
   try {
     await mongoose.connect(uri, {
       autoIndex: false,
-      connectTimeoutMS: 10000,
-      serverSelectionTimeoutMS: 10000,
+      connectTimeoutMS: 10_000,
+      serverSelectionTimeoutMS: 10_000,
     });
 
-    const connectionTime = (performance.now() - startTime).toFixed(2);
-    const dbName = mongoose.connection.name;
+    const time = (performance.now() - start).toFixed(2);
+    Logger.info(`MongoDB conectado [${mongoose.connection.name}] em ${time}ms.`);
 
-    Logger.info(`Conectado ao MongoDB [${dbName}] em ${connectionTime}ms`);
-
-    // Eventos de conexão
-    mongoose.connection.on('disconnected', () => {
-      Logger.warn('Conexão com MongoDB encerrada.');
-    });
-
-    mongoose.connection.on('reconnected', () => {
-      Logger.info('Reconectado ao MongoDB.');
-    });
-
-    mongoose.connection.on('error', err => {
-      Logger.error(`Erro na conexão MongoDB: ${err.message}`);
-    });
+    mongoose.connection
+      .on('disconnected', () => Logger.warn('Conexão com o MongoDB encerrada.'))
+      .on('reconnected', () => Logger.info('Reconectado ao MongoDB.'))
+      .on('error', err => Logger.error(`Erro de conexão com o MongoDB: ${err.message}`));
 
   } catch (error) {
-    Logger.fatal(`Falha crítica ao conectar ao MongoDB: ${error.message}`);
+    Logger.fatal(`Erro fatal ao conectar-se ao MongoDB: ${error.stack || error.message}`);
     process.exit(1);
   }
 }
 
-module.exports = {
-  connectMongo
-};
+module.exports = { connectMongo };
