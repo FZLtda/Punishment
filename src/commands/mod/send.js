@@ -32,6 +32,10 @@ module.exports = {
       if (isEmbed) {
         const texto = conteudo.replace('--embed', '').trim();
 
+        if (!texto || texto.length > 4096) {
+          return sendEmbed('yellow', message, 'A descrição da embed está vazia ou excede o limite de 4096 caracteres.');
+        }
+
         const embed = new EmbedBuilder()
           .setColor(colors.default)
           .setDescription(texto)
@@ -50,7 +54,7 @@ module.exports = {
       return sendEmbed('yellow', message, 'Não foi possível enviar a mensagem.');
     }
 
-    // Mensagem de confirmação
+    // Confirmação para o autor
     message.channel.send({
       content: `${emojis.successEmoji} Sua mensagem foi enviada.`
     }).catch(() => {});
