@@ -52,7 +52,7 @@ module.exports = {
 
     // Mensagem de confirmação
     message.channel.send({
-      content: `${emojis.successEmoji} Mensagem enviada com sucesso para ${canal}.`
+      content: `${emojis.successEmoji} Sua mensagem foi enviada.`
     }).catch(() => {});
 
     // Log da ação
