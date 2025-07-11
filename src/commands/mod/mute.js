@@ -1,82 +1,69 @@
 'use strict';
 
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ChannelType } = require('discord.js');
 const { colors, emojis } = require('@config');
-const { sendModLog } = require('@modules/modlog');
 const { sendEmbed } = require('@utils/embedReply');
-const { checkMemberGuard } = require('@utils/memberGuards');
+const { sendModLog } = require('@modules/modlog');
 
 module.exports = {
-  name: 'mute',
-  description: 'Aplica um timeout (mute) em um membro.',
-  usage: '${currentPrefix}mute <@usuário> <duração> [motivo]',
-  userPermissions: ['ModerateMembers'],
-  botPermissions: ['ModerateMembers'],
+  name: 'send',
+  description: 'Envia uma mensagem personalizada para um canal específico.',
+  usage: '${currentPrefix}send <#canal> <mensagem>',
+  userPermissions: ['ManageMessages'],
+  botPermissions: ['SendMessages'],
   deleteMessage: true,
 
   async execute(message, args) {
-    const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-    const tempo = args[1];
-    const motivo = args.slice(2).join(' ') || 'Não especificado.';
+    const canal = message.mentions.channels.first();
+    const conteudo = args.slice(1).join(' ');
 
-    if (!tempo)
-      return sendEmbed('yellow', message, 'Defina um tempo de duração para prosseguir (ex: 1m, 1h, 1d).');
+    if (!canal || canal.type !== ChannelType.GuildText) {
+      return sendEmbed('yellow', message, 'Você precisa mencionar um canal de texto válido.');
+    }
 
-    const duracao = convertToMilliseconds(tempo);
-    if (!duracao)
-      return sendEmbed('yellow', message, 'Duração inválida. Forneça um valor válido (ex: 1m, 1h, 1d).');
+    if (!conteudo) {
+      return sendEmbed('yellow', message, 'Você precisa inserir uma mensagem para enviar.');
+    }
 
-    const isValid = await checkMemberGuard(message, membro, 'mute');
-    if (!isValid) return;
+    const isEmbed = conteudo.startsWith('--embed');
+    let mensagemEnviada;
 
     try {
-      await membro.timeout(duracao, motivo);
+      if (isEmbed) {
+        const texto = conteudo.replace('--embed', '').trim();
 
-      const embed = new EmbedBuilder()
-        .setTitle(`${emojis.mute} Punição aplicada`)
-        .setColor(colors.red)
-        .setDescription(`${membro} (\`${membro.id}\`) foi silenciado.`)
-        .addFields(
-          { name: 'Duração', value: `\`${tempo}\``, inline: true },
-          { name: 'Motivo', value: `\`${motivo}\``, inline: true }
-        )
-        .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
-        .setFooter({
-          text: `${message.author.username}`,
-          iconURL: message.author.displayAvatarURL({ dynamic: true }),
-        })
-        .setTimestamp();
+        const embed = new EmbedBuilder()
+          .setColor(colors.red)
+          .setDescription(texto)
+          .setFooter({
+            text: `${message.author.username}`,
+            iconURL: message.author.displayAvatarURL({ dynamic: true })
+          })
+          .setTimestamp();
 
-      await message.channel.send({ embeds: [embed] });
+        mensagemEnviada = await canal.send({ embeds: [embed] });
+      } else {
+        mensagemEnviada = await canal.send({ content: conteudo });
+      }
+    } catch (err) {
+      console.error('[send] Erro ao enviar mensagem:', err);
+      return sendEmbed('yellow', message, 'Não foi possível enviar a mensagem.');
+    }
 
-      await sendModLog(message.guild, {
-        action: 'Mute',
-        target: membro.user,
-        moderator: message.author,
-        reason: motivo,
-        extraFields: [{ name: 'Duração', value: tempo, inline: true }]
+    // Confirmação silenciosa
+    message.channel.send({
+      content: `${emojis.successEmoji} Sua mensagem foi enviada.`
+    }).catch(() => {});
+
+    // Log da ação
+    try {
+      await sendModLog('send', {
+        executor: message.author,
+        channel: canal,
+        content: conteudo
       });
-
-    } catch (error) {
-      console.error(error);
-      return sendEmbed('red', message, 'Não foi possível silenciar o usuário devido a um erro inesperado.');
+    } catch (logErr) {
+      console.warn('[send] Erro ao registrar log da ação:', logErr.message);
     }
   }
 };
-
-function convertToMilliseconds(tempo) {
-  const regex = /^(\d+)([smhd])$/;
-  const match = tempo.match(regex);
-  if (!match) return null;
-
-  const valor = parseInt(match[1], 10);
-  const unidade = match[2];
-
-  switch (unidade) {
-    case 's': return valor * 1000;
-    case 'm': return valor * 60 * 1000;
-    case 'h': return valor * 60 * 60 * 1000;
-    case 'd': return valor * 24 * 60 * 60 * 1000;
-    default: return null;
-  }
-}
