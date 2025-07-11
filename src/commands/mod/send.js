@@ -25,8 +25,8 @@ module.exports = {
       return sendEmbed('yellow', message, 'Você precisa inserir uma mensagem para enviar.');
     }
 
-    // Embed ou mensagem simples?
     const isEmbed = conteudo.startsWith('--embed');
+    let mensagemEnviada;
 
     try {
       if (isEmbed) {
@@ -36,26 +36,34 @@ module.exports = {
           .setColor(colors.default)
           .setDescription(texto)
           .setFooter({
-            text: `Enviado por ${message.author.username}`,
+            text: `${message.author.username}`,
             iconURL: message.author.displayAvatarURL({ dynamic: true })
           })
           .setTimestamp();
 
-        await canal.send({ embeds: [embed] });
+        mensagemEnviada = await canal.send({ embeds: [embed] });
       } else {
-        await canal.send({ content: conteudo });
+        mensagemEnviada = await canal.send({ content: conteudo });
       }
+    } catch (err) {
+      console.error('[send] Erro ao enviar mensagem:', err);
+      return sendEmbed('yellow', message, 'Não foi possível enviar a mensagem.');
+    }
 
-      sendEmbed('green', message, `${emojis.successEmoji} Mensagem enviada com sucesso para ${canal}.`);
+    // Mensagem de confirmação
+    message.channel.send({
+      content: `${emojis.successEmoji} Mensagem enviada com sucesso para ${canal}.`
+    }).catch(() => {});
 
+    // Log da ação
+    try {
       await logAction('send', {
         executor: message.author,
         channel: canal,
         content: conteudo
       });
-    } catch (err) {
-      console.error(`[send] Erro ao enviar mensagem:`, err);
-      return sendEmbed('yellow', message, 'Não foi possível enviar a mensagem.');
+    } catch (logErr) {
+      console.warn('[send] Erro ao registrar log da ação:', logErr.message);
     }
   }
 };
