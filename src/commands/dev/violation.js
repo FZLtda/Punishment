@@ -1,0 +1,52 @@
+'use strict';
+
+const { EmbedBuilder } = require('discord.js');
+const GlobalBan = require('@models/GlobalBan');
+const { sendEmbed } = require('@utils/embedReply');
+const { emojis, colors, bot } = require('@config');
+
+module.exports = {
+  name: 'violation',
+  description: 'Bane um usuário globalmente do uso do bot.',
+  usage: '${currentPrefix}violation <ID do usuário> [motivo]',
+  devOnly: true,
+
+  async execute(message, args) {
+    if (message.author.id !== bot.owner)
+      return;
+
+    const userId = args[0];
+    const motivo = args.slice(1).join(' ') || 'Sem motivo fornecido.';
+
+    if (!userId || !/^\d{17,19}$/.test(userId))
+      return sendEmbed('yellow', message, 'Você deve fornecer um ID de usuário válido.');
+
+    const alvo = await message.client.users.fetch(userId).catch(() => null);
+    if (!alvo)
+      return sendEmbed('yellow', message, 'Usuário não encontrado com esse ID.');
+
+    const jaBanido = await GlobalBan.findOne({ userId: alvo.id });
+    if (jaBanido)
+      return sendEmbed('yellow', message, 'Este usuário já está banido globalmente.');
+
+    await GlobalBan.create({
+      userId: alvo.id,
+      reason: motivo,
+      bannedBy: message.author.id,
+      createdAt: new Date()
+    });
+
+    const embed = new EmbedBuilder()
+      .setColor(colors.red)
+      .setTitle(`${emojis.ban} Banimento Global Aplicado`)
+      .setDescription(`O usuário **${alvo.tag}** (\`${alvo.id}\`) foi banido globalmente.`)
+      .addFields({ name: 'Motivo', value: motivo })
+      .setFooter({
+        text: `Banido por ${message.author.tag}`,
+        iconURL: message.author.displayAvatarURL({ dynamic: true })
+      })
+      .setTimestamp();
+
+    return message.channel.send({ embeds: [embed] });
+  }
+};
