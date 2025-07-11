@@ -3,7 +3,7 @@
 const { EmbedBuilder, ChannelType } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendEmbed } = require('@utils/embedReply');
-const { logAction } = require('@modules/modlog');
+const { sendModLog } = require('@modules/modlog');
 
 module.exports = {
   name: 'send',
@@ -32,12 +32,8 @@ module.exports = {
       if (isEmbed) {
         const texto = conteudo.replace('--embed', '').trim();
 
-        if (!texto || texto.length > 4096) {
-          return sendEmbed('yellow', message, 'A descrição da embed está vazia ou excede o limite de 4096 caracteres.');
-        }
-
         const embed = new EmbedBuilder()
-          .setColor(colors.default)
+          .setColor(colors.red)
           .setDescription(texto)
           .setFooter({
             text: `${message.author.username}`,
@@ -54,14 +50,14 @@ module.exports = {
       return sendEmbed('yellow', message, 'Não foi possível enviar a mensagem.');
     }
 
-    // Confirmação para o autor
+    // Confirmação silenciosa
     message.channel.send({
       content: `${emojis.successEmoji} Sua mensagem foi enviada.`
     }).catch(() => {});
 
     // Log da ação
     try {
-      await logAction('send', {
+      await sendModLog('send', {
         executor: message.author,
         channel: canal,
         content: conteudo
