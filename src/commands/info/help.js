@@ -19,19 +19,18 @@ module.exports = {
     const prefix = await getPrefix(message.guild?.id);
     const input = args[0]?.toLowerCase();
 
-    // Ajuda de um comando específico
+    // Busca por comando específico
     if (input) {
       const command =
         client.commands.get(input) ||
         client.commands.find(cmd => cmd.aliases?.includes(input));
 
-      if (!command) {
-        return sendEmbed('yellow', message, `Não foi possível encontrar este comando.`);
-      }
+      if (!command)
+        return sendEmbed('yellow', message, 'Não foi possível encontrar este comando.');
 
       const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
 
-      const embed = new EmbedBuilder()
+      const detailsEmbed = new EmbedBuilder()
         .setColor(colors.red)
         .setTitle(`${emojis.search} Comando: ${command.name}`)
         .setDescription('Abaixo estão os detalhes do comando.')
@@ -45,15 +44,15 @@ module.exports = {
           }
         )
         .setFooter({
-          text: `${message.author.username}`,
+          text: message.author.username,
           iconURL: message.author.displayAvatarURL({ dynamic: true })
         })
         .setTimestamp();
 
-      return message.channel.send({ embeds: [embed] });
+      return message.channel.send({ embeds: [detailsEmbed] });
     }
 
-    // Ajuda geral com categorias ordenadas
+    // Ajuda geral por categoria (ordenada)
     const categoriasPath = path.join(__dirname, '..');
 
     const ordemCategorias = ['admin', 'mod', 'info', 'util', 'giveaway'];
@@ -62,12 +61,12 @@ module.exports = {
       return fs.existsSync(fullPath) && fs.lstatSync(fullPath).isDirectory();
     });
 
-    const embed = new EmbedBuilder()
+    const generalEmbed = new EmbedBuilder()
       .setColor(colors.red)
       .setTitle(`${emojis.home} Central de Comandos`)
       .setDescription(`Use \`${prefix}help <comando>\` para obter detalhes sobre um comando específico.`)
       .setFooter({
-        text: `${message.author.username}`,
+        text: message.author.username,
         iconURL: message.author.displayAvatarURL({ dynamic: true })
       })
       .setTimestamp();
@@ -88,27 +87,29 @@ module.exports = {
       }
 
       if (comandos.length > 0) {
-        embed.addFields({
-          name: `${formatCategoria(categoria)}`,
+        generalEmbed.addFields({
+          name: formatCategoria(categoria),
           value: comandos.join(', '),
           inline: false
         });
       }
     }
 
-    return message.channel.send({ embeds: [embed] });
+    return message.channel.send({ embeds: [generalEmbed] });
   }
 };
 
 /**
- * Capitaliza e formata nomes de categoria.
+ * Capitaliza e formata nomes de categoria com emoji.
+ * @param {string} str
+ * @returns {string}
  */
 function formatCategoria(str) {
   const map = {
-    admin:    `${emojis.adm} Adm`,
-    mod:      `${emojis.mod} Mod`,
-    info:     `${emojis.info} Info`,
-    util:     `${emojis.util} Util`,
+    admin: `${emojis.adm} Adm`,
+    mod: `${emojis.mod} Mod`,
+    info: `${emojis.info} Info`,
+    util: `${emojis.util} Util`,
     giveaway: `${emojis.give} Giveaway`
   };
   return map[str] || str.charAt(0).toUpperCase() + str.slice(1);
