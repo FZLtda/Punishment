@@ -27,7 +27,7 @@ module.exports = {
     const avatarUrl = membro.displayAvatarURL({ dynamic: true, size: 1024 });
 
     const embed = new EmbedBuilder()
-      .setColor(colors.default)
+      .setColor(colors.red)
       .setTitle(`Avatar de ${membro.displayName || membro.user.tag}`)
       .setImage(avatarUrl)
       .setFooter({
