@@ -19,14 +19,14 @@ module.exports = {
 
     if (!msgId || !/^\d{17,20}$/.test(msgId)) {
       logger.warn(`[CANCELAR] ID inválido fornecido por ${message.author.tag} (${message.author.id})`);
-      return sendEmbed('yellow', message, 'Informe um **ID de mensagem válido** do sorteio que deseja cancelar.');
+      return sendEmbed('yellow', message, 'Informe um ID de mensagem válido do sorteio que deseja cancelar.');
     }
 
     const sorteio = await Giveaway.findOne({ messageId: msgId, status: 'ativo' });
 
     if (!sorteio) {
       logger.warn(`[CANCELAR] Nenhum sorteio ativo encontrado com o ID ${msgId}`);
-      return sendEmbed('yellow', message, 'Nenhum sorteio **ativo** foi encontrado com esse ID.');
+      return sendEmbed('yellow', message, 'Não foi encontrado nenhum sorteio ativo com esse ID.');
     }
 
     sorteio.status = 'cancelado';
@@ -38,26 +38,28 @@ module.exports = {
 
       if (mensagem) {
         const embedCancelado = new EmbedBuilder()
-          .setTitle(`${emojis.error} Sorteio Cancelado`)
+          .setTitle(`${emojis.errorEmoji} Sorteio Cancelado`)
           .setDescription('Este sorteio foi **cancelado manualmente** por um administrador.')
           .addFields({ name: 'Prêmio', value: sorteio.prize })
           .setColor(colors.red)
-          .setFooter({ text: 'Punishment • Sorteios', iconURL: message.client.user.displayAvatarURL() })
+          .setFooter({ 
+            text: 'Punishment', 
+            iconURL: message.client.user.displayAvatarURL() })
           .setTimestamp();
 
         await mensagem.edit({ embeds: [embedCancelado] }).catch(() => null);
       }
 
       const confirm = new EmbedBuilder()
-        .setColor(colors.yellow)
-        .setDescription(`${emojis.attentionEmoji} O sorteio foi **cancelado com sucesso**.`);
+        .setColor(colors.green)
+        .setDescription(`${emojis.successEmoji} Sorteio **cancelado com sucesso**.`);
 
       logger.info(`[CANCELAR] Sorteio "${sorteio.prize}" cancelado por ${message.author.tag}`);
       return message.channel.send({ embeds: [confirm], allowedMentions: { repliedUser: false } });
 
     } catch (err) {
       logger.error(`[CANCELAR] Erro ao cancelar sorteio: ${err.stack || err.message}`);
-      return sendEmbed('yellow', message, 'Ocorreu um erro ao tentar editar a mensagem do sorteio.');
+      return sendEmbed('yellow', message, 'Não foi possível editar a mensagem do sorteio.');
     }
   }
 };
