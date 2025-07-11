@@ -31,7 +31,7 @@ module.exports = {
         client.commands.find(cmd => cmd.aliases?.includes(input));
 
       if (!command)
-        return sendEmbed('yellow', interaction, `${emojis.error} Não foi possível encontrar o comando \`${input}\`.`);
+        return sendEmbed('yellow', interaction, 'Não foi possível encontrar este comando.');
 
       const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
 
