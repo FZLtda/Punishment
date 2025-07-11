@@ -19,14 +19,14 @@ module.exports = {
 
     if (!msgId || !/^\d{17,20}$/.test(msgId)) {
       logger.warn(`[REROLL] ID inválido fornecido por ${message.author.tag} (${message.author.id})`);
-      return sendEmbed('yellow', message, 'Forneça um **ID de mensagem válido** para rerolar o sorteio.');
+      return sendEmbed('yellow', message, 'Forneça um ID de mensagem válido para rerolar o sorteio.');
     }
 
     const sorteio = await Giveaway.findOne({ messageId: msgId, status: 'encerrado' });
 
     if (!sorteio) {
       logger.warn(`[REROLL] Sorteio encerrado não encontrado para o ID ${msgId}`);
-      return sendEmbed('yellow', message, 'Nenhum sorteio **encerrado** foi encontrado com esse ID.');
+      return sendEmbed('yellow', message, 'Não foi encontrado nenhum sorteio com esse ID.');
     }
 
     const participantes = [...sorteio.participants];
@@ -50,7 +50,7 @@ module.exports = {
       )
       .setColor(colors.red)
       .setTimestamp()
-      .setFooter({ text: 'Punishment • Sorteios', iconURL: message.client.user.displayAvatarURL() });
+      .setFooter({ text: 'Punishment', iconURL: message.client.user.displayAvatarURL() });
 
     logger.info(`[REROLL] Sorteio rerolado ${message.author.tag} | ID: ${msgId} | Ganhadores: ${ganhadores.length}`);
     return message.channel.send({ embeds: [rerollEmbed], allowedMentions: { parse: [] } });
