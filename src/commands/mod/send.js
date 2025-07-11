@@ -3,7 +3,7 @@
 const { EmbedBuilder, ChannelType } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendEmbed } = require('@utils/embedReply');
-const { logAction } = require('@modules/logger');
+const { logAction } = require('@modules/modlog');
 
 module.exports = {
   name: 'send',
