@@ -1,19 +1,30 @@
+'use strict';
+
 /**
- * Define a presença do bot (status + atividade)
- * @param {import('discord.js').Client} client
+ * Define a presença do bot (status e atividade personalizada).
+ * @param {import('discord.js').Client} client - Instância do cliente Discord.
  */
 async function setBotPresence(client) {
-  if (!client || !client.user) return;
+  if (!client || !client.user) {
+    console.warn('[Presence] Cliente inválido ao tentar definir presença.');
+    return;
+  }
 
-  await client.user.setPresence({
-    status: 'dnd',
-    activities: [
-      {
-        name: '.doar',
-        type: 0
-      }
-    ]
-  });
+  try {
+    await client.user.setPresence({
+      status: 'dnd',
+      activities: [
+        {
+          name: '/help',
+          type: 0
+        }
+      ]
+    });
+
+    console.log(`[Presence] Presença definida como "Jogando /help" (status: DND).`);
+  } catch (error) {
+    console.error('[Presence] Falha ao definir presença:', error);
+  }
 }
 
 module.exports = { setBotPresence };
