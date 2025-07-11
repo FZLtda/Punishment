@@ -38,7 +38,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setTitle(`${emojis.mute} Punição aplicada`)
         .setColor(colors.red)
-        .setDescription(`${membro} (\`${membro.id}\`) foi silenciado.`)
+        .setDescription(`${membro} (\`${membro.id}\`) foi silenciado(a).`)
         .addFields(
           { name: 'Duração', value: `\`${tempo}\``, inline: true },
           { name: 'Motivo', value: `\`${motivo}\``, inline: true }
@@ -64,7 +64,7 @@ module.exports = {
 
     } catch (error) {
       console.error('[mute] Erro ao aplicar timeout:', error);
-      return sendEmbed('red', message, 'Não foi possível silenciar o usuário devido a um erro inesperado.');
+      return sendEmbed('yellow', message, 'Não foi possível silenciar o usuário devido a um erro inesperado.');
     }
   }
 };
