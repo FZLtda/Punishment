@@ -5,6 +5,7 @@ const { colors, emojis } = require('@config');
 const { getPrefix } = require('@utils/prefixManager');
 const Logger = require('@logger');
 const checkTerms = require('@middlewares/checkTerms');
+const checkGlobalBan = require('@middlewares/checkGlobalBan');
 
 module.exports = {
   name: 'messageCreate',
@@ -18,6 +19,10 @@ module.exports = {
     try {
       // Ignora mensagens de bots e DMs
       if (!message.guild || message.author.bot) return;
+
+      // Verifica se o usuário está banido globalmente
+      const isBanned = await checkGlobalBan(message);
+      if (isBanned) return;
 
       // Obtém o prefixo do servidor
       const prefix = message.client.getPrefix
