@@ -8,7 +8,7 @@ const { emojis, colors, bot } = require('@config');
 module.exports = {
   name: 'unban',
   description: 'Remove o banimento global de um usuário.',
-  usage: '${currentPrefix}unban <ID do usuário>',
+  usage: '${currentPrefix}unviolation <ID do usuário>',
   devOnly: true,
 
   async execute(message, args) {
