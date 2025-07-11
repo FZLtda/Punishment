@@ -22,12 +22,10 @@ module.exports = {
 
     try {
       await setBotPresence(client);
-      Logger.info(`Presença definida com sucesso para ${client.user.tag}.`);
-
       iniciarSorteiosTask(client);
       monitor.emit('ready', client.user.tag);
     } catch (err) {
-      Logger.fatal(`Falha ao configurar presença: ${err.stack || err.message}`);
+      Logger.fatal(`Falha ao iniciar evento 'ready': ${err.stack || err.message}`);
       monitor.emit('error', 'event:ready', err);
     }
   }
