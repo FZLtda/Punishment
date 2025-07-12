@@ -33,8 +33,8 @@ module.exports = {
     );
 
     const painel = new EmbedBuilder()
-      .setTitle(`${emojis.mod} Painel de Moderação`)
-      .setColor(colors.default)
+      .setTitle('Painel de Moderação')
+      .setColor(colors.yellow)
       .setDescription(`Escolha uma ação para moderar ${membro} (\`${membro.id}\`).`)
       .setFooter({
         text: message.author.username,
