@@ -24,7 +24,7 @@ module.exports = {
       if (alreadyAccepted) {
         return await interaction.reply({
           content: `${emojis.attentionEmoji} Você já aceitou os termos anteriormente.`,
-          ephemeral: true
+          flags: 1 << 6
         });
       }
 
@@ -42,7 +42,7 @@ module.exports = {
 
       await interaction.reply({
         embeds: [successEmbed],
-        ephemeral: true
+        flags: 1 << 6
       });
 
       // Deleta a mensagem original após aceitar
@@ -55,8 +55,8 @@ module.exports = {
       console.error(`[TERMS_BUTTON] Erro ao processar aceitação de termos:`, error);
       if (!interaction.replied) {
         await interaction.reply({
-          content: `${emoji.attention} Não foi possível processar sua aceitação dos termos.`,
-          ephemeral: true
+          content: `${emoji.attentionEmoji} Não foi possível processar sua aceitação dos termos.`,
+          flags: 1 << 6
         });
       }
     }
