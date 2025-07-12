@@ -38,7 +38,7 @@ module.exports = {
 
       await interaction.reply({
         content: `${emojis.successEmoji} Você foi verificado com sucesso!`,
-        ephemeral: true
+        flags: 1 << 6
       });
 
       const logEmbed = new EmbedBuilder()
@@ -76,5 +76,5 @@ function sendEphemeralError(interaction, texto) {
     .setColor(colors.yellow)
     .setAuthor({ name: texto, iconURL: emojis.attentionIcon });
 
-  return interaction.reply({ embeds: [embed], ephemeral: true }).catch(() => {});
+  return interaction.reply({ embeds: [embed], flags: 1 << 6 }).catch(() => {});
 }
