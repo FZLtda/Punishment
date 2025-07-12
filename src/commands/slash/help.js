@@ -3,10 +3,11 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
-const { colors, emojis } = require('@config');
+const checkGlobalBan = require('@middlewares/checkGlobalBan');
 const { formatUsage } = require('@utils/formatUsage');
 const { getPrefix } = require('@utils/prefixManager');
 const { sendEmbed } = require('@utils/embedReply');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   data: new SlashCommandBuilder()
