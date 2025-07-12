@@ -7,7 +7,7 @@ const { isOnCooldown } = require('@utils/globalBanCache');
 
 /**
  * Verifica se o usuário está banido globalmente e envia a mensagem adequada.
- * Funciona com Message e Interaction.
+ * Suporta interações e mensagens.
  * 
  * @param {import('discord.js').Message | import('discord.js').Interaction} context
  * @returns {Promise<boolean>}
@@ -23,11 +23,11 @@ module.exports = async function checkGlobalBan(context) {
 
   const embed = new EmbedBuilder()
     .setColor(colors.yellow)
-    .setTitle(`${emojis.attentionEmoji} Global Ban`)
+    .setTitle(`${emojis.attentionEmoji} Global Ban Notification`)
     .setDescription(
       `You have been permanently banned from using the bot system due to a violation of our terms of service.\n\n` +
       `You can no longer use commands or access any features provided by this bot.\n\n` +
-      `If you believe this was a mistake, contact: contato@funczero.xyz`
+      `-# If you believe this was a mistake, contact: contato@funczero.xyz`
     )
     .setFooter({
       text: user.username,
@@ -35,10 +35,17 @@ module.exports = async function checkGlobalBan(context) {
     })
     .setTimestamp();
 
-  if (context.reply) {
-    await context.reply({ embeds: [embed], ephemeral: true }).catch(() => {});
-  } else if (context.channel?.send) {
-    await context.channel.send({ embeds: [embed] }).catch(() => {});
+  try {
+    if (typeof context.reply === 'function') {
+      await context.reply({ embeds: [embed], ephemeral: true });
+    } else if (context.channel?.send) {
+      await context.channel.send({
+        embeds: [embed],
+        allowedMentions: { repliedUser: false }
+      });
+    }
+  } catch (err) {
+    // Evita travamento em canais inacessíveis
   }
 
   return true;
