@@ -41,7 +41,7 @@ module.exports = async function checkGlobalBan(context) {
     } else if (context.channel?.send) {
       await context.channel.send({
         embeds: [embed],
-        allowedMentions: { repliedUser: false }
+        allowedMentions: { repliedUser: true }
       });
     }
   } catch (err) {
