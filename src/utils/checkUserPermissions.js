@@ -11,6 +11,8 @@ const { colors, emojis } = require('@config');
  * @returns {Promise<boolean>}
  */
 module.exports = async function checkUserPermissions(member, message, requiredPermissions = []) {
+  if (!member?.permissions) return false;
+
   const missing = requiredPermissions.filter(p => !member.permissions.has(p));
   if (missing.length === 0) return true;
 
