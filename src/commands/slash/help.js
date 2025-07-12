@@ -20,7 +20,7 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    const isBanned = await checkGlobalBan(message);
+    const isBanned = await checkGlobalBan(interaction);
     if (isBanned) return;
     
      const client = interaction.client;
