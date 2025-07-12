@@ -50,7 +50,7 @@ module.exports = {
           { name: 'Servidor', value: `${guild.name} (\`${guild.id}\`)`, inline: false },
           { name: 'Horário', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false }
         )
-        .setFooter({ text: 'Punishment • Sistema de Verificação', iconURL: client.user.displayAvatarURL() });
+        .setFooter({ text: 'Sistema de Verificação', iconURL: client.user.displayAvatarURL() });
 
       const logChannel = guild.channels.cache.get(channels.log);
       if (logChannel?.isTextBased()) {
@@ -74,7 +74,7 @@ module.exports = {
 function sendEphemeralError(interaction, texto) {
   const embed = new EmbedBuilder()
     .setColor(colors.yellow)
-    .setAuthor({ name: texto, iconURL: emojis.attentionEmoji });
+    .setAuthor({ name: texto, iconURL: emojis.attentionIcon });
 
   return interaction.reply({ embeds: [embed], ephemeral: true }).catch(() => {});
 }
