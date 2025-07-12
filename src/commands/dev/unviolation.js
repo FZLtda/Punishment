@@ -6,7 +6,7 @@ const { sendEmbed } = require('@utils/embedReply');
 const { emojis, colors, bot } = require('@config');
 
 module.exports = {
-  name: 'unban',
+  name: 'unviolation',
   description: 'Remove o banimento global de um usuário.',
   usage: '${currentPrefix}unviolation <ID do usuário>',
   devOnly: true,
