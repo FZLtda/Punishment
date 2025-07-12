@@ -24,7 +24,7 @@ module.exports = {
 
     if (!cargo) {
       Logger.error(`[VERIFY] Cargo de verificado não encontrado (${roles.verified})`);
-      return sendEphemeralError(interaction, 'Cargo de verificado não encontrado.');
+      return sendEphemeralError(interaction, 'Não foi possível encontrar o cargo verificador.');
     }
 
     if (member.roles.cache.has(roles.verified)) {
@@ -37,7 +37,7 @@ module.exports = {
       Logger.info(`[VERIFY] Cargo verificado adicionado para ${member.user.tag} (${member.id})`);
 
       await interaction.reply({
-        content: `${emojis.success} Você foi verificado com sucesso!`,
+        content: `${emojis.successEmoji} Você foi verificado com sucesso!`,
         ephemeral: true
       });
 
@@ -61,7 +61,7 @@ module.exports = {
 
     } catch (err) {
       Logger.error(`[VERIFY] Erro ao adicionar cargo de verificado: ${err.stack || err.message}`);
-      return sendEphemeralError(interaction, 'Ocorreu um erro ao tentar verificar você.');
+      return sendEphemeralError(interaction, 'Não foi possível verificar você.');
     }
   }
 };
@@ -74,7 +74,7 @@ module.exports = {
 function sendEphemeralError(interaction, texto) {
   const embed = new EmbedBuilder()
     .setColor(colors.yellow)
-    .setAuthor({ name: texto, iconURL: emojis.attention });
+    .setAuthor({ name: texto, iconURL: emojis.attentionEmoji });
 
   return interaction.reply({ embeds: [embed], ephemeral: true }).catch(() => {});
 }
