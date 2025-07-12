@@ -5,7 +5,7 @@ const { colors, emojis } = require('@config');
 const { sendEmbed } = require('@utils/embedReply');
 
 module.exports = {
-  name: 'panel',
+  name: 'painelmod',
   description: 'Abre um painel de moderação com ações rápidas.',
   usage: '${currentPrefix}painelmod <@usuário>',
   userPermissions: ['ModerateMembers'],
