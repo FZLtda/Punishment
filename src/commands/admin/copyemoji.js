@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * Copia um emoji personalizado de outro servidor para o atual.
+ * Suporte a: emojis animados e nome personalizado.
+ */
+
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendEmbed } = require('@utils/embedReply');
@@ -23,7 +28,6 @@ module.exports = {
     const emojiInput = args[0];
     const newName = args[1] || null;
 
-    // Regex para pegar ID e nome do emoji customizado
     const emojiRegex = /<(a?):(\w+):(\d+)>/;
     const match = emojiInput.match(emojiRegex);
 
@@ -34,8 +38,6 @@ module.exports = {
     const animated = Boolean(match[1]);
     const emojiName = newName || match[2];
     const emojiId = match[3];
-
-    // URL do emoji para download
     const url = `https://cdn.discordapp.com/emojis/${emojiId}.${animated ? 'gif' : 'png'}`;
 
     try {
@@ -48,11 +50,15 @@ module.exports = {
         .setTitle(`${emojis.successEmoji} Emoji copiado com sucesso!`)
         .setColor(colors.green)
         .setDescription(`Emoji ${emoji} criado com o nome \`${emojiName}\`.`)
-        .setThumbnail(emoji.url)
-        .setFooter({ text: `${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+        .setThumbnail(emoji.imageURL())
+        .setFooter({
+          text: message.author.tag,
+          iconURL: message.author.displayAvatarURL({ dynamic: true })
+        })
         .setTimestamp();
 
       await message.channel.send({ embeds: [embed] });
+
       Logger.info(`[COPYEMOJI] Emoji copiado: ${emojiName} (${emojiId}) por ${message.author.tag}`);
 
     } catch (error) {
