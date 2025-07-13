@@ -41,8 +41,13 @@ module.exports = {
 function getInteractionLabel(interaction) {
   if (interaction.isChatInputCommand()) return `SLASH /${interaction.commandName}`;
   if (interaction.isButton()) return `BUTTON ${interaction.customId}`;
-  if (interaction.isSelectMenu?.()) return `MENU ${interaction.customId}`;
+  if (interaction.isStringSelectMenu?.()) return `SELECT_MENU/STRING ${interaction.customId}`;
+  if (interaction.isUserSelectMenu?.()) return `SELECT_MENU/USER ${interaction.customId}`;
+  if (interaction.isRoleSelectMenu?.()) return `SELECT_MENU/ROLE ${interaction.customId}`;
   if (interaction.type === InteractionType.ModalSubmit) return `MODAL ${interaction.customId}`;
-  if (interaction.type === InteractionType.ApplicationCommandAutocomplete) return `AUTOCOMPLETE /${interaction.commandName}`;
+  if (interaction.type === InteractionType.ApplicationCommandAutocomplete) {
+    return `AUTOCOMPLETE /${interaction.commandName}`;
+  }
+
   return `UNKNOWN (${interaction.type})`;
 }
