@@ -29,10 +29,11 @@ const client = new Client({
 });
 
 // Coleções utilitárias
-client.commands = new Collection();
 client.slashCommands = new Collection();
-client.buttons = new Collection();
-client.contexts = new Collection();
 client.cooldowns = new Collection();
+client.commands = new Collection();
+client.contexts = new Collection();
+client.buttons = new Collection();
+client.menus = new Collection();
 
 module.exports = client;
