@@ -8,32 +8,42 @@ const {
 } = require('discord.js');
 
 /**
- * Instância principal do bot com intents e coleções configuradas.
+ * Classe estendida do Client para comportar um bot modular e escalável.
  */
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.GuildMessageReactions,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildModeration
-  ],
-  partials: [
-    Partials.User,
-    Partials.Channel,
-    Partials.GuildMember,
-    Partials.Message,
-    Partials.Reaction
-  ]
-});
+class PunishmentClient extends Client {
+  constructor(options = {}) {
+    super({
+      intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildModeration
+      ],
+      partials: [
+        Partials.User,
+        Partials.Channel,
+        Partials.GuildMember,
+        Partials.Message,
+        Partials.Reaction
+      ],
+      ...options
+    });
 
-// Coleções utilitárias
-client.slashCommands = new Collection();
-client.cooldowns = new Collection();
-client.commands = new Collection();
-client.contexts = new Collection();
-client.buttons = new Collection();
-client.menus = new Collection();
+    // Inicialização das coleções
+    this.commands = new Collection();
+    this.slashCommands = new Collection();
+    this.contexts = new Collection();
+    this.buttons = new Collection();
+    this.menus = new Collection();
+    this.cooldowns = new Collection();
 
-module.exports = client;
+    // Carga dinâmica
+    this.utils = new Map();
+    this.services = new Map();
+    this.modules = new Map();
+  }
+}
+
+module.exports = new PunishmentClient();
