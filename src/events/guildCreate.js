@@ -13,7 +13,7 @@ module.exports = {
   async execute(guild, client) {
     Logger.info(`[Guild Join] Entrou em: ${guild.name} (${guild.id})`);
 
-    const logChannel = client.channels.cache.get(channel.log);
+    const logChannel = client.channels.cache.get(channels.log);
     if (!logChannel) return Logger.warn('[Guild Join] Canal de log não encontrado.');
 
     const embed = new EmbedBuilder()
