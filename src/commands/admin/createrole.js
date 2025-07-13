@@ -17,7 +17,7 @@ const { checkBotPermissions } = require('@utils/checkBotPermissions');
 module.exports = {
   name: 'createrole',
   description: 'Cria um novo cargo com opções avançadas.',
-  category: 'Moderação',
+  category: 'Administração',
   usage: '<nome> [--cor <hex>] [--men <true|false>] [--perms <P1,P2,...>] [--pos <número>]',
   aliases: ['criarcargo', 'addrole'],
 
@@ -29,7 +29,7 @@ module.exports = {
     if (!botOk) return;
 
     const input = args.join(' ');
-    const regex = /(?<name>[^\-]+)?(?:\s--cor\s(?<color>\S+))?(?:\s--men\s(?<mentionable>true|false))?(?:\s--perms\s(?<perms>[A-Z_,]+))?(?:\s--pos\s(?<pos>\d+))?/i;
+    const regex = /^(?<name>.+?)(?:\s--cor\s(?<color>\S+))?(?:\s--men\s(?<mentionable>true|false))?(?:\s--perms\s(?<perms>[A-Z_,]+))?(?:\s--pos\s(?<pos>\d+))?$/i;
     const match = input.match(regex)?.groups || {};
 
     const name = match.name?.trim();
@@ -39,10 +39,16 @@ module.exports = {
 
     const color = match.color || undefined;
     const mentionable = match.mentionable === 'true';
-    const permissions = match.perms
-      ? match.perms.split(',').map(p => p.trim()).filter(Boolean)
-      : [];
     const position = match.pos ? parseInt(match.pos, 10) : undefined;
+
+    const permissions = [];
+    if (match.perms) {
+      for (const perm of match.perms.split(',').map(p => p.trim())) {
+        if (PermissionsBitField.Flags[perm]) {
+          permissions.push(perm);
+        }
+      }
+    }
 
     try {
       const role = await message.guild.roles.create({
@@ -50,9 +56,12 @@ module.exports = {
         color,
         mentionable,
         permissions: permissions.length ? new PermissionsBitField(permissions) : undefined,
-        position,
         reason: `Criado por: ${message.author.tag}`
       });
+
+      if (position && position < message.guild.roles.cache.size) {
+        await role.setPosition(position);
+      }
 
       const embed = new EmbedBuilder()
         .setTitle('Cargo Criado com Sucesso')
@@ -68,8 +77,8 @@ module.exports = {
 
       await message.channel.send({ embeds: [embed] });
 
-    } catch {
-      return sendEmbed('yellow', message, 'Não foi possível criar o cargo.');
+    } catch (err) {
+      return sendEmbed('red', message, 'Não foi possível criar o cargo. Verifique se os parâmetros são válidos.');
     }
   }
 };
