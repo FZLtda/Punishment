@@ -10,24 +10,29 @@ const Logger = require('@logger');
 
 const startTime = Date.now();
 
-// Tratamento global de exceções e sinais
+/**
+ * Tratamento global de falhas não capturadas.
+ * Garante que erros críticos sejam registrados e enviados ao monitoramento.
+ */
 process.on('uncaughtException', async (err) => {
-  Logger.fatal('Erro não capturado (uncaughtException):', err);
-  await reportErrorToWebhook('Erro não capturado', err);
+  Logger.fatal('uncaughtException:', err);
+  await reportErrorToWebhook('uncaughtException', err);
   process.exit(1);
 });
 
 process.on('unhandledRejection', async (reason) => {
-  Logger.fatal('Promessa rejeitada sem tratamento (unhandledRejection):', reason);
-  await reportErrorToWebhook('Promessa rejeitada', reason);
+  Logger.fatal('unhandledRejection:', reason);
+  await reportErrorToWebhook('unhandledRejection', reason);
   process.exit(1);
 });
 
+/**
+ * Encerramento gracioso em sinais do sistema operacional.
+ */
 ['SIGINT', 'SIGTERM'].forEach((signal) => {
   process.on(signal, () => {
-    Logger.warn(`Sinal ${signal} recebido. Encerrando...`);
+    Logger.warn(`Sinal recebido: ${signal}`);
 
-    // Fallback para garantir encerramento
     setTimeout(() => {
       Logger.warn('Encerramento forçado após timeout.');
       process.exit(0);
@@ -37,13 +42,17 @@ process.on('unhandledRejection', async (reason) => {
   });
 });
 
+/**
+ * Inicialização principal do Punishment.
+ * Responsável por acionar o bootstrap e registrar o tempo de carga.
+ */
 (async () => {
   try {
     await bootstrap();
     Logger.info(`Inicialização concluída em ${Date.now() - startTime}ms`);
   } catch (error) {
-    Logger.fatal(`Não foi possível inicializar o ${bot.name} :`, error);
-    await reportErrorToWebhook('Erro de bootstrap', error);
+    Logger.fatal(`Falha ao iniciar o ${bot.name}:`, error);
+    await reportErrorToWebhook('Erro crítico na inicialização', error);
     process.exit(1);
   }
 })();
