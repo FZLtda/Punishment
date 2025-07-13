@@ -12,10 +12,24 @@ const {
 const { colors } = require('@config');
 const { sendEmbed } = require('@utils/embedReply');
 
+// Cores nomeadas comuns (extendível)
+const namedColors = {
+  RED: '#ff0000',
+  GREEN: '#00ff00',
+  BLUE: '#3498db',
+  YELLOW: '#ffff00',
+  PURPLE: '#9b59b6',
+  ORANGE: '#e67e22',
+  PINK: '#ff69b4',
+  WHITE: '#ffffff',
+  BLACK: '#000000',
+  GRAY: '#95a5a6'
+};
+
 module.exports = {
   name: 'createrole',
   description: 'Cria um novo cargo com opções avançadas.',
-  usage: '${currentPrefix}createrole <nome> [--cor <hex>] [--men <true|false>] [--perms <P1,P2,...>] [--pos <número>]',
+  usage: '${currentPrefix}createrole <nome> [--cor <hex|nome>] [--men <true|false>] [--perms <P1,P2,...>] [--pos <número>]',
   userPermissions: ['ManageRoles'],
   botPermissions: ['ManageRoles'],
   deleteMessage: true,
@@ -30,7 +44,16 @@ module.exports = {
       return sendEmbed('yellow', message, 'Você deve fornecer um nome para o cargo.');
     }
 
-    const color = match.color || undefined;
+    let color = match.color;
+    if (color) {
+      color = color.toUpperCase();
+      if (namedColors[color]) {
+        color = namedColors[color];
+      } else if (!/^#?[0-9A-F]{6}$/i.test(color)) {
+        return sendEmbed('yellow', message, 'Cor inválida. Use um código hexadecimal ou uma cor nomeada como RED, BLUE, etc.');
+      }
+    }
+
     const mentionable = match.mentionable === 'true';
     const position = match.pos ? parseInt(match.pos, 10) : undefined;
 
