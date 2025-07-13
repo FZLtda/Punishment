@@ -9,25 +9,18 @@ const {
   EmbedBuilder,
   PermissionsBitField
 } = require('discord.js');
-const { colors, emojis } = require('@config');
+const { colors } = require('@config');
 const { sendEmbed } = require('@utils/embedReply');
-const { checkUserPermissions } = require('@utils/checkUserPermissions');
-const { checkBotPermissions } = require('@utils/checkBotPermissions');
 
 module.exports = {
   name: 'createrole',
   description: 'Cria um novo cargo com opções avançadas.',
-  category: 'Administração',
-  usage: '<nome> [--cor <hex>] [--men <true|false>] [--perms <P1,P2,...>] [--pos <número>]',
-  aliases: ['criarcargo', 'addrole'],
+  usage: '${currentPrefix}createrole <nome> [--cor <hex>] [--men <true|false>] [--perms <P1,P2,...>] [--pos <número>]',
+  userPermissions: ['ManageRoles'],
+  botPermissions: ['ManageRoles'],
+  deleteMessage: true,
 
-  run: async (client, message, args) => {
-    const userOk = await checkUserPermissions(message.member, message, ['ManageRoles']);
-    if (!userOk) return;
-
-    const botOk = await checkBotPermissions(message.guild.members.me, message, ['ManageRoles']);
-    if (!botOk) return;
-
+  async execute(message, args) {
     const input = args.join(' ');
     const regex = /^(?<name>.+?)(?:\s--cor\s(?<color>\S+))?(?:\s--men\s(?<mentionable>true|false))?(?:\s--perms\s(?<perms>[A-Z_,]+))?(?:\s--pos\s(?<pos>\d+))?$/i;
     const match = input.match(regex)?.groups || {};
@@ -73,11 +66,14 @@ module.exports = {
           { name: 'Mencionável', value: role.mentionable ? 'Sim' : 'Não', inline: true },
           { name: 'Permissões', value: permissions.length ? `\`${permissions.join(', ')}\`` : 'Nenhuma', inline: false },
           { name: 'Posição', value: position?.toString() || 'Padrão', inline: true }
-        );
+        )
+        .setFooter({ text: message.author.username, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+        .setTimestamp();
 
       await message.channel.send({ embeds: [embed] });
 
     } catch (err) {
+      console.error('[createrole] Erro ao criar cargo:', err);
       return sendEmbed('red', message, 'Não foi possível criar o cargo. Verifique se os parâmetros são válidos.');
     }
   }
