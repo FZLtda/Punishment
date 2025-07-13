@@ -9,13 +9,13 @@ const { emojis, colors } = require('@config');
 async function sendInteractionError(interaction, texto) {
   const embed = new EmbedBuilder()
     .setColor(colors.yellow)
-    .setAuthor({ name: texto, iconURL: emojis.attention });
+    .setAuthor({ name: texto, iconURL: emojis.attentionIcon });
 
   try {
     if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({ embeds: [embed], ephemeral: true });
+      await interaction.followUp({ embeds: [embed], flags: 1 << 6 });
     } else {
-      await interaction.reply({ embeds: [embed], ephemeral: true });
+      await interaction.reply({ embeds: [embed], flags: 1 << 6 });
     }
   } catch (_) { /* silencioso */ }
 }
