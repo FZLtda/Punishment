@@ -13,7 +13,7 @@ module.exports = {
   async execute(guild, client) {
     Logger.warn(`[Guild Leave] Removido de: ${guild.name} (${guild.id})`);
 
-    const logChannel = client.channels.cache.get(channel.log);
+    const logChannel = client.channels.cache.get(channels.log);
     if (!logChannel) return Logger.warn('[Guild Leave] Canal de log não encontrado.');
 
     const embed = new EmbedBuilder()
