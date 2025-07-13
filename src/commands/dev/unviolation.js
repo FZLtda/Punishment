@@ -34,7 +34,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(colors.green)
       .setTitle(`${emojis.unban} Banimento Global Removido`)
-      .setDescription(`O usuário **${alvo.tag}** (\`${alvo.id}\`) foi desbanido globalmente.`)
+      .setDescription(`**${alvo.tag}** (\`${alvo.id}\`) foi desbanido globalmente.`)
       .setFooter({
         text: `${message.author.tag}`,
         iconURL: message.author.displayAvatarURL({ dynamic: true })
