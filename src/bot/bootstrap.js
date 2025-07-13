@@ -10,7 +10,7 @@ const { loadButtonInteractions } = require('@loadButtonInteractions/loader');
 const { showStartupDiagnostic } = require('@bot/diagnostic');
 
 /**
- * Inicia todos os subsistemas críticos do bot Punishment.
+ * Inicia todos os subsistemas críticos do Punishment.
  * Este é o ponto central da inicialização e responsável por:
  * - Validar o ambiente
  * - Conectar à base de dados
@@ -19,7 +19,6 @@ const { showStartupDiagnostic } = require('@bot/diagnostic');
  * - Exibir diagnósticos
  */
 module.exports = async function bootstrap() {
-  
   validateEnvironment();
 
   if (!process.env.TOKEN) {
