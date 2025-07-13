@@ -1,11 +1,6 @@
 'use strict';
 
-const {
-  EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-} = require('discord.js');
+const { EmbedBuilder } = require('discord.js');
 const GlobalBan = require('@models/GlobalBan');
 const { colors, emojis } = require('@config');
 const { isOnCooldown } = require('@utils/globalBanCache');
@@ -29,39 +24,32 @@ module.exports = async function checkGlobalBan(context) {
   const embed = new EmbedBuilder()
     .setColor(colors.yellow)
     .setTitle(`${emojis.attentionEmoji} Global Ban Notification`)
-    .setDescription(
-      `You have been permanently banned from using the bot system due to a violation of our terms of service.\n\n` +
-      `You can no longer use commands or access any features provided by this bot.`
-    )
+    .setDescription([
+      'You have been **permanently banned** from using the bot system due to a violation of our terms of service.',
+      'You are no longer able to use any commands or access features provided by this bot.',
+      '',
+      `If you believe this was a mistake, please contact: **contato@funczero.xyz**`
+    ].join('\n'))
     .setFooter({
       text: user.username,
       iconURL: user.displayAvatarURL({ dynamic: true })
     })
     .setTimestamp();
 
-  const row = new ActionRowBuilder().addComponents(
-    new ButtonBuilder()
-      .setLabel('Appeal via Email')
-      .setStyle(ButtonStyle.Link)
-      .setURL('mailto:contato@funczero.xyz')
-  );
-
   try {
     if (typeof context.reply === 'function') {
       await context.reply({
         embeds: [embed],
-        components: [row],
         flags: 1 << 6
       });
     } else if (context.channel?.send) {
       await context.channel.send({
         embeds: [embed],
-        components: [row],
         allowedMentions: { repliedUser: true }
       });
     }
-  } catch (err) {
-    // Silencia erros em canais inacessíveis
+  } catch {
+    // Silencia erros em canais onde o bot não pode responder
   }
 
   return true;
