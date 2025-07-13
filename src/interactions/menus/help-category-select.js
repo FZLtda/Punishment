@@ -7,40 +7,68 @@ module.exports = {
   customId: 'help-category-select',
 
   async execute(interaction) {
-    const value = interaction.values[0];
+    const value = interaction.values?.[0];
     let embed;
 
     switch (value) {
       case 'mod':
         embed = new EmbedBuilder()
           .setTitle('🔨 Categoria: Moderação')
-          .setDescription(`> **Comandos disponíveis:**\n\n- \`/ban\` — Banir um usuário\n- \`/kick\` — Expulsar um usuário\n- \`/mute\` — Silenciar alguém\n- \`/unban\`, \`/warn\`, \`/slowmode\`, e outros`)
+          .setDescription([
+            '> **Comandos disponíveis:**',
+            '',
+            '- `/ban` — Banir um usuário',
+            '- `/kick` — Expulsar um usuário',
+            '- `/mute` — Silenciar alguém',
+            '- `/unban`, `/warn`, `/slowmode`, e outros'
+          ].join('\n'))
           .setColor(colors.red);
         break;
 
       case 'utils':
         embed = new EmbedBuilder()
           .setTitle('🧰 Categoria: Utilitários')
-          .setDescription(`> **Comandos disponíveis:**\n\n- \`/userinfo\`\n- \`/serverinfo\`\n- \`/ping\`\n- \`/avatar\`, etc.`)
+          .setDescription([
+            '> **Comandos disponíveis:**',
+            '',
+            '- `/userinfo`',
+            '- `/serverinfo`',
+            '- `/ping`',
+            '- `/avatar`, etc.'
+          ].join('\n'))
           .setColor(colors.red);
         break;
 
       case 'config':
         embed = new EmbedBuilder()
           .setTitle('⚙️ Categoria: Configuração')
-          .setDescription(`> **Comandos disponíveis:**\n\n- \`/setprefix\`\n- \`/setwelcome\`\n- \`/setlogs\`, entre outros`)
+          .setDescription([
+            '> **Comandos disponíveis:**',
+            '',
+            '- `/setprefix`',
+            '- `/setwelcome`',
+            '- `/setlogs`, entre outros'
+          ].join('\n'))
           .setColor(colors.red);
         break;
 
       case 'fun':
         embed = new EmbedBuilder()
           .setTitle('🎉 Categoria: Diversão')
-          .setDescription(`> **Comandos disponíveis:**\n\n- \`/joke\`\n- \`/8ball\`\n- \`/meme\`, e outros`)
+          .setDescription([
+            '> **Comandos disponíveis:**',
+            '',
+            '- `/joke`',
+            '- `/8ball`',
+            '- `/meme`, e outros'
+          ].join('\n'))
           .setColor(colors.red);
         break;
 
       default:
-        return interaction.reply({ content: 'Categoria inválida.', flags: 1 << 6 });
+        // Defer update para evitar erro se a interação já foi respondida
+        await interaction.deferUpdate();
+        return;
     }
 
     await interaction.update({
