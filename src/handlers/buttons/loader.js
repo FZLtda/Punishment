@@ -9,7 +9,7 @@ const Logger = require('@logger');
  * @param {import('discord.js').Client} client
  */
 async function loadButtonInteractions(client) {
-  const buttonsPath = path.join(__dirname, '../../../../src/interactions/buttons');
+  const buttonsPath = path.join(__dirname, '../../../src/interactions/buttons');
 
   if (!fs.existsSync(buttonsPath)) {
     Logger.warn('[LOADER] Pasta de botões não encontrada.');
