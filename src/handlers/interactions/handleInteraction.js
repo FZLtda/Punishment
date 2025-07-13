@@ -1,3 +1,5 @@
+'use strict';
+
 const Logger = require('@logger');
 const { sendInteractionError } = require('@utils/responses');
 
@@ -15,11 +17,13 @@ module.exports = async function handleInteraction(interaction, client) {
     UserSelectMenu: handleMenu,
     RoleSelectMenu: handleMenu,
     ModalSubmit: handleModal,
-    Autocomplete: handleAutocomplete
+    Autocomplete: handleAutocomplete,
+    MessageCommand: handleContextMenu,
+    UserCommand: handleContextMenu
   };
 
   for (const [key, handler] of Object.entries(typeHandlers)) {
-    if (interaction[`is${key}`]?.()) {
+    if (typeof interaction[`is${key}`] === 'function' && interaction[`is${key}`]()) {
       return handler(interaction, client);
     }
   }
@@ -27,6 +31,13 @@ module.exports = async function handleInteraction(interaction, client) {
   return false;
 };
 
+// Função auxiliar para log padrão
+function logInteraction(type, interaction, extra = '') {
+  const user = `${interaction.user?.tag} (${interaction.user?.id})`;
+  const guild = interaction.guild?.name || 'DM';
+  const label = interaction.customId || `/${interaction.commandName}`;
+  Logger.info(`[${type.toUpperCase()}] ${label} executado por ${user} em ${guild}${extra}`);
+}
 
 async function handleSlash(interaction, client) {
   const command = client.slashCommands.get(interaction.commandName);
@@ -36,7 +47,7 @@ async function handleSlash(interaction, client) {
   }
 
   await command.execute(interaction, client);
-  Logger.info(`[SLASH] Executado: /${interaction.commandName}`);
+  logInteraction('slash', interaction);
   return true;
 }
 
@@ -48,7 +59,7 @@ async function handleButton(interaction, client) {
   }
 
   await button.execute(interaction, client);
-  Logger.info(`[BUTTON] Executado: ${interaction.customId}`);
+  logInteraction('button', interaction);
   return true;
 }
 
@@ -60,7 +71,7 @@ async function handleMenu(interaction, client) {
   }
 
   await menu.execute(interaction, client);
-  Logger.info(`[MENU] Executado: ${interaction.customId}`);
+  logInteraction('menu', interaction);
   return true;
 }
 
@@ -72,7 +83,7 @@ async function handleModal(interaction, client) {
   }
 
   await modal.execute(interaction, client);
-  Logger.info(`[MODAL] Executado: ${interaction.customId}`);
+  logInteraction('modal', interaction);
   return true;
 }
 
@@ -82,5 +93,17 @@ async function handleAutocomplete(interaction, client) {
 
   await command.autocomplete(interaction, client);
   Logger.debug(`[AUTOCOMPLETE] Processado: ${interaction.commandName}`);
+  return true;
+}
+
+async function handleContextMenu(interaction, client) {
+  const command = client.contextMenus.get(interaction.commandName);
+  if (!command) {
+    Logger.warn(`[CONTEXT] Comando de contexto não encontrado: ${interaction.commandName}`);
+    return sendInteractionError(interaction, 'Comando de contexto não encontrado.');
+  }
+
+  await command.execute(interaction, client);
+  logInteraction('context', interaction);
   return true;
 }
