@@ -12,7 +12,6 @@ const {
 const { colors } = require('@config');
 const { sendEmbed } = require('@utils/embedReply');
 
-// Cores nomeadas comuns (extendível)
 const namedColors = {
   RED: '#ff0000',
   GREEN: '#00ff00',
@@ -59,9 +58,16 @@ module.exports = {
 
     const permissions = [];
     if (match.perms) {
-      for (const perm of match.perms.split(',').map(p => p.trim())) {
-        if (PermissionsBitField.Flags[perm]) {
-          permissions.push(perm);
+      for (const rawPerm of match.perms.split(',').map(p => p.trim())) {
+        const camelPerm = rawPerm
+          .toLowerCase()
+          .replace(/_(.)/g, (_, c) => c.toUpperCase())
+          .replace(/^./, c => c.toUpperCase());
+
+        if (PermissionsBitField.Flags[camelPerm]) {
+          permissions.push(camelPerm);
+        } else {
+          console.warn(`[createrole] Permissão inválida ignorada: ${rawPerm}`);
         }
       }
     }
@@ -97,7 +103,7 @@ module.exports = {
 
     } catch (err) {
       console.error('[createrole] Erro ao criar cargo:', err);
-      return sendEmbed('red', message, 'Não foi possível criar o cargo. Verifique se os parâmetros são válidos.');
+      return sendEmbed('yellow', message, 'Não foi possível criar o cargo. Verifique se os parâmetros são válidos.');
     }
   }
 };
