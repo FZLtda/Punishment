@@ -69,7 +69,7 @@
     "@loadCommands": "src/handlers/commands",
     "@loadSlashCommands": "src/handlers/slash",
     "@interactions": "src/handlers/interactions",
-    "@loadButtonInteractions": "src/handlers/interactions/buttons",
+    "@loadButtonInteractions": "src/handlers/buttons",
     "@package.json": "./package.json"
   }
 }
