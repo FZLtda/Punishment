@@ -1,7 +1,7 @@
 'use strict';
 
 const { EmbedBuilder } = require('discord.js');
-const { colors, emojis, channel } = require('@config');
+const { colors, emojis, channels } = require('@config');
 const Logger = require('@logger');
 
 /**
