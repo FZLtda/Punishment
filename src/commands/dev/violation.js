@@ -9,6 +9,7 @@ module.exports = {
   name: 'violation',
   description: 'Bane um usuário globalmente do uso do bot.',
   usage: '${currentPrefix}violation <ID do usuário> [motivo]',
+  deleteMessage: true,
   devOnly: true,
 
   async execute(message, args) {
@@ -39,10 +40,10 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(colors.red)
       .setTitle(`${emojis.ban} Banimento Global Aplicado`)
-      .setDescription(`O usuário **${alvo.tag}** (\`${alvo.id}\`) foi banido globalmente.`)
+      .setDescription(`**${alvo.tag}** (\`${alvo.id}\`) foi banido(a) globalmente.`)
       .addFields({ name: 'Motivo', value: motivo })
       .setFooter({
-        text: `Banido por ${message.author.tag}`,
+        text: `${message.author.tag}`,
         iconURL: message.author.displayAvatarURL({ dynamic: true })
       })
       .setTimestamp();
