@@ -1,18 +1,15 @@
 'use strict';
 
 /**
- * Cria um novo cargo no servidor com configurações avançadas.
- * Suporte a: nome, cor, mencionável, permissões e posição.
+ * Cria um cargo personalizado com nome, cor, posição, permissões e opção de ser mencionável.
+ * Suporta cores nomeadas ou hexadecimais e permissões em UPPER_CASE.
  */
 
-const {
-  EmbedBuilder,
-  PermissionsBitField
-} = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const { colors } = require('@config');
 const { sendEmbed } = require('@utils/embedReply');
 
-const namedColors = {
+const NAMED_COLORS = Object.freeze({
   RED: '#ff0000',
   GREEN: '#00ff00',
   BLUE: '#3498db',
@@ -23,12 +20,13 @@ const namedColors = {
   WHITE: '#ffffff',
   BLACK: '#000000',
   GRAY: '#95a5a6'
-};
+});
 
 module.exports = {
   name: 'createrole',
-  description: 'Cria um novo cargo com opções avançadas.',
-  usage: '${currentPrefix}createrole <nome> [--cor <hex|nome>] [--men <true|false>] [--perms <P1,P2,...>] [--pos <número>]',
+  description: 'Cria um novo cargo com configurações avançadas.',
+  usage: '${currentPrefix}createrole <nome> [--cor <hex|nome>] [--men <true|false>] [--perms <PERM1,PERM2>] [--pos <número>]',
+  category: 'Administração',
   userPermissions: ['ManageRoles'],
   botPermissions: ['ManageRoles'],
   deleteMessage: true,
@@ -39,17 +37,16 @@ module.exports = {
     const match = input.match(regex)?.groups || {};
 
     const name = match.name?.trim();
-    if (!name) {
+    if (!name)
       return sendEmbed('yellow', message, 'Você deve fornecer um nome para o cargo.');
-    }
 
     let color = match.color;
     if (color) {
       color = color.toUpperCase();
-      if (namedColors[color]) {
-        color = namedColors[color];
+      if (NAMED_COLORS[color]) {
+        color = NAMED_COLORS[color];
       } else if (!/^#?[0-9A-F]{6}$/i.test(color)) {
-        return sendEmbed('yellow', message, 'Cor inválida. Use um código hexadecimal ou uma cor nomeada como RED, BLUE, etc.');
+        return sendEmbed('yellow', message, 'Cor inválida. Use hexadecimal ou cores nomeadas como RED, GREEN, etc.');
       }
     }
 
@@ -78,7 +75,7 @@ module.exports = {
         color,
         mentionable,
         permissions: permissions.length ? new PermissionsBitField(permissions) : undefined,
-        reason: `Criado por: ${message.author.tag}`
+        reason: `Criado por ${message.author.tag}`
       });
 
       if (position && position < message.guild.roles.cache.size) {
@@ -86,24 +83,27 @@ module.exports = {
       }
 
       const embed = new EmbedBuilder()
-        .setTitle('Cargo Criado com Sucesso')
+        .setTitle(`${emojis.successEmoji} Cargo criado)
         .setColor(colors.green)
-        .setDescription(`O cargo ${role.toString()} foi criado com os seguintes parâmetros:`)
+        .setDescription(`O cargo ${role.toString()} foi criado com os parâmetros abaixo:`)
         .addFields(
-          { name: 'Nome', value: role.name, inline: true },
+          { name: 'Nome', value: `\`${role.name}\``, inline: true },
           { name: 'Cor', value: role.hexColor, inline: true },
-          { name: 'Mencionável', value: role.mentionable ? 'Sim' : 'Não', inline: true },
+          { name: 'Mencionável', value: mentionable ? 'Sim' : 'Não', inline: true },
           { name: 'Permissões', value: permissions.length ? `\`${permissions.join(', ')}\`` : 'Nenhuma', inline: false },
           { name: 'Posição', value: position?.toString() || 'Padrão', inline: true }
         )
-        .setFooter({ text: message.author.username, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+        .setFooter({
+          text: `${message.author.username}`,
+          iconURL: message.author.displayAvatarURL({ dynamic: true })
+        })
         .setTimestamp();
 
       await message.channel.send({ embeds: [embed] });
 
-    } catch (err) {
-      console.error('[createrole] Erro ao criar cargo:', err);
-      return sendEmbed('yellow', message, 'Não foi possível criar o cargo. Verifique se os parâmetros são válidos.');
+    } catch (error) {
+      console.error('[createrole] Erro ao criar cargo:', error);
+      return sendEmbed('yellow', message, 'Não foi possível criar o cargo');
     }
   }
 };
