@@ -1,5 +1,9 @@
 'use strict';
 
+/**
+ * Restaura cargos e canais ausentes do servidor mantendo posições e hierarquia.
+ */
+
 const {
   ChannelType,
   PermissionsBitField,
@@ -66,11 +70,19 @@ module.exports = {
           reason: `Restaurando cargo ausente do backup ${backupId}`
         });
 
-        await role.setPosition(roleData.position).catch(() => {});
         roleMap.set(roleData.id, role.id);
-        restoredRoles.push(role);
+        restoredRoles.push({ role, position: roleData.position });
       } catch (err) {
         console.error(`[RESTORE-ROLE] ${roleData.name}:`, err.message);
+      }
+    }
+
+    // Aplicar posições aos cargos restaurados
+    for (const { role, position } of restoredRoles) {
+      try {
+        await role.setPosition(position).catch(() => {});
+      } catch (err) {
+        console.warn(`[RESTORE-POSITION] Falha ao ajustar posição do cargo ${role.name}:`, err.message);
       }
     }
 
