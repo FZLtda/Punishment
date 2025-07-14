@@ -36,20 +36,21 @@ module.exports = {
       };
 
       // Cargos
-      guild.roles.cache
+      const sortedRoles = guild.roles.cache
         .filter(role => !role.managed && role.id !== guild.id)
-        .sort((a, b) => a.position - b.position)
-        .forEach(role => {
-          backupData.roles.push({
-            id: role.id,
-            name: role.name,
-            color: role.hexColor,
-            hoist: role.hoist,
-            permissions: role.permissions.bitfield.toString(),
-            position: role.position,
-            mentionable: role.mentionable
-          });
+        .sort((a, b) => b.position - a.position);
+
+      sortedRoles.forEach((role, index) => {
+        backupData.roles.push({
+          id: role.id,
+          name: role.name,
+          color: role.hexColor,
+          hoist: role.hoist,
+          permissions: role.permissions.bitfield.toString(),
+          position: sortedRoles.size - index,
+          mentionable: role.mentionable
         });
+      });
 
       // Canais
       guild.channels.cache
