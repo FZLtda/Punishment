@@ -6,8 +6,8 @@
 module.exports = {
   // Emojis de status e feedback
   attentionEmoji: '<:1000055967:1358918618808717704>',
-  successEmoji:   '<:1000073996:1390632563181228112>',
-  errorEmoji:     '<:1000055989:1358918322770677971>',
+  successEmoji:   '<:1000075728:1394121393947545720>',
+  errorEmoji:     '<:1000075729:1394121565645443204>',
   infoEmoji:      '<:1000046547:1340465282568945675>',
 
   // Emojis de comandos de moderação
@@ -34,7 +34,7 @@ module.exports = {
   bot:     '<:1000075137:1392797308231352434>',
 
   // Emojis como URLs para uso em embeds
-  successIcon:   'https://bit.ly/3R8qteY',
-  errorIcon:     'https://bit.ly/42jnCEX',
+  successIcon:   'http://bit.ly/4lqmvvp',
+  errorIcon:     'http://bit.ly/4luaEg5',
   attentionIcon: 'https://bit.ly/3Ypxwnl'
 };
