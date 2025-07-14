@@ -32,6 +32,8 @@ module.exports = {
   search:  '<:1000075136:1392797406478864485>',
   user:    '<:1000075135:1392797381921214514>',
   bot:     '<:1000075137:1392797308231352434>',
+  rest:    '<:1000075732:1394215947245588551>',
+
 
   // Emojis como URLs para uso em embeds
   successIcon:   'http://bit.ly/4lqmvvp',
