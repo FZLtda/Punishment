@@ -132,7 +132,7 @@ module.exports = {
     }
 
     const embed = new EmbedBuilder()
-      .setTitle(`${emojis.success} Restauração concluída`)
+      .setTitle(`${emojis.rest} Restauração concluída`)
       .setColor(colors.green)
       .setDescription(`Itens ausentes restaurados com sucesso do backup \`${backupId}\`.`)
       .addFields(
@@ -141,7 +141,7 @@ module.exports = {
         { name: 'Canais restaurados', value: `${restoredChannels.length}`, inline: true }
       )
       .setFooter({
-        text: `Solicitado por ${message.author.tag}`,
+        text: `${message.author.tag}`,
         iconURL: message.author.displayAvatarURL({ dynamic: true })
       })
       .setTimestamp();
