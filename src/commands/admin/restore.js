@@ -2,8 +2,10 @@
 
 const {
   ChannelType,
-  PermissionsBitField
+  PermissionsBitField,
+  EmbedBuilder
 } = require('discord.js');
+
 const { colors, emojis } = require('@config');
 const { sendEmbed } = require('@utils/embedReply');
 const { sendModLog } = require('@modules/modlog');
