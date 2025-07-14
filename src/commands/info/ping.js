@@ -2,7 +2,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 const { performance } = require('node:perf_hooks');
-const { colors, emojis } = require('@config');
+const { colors } = require('@config');
 
 module.exports = {
   name: 'ping',
@@ -22,8 +22,8 @@ module.exports = {
     const uptime = formatUptime(process.uptime());
 
     const embed = new EmbedBuilder()
-      .setTitle(`${emojis.ping} Ping do Bot`)
-      .setColor(colors.green)
+      .setTitle('🏓 Pong')
+      .setColor(colors.red)
       .setDescription([
         `📡 **Latência do Bot:** \`${pingBot}ms\``,
         `🌐 **Latência da API:** \`${pingAPI}ms\``,
