@@ -1,30 +1,52 @@
 'use strict';
 
 const { EmbedBuilder } = require('discord.js');
+const { performance } = require('node:perf_hooks');
 const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'ping',
-  description: 'Mostra a latência do bot e da API.',
+  description: 'Mostra a latência do bot, da API e o tempo de atividade.',
   usage: '${currentPrefix}ping',
   category: 'Utilidade',
   botPermissions: ['SendMessages'],
   deleteMessage: true,
 
-  async execute(message, args) {
-    const msg = await message.channel.send('Pong!');
+  async execute(message) {
+    const start = performance.now();
+    const sent = await message.channel.send('🏓 Carregando ping...');
+    const end = performance.now();
 
-    const pingBot = msg.createdTimestamp - message.createdTimestamp;
+    const pingBot = Math.round(end - start);
     const pingAPI = Math.round(message.client.ws.ping);
+    const uptime = formatUptime(process.uptime());
 
     const embed = new EmbedBuilder()
-      .setColor(colors.red)
-      .setDescription('🏓 Pong!\n\n'
-        + `${emojis.ping} **Latência:** \`${pingBot}ms\`\n`
-        + `${emojis.ping} **Latência da API:** \`${pingAPI}ms\``)
-      .setFooter({ text: message.client.user.username, iconURL: message.client.user.displayAvatarURL() })
+      .setTitle(`${emojis.ping} Ping do Bot`)
+      .setColor(colors.green)
+      .setDescription([
+        `📡 **Latência do Bot:** \`${pingBot}ms\``,
+        `🌐 **Latência da API:** \`${pingAPI}ms\``,
+        `⏱️ **Uptime:** \`${uptime}\``
+      ].join('\n'))
+      .setFooter({
+        text: message.client.user.username,
+        iconURL: message.client.user.displayAvatarURL()
+      })
       .setTimestamp();
 
-    return msg.edit({ content: null, embeds: [embed] });
+    await sent.edit({ content: null, embeds: [embed] });
   }
 };
+
+/**
+ * Formata o uptime do bot para uma string legível.
+ * @param {number} seconds 
+ * @returns {string}
+ */
+function formatUptime(seconds) {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  return `${h}h ${m}m ${s}s`;
+}
