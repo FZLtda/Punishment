@@ -16,6 +16,10 @@ module.exports = {
 
   async execute(message, args) {
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+
+    const isValid = await checkMemberGuard(message, membro, 'mute');
+    if (!isValid) return;
+
     const tempo = args[1];
     const motivo = args.slice(2).join(' ') || 'Não especificado.';
 
@@ -27,9 +31,6 @@ module.exports = {
     if (!duracao) {
       return sendEmbed('yellow', message, 'Duração inválida. Use `s`, `m`, `h`, `d` (ex: `10m`, `1h`).');
     }
-
-    const isValid = await checkMemberGuard(message, membro, 'mute');
-    if (!isValid) return;
 
     try {
       await membro.timeout(duracao, motivo);
