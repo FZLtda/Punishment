@@ -36,7 +36,7 @@ module.exports = {
 
 
   // Emojis como URLs para uso em embeds
-  successIcon:   'http://bit.ly/4lqmvvp',
-  errorIcon:     'https://cdn.discordapp.com/attachments/1267699137017806848/1394819895648194560/Picsart_25-07-15_20-10-32-361.png?ex=687832c1&is=6876e141&hm=8f8949811bc64db65bf5532f58dd41694f0f5ef1fc34be8c9b2ffa6e50602723&',
+  successIcon:   'http://bit.ly/3IwDZaW',
+  errorIcon:     'http://bit.ly/4eOH7el',
   attentionIcon: 'https://bit.ly/3Ypxwnl'
 };
