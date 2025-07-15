@@ -19,15 +19,14 @@ module.exports = {
     const tempo = args[1];
     const motivo = args.slice(2).join(' ') || 'Não especificado.';
 
-    if (!membro)
-      return sendEmbed('yellow', message, 'Você precisa mencionar um membro válido.');
-
-    if (!tempo)
+    if (!tempo) {
       return sendEmbed('yellow', message, 'Defina um tempo de duração para o mute (ex: `1m`, `1h`, `1d`).');
+    }
 
     const duracao = convertToMilliseconds(tempo);
-    if (!duracao)
+    if (!duracao) {
       return sendEmbed('yellow', message, 'Duração inválida. Use `s`, `m`, `h`, `d` (ex: `10m`, `1h`).');
+    }
 
     const isValid = await checkMemberGuard(message, membro, 'mute');
     if (!isValid) return;
