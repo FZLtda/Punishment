@@ -8,6 +8,7 @@ module.exports = {
   name: 'clear',
   description: 'Apaga mensagens do canal, com opção de filtrar por usuário.',
   usage: '${currentPrefix}clear <quantidade> [@usuário]',
+  aliases: ['apagar', 'limpar'],
   userPermissions: ['ManageMessages'],
   botPermissions: ['ManageMessages'],
   deleteMessage: true,
