@@ -1,6 +1,6 @@
 'use strict';
 
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const { sendEmbed } = require('@utils/embedReply');
 const { checkMemberGuard } = require('@utils/memberGuards');
 const { sendModLog } = require('@modules/modlog');
@@ -22,9 +22,13 @@ module.exports = {
     if (!isValid) return;
 
     try {
-      await message.channel.permissionOverwrites.edit(target, {
-        SendMessages: null
-      });
+      const overwrite = message.channel.permissionOverwrites.cache.get(target.id);
+
+      if (overwrite) {
+        await message.channel.permissionOverwrites.edit(target, {
+          SendMessages: null
+        });
+      }
 
       const embed = new EmbedBuilder()
         .setTitle(`${emojis.unlock} Usuário desbloqueado`)
