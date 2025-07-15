@@ -1,0 +1,53 @@
+'use strict';
+
+const { EmbedBuilder } = require('discord.js');
+const { sendEmbed } = require('@utils/embedReply');
+const { checkMemberGuard } = require('@utils/memberGuards');
+const { sendModLog } = require('@modules/modlog');
+const { colors, emojis } = require('@config');
+
+module.exports = {
+  name: 'unlockuser',
+  description: 'Permite que um usuário volte a enviar mensagens no canal atual.',
+  usage: '${currentPrefix}unlockuser <@usuário>',
+  category: 'Moderação',
+  userPermissions: ['ManageChannels'],
+  botPermissions: ['ManageChannels'],
+  deleteMessage: true,
+
+  async execute(message, args) {
+    const target = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+
+    const isValid = await checkMemberGuard(message, target, 'role');
+    if (!isValid) return;
+
+    try {
+      await message.channel.permissionOverwrites.edit(target, {
+        SendMessages: null
+      });
+
+      const embed = new EmbedBuilder()
+        .setTitle(`${emojis.unlock} Usuário desbloqueado`)
+        .setColor(colors.green)
+        .setDescription(`${target} (\`${target.id}\`) pode novamente enviar mensagens neste canal.`)
+        .setFooter({
+          text: message.author.username,
+          iconURL: message.author.displayAvatarURL({ dynamic: true })
+        })
+        .setTimestamp();
+
+      await message.channel.send({ embeds: [embed] });
+
+      await sendModLog(message.guild, {
+        action: 'Desbloqueio de Canal',
+        target: target.user,
+        moderator: message.author,
+        reason: `Desbloqueado para enviar mensagens no canal ${message.channel}`
+      });
+
+    } catch (error) {
+      console.error('[unlockuser] Erro ao remover bloqueio:', error);
+      return sendEmbed('yellow', message, 'Ocorreu um erro ao tentar desbloquear o usuário neste canal.');
+    }
+  }
+};
