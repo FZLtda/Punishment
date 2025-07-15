@@ -34,7 +34,7 @@ module.exports = {
       const apagadas = await message.channel.bulkDelete(mensagensParaApagar, true);
 
       const resposta = await message.channel.send({
-        content: `${emojis.successEmoji} ${apagadas.size} mensagens foram apagadas${alvo ? ` de ${alvo}` : ''}.`,
+        content: `${emojis.done} ${apagadas.size} mensagens foram apagadas${alvo ? ` de ${alvo}` : ''}.`,
         allowedMentions: { users: [] }
       });
 
