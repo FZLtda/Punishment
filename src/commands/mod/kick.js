@@ -22,14 +22,11 @@ module.exports = {
    */
   async execute(message, args) {
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
-    const motivo = args.slice(1).join(' ') || 'Não especificado.';
-
-    if (!membro) {
-      return sendEmbed('yellow', message, 'Você precisa mencionar um membro válido para expulsar.');
-    }
 
     const isValid = await checkMemberGuard(message, membro, 'kick');
     if (!isValid) return;
+
+    const motivo = args.slice(1).join(' ') || 'Não especificado.';
 
     try {
       await membro.kick(motivo);
@@ -56,7 +53,7 @@ module.exports = {
       });
 
     } catch (error) {
-      console.error(error);
+      console.error('[kick] Erro ao expulsar membro:', error);
       return sendEmbed('yellow', message, 'Não foi possível expulsar o usuário devido a um erro.');
     }
   }
