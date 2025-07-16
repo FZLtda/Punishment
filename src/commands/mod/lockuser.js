@@ -7,9 +7,9 @@ const { sendModLog } = require('@modules/modlog');
 const { colors, emojis } = require('@config');
 
 module.exports = {
-  name: 'unlockuser',
-  description: 'Permite que um usuário volte a enviar mensagens no canal atual.',
-  usage: '${currentPrefix}unlockuser <@usuário>',
+  name: 'lockuser',
+  description: 'Impede que um usuário envie mensagens no canal atual.',
+  usage: '${currentPrefix}lockuser <@usuário>',
   category: 'Moderação',
   userPermissions: ['ManageChannels'],
   botPermissions: ['ManageChannels'],
@@ -25,13 +25,13 @@ module.exports = {
 
     try {
       await message.channel.permissionOverwrites.edit(target, {
-        SendMessages: true,
+        SendMessages: false,
       });
 
       const embed = new EmbedBuilder()
-        .setTitle(`${emojis.unlock} Usuário Desbloqueado`)
-        .setColor(colors.green)
-        .setDescription(`${target} (\`${target.id}\`) pode novamente enviar mensagens neste canal.`)
+        .setTitle(`${emojis.lock} Usuário Bloqueado`)
+        .setColor(colors.red)
+        .setDescription(`${target} (\`${target.id}\`) não poderá mais enviar mensagens neste canal.`)
         .setFooter({
           text: message.author.username,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
@@ -41,15 +41,15 @@ module.exports = {
       await message.channel.send({ embeds: [embed] });
 
       await sendModLog(message.guild, {
-        action: 'Desbloqueio de Canal',
+        action: 'Bloqueio de Canal',
         target: target.user,
         moderator: message.author,
-        reason: `Usuário desbloqueado para enviar mensagens no canal ${message.channel}`,
+        reason: `Usuário bloqueado de enviar mensagens no canal ${message.channel}`,
       });
 
     } catch (error) {
-      console.error('[COMMAND: unlockuser] Erro ao remover bloqueio:', error);
-      await sendEmbed('yellow', message, 'Não foi possível desbloquear o usuário devido a um erro inesperado.');
+      console.error('[COMMAND: lockuser] Erro ao aplicar bloqueio:', error);
+      await sendEmbed('yellow', message, 'Ocorreu um erro ao tentar bloquear o usuário neste canal.');
     }
   },
 };
