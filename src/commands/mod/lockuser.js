@@ -29,7 +29,7 @@ module.exports = {
       });
 
       const embed = new EmbedBuilder()
-        .setTitle(`${emojis.lock} Usuário Bloqueado`)
+        .setTitle(`${emojis.lock} Punição aplicada`)
         .setColor(colors.red)
         .setDescription(`${target} (\`${target.id}\`) não poderá mais enviar mensagens neste canal.`)
         .setFooter({
