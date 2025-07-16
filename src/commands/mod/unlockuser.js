@@ -16,19 +16,17 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message, args) {
-    const target = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+    const target =
+      message.mentions.members.first() ||
+      message.guild.members.cache.get(args[0]);
 
     const isValid = await checkMemberGuard(message, target, 'role');
     if (!isValid) return;
 
     try {
-      const overwrite = message.channel.permissionOverwrites.cache.get(target.id);
-
-      if (overwrite) {
-        await message.channel.permissionOverwrites.edit(target, {
-          SendMessages: null
-        });
-      }
+      await message.channel.permissionOverwrites.edit(target, {
+        SendMessages: true
+      });
 
       const embed = new EmbedBuilder()
         .setTitle(`${emojis.unlock} Usuário desbloqueado`)
@@ -50,8 +48,8 @@ module.exports = {
       });
 
     } catch (error) {
-      console.error('[unlockuser] Erro ao remover bloqueio:', error);
-      return sendEmbed('yellow', message, 'Ocorreu um erro ao tentar desbloquear o usuário neste canal.');
+      console.error('[unlockuser] Erro ao desbloquear usuário:', error);
+      return sendEmbed('yellow', message, 'Não foi possível desbloquear o usuário devido a um erro inesperado.');
     }
   }
 };
