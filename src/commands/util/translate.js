@@ -28,9 +28,15 @@ module.exports = {
 
     const targetLang = args[0]?.toUpperCase() || 'PT-BR';
 
-    const translating = await message.channel.send(`${emojis.loading} Traduzindo mensagem...`);
+    const statusMsg = await message.reply(`${emojis.check} Traduzindo mensagem...`);
 
-    const resultado = await translateText(replied.content, targetLang);
+    let resultado;
+    try {
+      resultado = await translateText(replied.content, targetLang);
+    } catch (err) {
+      await statusMsg.delete().catch(() => null);
+      return sendEmbed('yellow', message, 'Não foi possível traduzir a mensagem.');
+    }
 
     const embed = new EmbedBuilder()
       .setTitle(`${emojis.translate || '🌐'} Tradução`)
@@ -45,6 +51,6 @@ module.exports = {
       })
       .setTimestamp();
 
-    return translating.edit({ content: null, embeds: [embed] });
+    return statusMsg.edit({ content: null, embeds: [embed] });
   }
 };
