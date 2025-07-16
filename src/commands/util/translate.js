@@ -28,13 +28,10 @@ module.exports = {
 
     const targetLang = args[0]?.toUpperCase() || 'PT-BR';
 
-    const statusMsg = await message.reply(`${emojis.check} Traduzindo mensagem...`);
-
     let resultado;
     try {
       resultado = await translateText(replied.content, targetLang);
     } catch (err) {
-      await statusMsg.delete().catch(() => null);
       return sendEmbed('yellow', message, 'Não foi possível traduzir a mensagem.');
     }
 
@@ -51,6 +48,8 @@ module.exports = {
       })
       .setTimestamp();
 
-    return statusMsg.edit({ content: null, embeds: [embed] });
+    return replied.reply({ embeds: [embed] }).catch(() =>
+      sendEmbed('yellow', message, 'Não consegui responder à mensagem original.')
+    );
   }
 };
