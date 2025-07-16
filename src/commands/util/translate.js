@@ -36,7 +36,7 @@ module.exports = {
     }
 
     const embed = new EmbedBuilder()
-      .setTitle(`${emojis.translate || '🌐'} Tradução`)
+      .setTitle('<:1000046512:1340411258427408444> Tradução')
       .setColor(colors.red)
       .addFields(
         { name: 'Original', value: replied.content.slice(0, 1024) },
