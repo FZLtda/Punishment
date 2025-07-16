@@ -29,7 +29,7 @@ module.exports = {
       });
 
       const embed = new EmbedBuilder()
-        .setTitle(`${emojis.unlock} Usuário desbloqueado`)
+        .setTitle(`${emojis.unlock} Punição removida`)
         .setColor(colors.green)
         .setDescription(`${target} (\`${target.id}\`) pode novamente enviar mensagens neste canal.`)
         .setFooter({
