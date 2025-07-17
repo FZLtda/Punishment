@@ -39,8 +39,7 @@ module.exports = {
       .setTitle(`${emojis.trad} Tradução`)
       .setColor(colors.red)
       .addFields(
-        { name: 'Original', value: replied.content.slice(0, 1024) },
-        { name: `Traduzido (${targetLang})`, value: resultado.slice(0, 1024) }
+        { name: `Traduzido (${targetLang})`, value: resultado.slice(0, 1024) },
       )
       .setFooter({
         text: message.author.username,
