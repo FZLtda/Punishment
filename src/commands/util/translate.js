@@ -47,7 +47,11 @@ module.exports = {
       })
       .setTimestamp();
 
-    return replied.reply({ embeds: [embed] }).catch(() =>
+    return replied.reply({ 
+      embeds: [embed],
+      allowedMentions: { repliedUser: false }
+    }).catch(() =>
+      allowedMentions: { repliedUser: false }
       sendEmbed('yellow', message, 'Não consegui responder à mensagem original.')
     );
   }
