@@ -40,16 +40,17 @@ module.exports = async function checkGlobalBan(context) {
     if (typeof context.reply === 'function') {
       await context.reply({
         embeds: [embed],
+        allowedMentions: { repliedUser: false },
         flags: 1 << 6
       });
     } else if (context.channel?.send) {
       await context.channel.send({
         embeds: [embed],
-        allowedMentions: { repliedUser: true }
+        allowedMentions: { repliedUser: false }
       });
     }
   } catch {
-    // Silencia erros em canais onde o bot não pode responder
+  
   }
 
   return true;
