@@ -38,9 +38,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle(`${emojis.trad} Tradução`)
       .setColor(colors.red)
-      .addFields(
-        { name: `Traduzido (${targetLang})`, value: resultado.slice(0, 1024) },
-      )
+      .addFields({ name: `Traduzido (${targetLang})`, value: resultado.slice(0, 1024) })
       .setFooter({
         text: message.author.username,
         iconURL: message.author.displayAvatarURL({ dynamic: true })
@@ -50,9 +48,8 @@ module.exports = {
     return replied.reply({ 
       embeds: [embed],
       allowedMentions: { repliedUser: false }
-    }).catch(() =>
-      allowedMentions: { repliedUser: false }
-      sendEmbed('yellow', message, 'Não consegui responder à mensagem original.')
-    );
+    }).catch(() => {
+      sendEmbed('yellow', message, 'Não consegui responder à mensagem original.');
+    });
   }
 };
