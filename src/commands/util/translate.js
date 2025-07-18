@@ -28,19 +28,21 @@ module.exports = {
 
     const langRegex = /^[a-z]{2,3}([-_][A-Z]{2})?$/i;
 
+    // Detecta idioma apenas se for informado e válido
     if (args.length > 0 && langRegex.test(args[0])) {
       targetLang = args.shift().replace('_', '-').toUpperCase();
     }
 
     content = replied?.content || args.join(' ');
 
-    if (!content)
+    if (!content || content.trim().length === 0) {
       return sendEmbed('yellow', message, 'Responda uma mensagem de texto ou digite o texto a ser traduzido.');
+    }
 
     try {
       const resultado = await translateText(content, targetLang);
 
-      if (!resultado || typeof resultado !== 'string' || resultado.trim() === '') {
+      if (!resultado || typeof resultado !== 'string' || resultado.trim().length === 0) {
         return sendEmbed('yellow', message, 'Não foi possível traduzir o conteúdo.');
       }
 
