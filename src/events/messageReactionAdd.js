@@ -2,6 +2,10 @@
 
 const Giveaway = require('@models/Giveaway');
 const Logger = require('@logger');
+const { EmbedBuilder } = require('discord.js');
+const flagToLang = require('@utils/flagToLang');
+const { translateText } = require('@utils/translate');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'messageReactionAdd',
@@ -15,31 +19,60 @@ module.exports = {
     if (user.bot) return;
 
     try {
-      // Garante que os dados da mensagem estejam completos
-      const mensagem = reaction.message.partial ? await reaction.message.fetch().catch(() => null) : reaction.message;
+      const mensagem = reaction.message.partial
+        ? await reaction.message.fetch().catch(() => null)
+        : reaction.message;
       if (!mensagem) return;
 
-      // Ignora se a reação não for 🎉 (suporte apenas ao emoji padrão)
-      if (reaction.emoji.name !== '🎉') return;
+      const emoji = reaction.emoji.name;
 
-      // Busca sorteio ativo relacionado à mensagem
-      const giveaway = await Giveaway.findOne({
-        messageId: mensagem.id,
-        status: 'ativo'
-      });
+      // Reação de sorteio
+      if (emoji === '🎉') {
+        const giveaway = await Giveaway.findOne({
+          messageId: mensagem.id,
+          status: 'ativo',
+        });
 
-      if (!giveaway) return;
+        if (!giveaway) return;
+        if (giveaway.participants.includes(user.id)) return;
 
-      // Impede registros duplicados
-      if (giveaway.participants.includes(user.id)) return;
+        giveaway.participants.push(user.id);
+        await giveaway.save();
 
-      // Adiciona participante e salva no banco
-      giveaway.participants.push(user.id);
-      await giveaway.save();
+        return Logger.debug(`[SORTEIO] Usuário ${user.tag} (${user.id}) entrou no sorteio ${giveaway.messageId}`);
+      }
 
-      Logger.debug(`[SORTEIO] Usuário ${user.tag} (${user.id}) entrou no sorteio ${giveaway.messageId}`);
+      // Reação de tradução por bandeira
+      const lang = flagToLang[emoji];
+      if (!lang) return;
+      if (!mensagem.content) return;
+
+      let resultado;
+      try {
+        resultado = await translateText(mensagem.content, lang);
+      } catch (err) {
+        return Logger.warn(`[TRADUÇÃO] Falha ao traduzir mensagem: ${err.message}`);
+      }
+
+      const embed = new EmbedBuilder()
+        .setTitle(`${emojis.trad} Tradução`)
+        .setColor(colors.red)
+        .addFields({
+          name: `Traduzido (${lang})`,
+          value: resultado.slice(0, 1024),
+        })
+        .setFooter({
+          text: user.username,
+          iconURL: user.displayAvatarURL({ dynamic: true }),
+        })
+        .setTimestamp();
+
+      return mensagem.reply({
+        embeds: [embed],
+        allowedMentions: { repliedUser: false },
+      }).catch(() => {});
     } catch (err) {
-      Logger.error(`[REACTION] Erro ao registrar participante: ${err.stack || err.message}`);
+      Logger.error(`[REACTION] Erro ao processar reação: ${err.stack || err.message}`);
     }
-  }
+  },
 };
