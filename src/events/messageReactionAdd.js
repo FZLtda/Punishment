@@ -3,9 +3,8 @@
 const Giveaway = require('@models/Giveaway');
 const Logger = require('@logger');
 const { EmbedBuilder } = require('discord.js');
-const flagToLang = require('@utils/flagToLang');
 const { translateText } = require('@utils/translate');
-const { colors, emojis } = require('@config');
+const { colors, emojis, langFlags } = require('@config');
 
 module.exports = {
   name: 'messageReactionAdd',
@@ -42,10 +41,9 @@ module.exports = {
         return Logger.debug(`[SORTEIO] Usuário ${user.tag} (${user.id}) entrou no sorteio ${giveaway.messageId}`);
       }
 
-      // Reação de tradução por bandeira
-      const lang = flagToLang[emoji];
-      if (!lang) return;
-      if (!mensagem.content) return;
+      // Tradução por bandeira
+      const lang = langFlags[emoji];
+      if (!lang || !mensagem.content) return;
 
       let resultado;
       try {
