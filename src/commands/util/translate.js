@@ -28,7 +28,6 @@ module.exports = {
 
     const langRegex = /^[a-z]{2,3}([-_][A-Z]{2})?$/i;
 
-    // Detecta idioma apenas se for informado e válido
     if (args.length > 0 && langRegex.test(args[0])) {
       targetLang = args.shift().replace('_', '-').toUpperCase();
     }
@@ -59,13 +58,18 @@ module.exports = {
         })
         .setTimestamp();
 
-      const replyTarget = replied && !replied.reference ? replied : message;
-
-      await replyTarget.reply({
-        embeds: [embed],
-        allowedMentions: { repliedUser: false },
-      });
-    } catch (err) {
+      if (replied) {
+        await replied.reply({
+          embeds: [embed],
+          allowedMentions: { repliedUser: false },
+        });
+      } else {
+        await message.channel.send({
+          embeds: [embed],
+          allowedMentions: { repliedUser: false },
+        });
+      }
+    } catch (error) {
       return sendEmbed('yellow', message, 'Não foi possível traduzir o conteúdo.');
     }
   },
