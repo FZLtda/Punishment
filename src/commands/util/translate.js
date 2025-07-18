@@ -14,6 +14,11 @@ module.exports = {
   botPermissions: ['SendMessages', 'AddReactions', 'ReadMessageHistory'],
   deleteMessage: true,
 
+  /**
+   * Executa o comando de tradução.
+   * @param {import('discord.js').Message} message
+   * @param {string[]} args
+   */
   async execute(message, args) {
     const replied = message.reference?.messageId
       ? await message.channel.messages.fetch(message.reference.messageId).catch(() => null)
@@ -24,6 +29,7 @@ module.exports = {
 
     const flagsToReact = Object.keys(langFlags);
 
+    // Tradução por argumento
     if (args[0]) {
       const targetLang = args[0].toUpperCase();
 
@@ -41,7 +47,6 @@ module.exports = {
           .setTimestamp();
 
         await replyWithEmbed(
-          message.channel,
           replied,
           embed,
           async () => await sendEmbed('yellow', message, 'Não consegui responder na mensagem original, mas aqui está a tradução.', embed)
@@ -53,6 +58,7 @@ module.exports = {
       }
     }
 
+    // Tradução por reação
     const infoMsg = await message.reply({
       content: 'Reaja na mensagem original com uma bandeira para traduzir.',
       allowedMentions: { repliedUser: false },
@@ -84,7 +90,6 @@ module.exports = {
           .setTimestamp();
 
         await replyWithEmbed(
-          message.channel,
           replied,
           embed,
           async () => await sendEmbed('yellow', message, `Não consegui responder na mensagem original, mas aqui está a tradução para ${lang}.`, embed)
