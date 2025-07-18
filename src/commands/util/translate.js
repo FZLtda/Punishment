@@ -25,6 +25,7 @@ module.exports = {
 
     const langRegex = /^[a-z]{2,3}(-[A-Z]{2})?$/i;
     const targetLang = langRegex.test(args[0]) ? args.shift().toUpperCase() : 'PT-BR';
+
     const conteudo = replied?.content || args.join(' ');
 
     if (!conteudo)
@@ -50,11 +51,20 @@ module.exports = {
       })
       .setTimestamp();
 
-    return message.reply({
-      embeds: [embed],
-      allowedMentions: { repliedUser: false },
-    }).catch(() => {
-      sendEmbed('yellow', message, 'Não foi possível enviar a tradução.');
-    });
+    try {
+      if (replied && !replied.reference) {
+        await replied.reply({
+          embeds: [embed],
+          allowedMentions: { repliedUser: false },
+        });
+      } else {
+        await message.reply({
+          embeds: [embed],
+          allowedMentions: { repliedUser: false },
+        });
+      }
+    } catch (err) {
+      return sendEmbed('yellow', message, 'Não foi possível enviar a tradução.');
+    }
   }
 };
