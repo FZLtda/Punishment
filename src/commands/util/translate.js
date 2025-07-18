@@ -1,98 +1,57 @@
 'use strict';
 
 const { EmbedBuilder } = require('discord.js');
-const { translateText } = require('@utils/translate');
+const translateText = require('@modules/translateText');
 const { colors, emojis, langFlags } = require('@config');
-const { sendEmbed } = require('@utils/embedReply');
 
+/**
+ * Comando de tradução de texto utilizando a API do DeepL.
+ */
 module.exports = {
-  name: 't',
-  description: 'Traduz uma mensagem respondida para o idioma desejado.',
-  usage: '${currentPrefix}t [idioma]',
-  category: 'Utilidade',
-  botPermissions: ['SendMessages', 'AddReactions', 'ReadMessageHistory'],
-  deleteMessage: true,
-
-  /**
-   * Executa o comando de tradução.
-   * @param {import('discord.js').Message} message
-   * @param {string[]} args
-   */
+  name: 'translate',
+  description: 'Traduz um texto para o idioma selecionado.',
+  aliases: ['traduzir'],
+  usage: '<texto>',
+  category: 'util',
+  
   async execute(message, args) {
-    const replied = message.reference?.messageId
-      ? await message.channel.messages.fetch(message.reference.messageId).catch(() => null)
-      : null;
+    const flag = message?.mentions?.repliedUser?.emoji || args[0];
+    const targetLang = langFlags[flag];
 
-    if (!replied || !replied.content)
-      return sendEmbed('yellow', message, 'Responda uma mensagem de texto para traduzi-la.');
-
-    // Tradução via argumento
-    if (args[0]) {
-      const targetLang = args[0]?.toUpperCase() || 'PT-BR';
-
-      try {
-        const resultado = await translateText(replied.content, targetLang);
-
-        const embed = new EmbedBuilder()
-          .setTitle(`${emojis.trad} Tradução`)
-          .setColor(colors.red)
-          .addFields({ name: `Traduzido (${targetLang})`, value: resultado.slice(0, 1024) })
-          .setFooter({
-            text: message.author.username,
-            iconURL: message.author.displayAvatarURL({ dynamic: true })
-          })
-          .setTimestamp();
-
-        return replied.reply({
-          embeds: [embed],
-          allowedMentions: { repliedUser: false }
-        }).catch(() => {
-          sendEmbed('yellow', message, 'Não consegui responder à mensagem original.');
-        });
-      } catch {
-        return sendEmbed('yellow', message, 'Não foi possível traduzir a mensagem.');
-      }
+    if (!targetLang) {
+      return message.reply({
+        content: `${emojis.error} Por favor, forneça uma bandeira de idioma válida.`,
+        allowedMentions: { repliedUser: false }
+      });
     }
 
-    // Tradução por reação
-    const infoMsg = await message.reply({
-      content: 'Reaja com uma bandeira para traduzir a mensagem.',
-      allowedMentions: { repliedUser: false }
-    });
+    const text = args.slice(1).join(' ');
+    if (!text) {
+      return message.reply({
+        content: `${emojis.error} Forneça o texto que deseja traduzir.`,
+        allowedMentions: { repliedUser: false }
+      });
+    }
 
-    const collector = infoMsg.createReactionCollector({
-      filter: (reaction, user) => !user.bot && Object.keys(flagToLang).includes(reaction.emoji.name),
-      time: 60_000
-    });
+    try {
+      const translated = await translateText(text, targetLang);
+      const embed = new EmbedBuilder()
+        .setTitle(`${emojis.translate} Tradução`)
+        .addFields(
+          { name: 'Texto original', value: `\`\`\`${text}\`\`\`` },
+          { name: 'Traduzido', value: `\`\`\`${translated}\`\`\`` }
+        )
+        .setColor(colors.blue)
+        .setFooter({ text: `Idioma: ${targetLang}` });
 
-    collector.on('collect', async (reaction, user) => {
-      const lang = flagToLang[reaction.emoji.name];
-      if (!lang) return;
+      await message.reply({ embeds: [embed], allowedMentions: { repliedUser: false } });
 
-      try {
-        const resultado = await translateText(replied.content, lang);
-
-        const embed = new EmbedBuilder()
-          .setTitle(`${emojis.trad} Tradução`)
-          .setColor(colors.red)
-          .addFields({ name: `Traduzido (${lang})`, value: resultado.slice(0, 1024) })
-          .setFooter({
-            text: user.username,
-            iconURL: user.displayAvatarURL({ dynamic: true })
-          })
-          .setTimestamp();
-
-        await replied.reply({
-          embeds: [embed],
-          allowedMentions: { repliedUser: false }
-        });
-      } catch {
-        await sendEmbed('yellow', message, `Erro ao traduzir para ${lang}.`);
-      }
-    });
-
-    collector.on('end', () => {
-      infoMsg.delete().catch(() => {});
-    });
+    } catch (err) {
+      console.error(err);
+      return message.reply({
+        content: `${emojis.error} Ocorreu um erro ao traduzir o texto.`,
+        allowedMentions: { repliedUser: false }
+      });
+    }
   }
 };
