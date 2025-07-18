@@ -40,6 +40,10 @@ module.exports = {
     try {
       const resultado = await translateText(content, targetLang);
 
+      if (!resultado || typeof resultado !== 'string' || resultado.trim() === '') {
+        return sendEmbed('yellow', message, 'Não foi possível traduzir o conteúdo.');
+      }
+
       const embed = new EmbedBuilder()
         .setTitle(`${emojis.trad} Tradução`)
         .setColor(colors.red)
