@@ -4,7 +4,7 @@ const { EmbedBuilder } = require('discord.js');
 const { translateText } = require('@utils/translate');
 const { colors, emojis, langFlags } = require('@config');
 const { sendEmbed } = require('@utils/embedReply');
-const { reactWithFlags, replyWithEmbed } = require('@utils/reactions.js');
+const { reactWithFlags, replyWithEmbed } = require('@utils/reactions');
 
 module.exports = {
   name: 't',
