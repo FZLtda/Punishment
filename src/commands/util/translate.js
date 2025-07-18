@@ -4,6 +4,7 @@ const { EmbedBuilder } = require('discord.js');
 const { translateText } = require('@utils/translate');
 const { colors, emojis, langFlags } = require('@config');
 const { sendEmbed } = require('@utils/embedReply');
+const { reactWithFlags, replyWithEmbed } = require('@utils/reactions');
 
 module.exports = {
   name: 't',
@@ -13,13 +14,7 @@ module.exports = {
   botPermissions: ['SendMessages', 'AddReactions', 'ReadMessageHistory'],
   deleteMessage: true,
 
-  /**
-   * Executa o comando de tradução.
-   * @param {import('discord.js').Message} message
-   * @param {string[]} args
-   */
   async execute(message, args) {
-    // Mensagem respondida
     const replied = message.reference?.messageId
       ? await message.channel.messages.fetch(message.reference.messageId).catch(() => null)
       : null;
@@ -27,7 +22,8 @@ module.exports = {
     if (!replied || !replied.content)
       return sendEmbed('yellow', message, 'Responda uma mensagem de texto para traduzi-la.');
 
-    // Tradução por argumento
+    const flagsToReact = Object.keys(langFlags);
+
     if (args[0]) {
       const targetLang = args[0].toUpperCase();
 
@@ -44,17 +40,12 @@ module.exports = {
           })
           .setTimestamp();
 
-        try {
-          // Tenta enviar resposta referenciando a mensagem original
-          await message.channel.send({
-            embeds: [embed],
-            allowedMentions: { repliedUser: false },
-            messageReference: { messageId: replied.id },
-          });
-        } catch {
-          // Caso falhe, envia a mensagem normal no canal
-          await sendEmbed('yellow', message, 'Não consegui responder na mensagem original, mas aqui está a tradução.', embed);
-        }
+        await replyWithEmbed(
+          message.channel,
+          replied,
+          embed,
+          async () => await sendEmbed('yellow', message, 'Não consegui responder na mensagem original, mas aqui está a tradução.', embed)
+        );
 
         return;
       } catch {
@@ -62,22 +53,15 @@ module.exports = {
       }
     }
 
-    // Tradução por reação - instruções para usuário
     const infoMsg = await message.reply({
       content: 'Reaja na mensagem original com uma bandeira para traduzir.',
       allowedMentions: { repliedUser: false },
     });
 
-    // Adiciona as reações na mensagem respondida
-    const flagsToReact = Object.keys(langFlags);
-    for (const flag of flagsToReact) {
-      await replied.react(flag).catch(() => null);
-    }
+    await reactWithFlags(replied, flagsToReact);
 
-    // Cria coletor na mensagem respondida
     const collector = replied.createReactionCollector({
-      filter: (reaction, user) =>
-        !user.bot && flagsToReact.includes(reaction.emoji.name),
+      filter: (reaction, user) => !user.bot && flagsToReact.includes(reaction.emoji.name),
       time: 60_000,
       dispose: true,
     });
@@ -99,15 +83,12 @@ module.exports = {
           })
           .setTimestamp();
 
-        try {
-          await message.channel.send({
-            embeds: [embed],
-            allowedMentions: { repliedUser: false },
-            messageReference: { messageId: replied.id },
-          });
-        } catch {
-          await sendEmbed('yellow', message, `Não consegui responder na mensagem original, mas aqui está a tradução para ${lang}.`, embed);
-        }
+        await replyWithEmbed(
+          message.channel,
+          replied,
+          embed,
+          async () => await sendEmbed('yellow', message, `Não consegui responder na mensagem original, mas aqui está a tradução para ${lang}.`, embed)
+        );
       } catch {
         await sendEmbed('yellow', message, `Erro ao traduzir para ${lang}.`);
       }
