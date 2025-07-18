@@ -44,10 +44,19 @@ module.exports = {
           })
           .setTimestamp();
 
-        return await replied.reply({
-          embeds: [embed],
-          allowedMentions: { repliedUser: false },
-        });
+        try {
+          // Tenta enviar resposta referenciando a mensagem original
+          await message.channel.send({
+            embeds: [embed],
+            allowedMentions: { repliedUser: false },
+            messageReference: { messageId: replied.id },
+          });
+        } catch {
+          // Caso falhe, envia a mensagem normal no canal
+          await sendEmbed('yellow', message, 'Não consegui responder na mensagem original, mas aqui está a tradução.', embed);
+        }
+
+        return;
       } catch {
         return sendEmbed('yellow', message, 'Não foi possível traduzir a mensagem.');
       }
@@ -90,10 +99,15 @@ module.exports = {
           })
           .setTimestamp();
 
-        await replied.reply({
-          embeds: [embed],
-          allowedMentions: { repliedUser: false },
-        });
+        try {
+          await message.channel.send({
+            embeds: [embed],
+            allowedMentions: { repliedUser: false },
+            messageReference: { messageId: replied.id },
+          });
+        } catch {
+          await sendEmbed('yellow', message, `Não consegui responder na mensagem original, mas aqui está a tradução para ${lang}.`, embed);
+        }
       } catch {
         await sendEmbed('yellow', message, `Erro ao traduzir para ${lang}.`);
       }
