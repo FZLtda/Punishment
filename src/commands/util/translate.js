@@ -23,48 +23,36 @@ module.exports = {
       ? await message.channel.messages.fetch(message.reference.messageId).catch(() => null)
       : null;
 
-    const langRegex = /^[a-z]{2,3}(-[A-Z]{2})?$/i;
-    const targetLang = langRegex.test(args[0]) ? args.shift().toUpperCase() : 'PT-BR';
+    const targetLang = args[0]?.toUpperCase();
+    if (!targetLang)
+      return sendEmbed('yellow', message, 'Você precisa informar o idioma de destino (ex: `pt-br`, `en`, `es`).');
 
-    const conteudo = replied?.content || args.join(' ');
+    const inputText = replied?.content || args.slice(1).join(' ');
 
-    if (!conteudo)
-      return sendEmbed('yellow', message, 'Responda uma mensagem de texto ou digite o texto a ser traduzido.');
+    if (!inputText)
+      return sendEmbed('yellow', message, 'Responda uma mensagem de texto ou envie um texto para traduzir.');
 
     let resultado;
     try {
-      resultado = await translateText(conteudo, targetLang);
-    } catch {
-      return sendEmbed('yellow', message, 'Não foi possível traduzir o conteúdo.');
+      resultado = await translateText(inputText, targetLang);
+    } catch (err) {
+      return sendEmbed('yellow', message, 'Não foi possível traduzir a mensagem.');
     }
 
     const embed = new EmbedBuilder()
       .setTitle(`${emojis.trad} Tradução`)
       .setColor(colors.red)
-      .addFields({
-        name: `Traduzido (${targetLang})`,
-        value: resultado.slice(0, 1024),
-      })
+      .addFields({ name: `Traduzido (${targetLang})`, value: resultado.slice(0, 1024) })
       .setFooter({
         text: message.author.username,
         iconURL: message.author.displayAvatarURL({ dynamic: true }),
       })
       .setTimestamp();
 
-    try {
-      if (replied && !replied.reference) {
-        await replied.reply({
-          embeds: [embed],
-          allowedMentions: { repliedUser: false },
-        });
-      } else {
-        await message.reply({
-          embeds: [embed],
-          allowedMentions: { repliedUser: false },
-        });
-      }
-    } catch (err) {
-      return sendEmbed('yellow', message, 'Não foi possível enviar a tradução.');
-    }
-  }
+    const replyTarget = replied || message;
+
+    return replyTarget
+      .reply({ embeds: [embed], allowedMentions: { repliedUser: false } })
+      .catch(() => sendEmbed('yellow', message, 'Não foi possível enviar a tradução.'));
+  },
 };
