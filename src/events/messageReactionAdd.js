@@ -1,8 +1,15 @@
 'use strict';
 
+/**
+ * Evento: messageReactionAdd
+ * Descrição: Executado quando um usuário reage a uma mensagem.
+ * - Adiciona o usuário ao sorteio se reagir com 🎉
+ * - Traduz o conteúdo da mensagem se reagir com uma bandeira registrada em langFlags
+ */
+
+const { EmbedBuilder } = require('discord.js');
 const Giveaway = require('@models/Giveaway');
 const Logger = require('@logger');
-const { EmbedBuilder } = require('discord.js');
 const { translateText } = require('@utils/translate');
 const { colors, emojis, langFlags } = require('@config');
 
@@ -10,25 +17,25 @@ module.exports = {
   name: 'messageReactionAdd',
 
   /**
-   * Evento ativado quando um usuário reage a uma mensagem
-   * @param {import('discord.js').MessageReaction} reaction
-   * @param {import('discord.js').User} user
+   * Executa quando uma reação é adicionada a uma mensagem
+   * @param {import('discord.js').MessageReaction} reaction - Reação adicionada
+   * @param {import('discord.js').User} user - Usuário que reagiu
    */
   async execute(reaction, user) {
     if (user.bot) return;
 
     try {
-      const mensagem = reaction.message.partial
+      const message = reaction.message.partial
         ? await reaction.message.fetch().catch(() => null)
         : reaction.message;
-      if (!mensagem) return;
+      if (!message) return;
 
       const emoji = reaction.emoji.name;
 
-      // Reação de sorteio
+      // Participação em sorteio
       if (emoji === '🎉') {
         const giveaway = await Giveaway.findOne({
-          messageId: mensagem.id,
+          messageId: message.id,
           status: 'ativo',
         });
 
@@ -38,26 +45,28 @@ module.exports = {
         giveaway.participants.push(user.id);
         await giveaway.save();
 
-        return Logger.debug(`[SORTEIO] Usuário ${user.tag} (${user.id}) entrou no sorteio ${giveaway.messageId}`);
+        Logger.debug(`[SORTEIO] Usuário ${user.tag} (${user.id}) entrou no sorteio ${giveaway.messageId}`);
+        return;
       }
 
       // Tradução por bandeira
-      const lang = langFlags[emoji];
-      if (!lang || !mensagem.content) return;
+      const targetLang = langFlags[emoji];
+      if (!targetLang || !message.content) return;
 
-      let resultado;
+      let translated;
       try {
-        resultado = await translateText(mensagem.content, lang);
-      } catch (err) {
-        return Logger.warn(`[TRADUÇÃO] Falha ao traduzir mensagem: ${err.message}`);
+        translated = await translateText(message.content, targetLang);
+      } catch (translationError) {
+        Logger.warn(`[TRADUÇÃO] Falha ao traduzir mensagem: ${translationError.message}`);
+        return;
       }
 
-      const embed = new EmbedBuilder()
+      const translationEmbed = new EmbedBuilder()
         .setTitle(`${emojis.trad} Tradução`)
         .setColor(colors.red)
         .addFields({
-          name: `Traduzido (${lang})`,
-          value: resultado.slice(0, 1024),
+          name: `Traduzido (${targetLang})`,
+          value: translated.slice(0, 1024),
         })
         .setFooter({
           text: user.username,
@@ -65,12 +74,12 @@ module.exports = {
         })
         .setTimestamp();
 
-      return mensagem.reply({
-        embeds: [embed],
+      await message.reply({
+        embeds: [translationEmbed],
         allowedMentions: { repliedUser: false },
       }).catch(() => {});
-    } catch (err) {
-      Logger.error(`[REACTION] Erro ao processar reação: ${err.stack || err.message}`);
+    } catch (error) {
+      Logger.error(`[REACTION] Erro ao processar reação: ${error.stack || error.message}`);
     }
   },
 };
