@@ -1,5 +1,18 @@
 'use strict';
 
+/**
+ * Comando: t
+ * Descrição: Traduz uma mensagem respondida ou um texto direto fornecido para o idioma especificado.
+ * Uso:
+ *   - .t en -> traduz a mensagem respondida para inglês
+ *   - .t en Olá mundo -> traduz o texto "Olá mundo" para inglês
+ *   - .t -> traduz a mensagem respondida para PT-BR (padrão)
+ *
+ * Observações:
+ * - Caso o idioma não seja informado, será assumido como 'PT-BR'.
+ * - Suporta códigos como 'EN', 'PT-BR', 'ES', etc.
+ */
+
 const { EmbedBuilder } = require('discord.js');
 const { translateText } = require('@utils/translate');
 const { colors, emojis } = require('@config');
@@ -15,16 +28,16 @@ module.exports = {
 
   /**
    * Executa o comando de tradução.
-   * @param {import('discord.js').Message} message
-   * @param {string[]} args
+   * @param {import('discord.js').Message} message - Mensagem que executou o comando
+   * @param {string[]} args - Argumentos fornecidos no comando
    */
   async execute(message, args) {
-    const replied = message.reference?.messageId
+    const repliedMessage = message.reference?.messageId
       ? await message.channel.messages.fetch(message.reference.messageId).catch(() => null)
       : null;
 
     let targetLang = 'PT-BR';
-    let content = '';
+    let textToTranslate = '';
 
     const langRegex = /^[a-z]{2,3}([-_][A-Z]{2})?$/i;
 
@@ -32,25 +45,25 @@ module.exports = {
       targetLang = args.shift().replace('_', '-').toUpperCase();
     }
 
-    content = replied?.content || args.join(' ');
+    textToTranslate = repliedMessage?.content || args.join(' ');
 
-    if (!content || content.trim().length === 0) {
+    if (!textToTranslate || textToTranslate.trim().length === 0) {
       return sendEmbed('yellow', message, 'Responda uma mensagem de texto ou digite o texto a ser traduzido.');
     }
 
     try {
-      const resultado = await translateText(content, targetLang);
+      const result = await translateText(textToTranslate, targetLang);
 
-      if (!resultado || typeof resultado !== 'string' || resultado.trim().length === 0) {
+      if (!result || typeof result !== 'string' || result.trim().length === 0) {
         return sendEmbed('yellow', message, 'Não foi possível traduzir o conteúdo.');
       }
 
-      const embed = new EmbedBuilder()
+      const translationEmbed = new EmbedBuilder()
         .setTitle(`${emojis.trad} Tradução`)
         .setColor(colors.red)
         .addFields({
           name: `Traduzido (${targetLang})`,
-          value: resultado.slice(0, 1024),
+          value: result.slice(0, 1024),
         })
         .setFooter({
           text: message.author.username,
@@ -58,17 +71,12 @@ module.exports = {
         })
         .setTimestamp();
 
-      if (replied) {
-        await replied.reply({
-          embeds: [embed],
-          allowedMentions: { repliedUser: false },
-        });
-      } else {
-        await message.channel.send({
-          embeds: [embed],
-          allowedMentions: { repliedUser: false },
-        });
-      }
+      const destination = repliedMessage || message.channel;
+
+      await destination.send({
+        embeds: [translationEmbed],
+        allowedMentions: { repliedUser: false },
+      });
     } catch (error) {
       return sendEmbed('yellow', message, 'Não foi possível traduzir o conteúdo.');
     }
