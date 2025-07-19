@@ -27,7 +27,7 @@ const levels = {
   warn: 2,
   info: 3,
   success: 4,
-  debug: 5
+  debug: 5,
 };
 
 const colors = {
@@ -36,7 +36,7 @@ const colors = {
   warn: 'yellow',
   info: 'cyan',
   success: 'green',
-  debug: 'gray'
+  debug: 'gray',
 };
 
 winston.addColors(colors);
@@ -59,7 +59,7 @@ const fileFormat = winston.format.combine(
   formatter
 );
 
-const logger = winston.createLogger({
+const baseLogger = winston.createLogger({
   levels,
   level: process.env.LOG_LEVEL || 'debug',
   exitOnError: false,
@@ -80,10 +80,8 @@ const logger = winston.createLogger({
   ]
 });
 
-const log = {};
-
 for (const [level] of Object.entries(levels)) {
-  log[level] = (message, error) => {
+  baseLogger[level] = (message, error) => {
     const isError = error instanceof Error;
     const formattedMessage = isError
       ? `${message}\n${error.stack}`
@@ -91,10 +89,10 @@ for (const [level] of Object.entries(levels)) {
       ? message
       : JSON.stringify(message, null, 2);
 
-    logger.log({ level, message: formattedMessage });
+    baseLogger.log({ level, message: formattedMessage });
 
     if (level === 'fatal') process.exit(1);
   };
 }
 
-module.exports = log;
+module.exports = baseLogger;
