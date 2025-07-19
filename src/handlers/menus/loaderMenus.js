@@ -35,7 +35,7 @@ module.exports = function loadMenus(client) {
       }
 
       client.menus.set(menu.customId, menu);
-      Logger.success(`[MENU] Carregado: ${menu.customId}`);
+      Logger.info(`[MENU] Carregado: ${menu.customId}`);
     } catch (err) {
       Logger.error(`[MENU] Erro ao carregar ${file}: ${err.message}`);
     }
