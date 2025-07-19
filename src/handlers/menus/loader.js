@@ -8,7 +8,7 @@ const Logger = require('@logger');
  * Carrega todos os Select Menus personalizados (String/User/Role) e registra no client.
  * @param {import('discord.js').Client} client
  */
-module.exports = function loadMenus(client) {
+function loadMenus(client) {
   const menusPath = path.join(__dirname, '../../src/interactions/menus');
   client.menus = client.menus || new Map();
 
@@ -19,7 +19,7 @@ module.exports = function loadMenus(client) {
 
   const files = fs.readdirSync(menusPath).filter(file => file.endsWith('.js'));
   if (files.length === 0) {
-    Logger.warn('[LOADER] Nenhum menu encontrado na pasta selectMenus.');
+    Logger.warn('[LOADER] Nenhum menu encontrado na pasta menus.');
     return;
   }
 
@@ -42,4 +42,6 @@ module.exports = function loadMenus(client) {
   }
 
   Logger.info(`[LOADER] ${client.menus.size} Select Menus carregados com sucesso.`);
-};
+}
+
+module.exports = { loadMenus };
