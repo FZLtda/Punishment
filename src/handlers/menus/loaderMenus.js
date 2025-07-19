@@ -9,7 +9,7 @@ const Logger = require('@logger');
  * @param {import('discord.js').Client} client
  */
 module.exports = function loadMenus(client) {
-  const menusPath = path.join(__dirname, '../interactions/menus');
+  const menusPath = path.join(__dirname, '../../../src/interactions/menus');
   client.menus = client.menus || new Map();
 
   if (!fs.existsSync(menusPath)) {
