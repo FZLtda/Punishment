@@ -9,9 +9,11 @@
 
 const { EmbedBuilder } = require('discord.js');
 const Giveaway = require('@models/Giveaway');
-const Logger = require('@logger');
+const Logger = require('@logger').child({ module: 'messageReactionAdd' });
 const { translateText } = require('@utils/translate');
 const { colors, emojis, langFlags } = require('@config');
+
+const translationCooldown = new Map();
 
 module.exports = {
   name: 'messageReactionAdd',
@@ -32,7 +34,7 @@ module.exports = {
 
       const emoji = reaction.emoji.name;
 
-      // Participação em sorteio
+      // Sorteio
       if (emoji === '🎉') {
         const giveaway = await Giveaway.findOne({
           messageId: message.id,
@@ -45,28 +47,39 @@ module.exports = {
         giveaway.participants.push(user.id);
         await giveaway.save();
 
-        Logger.debug(`[SORTEIO] Usuário ${user.tag} (${user.id}) entrou no sorteio ${giveaway.messageId}`);
+        Logger.debug(`[SORTEIO] ${user.tag} (${user.id}) participou do sorteio ${giveaway.messageId}`);
         return;
       }
 
       // Tradução por bandeira
       const targetLang = langFlags[emoji];
-      if (!targetLang || !message.content) return;
+      if (!targetLang || typeof targetLang !== 'string') return;
+      if (!message.content || message.content.trim().length === 0) return;
+
+      // Cooldown de 5 segundos por usuário
+      const cooldownKey = `${user.id}-${message.id}`;
+      if (translationCooldown.has(cooldownKey)) return;
+
+      translationCooldown.set(cooldownKey, true);
+      setTimeout(() => translationCooldown.delete(cooldownKey), 5000);
 
       let translated;
       try {
         translated = await translateText(message.content, targetLang);
       } catch (translationError) {
-        Logger.warn(`[TRADUÇÃO] Falha ao traduzir mensagem: ${translationError.message}`);
+        Logger.warn(`[TRADUÇÃO] Falha na tradução: ${translationError.message}`);
         return;
       }
 
+      const truncated = translated.length > 1024;
       const translationEmbed = new EmbedBuilder()
         .setTitle(`${emojis.trad} Tradução`)
         .setColor(colors.red)
         .addFields({
           name: `Traduzido (${targetLang})`,
-          value: translated.slice(0, 1024),
+          value: truncated
+            ? translated.slice(0, 1021) + '...'
+            : translated,
         })
         .setFooter({
           text: user.username,
@@ -77,9 +90,15 @@ module.exports = {
       await message.reply({
         embeds: [translationEmbed],
         allowedMentions: { repliedUser: false },
-      }).catch(() => {});
+      }).catch((err) => {
+        Logger.warn(`[TRADUÇÃO] Não foi possível enviar resposta: ${err.message}`);
+      });
+
+      // Remove a reação do usuário após a tradução
+      await reaction.users.remove(user.id).catch(() => {});
+
     } catch (error) {
-      Logger.error(`[REACTION] Erro ao processar reação: ${error.stack || error.message}`);
+      Logger.error(`[REACTION] Erro no processamento: ${error.stack || error.message}`);
     }
   },
 };
