@@ -3,10 +3,13 @@
 const client = require('@bot/client');
 const { validateEnvironment } = require('@bot/environment');
 const { connectMongo } = require('@database');
+
 const { loadCommands } = require('@loadCommands/loader');
 const { loadEvents } = require('@loadEvents/loader');
+const { loadMenus } = require('@loadMenus/loader');
 const { loadSlashCommands } = require('@loadSlashCommands/loader');
 const { loadButtonInteractions } = require('@loadButtonInteractions/loader');
+
 const { showStartupDiagnostic } = require('@bot/diagnostic');
 
 /**
@@ -30,6 +33,7 @@ module.exports = async function bootstrap() {
   await Promise.all([
     loadCommands(client),
     loadEvents(client),
+    loadMenus(client),
     loadSlashCommands(client),
     loadButtonInteractions(client)
   ]);
