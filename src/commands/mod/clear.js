@@ -50,7 +50,7 @@ module.exports = {
 
     } catch (error) {
       console.error(error);
-      return sendErro(message, 'Não foi possível apagar as mensagens devido a um erro inesperado.');
+      return sendErro(message, 'Não foi possível apagar as mensagens devido a um erro.');
     }
   }
 };
@@ -58,7 +58,7 @@ module.exports = {
 function sendErro(message, texto) {
   const embed = new EmbedBuilder()
     .setColor(colors.yellow)
-    .setAuthor({ name: texto, iconURL: emojis.attention });
+    .setAuthor({ name: texto, iconURL: emojis.attentionIcon });
 
   return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
 }
