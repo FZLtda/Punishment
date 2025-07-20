@@ -11,15 +11,16 @@ const { TERMS_URL } = process.env;
  *   user: import('discord.js').User,
  *   client: import('discord.js').Client,
  *   reply: (options: import('discord.js').InteractionReplyOptions | import('discord.js').MessagePayload) => Promise<any>,
+ *   message?: import('discord.js').Message,
+ *   interaction?: import('discord.js').Interaction,
  *   deferReply?: Function
  * }} context - Contexto do comando ou interação.
  * @returns {Promise<boolean>} Retorna true se o usuário já aceitou os termos, senão envia os termos e retorna false.
  */
 module.exports = async function checkTerms(context) {
   try {
-    const { user, client, reply } = context;
+    const { user, client, reply, message, interaction } = context;
 
-    // Verifica se já aceitou os termos
     const alreadyAccepted = await TermsAgreement.findOne({ userId: user.id });
     if (alreadyAccepted) return true;
 
@@ -39,7 +40,7 @@ module.exports = async function checkTerms(context) {
       new ButtonBuilder()
         .setLabel('Ler Termos de Uso')
         .setStyle(ButtonStyle.Link)
-        .setURL(TERMS_URL),
+        .setURL(typeof TERMS_URL === 'string' ? TERMS_URL : 'https://example.com/termos'), // fallback seguro
       new ButtonBuilder()
         .setCustomId('terms_accept')
         .setLabel('Aceitar Termos de Uso')
@@ -53,8 +54,19 @@ module.exports = async function checkTerms(context) {
       ephemeral: true
     };
 
-    // Envia a mensagem conforme o tipo de comando
-    if (typeof reply === 'function') {
+    if (message?.reply) {
+      await message.reply({
+        embeds: responsePayload.embeds,
+        components: responsePayload.components,
+        allowedMentions: responsePayload.allowedMentions
+      });
+    }
+      
+    else if (interaction?.reply) {
+      await interaction.reply(responsePayload);
+    }
+      
+    else if (typeof reply === 'function') {
       await reply(responsePayload);
     }
 
