@@ -14,4 +14,8 @@
     <a href="https://discord.gg/p4ANxp5TKf">Entrar no servidor de suporte</a>
   </p>
 
+  <p style="font-size: 11px; color: #999; margin-top: 20px;">
+    Projeto em fase de desenvolvimento ativo.
+  </p>
+
 </div>
