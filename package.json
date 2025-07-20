@@ -50,7 +50,7 @@
     "nodemon": "^3.1.0"
   },
   "_moduleAliases": {
-    "@bot": "src/bot",
+    "@coreBot": "src/coreBot",
     "@utils": "src/utils",
     "@events": "src/events",
     "@client": "src/client",
