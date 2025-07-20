@@ -8,8 +8,10 @@ const {
 } = require('discord.js');
 
 /**
- * Classe estendida do Client para comportar um bot modular e escalável.
+ * Classe personalizada que estende o Client do Discord.js,
+ * projetada para oferecer uma estrutura modular, escalável e de fácil manutenção.
  */
+
 class PunishmentClient extends Client {
   constructor(options = {}) {
     super({
