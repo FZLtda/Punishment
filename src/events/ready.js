@@ -1,6 +1,6 @@
 'use strict';
 
-const { setBotPresence } = require('@bot/presence');
+const { setBotPresence } = require('@coreBot/presence');
 const Logger = require('@logger');
 const monitor = require('@core/monitor');
 const iniciarSorteiosTask = require('@tasks/sorteios');
