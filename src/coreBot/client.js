@@ -9,7 +9,7 @@ const {
 
 /**
  * Classe personalizada que estende o Client do Discord.js,
- * projetada para oferecer uma estrutura modular, escalável e de fácil manutenção.
+ * projetada para oferecer uma estrutura modular, escalável e de fácil manutenção
  */
 
 class PunishmentClient extends Client {
