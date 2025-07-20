@@ -40,7 +40,7 @@ module.exports = async function checkTerms(context) {
       new ButtonBuilder()
         .setLabel('Ler Termos de Uso')
         .setStyle(ButtonStyle.Link)
-        .setURL(typeof TERMS_URL === 'string' ? TERMS_URL : 'https://example.com/termos'), // fallback seguro
+        .setURL(TERMS_URL),
       new ButtonBuilder()
         .setCustomId('terms_accept')
         .setLabel('Aceitar Termos de Uso')
