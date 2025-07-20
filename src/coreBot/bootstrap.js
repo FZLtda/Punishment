@@ -13,14 +13,15 @@ const { loadButtonInteractions } = require('@loadButtonInteractions/loader');
 const { showStartupDiagnostic } = require('@coreBot/diagnostic');
 
 /**
- * Inicia todos os subsistemas críticos do Punishment.
- * Este é o ponto central da inicialização e responsável por:
- * - Validar o ambiente
- * - Conectar à base de dados
- * - Carregar módulos dinâmicos
- * - Autenticar o client no Discord
- * - Exibir diagnósticos
+ * Ponto principal de inicialização do Punishment.
+ * Aqui são ativados os sistemas essenciais:
+ * - Verificação do ambiente
+ * - Conexão com o banco de dados
+ * - Carregamento dos módulos
+ * - Login do bot no Discord
+ * - Exibição de diagnósticos
  */
+
 module.exports = async function bootstrap() {
   validateEnvironment();
 
