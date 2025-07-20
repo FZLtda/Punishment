@@ -1,7 +1,7 @@
 'use strict';
 
-const client = require('@bot/client');
-const { validateEnvironment } = require('@bot/environment');
+const client = require('@coreBot/client');
+const { validateEnvironment } = require('@coreBot/environment');
 const { connectMongo } = require('@database');
 
 const { loadCommands } = require('@loadCommands/loader');
@@ -10,7 +10,7 @@ const { loadMenus } = require('@loadMenus/loader');
 const { loadSlashCommands } = require('@loadSlashCommands/loader');
 const { loadButtonInteractions } = require('@loadButtonInteractions/loader');
 
-const { showStartupDiagnostic } = require('@bot/diagnostic');
+const { showStartupDiagnostic } = require('@coreBot/diagnostic');
 
 /**
  * Inicia todos os subsistemas críticos do Punishment.
