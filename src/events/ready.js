@@ -1,14 +1,24 @@
 'use strict';
 
+/**
+ * Executado uma única vez quando o Punishment está pronto.
+ * Aqui são feitas as configurações iniciais essenciais:
+ * 
+ * - Define a presença do bot
+ * - Inicia tarefas programadas (como sorteios)
+ * - Emite um sinal indicando que está online
+ * 
+ * Erros são registrados e tratados para garantir estabilidade.
+ * 
+ * @file src/events/ready.js
+ * @event Client#ready
+ */
+
 const { setBotPresence } = require('@coreBot/presence');
 const Logger = require('@logger');
 const monitor = require('@core/monitor');
 const iniciarSorteiosTask = require('@tasks/sorteios');
 
-/**
- * Evento executado uma única vez quando o bot está totalmente pronto.
- * @type {import('discord.js').ClientEvents}
- */
 module.exports = {
   name: 'ready',
   once: true,
@@ -17,6 +27,7 @@ module.exports = {
    * Executa ações de inicialização após o bot estar pronto.
    * @param {import('discord.js').Client} client
    */
+  
   async execute(client) {
     global.client = client;
 
