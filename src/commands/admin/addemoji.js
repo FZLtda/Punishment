@@ -38,7 +38,7 @@ module.exports = {
       });
 
       const embed = new EmbedBuilder()
-        .setTitle(`${emojis.success} Emoji criado`)
+        .setTitle(`${emojis.successEmoji} Emoji criado`)
         .setColor(colors.green)
         .setDescription(`O emoji ${emoji} foi criado com sucesso!`)
         .addFields(
