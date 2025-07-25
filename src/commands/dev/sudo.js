@@ -22,7 +22,7 @@ module.exports = {
 
     const targetUser = message.mentions.users.first() || message.client.users.cache.get(args[0]);
     if (!targetUser) {
-      return sendEmbed('yellow', message, 'Usuário alvo não encontrado.');
+      return sendEmbed('yellow', message, 'Não foi possível encontrar esse usuário.');
     }
 
     const commandName = args[1];
@@ -32,12 +32,12 @@ module.exports = {
 
     const command = message.client.commands.get(commandName);
     if (!command) {
-      return sendEmbed('red', message, `Comando \`${commandName}\` não encontrado.`);
+      return sendEmbed('yellow', message, `Comando \`${commandName}\` não encontrado.`);
     }
 
     const targetMember = await message.guild.members.fetch(targetUser.id).catch(() => null);
     if (!targetMember) {
-      return sendEmbed('yellow', message, 'Usuário não encontrado no servidor.');
+      return sendEmbed('yellow', message, 'Não foi possível encontrar esse usuário.');
     }
 
     const fakeMessage = Object.create(message);
@@ -46,6 +46,10 @@ module.exports = {
 
     Object.defineProperty(fakeMessage, 'member', {
       get: () => targetMember,
+    });
+
+    Object.defineProperty(fakeMessage, 'user', {
+      get: () => targetUser,
     });
 
     try {
