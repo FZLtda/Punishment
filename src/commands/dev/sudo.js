@@ -8,7 +8,7 @@ module.exports = {
   name: 'sudo',
   description: 'Executa um comando como se fosse outro usuário.',
   usage: '${currentPrefix}sudo <@usuário> <comando> [args]',
-  category: 'dev',
+  category: 'Administrador',
   deleteMessage: true,
 
   /**
@@ -18,7 +18,6 @@ module.exports = {
    */
   
   async execute(message, args) {
-  
     if (message.author.id !== bot.owner) return;
 
     const target = message.mentions.users.first() || message.client.users.cache.get(args[0]);
@@ -36,10 +35,17 @@ module.exports = {
       return sendEmbed('red', message, `Comando \`${commandName}\` não encontrado.`);
     }
 
-    const fakeMessage = Object.create(message);
-    fakeMessage.author = target;
-    fakeMessage.member = await message.guild.members.fetch(target.id).catch(() => null);
-    fakeMessage.content = `${message.client.prefix}${commandName} ${args.slice(2).join(' ')}`;
+    const targetMember = await message.guild.members.fetch(target.id).catch(() => null);
+    if (!targetMember) {
+      return sendEmbed('yellow', message, 'Não foi possível encontrar o membro no servidor.');
+    }
+
+    const fakeMessage = {
+      ...message,
+      author: target,
+      member: targetMember,
+      content: `${message.client.prefix}${commandName} ${args.slice(2).join(' ')}`,
+    };
 
     try {
       await command.execute(fakeMessage, args.slice(2));
