@@ -17,12 +17,12 @@ module.exports = {
     const descricao = args.slice(1).join(' ');
 
     if (!cargo || !descricao) {
-      return sendEmbed('yellow', message, 'Uso correto: `${currentPrefix}reactionrole <@cargo> <descrição do botão>`');
+      return sendEmbed('yellow', message, 'Uso correto: `reactionrole <@cargo> <descrição do botão>`');
     }
 
     const embed = new EmbedBuilder()
       .setColor(colors.red)
-      .setTitle(`${emojis.cargo} Obtenha seu cargo!`)
+      .setTitle(`${emojis.role} Obtenha seu cargo!`)
       .setDescription(`Clique no botão abaixo para receber o cargo ${cargo}.\n${descricao}`)
       .setFooter({
         text: message.guild.name,
