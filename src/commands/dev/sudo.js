@@ -40,13 +40,10 @@ module.exports = {
       return sendEmbed('yellow', message, 'Não foi possível encontrar o membro no servidor.');
     }
 
-    const fakeMessage = {
-      ...message,
-      author: target,
-      member: targetMember,
-      guild: message.guild,
-      content: `${message.client.prefix}${commandName} ${args.slice(2).join(' ')}`,
-    };
+    const fakeMessage = Object.create(message);
+     fakeMessage.author = target;
+     fakeMessage.member = targetMember;
+     fakeMessage.content = `${message.client.prefix}${commandName} ${args.slice(2).join(' ')}`;
 
     try {
       await command.execute(fakeMessage, args.slice(2));
