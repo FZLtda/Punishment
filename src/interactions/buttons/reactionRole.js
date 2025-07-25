@@ -1,46 +1,62 @@
 'use strict';
 
-const { sendEmbed } = require('@utils/embedReply');
-const { emojis } = require('@config');
+const { EmbedBuilder } = require('discord.js');
+const { emojis, colors } = require('@config');
+const Logger = require('@logger');
 
-/**
- * Handler de botão para atribuição de cargo via reactionrole.
- * @param {import('discord.js').ButtonInteraction} interaction
- */
-module.exports = async (interaction) => {
-  if (!interaction.customId.startsWith('reactionrole:')) return;
+module.exports = {
+  customId: 'reactionrole',
 
-  const roleId = interaction.customId.split(':')[1];
-  const role = interaction.guild.roles.cache.get(roleId);
+  /**
+   * Handler do botão reactionrole
+   * @param {import('discord.js').ButtonInteraction} interaction
+   * @param {import('discord.js').Client} client
+   */
+  
+  async execute(interaction, client) {
+    if (!interaction.customId.startsWith('reactionrole:')) return;
 
-  if (!role) {
-    return interaction.reply({
-      content: `${emojis.errorEmoji} Cargo não encontrado.`,
-      ephemeral: true
-    });
-  }
+    const roleId = interaction.customId.split(':')[1];
+    const role = interaction.guild.roles.cache.get(roleId);
 
-  const member = interaction.member;
+    if (!role) {
+      Logger.warn(`[BUTTON] Cargo reactionrole não encontrado: ${roleId}`);
+      return sendEphemeralError(interaction, 'Cargo não encontrado.');
+    }
 
-  if (member.roles.cache.has(roleId)) {
-    await member.roles.remove(roleId);
-    return interaction.reply({
-      content: `${emojis.warn} Cargo ${role.name} removido.`,
-      ephemeral: true
-    });
-  }
+    const member = interaction.member;
 
-  try {
-    await member.roles.add(roleId);
-    return interaction.reply({
-      content: `${emojis.successEmoji} Cargo ${role.name} atribuído com sucesso.`,
-      ephemeral: true
-    });
-  } catch (error) {
-    console.error('[reactionrole button] Erro ao atribuir cargo:', error);
-    return interaction.reply({
-      content: `${emojis.errorEmoji} Não foi possível atribuir o cargo. Verifique permissões.`,
-      ephemeral: true
-    });
+    try {
+      if (member.roles.cache.has(roleId)) {
+        await member.roles.remove(roleId);
+        await interaction.reply({
+          content: `${emojis.info} Cargo removido com sucesso.`,
+          flags: 1 << 6
+        });
+        return;
+      }
+
+      await member.roles.add(roleId);
+      await interaction.reply({
+        content: `${emojis.successEmoji} Cargo adicionado com sucesso!`,
+        flags: 1 << 6
+      });
+    } catch (err) {
+      Logger.error(`[BUTTON] Erro ao atribuir/remover cargo: ${err.stack || err.message}`);
+      return sendEphemeralError(interaction, 'Erro ao modificar seu cargo. Permissões insuficientes?');
+    }
   }
 };
+
+/**
+ * Envia erro discreto ao usuário via embed autor
+ * @param {import('discord.js').Interaction} interaction
+ * @param {string} texto
+ */
+function sendEphemeralError(interaction, texto) {
+  const embed = new EmbedBuilder()
+    .setColor(colors.yellow)
+    .setAuthor({ name: texto, iconURL: emojis.attentionIcon });
+
+  return interaction.reply({ embeds: [embed], flags: 1 << 6 }).catch(() => {});
+}
