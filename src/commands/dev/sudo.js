@@ -44,6 +44,7 @@ module.exports = {
       ...message,
       author: target,
       member: targetMember,
+      guild: message.guild,
       content: `${message.client.prefix}${commandName} ${args.slice(2).join(' ')}`,
     };
 
