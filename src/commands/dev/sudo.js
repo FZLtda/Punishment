@@ -1,6 +1,5 @@
 'use strict';
 
-
 const { sendEmbed } = require('@utils/embedReply');
 const { bot } = require('@config');
 
@@ -18,10 +17,11 @@ module.exports = {
    */
   
   async execute(message, args) {
+    
     if (message.author.id !== bot.owner) return;
 
-    const target = message.mentions.users.first() || message.client.users.cache.get(args[0]);
-    if (!target) {
+    const targetUser = message.mentions.users.first() || message.client.users.cache.get(args[0]);
+    if (!targetUser) {
       return sendEmbed('yellow', message, 'Usuário alvo não encontrado.');
     }
 
@@ -35,15 +35,18 @@ module.exports = {
       return sendEmbed('red', message, `Comando \`${commandName}\` não encontrado.`);
     }
 
-    const targetMember = await message.guild.members.fetch(target.id).catch(() => null);
+    const targetMember = await message.guild.members.fetch(targetUser.id).catch(() => null);
     if (!targetMember) {
-      return sendEmbed('yellow', message, 'Não foi possível encontrar o membro no servidor.');
+      return sendEmbed('yellow', message, 'Usuário não encontrado no servidor.');
     }
 
     const fakeMessage = Object.create(message);
-     fakeMessage.author = target;
-     fakeMessage.member = targetMember;
-     fakeMessage.content = `${message.client.prefix}${commandName} ${args.slice(2).join(' ')}`;
+    fakeMessage.author = targetUser;
+    fakeMessage.content = `${message.client.prefix}${commandName} ${args.slice(2).join(' ')}`;
+
+    Object.defineProperty(fakeMessage, 'member', {
+      get: () => targetMember,
+    });
 
     try {
       await command.execute(fakeMessage, args.slice(2));
