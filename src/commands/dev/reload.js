@@ -45,11 +45,14 @@ module.exports = {
         const command = message.client.commands.get(target);
         if (!command) return sendEmbed('red', message, `Comando \`${target}\` não encontrado.`);
 
-        const commandPath = path.resolve(__dirname, '..', command.category.toLowerCase(), `${command.name}.js`);
-        delete require.cache[require.resolve(commandPath)];
+        const commandsDir = path.resolve(__dirname, '..', '..', 'commands');
+        const commandFile = findCommandFile(commandsDir, command.name);
+        if (!commandFile) return sendEmbed('red', message, `Arquivo do comando \`${command.name}\` não encontrado.`);
+
+        delete require.cache[require.resolve(commandFile)];
 
         message.client.commands.delete(command.name);
-        const updatedCommand = require(commandPath);
+        const updatedCommand = require(commandFile);
         message.client.commands.set(updatedCommand.name, updatedCommand);
 
         return sendEmbed('green', message, `Comando \`${updatedCommand.name}\` recarregado com sucesso.`);
@@ -112,7 +115,15 @@ async function reloadAll(basePath, collection, type) {
 }
 
 /**
- * Localiza o arquivo de um evento com base no nome.
+ * Localiza o caminho real do comando baseado no nome.
+ */
+function findCommandFile(dir, commandName) {
+  const files = getAllJsFiles(dir);
+  return files.find(file => path.basename(file, '.js') === commandName);
+}
+
+/**
+ * Localiza o caminho real do evento baseado no nome.
  */
 function findEventFile(dir, eventName) {
   const files = getAllJsFiles(dir);
