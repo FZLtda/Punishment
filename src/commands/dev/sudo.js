@@ -15,7 +15,6 @@ module.exports = {
    * @param {import('discord.js').Message} message
    * @param {string[]} args
    */
-  
   async execute(message, args) {
     if (message.author.id !== bot.owner) return;
 
@@ -49,6 +48,8 @@ module.exports = {
       const match = arg.match(/^<@!?(\d+)>$/);
       if (match) {
         const id = match[1];
+        if (id === sudoUser.id) continue;
+
         const user = await message.client.users.fetch(id).catch(() => null);
         const member = await message.guild.members.fetch(id).catch(() => null);
         if (user) fakeMentionsUsers.set(id, user);
@@ -66,11 +67,14 @@ module.exports = {
       get: () => sudoMember,
     });
 
+    Object.defineProperty(fakeMessage, 'guild', {
+      get: () => message.guild,
+    });
+
     Object.defineProperty(fakeMessage, 'content', {
       get: () => content,
     });
 
-    fakeMessage.guild = message.guild;
     fakeMessage.mentions = {
       users: fakeMentionsUsers,
       members: fakeMentionsMembers,
