@@ -11,7 +11,7 @@ const {
 } = require('discord.js');
 
 const { colors, emojis } = require('@config');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { sendModLog } = require('@modules/modlog');
 const fs = require('fs');
 const path = require('path');
@@ -27,13 +27,13 @@ module.exports = {
   async execute(message, args) {
     const backupId = args[0];
     if (!backupId)
-      return sendEmbed('yellow', message, 'Você precisa fornecer o ID do backup.');
+      return sendWarning(message, 'Você precisa fornecer o ID do backup.');
 
     const fileName = `backup-${message.guild.id}-${backupId}.json`;
     const filePath = path.join(__dirname, '../../../backups', fileName);
 
     if (!fs.existsSync(filePath)) {
-      return sendEmbed('yellow', message, `Backup com ID \`${backupId}\` não encontrado.`);
+      return sendWarning(message, `Backup com ID \`${backupId}\` não encontrado.`);
     }
 
     let backupData;
@@ -42,7 +42,7 @@ module.exports = {
       backupData = JSON.parse(raw);
     } catch (err) {
       console.error('[RESTORE-PARSE]', err);
-      return sendEmbed('yellow', message, 'Erro ao ler o backup. O arquivo pode estar corrompido.');
+      return sendWarning(message, 'Erro ao ler o backup. O arquivo pode estar corrompido.');
     }
 
     const guild = message.guild;
