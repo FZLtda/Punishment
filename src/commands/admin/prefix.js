@@ -3,7 +3,7 @@
 const GuildConfig = require('@models/GuildConfig');
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 
 module.exports = {
   name: 'prefix',
@@ -17,7 +17,7 @@ module.exports = {
     const guildId = message.guild.id;
 
     if (!novoPrefixo || novoPrefixo.length > 5) {
-      return sendEmbed('yellow', message, 'Forneça um prefixo válido com até 5 caracteres.');
+      return sendWarning(message, 'Forneça um prefixo válido com até 5 caracteres.');
     }
 
     try {
@@ -44,7 +44,7 @@ module.exports = {
 
     } catch (error) {
       console.error('[PREFIX-ERROR]', error);
-      return sendEmbed('yellow', message, 'Não foi possível salvar o novo prefixo.');
+      return sendWarning(message, 'Não foi possível salvar o novo prefixo.');
     }
   }
 };
