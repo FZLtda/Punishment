@@ -15,6 +15,7 @@ module.exports = {
    * @param {import('discord.js').Message} message
    * @param {string[]} args
    */
+  
   async execute(message, args) {
     if (message.author.id !== bot.owner) return;
 
@@ -38,30 +39,41 @@ module.exports = {
       return sendEmbed('yellow', message, 'Não foi possível encontrar o membro no servidor.');
     }
 
-    const mentionsOriginal = [...message.mentions.users.values()];
     const commandArgs = args.slice(2);
+    const content = `${message.client.prefix}${commandName} ${commandArgs.join(' ')}`;
 
-    const targetMentions = mentionsOriginal.filter(user => user.id !== sudoUser.id);
+    const fakeMentionsUsers = new Map();
+    const fakeMentionsMembers = new Map();
 
-    const mentionedUsers = new Map();
-    const mentionedMembers = new Map();
-
-    for (const user of targetMentions) {
-      mentionedUsers.set(user.id, user);
-      const member = await message.guild.members.fetch(user.id).catch(() => null);
-      if (member) mentionedMembers.set(user.id, member);
+    for (const arg of commandArgs) {
+      const match = arg.match(/^<@!?(\d+)>$/);
+      if (match) {
+        const id = match[1];
+        const user = await message.client.users.fetch(id).catch(() => null);
+        const member = await message.guild.members.fetch(id).catch(() => null);
+        if (user) fakeMentionsUsers.set(id, user);
+        if (member) fakeMentionsMembers.set(id, member);
+      }
     }
 
     const fakeMessage = Object.create(message);
 
-    fakeMessage.author = sudoUser;
-    fakeMessage.member = sudoMember;
-    fakeMessage.content = `${message.client.prefix}${commandName} ${commandArgs.join(' ')}`;
-    fakeMessage.guild = message.guild;
+    Object.defineProperty(fakeMessage, 'author', {
+      get: () => sudoUser,
+    });
 
+    Object.defineProperty(fakeMessage, 'member', {
+      get: () => sudoMember,
+    });
+
+    Object.defineProperty(fakeMessage, 'content', {
+      get: () => content,
+    });
+
+    fakeMessage.guild = message.guild;
     fakeMessage.mentions = {
-      users: mentionedUsers,
-      members: mentionedMembers,
+      users: fakeMentionsUsers,
+      members: fakeMentionsMembers,
     };
 
     try {
