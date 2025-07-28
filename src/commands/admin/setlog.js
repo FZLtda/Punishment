@@ -3,7 +3,7 @@
 const { ChannelType } = require('discord.js');
 const GuildSettings = require('@models/GuildSettings');
 const { emojis } = require('@config');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 
 module.exports = {
   name: 'setlog',
@@ -18,10 +18,10 @@ module.exports = {
     const canal = message.mentions.channels.first();
 
     if (!canal)
-      return sendEmbed('yellow', message, 'Mencione um canal válido.');
+      return sendWarning(message, 'Mencione um canal válido.');
 
     if (canal.type !== ChannelType.GuildText)
-      return sendEmbed('yellow', message, 'O canal precisa ser de texto.');
+      return sendWarning(message, 'O canal precisa ser de texto.');
 
     try {
       await GuildSettings.findOneAndUpdate(
@@ -37,7 +37,7 @@ module.exports = {
 
     } catch (error) {
       console.error(error);
-      return sendEmbed('yellow', message, 'Não foi possível salvar a configuração.');
+      return sendWarning(message, 'Não foi possível salvar a configuração.');
     }
   }
 };
