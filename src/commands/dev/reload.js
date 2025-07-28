@@ -2,8 +2,9 @@
 
 const fs = require('fs');
 const path = require('path');
+const { EmbedBuilder } = require('discord.js');
 const { sendEmbed } = require('@utils/embedReply');
-const { bot } = require('@config');
+const { bot, colors } = require('@config');
 
 module.exports = {
   name: 'reload',
@@ -17,13 +18,14 @@ module.exports = {
    * @param {import('discord.js').Message} message
    * @param {string[]} args
    */
+  
   async execute(message, args) {
     if (message.author.id !== bot.owner) return;
 
     const type = args[0]?.toLowerCase();
     const target = args[1]?.toLowerCase();
-
     const validTypes = ['command', 'comando', 'event', 'all'];
+
     if (!type || !validTypes.includes(type)) {
       return sendEmbed('yellow', message, 'Uso correto: `reload <comando|event|all>`');
     }
@@ -36,26 +38,26 @@ module.exports = {
         await reloadAll(commandsDir, message.client.commands, 'command');
         await reloadAll(eventsDir, message.client.events, 'event');
 
-        return sendEmbed('green', message, 'Todos os comandos e eventos foram recarregados com sucesso.');
+        return sendSuccess(message, 'Todos os comandos e eventos foram recarregados com sucesso.');
       }
 
       if (type === 'command' || type === 'comando') {
         if (!target) return sendEmbed('yellow', message, 'Especifique o nome do comando.');
 
         const command = message.client.commands.get(target);
-        if (!command) return sendEmbed('red', message, `Comando \`${target}\` não encontrado.`);
+        if (!command) return sendEmbed('yellow', message, `Comando \`${target}\` não encontrado.`);
 
         const commandsDir = path.resolve(__dirname, '..', '..', 'commands');
         const commandFile = findCommandFile(commandsDir, command.name);
-        if (!commandFile) return sendEmbed('red', message, `Arquivo do comando \`${command.name}\` não encontrado.`);
+        if (!commandFile) return sendEmbed('yellow', message, `Arquivo do comando \`${command.name}\` não encontrado.`);
 
         delete require.cache[require.resolve(commandFile)];
-
         message.client.commands.delete(command.name);
+
         const updatedCommand = require(commandFile);
         message.client.commands.set(updatedCommand.name, updatedCommand);
 
-        return sendEmbed('green', message, `Comando \`${updatedCommand.name}\` recarregado com sucesso.`);
+        return sendSuccess(message, `Comando \`${updatedCommand.name}\` recarregado com sucesso.`);
       }
 
       if (type === 'event') {
@@ -63,24 +65,34 @@ module.exports = {
 
         const eventsDir = path.resolve(__dirname, '..', '..', 'events');
         const eventFile = findEventFile(eventsDir, target);
-        if (!eventFile) return sendEmbed('red', message, `Evento \`${target}\` não encontrado.`);
+        if (!eventFile) return sendEmbed('yellow', message, `Evento \`${target}\` não encontrado.`);
 
         delete require.cache[require.resolve(eventFile)];
-
         const updatedEvent = require(eventFile);
         const eventName = path.basename(eventFile, '.js');
 
         message.client.removeAllListeners(eventName);
         message.client.on(eventName, updatedEvent.execute.bind(null));
 
-        return sendEmbed('green', message, `Evento \`${eventName}\` recarregado com sucesso.`);
+        return sendSuccess(message, `Evento \`${eventName}\` recarregado com sucesso.`);
       }
     } catch (error) {
       console.error('[reload] Erro ao recarregar:', error);
-      return sendEmbed('red', message, 'Ocorreu um erro ao recarregar o módulo.');
+      return sendEmbed('yellow', message, 'Não foi possível recarregar o módulo.');
     }
   },
 };
+
+/**
+ * Envia embed manual apenas para mensagens de sucesso.
+ */
+function sendSuccess(message, text) {
+  const embed = new EmbedBuilder()
+    .setColor(colors.green)
+    .setDescription(text);
+
+  return message.channel.send({ embeds: [embed] });
+}
 
 /**
  * Recarrega todos os arquivos .js de um diretório recursivamente.
@@ -90,7 +102,9 @@ function getAllJsFiles(dir) {
 
   return entries.flatMap(entry => {
     const res = path.resolve(dir, entry.name);
-    return entry.isDirectory() ? getAllJsFiles(res) : res.endsWith('.js') ? [res] : [];
+    return entry.isDirectory()
+      ? getAllJsFiles(res)
+      : res.endsWith('.js') ? [res] : [];
   });
 }
 
@@ -128,4 +142,4 @@ function findCommandFile(dir, commandName) {
 function findEventFile(dir, eventName) {
   const files = getAllJsFiles(dir);
   return files.find(file => path.basename(file, '.js') === eventName);
-}
+        }
