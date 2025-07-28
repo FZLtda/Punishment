@@ -6,7 +6,7 @@ const checkTerms = require('@middlewares/checkTerms');
 const checkGlobalBan = require('@middlewares/checkGlobalBan');
 const checkUserPermissions = require('@utils/checkUserPermissions');
 const checkBotPermissions = require('@utils/checkBotPermissions');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 
 /**
  * Determina o prefixo do servidor dinamicamente.
@@ -109,7 +109,7 @@ module.exports = {
       Logger.error(`[ERROR][${message?.guild?.name}] Comando falhou: ${error.stack || error}`);
 
       if (message?.channel?.send) {
-        await sendEmbed('yellow', message, 'Não foi possível executar o comando.');
+        await sendWarning(message, 'Não foi possível executar o comando.');
       }
     }
   }
