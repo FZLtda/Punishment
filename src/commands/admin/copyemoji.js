@@ -7,7 +7,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const Logger = require('@logger');
 
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
 
   async execute(message, args) {
     if (!args[0]) {
-      return sendEmbed('yellow', message, 'Você deve fornecer um emoji para copiar.');
+      return sendWarning(message, 'Você deve fornecer um emoji para copiar.');
     }
 
     const emojiInput = args[0];
@@ -32,7 +32,7 @@ module.exports = {
     const match = emojiInput.match(emojiRegex);
 
     if (!match) {
-      return sendEmbed('yellow', message, 'Por favor, forneça um emoji customizado válido (menção ou ID).');
+      return sendWarning(message, 'Por favor, forneça um emoji customizado válido (menção ou ID).');
     }
 
     const animated = Boolean(match[1]);
@@ -63,7 +63,7 @@ module.exports = {
 
     } catch (error) {
       Logger.error(`[COPYEMOJI] Falha ao copiar emoji: ${error.stack || error.message}`);
-      return sendEmbed('yellow', message, 'Não foi possível copiar o emoji. Verifique se o bot tem permissões suficientes e se o servidor atingiu o limite de emojis.');
+      return sendWarning(message, 'Não foi possível copiar o emoji. Verifique se o bot tem permissões suficientes e se o servidor atingiu o limite de emojis.');
     }
   }
 };
