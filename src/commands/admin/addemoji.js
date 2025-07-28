@@ -1,7 +1,7 @@
 'use strict';
 
 const { EmbedBuilder } = require('discord.js');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { colors, emojis } = require('@config');
 const Logger = require('@logger');
 const path = require('path');
@@ -20,15 +20,15 @@ module.exports = {
     const [nome, url] = args;
 
     if (!nome || !url)
-      return sendEmbed('yellow', message, 'Uso correto: `addemoji <nome> <link da imagem>`');
+      return sendWarning(message, 'Uso correto: `addemoji <nome> <link da imagem>`');
 
     if (!isValidURL(url))
-      return sendEmbed('yellow', message, 'Forneça uma URL válida de imagem (terminando com .png, .jpg, .jpeg, .gif).');
+      return sendWarning(message, 'Forneça uma URL válida de imagem (terminando com .png, .jpg, .jpeg, .gif).');
 
     const extensao = path.extname(url).toLowerCase();
     const permitidas = ['.png', '.jpg', '.jpeg', '.gif'];
     if (!permitidas.includes(extensao))
-      return sendEmbed('yellow', message, 'Formato inválido. Use apenas: `.png`, `.jpg`, `.jpeg`, ou `.gif`.');
+      return sendWarning(message, 'Formato inválido. Use apenas: `.png`, `.jpg`, `.jpeg`, ou `.gif`.');
 
     try {
       const emoji = await message.guild.emojis.create({
@@ -56,7 +56,7 @@ module.exports = {
 
     } catch (error) {
       Logger.error(`[EMOJI] Erro ao criar emoji: ${error.stack || error.message}`);
-      return sendEmbed('yellow', message, 'Não foi possível criar o emoji. Verifique se o servidor atingiu o limite ou se a imagem é válida.');
+      return sendWarning(message, 'Não foi possível criar o emoji. Verifique se o servidor atingiu o limite ou se a imagem é válida.');
     }
   }
 };
