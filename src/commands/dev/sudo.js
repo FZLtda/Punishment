@@ -2,6 +2,7 @@
 
 const { sendEmbed } = require('@utils/embedReply');
 const { bot } = require('@config');
+const { Collection } = require('discord.js');
 
 module.exports = {
   name: 'sudo',
@@ -41,8 +42,8 @@ module.exports = {
     const commandArgs = args.slice(2);
     const content = `${message.client.prefix}${commandName} ${commandArgs.join(' ')}`;
 
-    const fakeMentionsUsers = new Map();
-    const fakeMentionsMembers = new Map();
+    const fakeMentionsUsers = new Collection();
+    const fakeMentionsMembers = new Collection();
 
     for (const arg of commandArgs) {
       const match = arg.match(/^<@!?(\d+)>$/);
@@ -59,21 +60,10 @@ module.exports = {
 
     const fakeMessage = Object.create(message);
 
-    Object.defineProperty(fakeMessage, 'author', {
-      get: () => sudoUser,
-    });
-
-    Object.defineProperty(fakeMessage, 'member', {
-      get: () => sudoMember,
-    });
-
-    Object.defineProperty(fakeMessage, 'guild', {
-      get: () => message.guild,
-    });
-
-    Object.defineProperty(fakeMessage, 'content', {
-      get: () => content,
-    });
+    Object.defineProperty(fakeMessage, 'author', { get: () => sudoUser });
+    Object.defineProperty(fakeMessage, 'member', { get: () => sudoMember });
+    Object.defineProperty(fakeMessage, 'guild', { get: () => message.guild });
+    Object.defineProperty(fakeMessage, 'content', { get: () => content });
 
     fakeMessage.mentions = {
       users: fakeMentionsUsers,
