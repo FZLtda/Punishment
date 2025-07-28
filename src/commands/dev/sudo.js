@@ -1,8 +1,8 @@
 'use strict';
 
-const { sendEmbed } = require('@utils/embedReply');
-const { bot } = require('@config');
 const { Collection } = require('discord.js');
+const { bot } = require('@config');
+const { sendEmbed } = require('@utils/embedReply');
 
 module.exports = {
   name: 'sudo',
@@ -16,28 +16,21 @@ module.exports = {
    * @param {import('discord.js').Message} message
    * @param {string[]} args
    */
+  
   async execute(message, args) {
     if (message.author.id !== bot.owner) return;
 
     const sudoUser = message.mentions.users.first() || message.client.users.cache.get(args[0]);
-    if (!sudoUser) {
-      return sendEmbed('yellow', message, 'Usuário para simular não encontrado.');
-    }
+    if (!sudoUser) return sendEmbed('yellow', message, 'Usuário para simular não encontrado.');
 
     const commandName = args[1]?.toLowerCase();
-    if (!commandName) {
-      return sendEmbed('yellow', message, 'Você precisa especificar o comando a ser executado.');
-    }
+    if (!commandName) return sendEmbed('yellow', message, 'Você precisa especificar o comando a ser executado.');
 
     const command = message.client.commands.get(commandName);
-    if (!command) {
-      return sendEmbed('yellow', message, `Comando \`${commandName}\` não encontrado.`);
-    }
+    if (!command) return sendEmbed('yellow', message, `Comando \`${commandName}\` não encontrado.`);
 
     const sudoMember = await message.guild.members.fetch(sudoUser.id).catch(() => null);
-    if (!sudoMember) {
-      return sendEmbed('yellow', message, 'Não foi possível encontrar o membro no servidor.');
-    }
+    if (!sudoMember) return sendEmbed('yellow', message, 'Não foi possível encontrar o membro no servidor.');
 
     const commandArgs = args.slice(2);
     const content = `${message.client.prefix}${commandName} ${commandArgs.join(' ')}`;
@@ -47,23 +40,24 @@ module.exports = {
 
     for (const arg of commandArgs) {
       const match = arg.match(/^<@!?(\d+)>$/);
-      if (match) {
-        const id = match[1];
-        if (id === sudoUser.id) continue;
+      if (!match) continue;
 
-        const user = await message.client.users.fetch(id).catch(() => null);
-        const member = await message.guild.members.fetch(id).catch(() => null);
-        if (user) fakeMentionsUsers.set(id, user);
-        if (member) fakeMentionsMembers.set(id, member);
-      }
+      const id = match[1];
+      if (id === sudoUser.id) continue;
+
+      const user = await message.client.users.fetch(id).catch(() => null);
+      const member = await message.guild.members.fetch(id).catch(() => null);
+
+      if (user) fakeMentionsUsers.set(id, user);
+      if (member) fakeMentionsMembers.set(id, member);
     }
 
     const fakeMessage = Object.create(message);
 
     Object.defineProperty(fakeMessage, 'author', { get: () => sudoUser });
     Object.defineProperty(fakeMessage, 'member', { get: () => sudoMember });
-    Object.defineProperty(fakeMessage, 'guild', { get: () => message.guild });
-    Object.defineProperty(fakeMessage, 'content', { get: () => content });
+    Object.defineProperty(fakeMessage, 'guild',  { get: () => message.guild });
+    Object.defineProperty(fakeMessage, 'content',{ get: () => content });
 
     fakeMessage.mentions = {
       users: fakeMentionsUsers,
