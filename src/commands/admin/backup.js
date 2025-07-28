@@ -5,7 +5,7 @@ const path = require('path');
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 
 module.exports = {
   name: 'backup',
@@ -112,7 +112,7 @@ module.exports = {
 
     } catch (error) {
       console.error('[BACKUP ERROR]', error);
-      return sendEmbed('yellow', message, 'Não foi possível criar o backup.');
+      return sendWarning(message, 'Não foi possível criar o backup.');
     }
   }
 };
