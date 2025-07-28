@@ -17,81 +17,90 @@ module.exports = {
    * @param {import('discord.js').Message} message
    * @param {string[]} args
    */
-  
   async execute(message, args) {
     if (message.author.id !== bot.owner) return;
 
     const type = args[0]?.toLowerCase();
     const target = args[1]?.toLowerCase();
 
-    if (!type || !['comando', 'comando', 'command', 'event', 'all'].includes(type)) {
+    const validTypes = ['command', 'comando', 'event', 'all'];
+    if (!type || !validTypes.includes(type)) {
       return sendEmbed('yellow', message, 'Uso correto: `reload <comando|event|all>`');
     }
 
     try {
       if (type === 'all') {
-        const commandsPath = path.resolve(__dirname, '..', '..', 'commands');
-        await reloadAll(commandsPath, message.client.commands, 'command');
+        const commandsDir = path.resolve(__dirname, '..', '..', 'commands');
+        const eventsDir = path.resolve(__dirname, '..', '..', 'events');
 
-        const eventsPath = path.resolve(__dirname, '..', '..', 'events');
-        await reloadAll(eventsPath, message.client.events, 'event');
+        await reloadAll(commandsDir, message.client.commands, 'command');
+        await reloadAll(eventsDir, message.client.events, 'event');
 
         return sendEmbed('green', message, 'Todos os comandos e eventos foram recarregados com sucesso.');
       }
 
       if (type === 'command' || type === 'comando') {
-        if (!target) return sendEmbed('yellow', message, 'Especifique o comando que deseja recarregar.');
+        if (!target) return sendEmbed('yellow', message, 'Especifique o nome do comando.');
 
         const command = message.client.commands.get(target);
         if (!command) return sendEmbed('red', message, `Comando \`${target}\` não encontrado.`);
 
-        const commandPath = require.resolve(path.resolve(__dirname, '..', command.category.toLowerCase(), `${command.name}.js`));
-        delete require.cache[commandPath];
+        const commandPath = path.resolve(__dirname, '..', command.category.toLowerCase(), `${command.name}.js`);
+        delete require.cache[require.resolve(commandPath)];
+
         message.client.commands.delete(command.name);
+        const updatedCommand = require(commandPath);
+        message.client.commands.set(updatedCommand.name, updatedCommand);
 
-        const newCommand = require(commandPath);
-        message.client.commands.set(newCommand.name, newCommand);
-
-        return sendEmbed('green', message, `Comando \`${newCommand.name}\` recarregado com sucesso.`);
+        return sendEmbed('green', message, `Comando \`${updatedCommand.name}\` recarregado com sucesso.`);
       }
 
       if (type === 'event') {
         if (!target) return sendEmbed('yellow', message, 'Especifique o nome do evento.');
 
-        const eventPath = path.resolve(__dirname, '..', '..', 'events');
-        const file = findEventFile(eventPath, target);
-        if (!file) return sendEmbed('yellow', message, `Evento \`${target}\` não encontrado.`);
+        const eventsDir = path.resolve(__dirname, '..', '..', 'events');
+        const eventFile = findEventFile(eventsDir, target);
+        if (!eventFile) return sendEmbed('red', message, `Evento \`${target}\` não encontrado.`);
 
-        const fullPath = require.resolve(file);
-        delete require.cache[fullPath];
+        delete require.cache[require.resolve(eventFile)];
 
-        const newEvent = require(fullPath);
-        const eventName = path.basename(file, '.js');
+        const updatedEvent = require(eventFile);
+        const eventName = path.basename(eventFile, '.js');
 
         message.client.removeAllListeners(eventName);
-        message.client.on(eventName, newEvent.execute.bind(null));
+        message.client.on(eventName, updatedEvent.execute.bind(null));
 
         return sendEmbed('green', message, `Evento \`${eventName}\` recarregado com sucesso.`);
       }
-
     } catch (error) {
       console.error('[reload] Erro ao recarregar:', error);
-      return sendEmbed('yellow', message, 'Ocorreu um erro ao recarregar o módulo.');
+      return sendEmbed('red', message, 'Ocorreu um erro ao recarregar o módulo.');
     }
-  }
+  },
 };
 
 /**
- * Recarrega todos os arquivos de um diretório recursivamente.
+ * Recarrega todos os arquivos .js de um diretório recursivamente.
+ */
+function getAllJsFiles(dir) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  return entries.flatMap(entry => {
+    const res = path.resolve(dir, entry.name);
+    return entry.isDirectory() ? getAllJsFiles(res) : res.endsWith('.js') ? [res] : [];
+  });
+}
+
+/**
+ * Recarrega dinamicamente todos os comandos ou eventos.
  */
 async function reloadAll(basePath, collection, type) {
   const files = getAllJsFiles(basePath);
 
   for (const file of files) {
-    const fullPath = require.resolve(file);
-    delete require.cache[fullPath];
+    delete require.cache[require.resolve(file)];
 
-    const mod = require(fullPath);
+    const mod = require(file);
     if (type === 'command') {
       collection.set(mod.name, mod);
     } else if (type === 'event') {
@@ -103,19 +112,7 @@ async function reloadAll(basePath, collection, type) {
 }
 
 /**
- * Busca todos os arquivos .js de forma recursiva.
- */
-function getAllJsFiles(dir) {
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-  const files = entries.flatMap(entry => {
-    const res = path.resolve(dir, entry.name);
-    return entry.isDirectory() ? getAllJsFiles(res) : res.endsWith('.js') ? [res] : [];
-  });
-  return files;
-}
-
-/**
- * Procura o caminho do arquivo de evento pelo nome.
+ * Localiza o arquivo de um evento com base no nome.
  */
 function findEventFile(dir, eventName) {
   const files = getAllJsFiles(dir);
