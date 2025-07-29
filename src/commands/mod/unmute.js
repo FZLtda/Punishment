@@ -3,7 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { checkMemberGuard } = require('@utils/memberGuards');
 
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
     if (!isValid) return;
 
     if (!membro.communicationDisabledUntilTimestamp)
-      return sendEmbed('yellow', message, 'Este usuário não está silenciado no momento.');
+      return sendWarning(message, 'Este usuário não está silenciado no momento.');
 
     try {
       await membro.timeout(null, motivo);
@@ -50,7 +50,7 @@ module.exports = {
 
     } catch (error) {
       console.error(error);
-      return sendEmbed('red', message, 'Não foi possível remover o mute do usuário devido a um erro inesperado.');
+      return sendWarning(message, 'Não foi possível remover o mute do usuário devido a um erro inesperado.');
     }
   }
 };
