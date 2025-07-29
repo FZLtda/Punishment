@@ -3,7 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { translateText } = require('@utils/translate');
 const { colors, emojis } = require('@config');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 
 module.exports = {
   name: 't',
@@ -18,6 +18,7 @@ module.exports = {
    * @param {import('discord.js').Message} message
    * @param {string[]} args
    */
+  
   async execute(message, args) {
     const replied = message.reference?.messageId
       ? await message.channel.messages.fetch(message.reference.messageId).catch(() => null)
@@ -35,14 +36,14 @@ module.exports = {
     content = replied?.content || args.join(' ');
 
     if (!content || content.trim().length === 0) {
-      return sendEmbed('yellow', message, 'Responda uma mensagem de texto ou digite o texto a ser traduzido.');
+      return sendWarning(message, 'Responda uma mensagem de texto ou digite o texto a ser traduzido.');
     }
 
     try {
       const resultado = await translateText(content, targetLang);
 
       if (!resultado || typeof resultado !== 'string' || resultado.trim().length === 0) {
-        return sendEmbed('yellow', message, 'Não foi possível traduzir o conteúdo.');
+        return sendWarning(message, 'Não foi possível traduzir o conteúdo.');
       }
 
       const embed = new EmbedBuilder()
@@ -70,7 +71,7 @@ module.exports = {
         });
       }
     } catch (error) {
-      return sendEmbed('yellow', message, 'Não foi possível traduzir o conteúdo.');
+      return sendWarning(message, 'Não foi possível traduzir o conteúdo.');
     }
   },
 };
