@@ -2,7 +2,7 @@
 
 const { ChannelType, EmbedBuilder } = require('discord.js');
 const { emojis, colors } = require('@config');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { sendModLog } = require('@modules/modlog');
 
 module.exports = {
@@ -17,20 +17,20 @@ module.exports = {
     // Validação de argumentos
     const tempo = args[0];
     if (!tempo)
-      return sendEmbed('yellow', message, 'Você deve fornecer um tempo válido. Ex: `10s`, `5m`, `0s`.');
+      return sendWarning(message, 'Você deve fornecer um tempo válido. Ex: `10s`, `5m`, `0s`.');
 
     const segundos = parseTempo(tempo);
     if (segundos === null || segundos < 0 || segundos > 21600)
-      return sendEmbed('yellow', message, 'Tempo inválido. O valor deve estar entre `0s` e `6h` (21600 segundos).');
+      return sendWarning(message, 'Tempo inválido. O valor deve estar entre `0s` e `6h` (21600 segundos).');
 
     const motivo = args.slice(1).join(' ').trim() || 'Sem motivo fornecido.';
     const canal = message.channel;
 
     // Verificações de contexto
     if (canal.type !== ChannelType.GuildText)
-      return sendEmbed('yellow', message, 'Este comando só pode ser executado em canais de texto.');
+      return sendWarning(message, 'Este comando só pode ser executado em canais de texto.');
     if (canal.rateLimitPerUser === segundos)
-      return sendEmbed('yellow', message, `O modo lento já está definido como \`${tempo}\` neste canal.`);
+      return sendWarning(message, `O modo lento já está definido como \`${tempo}\` neste canal.`);
 
     // Aplicando o slowmode
     try {
@@ -67,7 +67,7 @@ module.exports = {
       });
     } catch (err) {
       console.error('[slowmode] Erro ao aplicar modo lento:', err);
-      return sendEmbed('red', message, 'Ocorreu um erro ao aplicar o modo lento. Verifique se o bot tem as permissões adequadas.');
+      return sendWarning(message, 'Ocorreu um erro ao aplicar o modo lento. Verifique se o bot tem as permissões adequadas.');
     }
   }
 };
