@@ -1,7 +1,7 @@
 'use strict';
 
 const { EmbedBuilder } = require('discord.js');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { emojis, colors } = require('@config');
 
 module.exports = {
@@ -22,7 +22,7 @@ module.exports = {
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.member;
 
     if (!membro)
-      return sendEmbed('yellow', message, 'Usuário não encontrado. Tente mencionar alguém ou informar o ID.');
+      return sendWarning(message, 'Usuário não encontrado. Tente mencionar alguém ou informar o ID.');
 
     const avatarUrl = membro.displayAvatarURL({ dynamic: true, size: 1024 });
 
