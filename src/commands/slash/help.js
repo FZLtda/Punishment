@@ -7,7 +7,7 @@ const {
   EmbedBuilder,
 } = require('discord.js');
 
-const { colors, attentionIcon } = require('@config');
+const { colors, emojis } = require('@config');
 const categories = require('@utils/helpCategories');
 
 module.exports = {
@@ -45,7 +45,8 @@ module.exports = {
     }
 
     const embed = new EmbedBuilder()
-      .setAuthor({ name: 'Comando de ajuda', iconURL: attentionIcon })
+      .setAuthor({ name: 'Comando de ajuda', 
+        iconURL: attentionIcon })
       .setColor('#FE3838')
       .setDescription([
         '```',
