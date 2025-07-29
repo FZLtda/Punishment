@@ -3,7 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { checkMemberGuard } = require('@utils/memberGuards');
 
 module.exports = {
@@ -47,7 +47,7 @@ module.exports = {
 
     } catch (error) {
       console.error(error);
-      return sendEmbed('red', message, 'Não foi possível banir o usuário devido a um erro inesperado.');
+      return sendWarning(message, 'Não foi possível banir o usuário devido a um erro inesperado.');
     }
   }
 };
