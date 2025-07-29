@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const { EmbedBuilder } = require('discord.js');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { bot, colors } = require('@config');
 
 module.exports = {
@@ -27,7 +27,7 @@ module.exports = {
     const validTypes = ['command', 'comando', 'event', 'all'];
 
     if (!type || !validTypes.includes(type)) {
-      return sendEmbed('yellow', message, 'Uso correto: `reload <comando|event|all>`');
+      return sendWarning(message, 'Uso correto: `reload <comando|event|all>`');
     }
 
     try {
@@ -42,14 +42,14 @@ module.exports = {
       }
 
       if (type === 'command' || type === 'comando') {
-        if (!target) return sendEmbed('yellow', message, 'Especifique o nome do comando.');
+        if (!target) return sendWarning(message, 'Especifique o nome do comando.');
 
         const command = message.client.commands.get(target);
-        if (!command) return sendEmbed('yellow', message, `Comando \`${target}\` não encontrado.`);
+        if (!command) return sendWarning(message, `Comando \`${target}\` não encontrado.`);
 
         const commandsDir = path.resolve(__dirname, '..', '..', 'commands');
         const commandFile = findCommandFile(commandsDir, command.name);
-        if (!commandFile) return sendEmbed('yellow', message, `Arquivo do comando \`${command.name}\` não encontrado.`);
+        if (!commandFile) return sendWarning(message, `Arquivo do comando \`${command.name}\` não encontrado.`);
 
         delete require.cache[require.resolve(commandFile)];
         message.client.commands.delete(command.name);
@@ -61,11 +61,11 @@ module.exports = {
       }
 
       if (type === 'event') {
-        if (!target) return sendEmbed('yellow', message, 'Especifique o nome do evento.');
+        if (!target) return sendWarning(message, 'Especifique o nome do evento.');
 
         const eventsDir = path.resolve(__dirname, '..', '..', 'events');
         const eventFile = findEventFile(eventsDir, target);
-        if (!eventFile) return sendEmbed('yellow', message, `Evento \`${target}\` não encontrado.`);
+        if (!eventFile) return sendWarning(message, `Evento \`${target}\` não encontrado.`);
 
         delete require.cache[require.resolve(eventFile)];
         const updatedEvent = require(eventFile);
@@ -78,7 +78,7 @@ module.exports = {
       }
     } catch (error) {
       console.error('[reload] Erro ao recarregar:', error);
-      return sendEmbed('yellow', message, 'Não foi possível recarregar o módulo.');
+      return sendWarning(message, 'Não foi possível recarregar o módulo.');
     }
   },
 };
