@@ -7,7 +7,7 @@ const {
   EmbedBuilder,
 } = require('discord.js');
 
-const { colors } = require('@config');
+const { colors, attentionIcon } = require('@config');
 const categories = require('@utils/helpCategories');
 
 module.exports = {
@@ -45,8 +45,8 @@ module.exports = {
     }
 
     const embed = new EmbedBuilder()
-      .setTitle('Punishment - Help Menu')
-      .setColor(colors.red || 0xED4245)
+      .setAuthor({ name: 'Comando de ajuda', iconURL: attentionIcon })
+      .setColor('0xFE3838')
       .setDescription([
         '```',
         'Punishment - Help Menu',
