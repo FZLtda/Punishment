@@ -2,7 +2,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 const GlobalBan = require('@models/GlobalBan');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { emojis, colors, bot } = require('@config');
 
 module.exports = {
@@ -20,15 +20,15 @@ module.exports = {
     const motivo = args.slice(1).join(' ') || 'Sem motivo fornecido.';
 
     if (!userId || !/^\d{17,19}$/.test(userId))
-      return sendEmbed('yellow', message, 'Você deve fornecer um ID de usuário válido.');
+      return sendWarning(message, 'Você deve fornecer um ID de usuário válido.');
 
     const alvo = await message.client.users.fetch(userId).catch(() => null);
     if (!alvo)
-      return sendEmbed('yellow', message, 'Usuário não encontrado com esse ID.');
+      return sendWarning(message, 'Usuário não encontrado com esse ID.');
 
     const jaBanido = await GlobalBan.findOne({ userId: alvo.id });
     if (jaBanido)
-      return sendEmbed('yellow', message, 'Este usuário já está banido globalmente.');
+      return sendWarning(message, 'Este usuário já está banido globalmente.');
 
     await GlobalBan.create({
       userId: alvo.id,
