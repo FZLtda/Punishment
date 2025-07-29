@@ -20,7 +20,7 @@ module.exports = {
    */
   
   async execute(message, args) {
-    if (message.author.id !== bot.owner) return;
+    if (message.author.id !== bot.ownerId) return;
 
     const type = args[0]?.toLowerCase();
     const target = args[1]?.toLowerCase();
