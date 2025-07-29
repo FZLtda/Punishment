@@ -13,18 +13,23 @@ const categories = require('@utils/helpCategories');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('help')
-    .setDescription('Exibe o menu de ajuda com categorias e comandos.'),
+    .setDescription('Exibe o painel de comandos categorizados do Punishment.'),
 
   async execute(interaction) {
     const embed = new EmbedBuilder()
-      .setTitle('📘 Punishment - Help Menu')
-      .setDescription([
-        'Selecione uma **categoria de comandos** abaixo para ver os detalhes, exemplos e permissões.',
-        '',
-        '🔧 Moderação, 🎛️ Utilidades, ⚙️ Configurações — tudo explicado em um só lugar.',
-      ].join('\n'))
       .setColor(colors.red)
-      .setFooter({ text: 'Alaska Help System' });
+      .setTitle('📂 Central de Comandos')
+      .setDescription([
+        'Use `.help <comando>` para obter detalhes sobre um comando específico.',
+        '',
+        ...categories.map(cat =>
+          `**${cat.emoji} ${cat.name}**\n${cat.commands.map(cmd => `\`${cmd.name}\``).join(', ')}`).join('\n\n')
+      ])
+      .setFooter({
+        text: 'funczero.xyz',
+        iconURL: interaction.client.user.displayAvatarURL(),
+      })
+      .setTimestamp();
 
     const menu = new StringSelectMenuBuilder()
       .setCustomId('help-category')
