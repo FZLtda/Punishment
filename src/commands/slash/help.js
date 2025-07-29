@@ -18,19 +18,18 @@ module.exports = {
   async execute(interaction) {
     if (!Array.isArray(categories) || categories.length === 0) {
       return interaction.reply({
-        content: 'Nenhuma categoria de ajuda foi encontrada.',
+        content: '❌ Nenhuma categoria de ajuda foi encontrada.',
         ephemeral: true,
       });
     }
 
-    const embed = new EmbedBuilder()
-      .setTitle('Punishment - Help Menu')
-      .setColor(colors.red || 0xED4245)
-      .setDescription('Selecione uma **categoria de comandos** abaixo para ver os detalhes.\n\n🔧 Moderação, 🎛️ Utilidades, ⚙️ Configurações — tudo explicado em um só lugar.')
-      .setFooter({ text: 'Punishment Help' });
-
-    const options = categories
-      .filter(cat => cat && typeof cat.id === 'string')
+    const validOptions = categories
+      .filter(cat =>
+        cat &&
+        typeof cat.id === 'string' &&
+        typeof cat.name === 'string' &&
+        typeof cat.description === 'string'
+      )
       .map(cat => ({
         label: cat.name,
         description: cat.description,
@@ -38,10 +37,30 @@ module.exports = {
         emoji: cat.emoji,
       }));
 
+    if (validOptions.length === 0) {
+      return interaction.reply({
+        content: '❌ Nenhuma categoria válida foi encontrada.',
+        ephemeral: true,
+      });
+    }
+
+    const embed = new EmbedBuilder()
+      .setTitle('Punishment - Help Menu')
+      .setColor(colors.red || 0xED4245)
+      .setDescription([
+        '```',
+        'Punishment - Help Menu',
+        '```',
+        '>>> Selecione um comando no menu abaixo para exibir informações detalhadas, exemplos de uso e permissões.',
+        '',
+        'Você verá tudo, desde ferramentas de moderação até recursos de personalização do servidor, tudo explicado em um só lugar.'
+      ].join('\n'))
+      .setFooter({ text: 'Punishment Help' });
+
     const menu = new StringSelectMenuBuilder()
       .setCustomId('help-category')
       .setPlaceholder('Selecione uma categoria de comandos')
-      .addOptions(options);
+      .addOptions(validOptions);
 
     const row = new ActionRowBuilder().addComponents(menu);
 
