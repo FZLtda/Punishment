@@ -2,7 +2,7 @@
 
 const { EmbedBuilder, ChannelType } = require('discord.js');
 const { colors, emojis } = require('@config');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { sendModLog } = require('@modules/modlog');
 
 module.exports = {
@@ -18,11 +18,11 @@ module.exports = {
     const conteudo = args.slice(1).join(' ');
 
     if (!canal || canal.type !== ChannelType.GuildText) {
-      return sendEmbed('yellow', message, 'Você precisa mencionar um canal de texto válido.');
+      return sendWarning(message, 'Você precisa mencionar um canal de texto válido.');
     }
 
     if (!conteudo) {
-      return sendEmbed('yellow', message, 'Você precisa inserir uma mensagem para enviar.');
+      return sendWarning(message, 'Você precisa inserir uma mensagem para enviar.');
     }
 
     const isEmbed = conteudo.startsWith('--embed');
@@ -47,7 +47,7 @@ module.exports = {
       }
     } catch (err) {
       console.error('[send] Erro ao enviar mensagem:', err);
-      return sendEmbed('yellow', message, 'Não foi possível enviar a mensagem.');
+      return sendWarning(message, 'Não foi possível enviar a mensagem.');
     }
 
     // Confirmação silenciosa
