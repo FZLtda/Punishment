@@ -13,7 +13,7 @@ module.exports = {
   devOnly: true,
 
   async execute(message, args) {
-    if (message.author.id !== bot.owner)
+    if (message.author.id !== bot.ownerId)
       return;
 
     const userId = args[0];
