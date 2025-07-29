@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   red:    0xFC544C,
   yellow: 0xFBD35B,
