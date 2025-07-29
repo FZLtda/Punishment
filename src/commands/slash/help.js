@@ -6,7 +6,7 @@ const { EmbedBuilder, SlashCommandBuilder } = require('discord.js');
 const checkGlobalBan = require('@middlewares/checkGlobalBan');
 const { formatUsage } = require('@utils/formatUsage');
 const { getPrefix } = require('@utils/prefixManager');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { colors, emojis } = require('@config');
 
 module.exports = {
@@ -35,7 +35,7 @@ module.exports = {
         client.commands.find(cmd => cmd.aliases?.includes(input));
 
       if (!command)
-        return sendEmbed('yellow', interaction, 'Não foi possível encontrar este comando.');
+        return sendWarning(interaction, 'Não foi possível encontrar este comando.');
 
       const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
 
