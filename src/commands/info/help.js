@@ -6,7 +6,7 @@ const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { formatUsage } = require('@utils/formatUsage');
 const { getPrefix } = require('@utils/prefixManager');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 
 module.exports = {
   name: 'help',
@@ -26,7 +26,7 @@ module.exports = {
         client.commands.find(cmd => cmd.aliases?.includes(input));
 
       if (!command)
-        return sendEmbed('yellow', message, 'Não foi possível encontrar este comando.');
+        return sendWarning(message, 'Não foi possível encontrar este comando.');
 
       const usage = formatUsage(command.usage || 'Uso não especificado.', prefix);
 
