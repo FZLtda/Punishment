@@ -3,7 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { checkMemberGuard } = require('@utils/memberGuards');
 
 module.exports = {
@@ -20,6 +20,7 @@ module.exports = {
    * @param {import('discord.js').Message} message
    * @param {string[]} args
    */
+  
   async execute(message, args) {
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
@@ -54,7 +55,7 @@ module.exports = {
 
     } catch (error) {
       console.error('[kick] Erro ao expulsar membro:', error);
-      return sendEmbed('yellow', message, 'Não foi possível expulsar o usuário devido a um erro.');
+      return sendWarning(message,'Não foi possível expulsar o usuário devido a um erro inesperado.');
     }
   }
 };
