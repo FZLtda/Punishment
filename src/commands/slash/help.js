@@ -46,7 +46,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setAuthor({ name: 'Comando de ajuda', iconURL: attentionIcon })
-      .setColor('0xFE3838')
+      .setColor('#FE3838')
       .setDescription([
         '```',
         'Punishment - Help Menu',
