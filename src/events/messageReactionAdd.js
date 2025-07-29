@@ -9,9 +9,9 @@
 
 const { EmbedBuilder } = require('discord.js');
 const Giveaway = require('@models/Giveaway');
-const Logger = require('@logger').child({ module: 'messageReactionAdd' });
-const { translateText } = require('@utils/translate');
 const { colors, emojis, langFlags } = require('@config');
+const { translateText } = require('@services/deeplService');
+const Logger = require('@logger').child({ module: 'messageReactionAdd' });
 
 const translationCooldown = new Map();
 
@@ -23,6 +23,7 @@ module.exports = {
    * @param {import('discord.js').MessageReaction} reaction - Reação adicionada
    * @param {import('discord.js').User} user - Usuário que reagiu
    */
+  
   async execute(reaction, user) {
     if (user.bot) return;
 
