@@ -1,7 +1,7 @@
 'use strict';
 
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { checkMemberGuard } = require('@utils/memberGuards');
 const { sendModLog } = require('@modules/modlog');
 const { colors, emojis } = require('@config');
@@ -49,7 +49,7 @@ module.exports = {
 
     } catch (error) {
       console.error('[unlockuser] Erro ao desbloquear usuário:', error);
-      return sendEmbed('yellow', message, 'Não foi possível desbloquear o usuário devido a um erro inesperado.');
+      return sendWarning(message, 'Não foi possível desbloquear o usuário devido a um erro inesperado.');
     }
   }
 };
