@@ -2,7 +2,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { sendModLog } = require('@modules/modlog');
 
 module.exports = {
@@ -18,13 +18,13 @@ module.exports = {
     const motivo = args.slice(1).join(' ') || 'Não especificado.';
 
     if (!userId || !/^\d{17,19}$/.test(userId)) {
-      return sendEmbed('yellow', message, 'Forneça um ID de usuário válido para remover o banimento.');
+      return sendWarning(message, 'Forneça um ID de usuário válido para remover o banimento.');
     }
 
     try {
       const banInfo = await message.guild.bans.fetch(userId).catch(() => null);
       if (!banInfo) {
-        return sendEmbed('yellow', message, 'Este usuário não está banido ou o ID é inválido.');
+        return sendWarning(message, 'Este usuário não está banido ou o ID é inválido.');
       }
 
       await message.guild.members.unban(userId, motivo);
@@ -52,7 +52,7 @@ module.exports = {
 
     } catch (error) {
       console.error(error);
-      return sendEmbed('red', message, 'Não foi possível remover o banimento do usuário.');
+      return sendWarning(message, 'Não foi possível remover o banimento do usuário.');
     }
   }
 };
