@@ -1,4 +1,3 @@
-
 'use strict';
 
 const { EmbedBuilder } = require('discord.js');
@@ -9,7 +8,7 @@ module.exports = {
   customId: 'open_example_modal',
 
   /**
-   * Executa um modal de exemplo
+   * Executa um modal de exemplo.
    * @param {import('discord.js').ModalSubmitInteraction} interaction
    * @param {import('discord.js').Client} client
    */
@@ -17,14 +16,26 @@ module.exports = {
     const name = interaction.fields.getTextInputValue('name_input');
     const feedback = interaction.fields.getTextInputValue('feedback_input');
 
-    Logger.info(`[MODAL] Feedback recebido de ${interaction.user.tag}: ${name} — ${feedback}`);
+    Logger.info(`[modal] Feedback recebido de ${interaction.user.tag}: ${name} — ${feedback}`);
 
     const embed = new EmbedBuilder()
-      .setTitle('Feedback Recebido!')
+      .setTitle(`${emojis.feedback || '📝'} Feedback recebido`)
       .setColor(colors.green)
-      .setDescription(`Obrigado, **${name}**!\nRecebemos seu feedback:\n> ${feedback}`)
-      .setFooter({ text: 'Formulário de Feedback', iconURL: client.user.displayAvatarURL() });
+      .setDescription([
+        `Obrigado, **${name}**!`,
+        '',
+        'Recebemos seu feedback:',
+        `> ${feedback}`
+      ].join('\n'))
+      .setFooter({
+        text: 'Formulário de Feedback',
+        iconURL: client.user.displayAvatarURL()
+      })
+      .setTimestamp();
 
-    await interaction.reply({ embeds: [embed], ephemeral: true });
+    await interaction.reply({
+      embeds: [embed],
+      flags: 1 << 6
+    });
   }
 };
