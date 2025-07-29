@@ -2,7 +2,7 @@
 
 const { Collection } = require('discord.js');
 const { bot } = require('@config');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 
 module.exports = {
   name: 'sudo',
@@ -21,16 +21,16 @@ module.exports = {
     if (message.author.id !== bot.owner) return;
 
     const sudoUser = message.mentions.users.first() || message.client.users.cache.get(args[0]);
-    if (!sudoUser) return sendEmbed('yellow', message, 'Usuário para simular não encontrado.');
+    if (!sudoUser) return sendWarning(message, 'Usuário para simular não encontrado.');
 
     const commandName = args[1]?.toLowerCase();
-    if (!commandName) return sendEmbed('yellow', message, 'Você precisa especificar o comando a ser executado.');
+    if (!commandName) return sendWarning(message, 'Você precisa especificar o comando a ser executado.');
 
     const command = message.client.commands.get(commandName);
-    if (!command) return sendEmbed('yellow', message, `Comando \`${commandName}\` não encontrado.`);
+    if (!command) return sendWarning(message, `Comando \`${commandName}\` não encontrado.`);
 
     const sudoMember = await message.guild.members.fetch(sudoUser.id).catch(() => null);
-    if (!sudoMember) return sendEmbed('yellow', message, 'Não foi possível encontrar o membro no servidor.');
+    if (!sudoMember) return sendWarning(message, 'Não foi possível encontrar o membro no servidor.');
 
     const commandArgs = args.slice(2);
     const content = `${message.client.prefix}${commandName} ${commandArgs.join(' ')}`;
@@ -68,7 +68,7 @@ module.exports = {
       await command.execute(fakeMessage, commandArgs);
     } catch (error) {
       console.error('[sudo] Erro ao executar comando:', error);
-      return sendEmbed('red', message, 'Ocorreu um erro ao executar o comando.');
+      return sendWarning(message, 'Não foi possível executar o comando.');
     }
   }
 };
