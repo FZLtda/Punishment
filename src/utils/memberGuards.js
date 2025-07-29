@@ -1,6 +1,6 @@
 'use strict';
 
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 
 /**
  * Verifica se uma ação de moderação pode ser executada em um membro.
@@ -11,6 +11,7 @@ const { sendEmbed } = require('@utils/embedReply');
  * @param {'ban' | 'kick' | 'mute' | 'unmute' | 'role' | 'warn'} action - Tipo da ação a ser validada.
  * @returns {Promise<boolean>} Retorna `true` se todas as verificações forem aprovadas, ou `false` com mensagem explicativa.
  */
+
 async function checkMemberGuard(message, target, action = 'ban') {
   const { guild, author, member, client } = message;
   const botMember = guild.members.me;
@@ -60,7 +61,7 @@ async function checkMemberGuard(message, target, action = 'ban') {
  * @returns {Promise<boolean>} Sempre retorna `false`.
  */
 async function sendBlock(message, content) {
-  await sendEmbed('yellow', message, content);
+  await sendWarning(message, content);
   return false;
 }
 
