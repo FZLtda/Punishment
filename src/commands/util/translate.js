@@ -1,9 +1,9 @@
 'use strict';
 
 const { EmbedBuilder } = require('discord.js');
-const { translateText } = require('@utils/translate');
 const { colors, emojis } = require('@config');
 const { sendWarning } = require('@utils/embedWarning');
+const { translateText } = require('@services/deeplService');
 
 module.exports = {
   name: 't',
