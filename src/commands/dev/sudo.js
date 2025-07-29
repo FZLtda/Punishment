@@ -18,7 +18,7 @@ module.exports = {
    */
   
   async execute(message, args) {
-    if (message.author.id !== bot.owner) return;
+    if (message.author.id !== bot.ownerId) return;
 
     const sudoUser = message.mentions.users.first() || message.client.users.cache.get(args[0]);
     if (!sudoUser) return sendWarning(message, 'Usuário para simular não encontrado.');
