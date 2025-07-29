@@ -2,56 +2,78 @@
 
 const fs = require('fs');
 const path = require('path');
+const { Collection } = require('discord.js');
 const Logger = require('@logger');
 
 /**
  * Carrega todos os Select Menus personalizados (String/User/Role) e registra no client.
  * Suporta customId como string exata ou RegExp para ids dinâmicos.
  * @param {import('discord.js').Client} client
+ * @returns {void}
  */
-function loadMenus(client) {
-  const menusPath = path.join(__dirname, '../../../src/interactions/menus');
 
-  client.menus = [];
+function loadMenus(client) {
+  const menusPath = path.resolve(__dirname, '../../../src/interactions/menus');
+
+  console.time('[LOADER] Tempo de carregamento dos Select Menus');
+  client.menus = new Collection();
 
   if (!fs.existsSync(menusPath)) {
     Logger.warn('[LOADER] Pasta de Select Menus não encontrada.');
     return;
   }
 
-  const files = fs.readdirSync(menusPath).filter(file => file.endsWith('.js'));
-  if (files.length === 0) {
+  const menuFiles = getAllJsFiles(menusPath);
+  if (menuFiles.length === 0) {
     Logger.warn('[LOADER] Nenhum menu encontrado na pasta menus.');
     return;
   }
 
-  for (const file of files) {
-    const filePath = path.join(menusPath, file);
-
+  for (const filePath of menuFiles) {
     try {
-      const menu = require(filePath);
+      const raw = require(filePath);
+      const menu = raw?.default || raw;
 
       const isValidCustomId =
-        typeof menu.customId === 'string' ||
-        menu.customId instanceof RegExp;
+        typeof menu?.customId === 'string' || menu?.customId instanceof RegExp;
 
-      if (!menu || !isValidCustomId || typeof menu.execute !== 'function') {
-        Logger.warn(`[MENU] Ignorado (inválido): ${file}`);
+      if (!isValidCustomId || typeof menu?.execute !== 'function') {
+        Logger.warn(`[MENU] Ignorado (inválido): ${path.basename(filePath)}`);
         continue;
       }
 
-      client.menus.push({
-        id: menu.customId,
-        handler: menu.execute,
-      });
-
+      client.menus.set(menu.customId, menu);
       Logger.info(`[MENU] Carregado: ${menu.customId}`);
     } catch (err) {
-      Logger.error(`[MENU] Erro ao carregar ${file}: ${err.message}`);
+      Logger.error(`[MENU] Erro ao carregar ${path.basename(filePath)}: ${err.message}`);
     }
   }
 
-  Logger.info(`[LOADER] ${client.menus.length} Select Menus carregados com sucesso.`);
+  console.timeEnd('[LOADER] Tempo de carregamento dos Select Menus');
+  Logger.success(`[LOADER] ${client.menus.size} Select Menus carregados com sucesso.`);
+}
+
+/**
+ * Retorna recursivamente todos os arquivos .js de um diretório
+ * @param {string} dir
+ * @returns {string[]}
+ */
+
+function getAllJsFiles(dir) {
+  let results = [];
+
+  const list = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of list) {
+    const fullPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      results = results.concat(getAllJsFiles(fullPath));
+    } else if (entry.isFile() && entry.name.endsWith('.js')) {
+      results.push(fullPath);
+    }
+  }
+
+  return results;
 }
 
 module.exports = { loadMenus };
