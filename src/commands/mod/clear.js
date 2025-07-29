@@ -1,8 +1,8 @@
 'use strict';
 
-const { EmbedBuilder } = require('discord.js');
-const { colors, emojis } = require('@config');
+const { emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
+const { sendWarning } = require('@utils/embedWarning');
 
 module.exports = {
   name: 'clear',
@@ -18,7 +18,7 @@ module.exports = {
     const alvo = message.mentions.users.first();
 
     if (!quantidade || isNaN(quantidade) || quantidade < 1 || quantidade > 100) {
-      return sendErro(message, 'Forneça um valor entre 1 e 100 para apagar mensagens.');
+      return sendWarning(message, 'Forneça um valor entre 1 e 100 para apagar mensagens.');
     }
 
     try {
@@ -40,7 +40,6 @@ module.exports = {
 
       setTimeout(() => resposta.delete().catch(() => null), 4000);
 
-      // Log da ação
       await sendModLog(message.guild, {
         action: 'Clear',
         moderator: message.author,
@@ -50,15 +49,7 @@ module.exports = {
 
     } catch (error) {
       console.error(error);
-      return sendErro(message, 'Não foi possível apagar as mensagens devido a um erro.');
+      return sendWarning(message, 'Não foi possível apagar as mensagens devido a um erro.');
     }
   }
 };
-
-function sendErro(message, texto) {
-  const embed = new EmbedBuilder()
-    .setColor(colors.yellow)
-    .setAuthor({ name: texto, iconURL: emojis.attentionIcon });
-
-  return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
-}
