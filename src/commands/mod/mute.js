@@ -2,7 +2,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { checkMemberGuard } = require('@utils/memberGuards');
 const { sendModLog } = require('@modules/modlog');
 
@@ -24,12 +24,12 @@ module.exports = {
     const motivo = args.slice(2).join(' ') || 'Não especificado.';
 
     if (!tempo) {
-      return sendEmbed('yellow', message, 'Defina um tempo de duração para o mute (ex: `1m`, `1h`, `1d`).');
+      return sendWarning(message, 'Defina um tempo de duração para o mute (ex: `1m`, `1h`, `1d`).');
     }
 
     const duracao = convertToMilliseconds(tempo);
     if (!duracao) {
-      return sendEmbed('yellow', message, 'Duração inválida. Use `s`, `m`, `h`, `d` (ex: `10m`, `1h`).');
+      return sendWarning(message, 'Duração inválida. Use `s`, `m`, `h`, `d` (ex: `10m`, `1h`).');
     }
 
     try {
@@ -64,7 +64,7 @@ module.exports = {
 
     } catch (error) {
       console.error('[mute] Erro ao aplicar timeout:', error);
-      return sendEmbed('yellow', message, 'Não foi possível silenciar o usuário devido a um erro inesperado.');
+      return sendWarning(message, 'Não foi possível silenciar o usuário devido a um erro inesperado.');
     }
   }
 };
