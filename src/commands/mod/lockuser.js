@@ -1,7 +1,7 @@
 'use strict';
 
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const { sendEmbed } = require('@utils/embedReply');
+const { sendWarning } = require('@utils/embedWarning');
 const { checkMemberGuard } = require('@utils/memberGuards');
 const { sendModLog } = require('@modules/modlog');
 const { colors, emojis } = require('@config');
@@ -49,7 +49,7 @@ module.exports = {
 
     } catch (error) {
       console.error('[COMMAND: lockuser] Erro ao aplicar bloqueio:', error);
-      await sendEmbed('yellow', message, 'Ocorreu um erro ao tentar bloquear o usuário neste canal.');
+      await sendWarning(message, 'Ocorreu um erro ao tentar bloquear o usuário neste canal.');
     }
   },
 };
