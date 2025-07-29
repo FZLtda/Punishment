@@ -18,19 +18,19 @@ module.exports = {
   async execute(interaction) {
     if (!Array.isArray(categories) || categories.length === 0) {
       return interaction.reply({
-        content: '❌ Nenhuma categoria de ajuda foi encontrada.',
+        content: 'Nenhuma categoria de ajuda foi encontrada.',
         ephemeral: true,
       });
     }
 
     const embed = new EmbedBuilder()
-      .setTitle('📘 Punishment - Help Menu')
+      .setTitle('Punishment - Help Menu')
       .setColor(colors.red || 0xED4245)
       .setDescription('Selecione uma **categoria de comandos** abaixo para ver os detalhes.\n\n🔧 Moderação, 🎛️ Utilidades, ⚙️ Configurações — tudo explicado em um só lugar.')
-      .setFooter({ text: 'Alaska Help System' });
+      .setFooter({ text: 'Punishment Help' });
 
     const options = categories
-      .filter(cat => cat && typeof cat.id === 'string') // garante validade
+      .filter(cat => cat && typeof cat.id === 'string')
       .map(cat => ({
         label: cat.name,
         description: cat.description,
