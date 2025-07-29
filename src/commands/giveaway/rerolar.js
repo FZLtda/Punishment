@@ -1,9 +1,9 @@
 'use strict';
 
-const { sendEmbed } = require('@utils/embedReply');
-const Giveaway = require('@models/Giveaway');
 const { EmbedBuilder } = require('discord.js');
+const { sendWarning } = require('@utils/embedWarning');
 const { colors, emojis } = require('@config');
+const Giveaway = require('@models/Giveaway');
 const logger = require('@logger');
 
 module.exports = {
@@ -19,14 +19,14 @@ module.exports = {
 
     if (!msgId || !/^\d{17,20}$/.test(msgId)) {
       logger.warn(`[REROLL] ID inválido fornecido por ${message.author.tag} (${message.author.id})`);
-      return sendEmbed('yellow', message, 'Forneça um ID de mensagem válido para rerolar o sorteio.');
+      return sendWarning(message, 'Forneça um ID de mensagem válido para rerolar o sorteio.');
     }
 
     const sorteio = await Giveaway.findOne({ messageId: msgId, status: 'encerrado' });
 
     if (!sorteio) {
       logger.warn(`[REROLL] Sorteio encerrado não encontrado para o ID ${msgId}`);
-      return sendEmbed('yellow', message, 'Não foi encontrado nenhum sorteio com esse ID.');
+      return sendWarning(message, 'Não foi encontrado nenhum sorteio com esse ID.');
     }
 
     const participantes = [...sorteio.participants];
