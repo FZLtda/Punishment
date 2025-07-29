@@ -3,6 +3,7 @@
 const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
+const { sendWarning } = require('@utils/embedWarning');
 
 module.exports = {
   name: 'unlock',
@@ -18,8 +19,13 @@ module.exports = {
     const canal = message.channel;
 
     try {
-      const jáDesbloqueado = !canal.permissionOverwrites.cache.get(message.guild.roles.everyone.id)?.deny.has(PermissionsBitField.Flags.SendMessages);
-      if (jáDesbloqueado) return sendError(message, 'Este canal já está desbloqueado.');
+      const jaDesbloqueado = !canal.permissionOverwrites.cache
+        .get(message.guild.roles.everyone.id)
+        ?.deny.has(PermissionsBitField.Flags.SendMessages);
+
+      if (jaDesbloqueado) {
+        return sendWarning(message, 'Este canal já está desbloqueado.');
+      }
 
       await canal.permissionOverwrites.edit(message.guild.roles.everyone, {
         SendMessages: null
@@ -50,15 +56,7 @@ module.exports = {
 
     } catch (error) {
       console.error(error);
-      return sendError(message, 'Não foi possível desbloquear o canal devido a um erro inesperado.');
+      return sendWarning(message, 'Não foi possível desbloquear o canal devido a um erro inesperado.');
     }
   }
 };
-
-function sendError(message, texto) {
-  const embed = new EmbedBuilder()
-    .setColor(colors.yellow)
-    .setAuthor({ name: texto, iconURL: emojis.attention });
-
-  return message.channel.send({ embeds: [embed], allowedMentions: { repliedUser: false } });
-}
