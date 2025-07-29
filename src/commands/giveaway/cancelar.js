@@ -1,8 +1,9 @@
 'use strict';
 
-const { sendEmbed } = require('@utils/embedReply');
-const Giveaway = require('@models/Giveaway');
+
 const { EmbedBuilder } = require('discord.js');
+const { sendWarning } = require('@utils/embedWarning');
+const Giveaway = require('@models/Giveaway');
 const { colors, emojis } = require('@config');
 const logger = require('@logger');
 
@@ -19,14 +20,14 @@ module.exports = {
 
     if (!msgId || !/^\d{17,20}$/.test(msgId)) {
       logger.warn(`[CANCELAR] ID inválido fornecido por ${message.author.tag} (${message.author.id})`);
-      return sendEmbed('yellow', message, 'Informe um ID de mensagem válido do sorteio que deseja cancelar.');
+      return sendWarning(message, 'Informe um ID de mensagem válido do sorteio que deseja cancelar.');
     }
 
     const sorteio = await Giveaway.findOne({ messageId: msgId, status: 'ativo' });
 
     if (!sorteio) {
       logger.warn(`[CANCELAR] Nenhum sorteio ativo encontrado com o ID ${msgId}`);
-      return sendEmbed('yellow', message, 'Não foi encontrado nenhum sorteio ativo com esse ID.');
+      return sendWarning(message, 'Não foi encontrado nenhum sorteio ativo com esse ID.');
     }
 
     sorteio.status = 'cancelado';
@@ -59,7 +60,7 @@ module.exports = {
 
     } catch (err) {
       logger.error(`[CANCELAR] Erro ao cancelar sorteio: ${err.stack || err.message}`);
-      return sendEmbed('yellow', message, 'Não foi possível editar a mensagem do sorteio.');
+      return sendWarning(message, 'Não foi possível editar a mensagem do sorteio.');
     }
   }
 };
