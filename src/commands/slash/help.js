@@ -14,7 +14,7 @@ const { sendWarning } = require('@utils/embedWarning');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('help')
-    .setDescription('Exibe o menu de ajuda com categorias e comandos.'),
+    .setDescription('Mostra todos os comandos disponíveis e como utilizá-los.'),
 
   async execute(interaction) {
     if (!Array.isArray(categories) || categories.length === 0) {
@@ -44,7 +44,7 @@ module.exports = {
         name: 'Comando de ajuda',
         iconURL: emojis.helpIcon
       })
-      .setColor(colors.red)
+      .setColor('#FE3838')
       .setDescription([
         '```',
         'Punishment - Help Menu',
