@@ -44,8 +44,7 @@ module.exports = {
         name: 'Comando de ajuda',
         iconURL: emojis.helpIcon
       })
-      .setTitle('Punishment - Help Menu')
-      .setColor(colors.red || '#FE3838')
+      .setColor(colors.red)
       .setDescription([
         '```',
         'Punishment - Help Menu',
