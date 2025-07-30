@@ -3,7 +3,7 @@
 const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const { sendWarning } = require('@utils/embedWarning');
 const Logger = require('@logger');
-const { colors } = require('@config');
+const { colors, emojis } = require('@config');
 
 module.exports = {
   name: 'addroles',
@@ -13,7 +13,7 @@ module.exports = {
   permissions: [PermissionFlagsBits.ManageRoles],
   botPermissions: [PermissionFlagsBits.ManageRoles],
 
-  async execute(message, args) {
+  async execute(message) {
     const target = message.mentions.members.first();
     const rolesToAdd = message.mentions.roles;
 
@@ -44,10 +44,12 @@ module.exports = {
     try {
       await target.roles.add(filteredRoles);
 
-      Logger.info(`[ADDROLES] ${message.author.tag} adicionou ${filteredRoles.size} cargo(s) a ${target.user.tag}`);
+      Logger.info(
+        `[ADDROLES] ${message.author.tag} adicionou ${filteredRoles.size} cargo(s) a ${target.user.tag}`
+      );
 
       const embed = new EmbedBuilder()
-        .setTitle('Cargos adicionados com sucesso')
+        .setTitle(`${emojis.successEmoji} Cargos adicionados`)
         .setColor(colors.green)
         .setDescription(`${target} recebeu os seguintes cargos:`)
         .addFields([
@@ -55,12 +57,14 @@ module.exports = {
             name: 'Cargos aplicados',
             value: filteredRoles.map(role => `• ${role}`).join('\n'),
           },
-          ...(missing.length
-            ? [{
-                name: 'Ignorados (hierarquia)',
-                value: missing.map(name => `• ${name}`).join('\n'),
-              }]
-            : []),
+          ...(
+            missing.length
+              ? [{
+                  name: 'Ignorados (hierarquia)',
+                  value: missing.map(name => `• ${name}`).join('\n'),
+                }]
+              : []
+          )
         ])
         .setFooter({
           text: `Executor: ${message.author.tag}`,
@@ -69,9 +73,9 @@ module.exports = {
         .setTimestamp();
 
       return message.channel.send({ embeds: [embed] });
-
-    } catch (err) {
-      Logger.error(`[ADDROLES] Erro ao adicionar cargos: ${err.stack || err.message}`);
+      
+    } catch (error) {
+      Logger.error(`[ADDROLES] Erro ao adicionar cargos: ${error.stack || error.message}`);
       return sendWarning(message, 'Não foi possível adicionar os cargos.');
     }
   },
