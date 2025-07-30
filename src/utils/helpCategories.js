@@ -224,26 +224,27 @@ module.exports = [
     description: 'Gerenciamento de sorteios no servidor.',
     commands: [
       {
-        name: 'cancelar',
-        description: 'Cancela um sorteio em andamento.',
-        usage: 'cancelar <ID ou link>',
-        permissions: ['ManageMessages'],
-        id: '000000000000000034',
-      },
-      {
         name: 'sorteio',
         description: 'Inicia um novo sorteio.',
-        usage: 'sorteio <tempo> <prêmio>',
+        usage: 'sorteio <"prêmio"> <vencedores> <tempo> <#canal>',
         permissions: ['ManageMessages'],
         id: '000000000000000035',
       },
       {
         name: 'rerolar',
         description: 'Escolhe um novo vencedor.',
-        usage: 'rerolar <ID ou link>',
+        usage: 'rerolar <ID>',
         permissions: ['ManageMessages'],
         id: '000000000000000036',
       },
+      {
+        name: 'cancelar',
+        description: 'Cancela um sorteio em andamento.',
+        usage: 'cancelar <ID>',
+        permissions: ['ManageMessages'],
+        id: '000000000000000034',
+      },
+      
     ],
   },
 ];
