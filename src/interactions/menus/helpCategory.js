@@ -12,7 +12,7 @@ module.exports = {
 
     if (!category) {
       return interaction.reply({
-        content: '❌ Categoria selecionada é inválida ou não encontrada.',
+        content: 'Categoria selecionada é inválida ou não encontrada.',
         ephemeral: true,
       });
     }
@@ -21,14 +21,14 @@ module.exports = {
       .setColor('#ED4245')
       .setTitle(`${category.emoji} ${category.name}`)
       .setDescription([
-        `📝 ${category.description}`,
+        `${category.description}`,
         '',
         ...category.commands.map(cmd =>
           `</${cmd.name}:${cmd.id}> — ${cmd.description}`
         )
       ].join('\n'))
       .setFooter({
-        text: 'Punishment Help System • funczero.xyz',
+        text: 'funczero.xyz',
         iconURL: interaction.client.user.displayAvatarURL(),
       })
       .setTimestamp();
