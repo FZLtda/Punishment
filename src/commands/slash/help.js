@@ -9,6 +9,7 @@ const {
 
 const { colors, emojis } = require('@config');
 const categories = require('@utils/helpCategories');
+const { sendWarning } = require('@utils/embedWarning');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -17,13 +18,10 @@ module.exports = {
 
   async execute(interaction) {
     if (!Array.isArray(categories) || categories.length === 0) {
-      return interaction.reply({
-        content: '❌ Nenhuma categoria de ajuda foi encontrada.',
-        ephemeral: true,
-      });
+      return sendWarning(interaction, 'Nenhuma categoria de ajuda foi encontrada.');
     }
 
-    const validOptions = categories
+    const options = categories
       .filter(cat =>
         cat &&
         typeof cat.id === 'string' &&
@@ -37,34 +35,34 @@ module.exports = {
         emoji: cat.emoji,
       }));
 
-    if (validOptions.length === 0) {
-      return interaction.reply({
-        content: '❌ Nenhuma categoria válida foi encontrada.',
-        ephemeral: true,
-      });
+    if (options.length === 0) {
+      return sendWarning(interaction, 'Nenhuma categoria válida foi encontrada.');
     }
 
     const embed = new EmbedBuilder()
-      .setAuthor({ name: 'Comando de ajuda', 
-        iconURL: emojis.helpIcon })
-      .setColor('#FE3838')
+      .setAuthor({
+        name: 'Comando de ajuda',
+        iconURL: emojis.helpIcon
+      })
+      .setTitle('Punishment - Help Menu')
+      .setColor(colors.red || '#FE3838')
       .setDescription([
         '```',
         'Punishment - Help Menu',
         '```',
-        '>>> Selecione um comando no menu abaixo para exibir informações detalhadas, exemplos de uso e permissões.',
+        '>>> Selecione uma categoria abaixo para exibir os comandos disponíveis, exemplos de uso e permissões.',
         '',
-        'Você verá tudo, desde ferramentas de moderação até recursos de personalização do servidor, tudo explicado em um só lugar.'
-      ].join('\n'))
+        'Você verá tudo — desde ferramentas de moderação até recursos de personalização do servidor.'
+      ].join('\n'));
 
     const menu = new StringSelectMenuBuilder()
       .setCustomId('help-category')
       .setPlaceholder('Selecione uma categoria de comandos')
-      .addOptions(validOptions);
+      .addOptions(options);
 
     const row = new ActionRowBuilder().addComponents(menu);
 
-    await interaction.reply({
+    return interaction.reply({
       embeds: [embed],
       components: [row],
       ephemeral: true,
