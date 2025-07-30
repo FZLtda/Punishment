@@ -46,7 +46,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setAuthor({ name: 'Comando de ajuda', 
-        iconURL: emojis.attentionIcon })
+        iconURL: 'https://cdn.discordapp.com/attachments/1267699137017806848/1399907959546314752/ajudando.png?ex=688ab562&is=688963e2&hm=9c8aed9f2a4292fdc1fe11c56965b01cd08a1952f14ec3734842eb8cf0efb854&' })
       .setColor('#FE3838')
       .setDescription([
         '```',
