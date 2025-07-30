@@ -1,9 +1,8 @@
 'use strict';
 
 const GuildConfig = require('@models/GuildConfig');
-const { EmbedBuilder } = require('discord.js');
-const { colors, emojis } = require('@config');
 const { sendWarning } = require('@utils/embedWarning');
+const { emojis } = require('@config');
 
 module.exports = {
   name: 'prefix',
@@ -12,6 +11,12 @@ module.exports = {
   userPermissions: ['ManageGuild'],
   deleteMessage: true,
 
+  /**
+   * Altera o prefixo do servidor.
+   * @param {import('discord.js').Message} message
+   * @param {string[]} args
+   */
+  
   async execute(message, args) {
     const novoPrefixo = args[0];
     const guildId = message.guild.id;
@@ -31,19 +36,10 @@ module.exports = {
         message.client.setPrefix(guildId, novoPrefixo);
       }
 
-      const embed = new EmbedBuilder()
-        .setColor(colors.green)
-        .setDescription(`${emojis.successEmoji} O prefixo foi alterado para \`${novoPrefixo}\` com sucesso!`)
-        .setFooter({
-          text: message.author.username,
-          iconURL: message.author.displayAvatarURL({ dynamic: true })
-        })
-        .setTimestamp();
-
-      return message.channel.send({ embeds: [embed] });
+      return message.channel.send(`${emojis.successEmoji} Prefixo alterado para \`${novoPrefixo}\`.`);
 
     } catch (error) {
-      console.error('[PREFIX-ERROR]', error);
+      console.error(`[PREFIX] Erro ao salvar novo prefixo para ${guildId}:`, error);
       return sendWarning(message, 'Não foi possível salvar o novo prefixo.');
     }
   }
