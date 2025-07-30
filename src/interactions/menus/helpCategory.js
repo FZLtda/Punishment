@@ -3,6 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 const categories = require('@utils/helpCategories');
+const getPrefix = require('@utils/getPrefix');
 
 module.exports = {
   customId: 'help-category',
@@ -18,6 +19,8 @@ module.exports = {
       });
     }
 
+    const prefix = await getPrefix(interaction.guildId);
+
     const embed = new EmbedBuilder()
       .setTitle(`${category.emoji} \`\`\`${category.name}\`\`\``)
       .setColor(colors.red || 0xED4245)
@@ -26,7 +29,7 @@ module.exports = {
         iconURL: emojis.helpIcon,
       })
       .setDescription(category.commands.map(cmd => (
-        `**.${cmd.name}**\n` +
+        `**${prefix}${cmd.name}**\n` +
         `> ${cmd.description}\n`
       )).join('\n'))
       .setFooter({ text: `${category.name} • Total: ${category.commands.length} comando(s)` });
