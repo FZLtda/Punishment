@@ -46,7 +46,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setAuthor({ name: 'Comando de ajuda', 
-        iconURL: 'https://cdn.discordapp.com/attachments/1267699137017806848/1399915033487609897/Picsart_25-07-29_21-42-19-238.png?ex=688abbf9&is=68896a79&hm=fe38f5cb80ff3262da3e8bef69a2abd976df12d4ba06efece33fd2ccbe74160b&' })
+        iconURL: 'https://cdn.discordapp.com/attachments/1267699137017806848/1399915415244767303/Picsart_25-07-29_21-42-19-238.png?ex=688abc54&is=68896ad4&hm=20bd45f1f132c229aa4a7d7a223f55edc6a194df2f9e44d42fd4209e6fa2b30c&' })
       .setColor('#FE3838')
       .setDescription([
         '```',
