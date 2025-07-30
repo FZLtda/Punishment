@@ -23,7 +23,7 @@ module.exports = {
     const botMember = message.guild.members.me;
 
     const removableRoles = target.roles.cache.filter(role =>
-      role.id !== message.guild.id && // ignora @everyone
+      role.id !== message.guild.id &&
       role.position < botMember.roles.highest.position
     );
 
@@ -39,7 +39,7 @@ module.exports = {
       );
 
       const embed = new EmbedBuilder()
-        .setTitle('`${emojis.successEmoji} Cargos removidos`)
+        .setTitle('`${emojis.errorEmoji} Cargos removidos`)
         .setColor(colors.red)
         .setDescription(`${target} teve os seguintes cargos removidos:`)
         .addFields([
