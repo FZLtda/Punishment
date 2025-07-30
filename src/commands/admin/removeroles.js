@@ -1,4 +1,4 @@
-'use strict';
+u'use strict';
 
 const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const { sendWarning } = require('@utils/embedWarning');
@@ -23,7 +23,7 @@ module.exports = {
     const botMember = message.guild.members.me;
 
     const removableRoles = target.roles.cache.filter(role =>
-      role.id !== message.guild.id &&
+      role.id !== message.guild.id && // ignora @everyone
       role.position < botMember.roles.highest.position
     );
 
@@ -39,7 +39,7 @@ module.exports = {
       );
 
       const embed = new EmbedBuilder()
-        .setTitle('`${emojis.errorEmoji} Cargos removidos`)
+        .setTitle(`${emojis.errorEmoji} Cargos removidos`)
         .setColor(colors.red)
         .setDescription(`${target} teve os seguintes cargos removidos:`)
         .addFields([
