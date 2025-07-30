@@ -57,6 +57,8 @@ module.exports = {
     const menu = new StringSelectMenuBuilder()
       .setCustomId('help-category')
       .setPlaceholder('Selecione uma categoria de comandos')
+      .setMinValues(1)
+      .setMaxValues(1)
       .addOptions(options);
 
     const row = new ActionRowBuilder().addComponents(menu);
