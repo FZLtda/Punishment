@@ -46,7 +46,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setAuthor({ name: 'Comando de ajuda', 
-        iconURL: 'https://cdn.discordapp.com/attachments/1267699137017806848/1399915415244767303/Picsart_25-07-29_21-42-19-238.png?ex=688abc54&is=68896ad4&hm=20bd45f1f132c229aa4a7d7a223f55edc6a194df2f9e44d42fd4209e6fa2b30c&' })
+        iconURL: emojis.helpIcon })
       .setColor('#FE3838')
       .setDescription([
         '```',
@@ -56,7 +56,6 @@ module.exports = {
         '',
         'Você verá tudo, desde ferramentas de moderação até recursos de personalização do servidor, tudo explicado em um só lugar.'
       ].join('\n'))
-      .setFooter({ text: 'Punishment Help' });
 
     const menu = new StringSelectMenuBuilder()
       .setCustomId('help-category')
