@@ -36,7 +36,7 @@ module.exports = {
         message.client.setPrefix(guildId, novoPrefixo);
       }
 
-      return message.channel.send(`${emojis.successEmoji} Prefixo alterado para \`${novoPrefixo}\`.`);
+      return message.channel.send(`${emojis.successEmoji} Prefixo alterado para \`${novoPrefixo}\``);
 
     } catch (error) {
       console.error(`[PREFIX] Erro ao salvar novo prefixo para ${guildId}:`, error);
