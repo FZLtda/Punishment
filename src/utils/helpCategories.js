@@ -3,7 +3,7 @@
 module.exports = [
   {
     id: 'adm',
-    name: 'Adm',
+    name: 'Administração',
     emoji: '👮‍♂️',
     description: 'Comandos administrativos e de configuração do servidor.',
     commands: [
@@ -18,7 +18,7 @@ module.exports = [
   },
   {
     id: 'mod',
-    name: 'Mod',
+    name: 'Moderação',
     emoji: '🛡',
     description: 'Ferramentas para moderação de usuários e canais.',
     commands: [
@@ -38,7 +38,7 @@ module.exports = [
   },
   {
     id: 'info',
-    name: 'Info',
+    name: 'Informações',
     emoji: 'ℹ️',
     description: 'Comandos para exibir informações.',
     commands: [
@@ -52,7 +52,7 @@ module.exports = [
   },
   {
     id: 'util',
-    name: 'Util',
+    name: 'Utilitários',
     emoji: '🧩',
     description: 'Utilitários gerais para o servidor.',
     commands: [
