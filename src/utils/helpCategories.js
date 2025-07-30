@@ -167,13 +167,6 @@ module.exports = [
         id: '000000000000000028',
       },
       {
-        name: 'help',
-        description: 'Mostra a lista de comandos.',
-        usage: '/help',
-        permissions: [],
-        id: '000000000000000029',
-      },
-      {
         name: 'ping',
         description: 'Exibe a latência do bot.',
         usage: 'ping',
