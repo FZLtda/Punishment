@@ -48,7 +48,7 @@ module.exports = {
 
       await interaction.update({
         embeds: [embed],
-        components: [],
+        components: interaction.message.components,
       });
 
       Logger.info(
