@@ -30,9 +30,14 @@ module.exports = {
           iconURL: emojis.helpIcon,
         })
         .setDescription(
-          category.commands.map(cmd => (
-            `**${prefix}${cmd.name}**\n> ${cmd.description}\n`
-          )).join('\n')
+          category.commands.map(cmd => {
+            const linha1 = `**${prefix}${cmd.name}** - ${cmd.description}`;
+            const linha2 = cmd.usage ? `\`Uso:\` ${cmd.usage}` : null;
+            const linha3 = cmd.permissions?.length ? `\`Permissões:\` ${cmd.permissions.join(', ')}` : null;
+            const linha4 = cmd.details ? `\`Nota:\` ${cmd.details}` : null;
+
+            return [linha1, linha2, linha3, linha4].filter(Boolean).join('\n');
+          }).join('\n\n')
         )
         .setFooter({
           text: `${category.name} • Total: ${category.commands.length} comando(s)`,
