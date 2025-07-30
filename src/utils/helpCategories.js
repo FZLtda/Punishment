@@ -12,7 +12,7 @@ module.exports = [
         usage: 'prefix <novo prefixo>',
         permissions: ['Administrator'],
         details: 'O prefixo define como os comandos são reconhecidos no servidor.',
-        id: '000000000000000005'
+        id: '000000000000000005',
       },
       {
         name: 'addemoji',
@@ -20,7 +20,7 @@ module.exports = [
         usage: 'addemoji <URL|emoji> [nome]',
         permissions: ['ManageEmojisAndStickers'],
         details: 'Você pode usar um emoji de outro servidor ou uma URL de imagem válida.',
-        id: '000000000000000011'
+        id: '000000000000000011',
       },
       {
         name: 'copyemoji',
@@ -28,7 +28,7 @@ module.exports = [
         usage: 'copyemoji <emoji>',
         permissions: ['ManageEmojisAndStickers'],
         details: 'Ideal para importar emojis personalizados com rapidez.',
-        id: '000000000000000013'
+        id: '000000000000000013',
       },
       {
         name: 'backup',
@@ -36,7 +36,7 @@ module.exports = [
         usage: 'backup',
         permissions: ['Administrator'],
         details: 'O backup salva canais, cargos, configurações e permissões.',
-        id: '000000000000000012'
+        id: '000000000000000012',
       },
       {
         name: 'restore',
@@ -44,7 +44,7 @@ module.exports = [
         usage: 'restore <ID>',
         permissions: ['Administrator'],
         details: 'Tenha cuidado! Isso sobrescreverá a estrutura atual.',
-        id: '000000000000000015'
+        id: '000000000000000015',
       },
       {
         name: 'setlog',
@@ -52,7 +52,7 @@ module.exports = [
         usage: 'setlog <#canal>',
         permissions: ['ManageGuild'],
         details: 'O canal será usado para registrar ações de moderação e sistema.',
-        id: '000000000000000016'
+        id: '000000000000000016',
       },
     ],
   },
@@ -66,86 +66,85 @@ module.exports = [
         description: 'Bane um usuário do servidor.',
         usage: 'ban <@usuário> [motivo]',
         permissions: ['BanMembers'],
-        id: '000000000000000001'
+        id: '000000000000000001',
       },
       {
         name: 'unban',
         description: 'Desbane um usuário.',
         usage: 'unban <ID do usuário>',
         permissions: ['BanMembers'],
-        id: '000000000000000023'
+        id: '000000000000000023',
       },
       {
         name: 'kick',
         description: 'Expulsa um usuário do servidor.',
         usage: 'kick <@usuário> [motivo]',
         permissions: ['KickMembers'],
-        id: '000000000000000002'
+        id: '000000000000000002',
       },
       {
         name: 'mute',
         description: 'Silencia um usuário.',
         usage: 'mute <@usuário> <tempo> [motivo]',
         permissions: ['ModerateMembers'],
-        id: '000000000000000020'
+        id: '000000000000000020',
       },
       {
         name: 'unmute',
         description: 'Remove o silêncio de um usuário.',
         usage: 'unmute <@usuário>',
         permissions: ['ModerateMembers'],
-        id: '000000000000000026'
+        id: '000000000000000026',
       },
       {
         name: 'clear',
         description: 'Limpa mensagens de um canal.',
         usage: 'clear <quantidade>',
         permissions: ['ManageMessages'],
-        id: '000000000000000017'
+        id: '000000000000000017',
       },
       {
         name: 'lock',
         description: 'Trava um canal para todos.',
         usage: 'lock',
         permissions: ['ManageChannels'],
-        id: '000000000000000018'
+        id: '000000000000000018',
       },
       {
         name: 'unlock',
         description: 'Destrava um canal.',
         usage: 'unlock',
         permissions: ['ManageChannels'],
-        id: '000000000000000024'
+        id: '000000000000000024',
       },
       {
         name: 'lockuser',
         description: 'Impede um usuário de enviar mensagens.',
         usage: 'lockuser <@usuário>',
         permissions: ['ManageRoles'],
-        id: '000000000000000019'
+        id: '000000000000000019',
       },
       {
         name: 'unlockuser',
         description: 'Libera um usuário silenciado.',
         usage: 'unlockuser <@usuário>',
         permissions: ['ManageRoles'],
-        id: '000000000000000025'
+        id: '000000000000000025',
       },
       {
         name: 'send',
         description: 'Envia uma mensagem como o bot.',
         usage: 'send <mensagem>',
         permissions: ['Administrator'],
-        id: '000000000000000021'
+        id: '000000000000000021',
       },
       {
         name: 'slowmode',
         description: 'Define o modo lento em um canal.',
         usage: 'slowmode <tempo>',
         permissions: ['ManageChannels'],
-        id: '000000000000000022'
+        id: '000000000000000022',
       },
-      
     ],
   },
   {
@@ -158,42 +157,42 @@ module.exports = [
         description: 'Exibe o avatar de um usuário.',
         usage: 'avatar [@usuário]',
         permissions: [],
-        id: '000000000000000027'
+        id: '000000000000000027',
       },
       {
         name: 'botinfo',
         description: 'Informações sobre o bot.',
         usage: 'botinfo',
         permissions: [],
-        id: '000000000000000028'
+        id: '000000000000000028',
       },
       {
         name: 'help',
         description: 'Mostra a lista de comandos.',
         usage: '/help',
         permissions: [],
-        id: '000000000000000029'
+        id: '000000000000000029',
       },
       {
         name: 'ping',
         description: 'Exibe a latência do bot.',
         usage: 'ping',
         permissions: [],
-        id: '000000000000000030'
+        id: '000000000000000030',
       },
       {
         name: 'stats',
         description: 'Estatísticas do bot.',
         usage: 'stats',
         permissions: [],
-        id: '000000000000000031'
+        id: '000000000000000031',
       },
       {
         name: 'userinfo',
         description: 'Exibe informações de um usuário.',
         usage: 'userinfo [@usuário]',
         permissions: [],
-        id: '000000000000000003'
+        id: '000000000000000003',
       },
     ],
   },
@@ -207,7 +206,7 @@ module.exports = [
         description: 'Mostra a política de privacidade.',
         usage: 'privacy',
         permissions: [],
-        id: '000000000000000032'
+        id: '000000000000000032',
       },
       {
         name: 't',
@@ -215,7 +214,7 @@ module.exports = [
         usage: 't <texto>',
         permissions: [],
         details: 'Você também pode especificar o idioma com `t en Olá`.',
-        id: '000000000000000033'
+        id: '000000000000000033',
       },
     ],
   },
@@ -229,21 +228,21 @@ module.exports = [
         description: 'Cancela um sorteio em andamento.',
         usage: 'cancelar <ID ou link>',
         permissions: ['ManageMessages'],
-        id: '000000000000000034'
+        id: '000000000000000034',
       },
       {
         name: 'sorteio',
         description: 'Inicia um novo sorteio.',
         usage: 'sorteio <tempo> <prêmio>',
         permissions: ['ManageMessages'],
-        id: '000000000000000035'
+        id: '000000000000000035',
       },
       {
         name: 'rerolar',
         description: 'Escolhe um novo vencedor.',
         usage: 'rerolar <ID ou link>',
         permissions: ['ManageMessages'],
-        id: '000000000000000036'
+        id: '000000000000000036',
       },
     ],
   },
