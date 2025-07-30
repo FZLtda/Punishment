@@ -127,7 +127,7 @@ module.exports = [
       {
         name: 'unlockuser',
         description: 'Libera um usuário silenciado.',
-        usage: '.unlockuser <@usuário>',
+        usage: 'unlockuser <@usuário>',
         permissions: ['ManageRoles'],
         id: '000000000000000025'
       },
