@@ -40,5 +40,6 @@ module.exports = {
   // Emojis como URLs para uso em embeds
   successIcon:   'http://bit.ly/3IwDZaW',
   errorIcon:     'http://bit.ly/4eOH7el',
-  attentionIcon: 'https://bit.ly/3Ypxwnl'
+  attentionIcon: 'https://bit.ly/3Ypxwnl',
+  helpIcon:      'http://bit.ly/3H2wecE'
 };
