@@ -34,7 +34,7 @@ module.exports = {
             const linha1 = `**${prefix}${cmd.name}**`;
             const linha2 = cmd.description ? `> ${cmd.description}` : null;
             const linha3 = cmd.usage ? `> **Uso:** \`${prefix}${cmd.usage}\`` : null;
-            const linha4 = cmd.permissions?.length ? `> **Acesso:** ${cmd.permissions.join(', ')}` : null;
+            const linha4 = cmd.permissions?.length ? `> **Acesso:** \`${cmd.permissions.join(', ')}\`` : null;
             const linha5 = cmd.details ? `> **Nota:** ${cmd.details}` : null;
 
             return [linha1, linha2, linha3, linha4, linha5].filter(Boolean).join('\n');
