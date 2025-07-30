@@ -37,7 +37,9 @@ module.exports = {
             const linha4 = cmd.permissions?.length ? `> **Acesso:** \`${cmd.permissions.join(', ')}\`` : null;
             const linha5 = cmd.details ? `> **Nota:** ${cmd.details}` : null;
 
-            return [linha1, linha2, linha3, linha4, linha5].filter(Boolean).join('\n');
+            return [linha1, linha2, linha3, linha4, linha5]
+              .filter(Boolean)
+              .join('\n');
           }).join('\n\n')
         )
         .setFooter({
@@ -49,9 +51,13 @@ module.exports = {
         components: [],
       });
 
-      Logger.info(`[HELP] Categoria exibida: ${category.name} • Solicitado por ${interaction.user.tag} (${interaction.user.id})`);
+      Logger.info(
+        `[HELP] Categoria exibida: ${category.name} • Solicitado por ${interaction.user.tag} (${interaction.user.id})`
+      );
     } catch (error) {
-      Logger.error(`[HELP] Erro ao exibir categoria ${selected} para ${interaction.user.tag}: ${error.stack || error.message}`);
+      Logger.error(
+        `[HELP] Erro ao exibir categoria ${selected} para ${interaction.user.tag}: ${error.stack || error.message}`
+      );
       return sendWarning(interaction, 'Não foi possível exibir essa categoria.');
     }
   },
