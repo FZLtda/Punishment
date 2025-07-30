@@ -3,7 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 const categories = require('@utils/helpCategories');
-const getPrefix = require('@utils/prefixManager');
+const { getPrefix } = require('@utils/prefixManager');
 
 module.exports = {
   customId: 'help-category',
