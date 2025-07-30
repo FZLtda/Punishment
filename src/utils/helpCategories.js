@@ -4,7 +4,6 @@ module.exports = [
   {
     id: 'adm',
     name: 'Administração',
-    emoji: '👮‍♂️',
     description: 'Comandos administrativos e de configuração do servidor.',
     commands: [
       { name: 'addemoji', description: 'Adiciona um emoji ao servidor.', id: '000000000000000011' },
@@ -19,7 +18,6 @@ module.exports = [
   {
     id: 'mod',
     name: 'Moderação',
-    emoji: '🛡',
     description: 'Ferramentas para moderação de usuários e canais.',
     commands: [
       { name: 'ban', description: 'Bane um usuário do servidor.', id: '000000000000000001' },
@@ -39,7 +37,6 @@ module.exports = [
   {
     id: 'info',
     name: 'Informações',
-    emoji: 'ℹ️',
     description: 'Comandos para exibir informações.',
     commands: [
       { name: 'avatar', description: 'Exibe o avatar de um usuário.', id: '000000000000000027' },
@@ -53,7 +50,6 @@ module.exports = [
   {
     id: 'util',
     name: 'Utilitários',
-    emoji: '🧩',
     description: 'Utilitários gerais para o servidor.',
     commands: [
       { name: 'privacy', description: 'Mostra a política de privacidade.', id: '000000000000000032' },
@@ -63,7 +59,6 @@ module.exports = [
   {
     id: 'giveaway',
     name: 'Giveaway',
-    emoji: '🎁',
     description: 'Gerenciamento de sorteios no servidor.',
     commands: [
       { name: 'cancelar', description: 'Cancela um sorteio em andamento.', id: '000000000000000034' },
