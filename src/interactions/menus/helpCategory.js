@@ -19,7 +19,7 @@ module.exports = {
     }
 
     const embed = new EmbedBuilder()
-      .setTitle(`${category.emoji} ${category.name}`)
+      .setTitle(`${category.emoji} \`\`\`${category.name}\`\`\``)
       .setColor(colors.red || 0xED4245)
       .setAuthor({
         name: 'Comando de ajuda',
