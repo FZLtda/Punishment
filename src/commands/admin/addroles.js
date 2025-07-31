@@ -55,7 +55,7 @@ module.exports = {
       );
 
       const embed = new EmbedBuilder()
-        .setTitle(`${emojis.successEmoji} Cargos adicionados`)
+        .setTitle(`${emojis.roleAdd} Cargos adicionados`)
         .setColor(colors.green)
         .setDescription(`${target} recebeu os seguintes cargos:`)
         .addFields([
