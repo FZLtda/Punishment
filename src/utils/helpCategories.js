@@ -17,7 +17,7 @@ module.exports = [
       {
         name: 'addemoji',
         description: 'Adiciona um emoji ao servidor.',
-        usage: 'addemoji <URL|emoji> [nome]',
+        usage: 'addemoji <URL> [nome]',
         permissions: ['ManageEmojisAndStickers'],
         details: 'Você pode usar um emoji de outro servidor ou uma URL de imagem válida.',
         id: '000000000000000011',
