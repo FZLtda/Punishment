@@ -30,10 +30,13 @@ module.exports = {
 
     const filteredRoles = rolesToAdd.filter(role => {
       if (target.roles.cache.has(role.id)) return false;
-      if (role.position >= botMember.roles.highest.position) {
+
+      const isAboveBot = role.position >= botMember.roles.highest.position;
+      if (isAboveBot) {
         missing.push(role.name);
         return false;
       }
+
       return true;
     });
 
@@ -57,23 +60,21 @@ module.exports = {
             name: 'Cargos aplicados',
             value: filteredRoles.map(role => `• ${role}`).join('\n'),
           },
-          ...(
-            missing.length
-              ? [{
-                  name: 'Ignorados (hierarquia)',
-                  value: missing.map(name => `• ${name}`).join('\n'),
-                }]
-              : []
-          )
+          ...(missing.length > 0
+            ? [{
+                name: 'Ignorados (hierarquia)',
+                value: missing.map(name => `• ${name}`).join('\n'),
+              }]
+            : [])
         ])
         .setFooter({
-          text: `Executor: ${message.author.tag}`,
+          text: `${message.author.tag}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
 
       return message.channel.send({ embeds: [embed] });
-      
+
     } catch (error) {
       Logger.error(`[ADDROLES] Erro ao adicionar cargos: ${error.stack || error.message}`);
       return sendWarning(message, 'Não foi possível adicionar os cargos.');
