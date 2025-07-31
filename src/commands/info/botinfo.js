@@ -12,6 +12,7 @@ module.exports = {
   usage: '${currentPrefix}botinfo',
   category: 'Informação',
   botPermissions: ['SendMessages'],
+  deleteMessage: true,
 
   /**
    * Executa o comando e envia um embed com informações técnicas do bot.
