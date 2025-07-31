@@ -1,92 +1,55 @@
 'use strict';
 
-const { EmbedBuilder } = require('discord.js');
-const { colors, emojis } = require('@config');
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { criarPagamento } = require('@services/mercadoPago');
+const { colors } = require('@config');
 const { sendWarning } = require('@utils/embedWarning');
-const { checkMemberGuard } = require('@utils/memberGuards');
-const { sendModLog } = require('@modules/modlog');
 
 module.exports = {
-  name: 'mute',
-  description: 'Aplica um timeout (mute) em um membro.',
-  usage: '${currentPrefix}mute <@usuário> <duração> [motivo]',
-  userPermissions: ['ModerateMembers'],
-  botPermissions: ['ModerateMembers'],
+  name: 'doar',
+  description: 'Faça uma doação para apoiar o desenvolvimento do bot.',
+  usage: '${currentPrefix}doar <valor>',
+  category: 'Utilidade',
+  userPermissions: [],
+  botPermissions: [],
   deleteMessage: true,
 
   async execute(message, args) {
-    const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+    const valor = parseFloat(args[0]);
 
-    const isValid = await checkMemberGuard(message, membro, 'mute');
-    if (!isValid) return;
-
-    const tempo = args[1];
-    const motivo = args.slice(2).join(' ') || 'Não especificado.';
-
-    if (!tempo) {
-      return sendWarning(message, 'Defina um tempo de duração para o mute (ex: `1m`, `1h`, `1d`).');
-    }
-
-    const duracao = convertToMilliseconds(tempo);
-    if (!duracao) {
-      return sendWarning(message, 'Duração inválida. Use `s`, `m`, `h`, `d` (ex: `10m`, `1h`).');
+    if (isNaN(valor) || valor <= 0) {
+      return sendWarning(message, 'Forneça um valor válido para doação. Exemplo: `.doar 10`');
     }
 
     try {
-      await membro.timeout(duracao, motivo);
+      const link = await criarPagamento(valor, message.author.id);
 
       const embed = new EmbedBuilder()
-        .setTitle(`${emojis.mute} Punição aplicada`)
-        .setColor(colors.red)
-        .setDescription(`${membro} (\`${membro.id}\`) foi silenciado(a).`)
+        .setTitle('Doação - Punishment')
+        .setDescription('Muito obrigado por considerar doar!\nClique no botão abaixo para continuar com sua doação.')
         .addFields(
-          { name: 'Duração', value: `\`${tempo}\``, inline: true },
-          { name: 'Motivo', value: `\`${motivo}\``, inline: true }
+          { name: 'Valor', value: `R$ ${valor.toFixed(2)}`, inline: true },
+          { name: 'Usuário', value: `<@${message.author.id}>`, inline: true }
         )
-        .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
+        .setColor(colors.red)
         .setFooter({
           text: message.author.username,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
 
-      await message.channel.send({ embeds: [embed] });
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setLabel('Fazer Doação')
+          .setURL(link)
+          .setStyle(ButtonStyle.Link)
+      );
 
-      await sendModLog(message.guild, {
-        action: 'Mute',
-        target: membro.user,
-        moderator: message.author,
-        reason: motivo,
-        extraFields: [
-          { name: 'Duração', value: tempo, inline: true }
-        ]
-      });
+      await message.channel.send({ embeds: [embed], components: [row] });
 
     } catch (error) {
-      console.error('[mute] Erro ao aplicar timeout:', error);
-      return sendWarning(message, 'Não foi possível silenciar o usuário devido a um erro inesperado.');
+      console.error('[doar] Erro ao criar pagamento:', error);
+      return sendWarning(message, 'Não foi possível gerar o link de pagamento. Tente novamente mais tarde.');
     }
   }
 };
-
-/**
- * Converte duração em formato `1m`, `2h`, `3d` para milissegundos.
- * @param {string} tempo 
- * @returns {number|null}
- */
-function convertToMilliseconds(tempo) {
-  const regex = /^(\d+)([smhd])$/;
-  const match = tempo.match(regex);
-  if (!match) return null;
-
-  const valor = parseInt(match[1], 10);
-  const unidade = match[2];
-
-  switch (unidade) {
-    case 's': return valor * 1000;
-    case 'm': return valor * 60 * 1000;
-    case 'h': return valor * 60 * 60 * 1000;
-    case 'd': return valor * 24 * 60 * 60 * 1000;
-    default: return null;
-  }
-}
