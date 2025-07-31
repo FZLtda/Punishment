@@ -12,6 +12,7 @@ module.exports = {
   category: 'Moderação',
   permissions: [PermissionFlagsBits.ManageRoles],
   botPermissions: [PermissionFlagsBits.ManageRoles],
+  deleteMessage: true,
 
   async execute(message) {
     const target = message.mentions.members.first();
