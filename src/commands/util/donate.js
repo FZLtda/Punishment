@@ -33,7 +33,7 @@ module.exports = {
           { name: 'Valor:', value: `R$ ${valor.toFixed(2)}`, inline: true },
           { name: 'Usuário:', value: `<@${message.author.id}>`, inline: true }
         )
-        .setColor(colors.default)
+        .setColor(colors.red)
         .setFooter({ text: 'Sua contribuição nos ajuda a manter o bot online e melhorar cada vez mais!' });
 
       const row = new ActionRowBuilder().addComponents(
