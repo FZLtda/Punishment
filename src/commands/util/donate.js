@@ -27,7 +27,7 @@ module.exports = {
       const link = await criarPagamento(valor, message.author.id);
 
       const embed = new EmbedBuilder()
-        .setTitle('Punishment - Doação')
+        .setTitle('💖 Doação para o Punishment')
         .setDescription('Muito obrigado por considerar doar!\nClique no botão abaixo para continuar com sua doação.')
         .addFields(
           { name: 'Valor:', value: `R$ ${valor.toFixed(2)}`, inline: true },
@@ -46,7 +46,7 @@ module.exports = {
       await message.reply({ embeds: [embed], components: [row] });
 
     } catch (error) {
-      console.error('Erro ao criar pagamento:', error);
+      console.error('[doar] Erro ao criar pagamento:', error);
       return sendWarning(message, 'Não foi possível criar o link de pagamento.');
     }
   },
