@@ -63,12 +63,14 @@ module.exports = {
             parentId: channel.parentId,
             position: channel.position,
             nsfw: 'nsfw' in channel ? channel.nsfw : false,
-            permissionOverwrites: channel.permissionOverwrites.cache.map(perm => ({
-              id: perm.id,
-              type: perm.type,
-              allow: perm.allow.bitfield.toString(),
-              deny: perm.deny.bitfield.toString()
-            }))
+            permissionOverwrites: channel.permissionOverwrites?.cache
+              ? channel.permissionOverwrites.cache.map(perm => ({
+                  id: perm.id,
+                  type: perm.type,
+                  allow: perm.allow.bitfield.toString(),
+                  deny: perm.deny.bitfield.toString()
+                }))
+              : []
           });
         });
 
