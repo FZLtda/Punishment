@@ -45,7 +45,7 @@ module.exports = {
       );
 
       const embed = new EmbedBuilder()
-        .setTitle(`${emojis.errorEmoji} Cargos removidos`)
+        .setTitle(`${emojis.roleRem} Cargos removidos`)
         .setColor(colors.red)
         .setDescription(`${target} teve os seguintes cargos removidos:`)
         .addFields([
