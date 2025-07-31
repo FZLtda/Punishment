@@ -50,6 +50,7 @@
     "nodemon": "^3.1.0"
   },
   "_moduleAliases": {
+    "@root": "src",
     "@core": "src/core",
     "@utils": "src/utils",
     "@tasks": "src/tasks",
