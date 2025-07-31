@@ -1,4 +1,4 @@
-u'use strict';
+'use strict';
 
 const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const { sendWarning } = require('@utils/embedWarning');
@@ -23,7 +23,7 @@ module.exports = {
     const botMember = message.guild.members.me;
 
     const removableRoles = target.roles.cache.filter(role =>
-      role.id !== message.guild.id && // ignora @everyone
+      role.id !== message.guild.id && // evita remover o cargo padrão @everyone
       role.position < botMember.roles.highest.position
     );
 
@@ -49,7 +49,7 @@ module.exports = {
           }
         ])
         .setFooter({
-          text: `${message.author.tag}`,
+          text: `Executor: ${message.author.tag}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
