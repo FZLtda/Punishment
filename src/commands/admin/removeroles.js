@@ -15,20 +15,25 @@ module.exports = {
 
   async execute(message) {
     const target = message.mentions.members.first();
-
-    if (!target) {
-      return sendWarning(message, 'Você precisa mencionar o membro de quem os cargos serão removidos.');
-    }
-
     const botMember = message.guild.members.me;
 
+    if (!target) {
+      return sendWarning(
+        message,
+        'Você precisa mencionar o membro de quem os cargos serão removidos.'
+      );
+    }
+
     const removableRoles = target.roles.cache.filter(role =>
-      role.id !== message.guild.id && // evita remover o cargo padrão @everyone
+      role.id !== message.guild.id &&
       role.position < botMember.roles.highest.position
     );
 
     if (!removableRoles.size) {
-      return sendWarning(message, 'Nenhum cargo pode ser removido desse usuário.');
+      return sendWarning(
+        message,
+        'Nenhum cargo pode ser removido desse usuário.'
+      );
     }
 
     try {
@@ -49,7 +54,7 @@ module.exports = {
           }
         ])
         .setFooter({
-          text: `Executor: ${message.author.tag}`,
+          text: `${message.author.tag}`,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
@@ -57,8 +62,14 @@ module.exports = {
       return message.channel.send({ embeds: [embed] });
 
     } catch (error) {
-      Logger.error(`[REMOVEROLES] Erro ao remover cargos: ${error.stack || error.message}`);
-      return sendWarning(message, 'Não foi possível remover os cargos do usuário.');
+      Logger.error(
+        `[REMOVEROLES] Erro ao remover cargos: ${error.stack || error.message}`
+      );
+
+      return sendWarning(
+        message,
+        'Não foi possível remover os cargos do usuário.'
+      );
     }
   },
 };
