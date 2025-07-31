@@ -25,8 +25,8 @@ module.exports = {
       const link = await criarPagamento(valor, message.author.id);
 
       const embed = new EmbedBuilder()
-        .setTitle('Doação - Punishment')
-        .setDescription('Muito obrigado por considerar doar!\nClique no botão abaixo para continuar com sua doação.')
+        .setTitle('Punishment - Doação')
+        .setDescription('Clique no botão abaixo para finalizar sua doação.')
         .addFields(
           { name: 'Valor', value: `R$ ${valor.toFixed(2)}`, inline: true },
           { name: 'Usuário', value: `<@${message.author.id}>`, inline: true }
@@ -40,7 +40,7 @@ module.exports = {
 
       const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-          .setLabel('Fazer Doação')
+          .setLabel('Finalizar Doação')
           .setURL(link)
           .setStyle(ButtonStyle.Link)
       );
