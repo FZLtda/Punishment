@@ -46,6 +46,20 @@ module.exports = [
         details: 'Tenha cuidado! Isso sobrescreverá a estrutura atual.',
         id: '000000000000000015',
       },
+       {
+        name: 'addroles',
+        description: 'Adiciona múltiplos cargos a um usuário de uma vez.',
+        usage: 'addroles @usuário @cargo1 @cargo2 ...',
+        permissions: [],
+        id: '000000000000000032',
+      },
+       {
+        name: 'removeroles',
+        description: 'Remove todos os cargos de um usuário (exceto o cargo padrão).',
+        usage: 'removeroles @usuário',
+        permissions: [],
+        id: '000000000000000032',
+      },
       {
         name: 'setlog',
         description: 'Define o canal de logs.',
@@ -194,6 +208,13 @@ module.exports = [
     name: 'Utilitários',
     description: 'Utilitários gerais para o servidor.',
     commands: [
+       {
+        name: 'doar',
+        description: 'Faça uma doação para apoiar o desenvolvimento do bot.',
+        usage: 'doar <valor>',
+        permissions: [],
+        id: '000000000000000032',
+      },
       {
         name: 'privacy',
         description: 'Mostra a política de privacidade.',
