@@ -18,7 +18,7 @@ async execute(message, args) {
 const valor = parseFloat(args[0]);
 
 if (isNaN(valor) || valor <= 0) {  
-  return sendWarning(message, 'Forneça um valor válido para doação. Exemplo: `.doar 10`');  
+  return sendWarning(message, 'Forneça um valor válido para doação.');  
 }  
 
 try {  
