@@ -54,16 +54,18 @@ module.exports = {
           .setStyle(ButtonStyle.Link)
       );
 
-      await message.channel.send({
+      const sentMessage = await message.channel.send({
         embeds: [embed],
         components: [row],
       });
 
+      setTimeout(() => {
+        sentMessage.delete().catch(() => {});
+      }, 30000);
+
     } catch (error) {
       console.error('[doar] Erro ao criar pagamento:', error);
-      return sendWarning(
-        message,
-        'Não foi possível gerar o link de pagamento. Tente novamente mais tarde.'
+      return sendWarning(message,'Não foi possível gerar o link de pagamento.'
       );
     }
   },
