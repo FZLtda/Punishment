@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"],
+      "@bot/*": ["bot/*"],
+      "@api/*": ["api/*"],
+      "@config": ["config/index"],
+      "@models/*": ["database/models/*"],
+      "@utils/*": ["utils/*"],
+      "@services/*": ["services/*"],
+      "@tasks/*": ["tasks/*"],
+      "@logger": ["logger/index"]
+    }
+  },
+  "include": ["src"]
+}
