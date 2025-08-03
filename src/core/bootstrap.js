@@ -1,7 +1,7 @@
 'use strict';
 
-const client = require('@coreBot/client');
-const { validateEnvironment } = require('@coreBot/environment');
+const client = require('@core/client');
+const { validateEnvironment } = require('@core/environment');
 const { connectMongo } = require('@database');
 
 const { loadCommands } = require('@loadCommands/loader');
