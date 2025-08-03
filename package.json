@@ -60,7 +60,6 @@
     "@client": "src/client",
     "@config": "src/config",
     "@modules": "src/modules",
-    "@coreBot": "src/coreBot",
     "@handlers": "src/handlers",
     "@database": "src/database",
     "@commands": "src/commands",
