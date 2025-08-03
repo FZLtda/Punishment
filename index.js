@@ -4,7 +4,7 @@ require('module-alias/register');
 require('dotenv').config();
 
 const { reportErrorToWebhook } = require('@utils/webhookMonitor');
-const bootstrap = require('@coreBot/bootstrap');
+const bootstrap = require('@core/bootstrap');
 const { bot } = require('@config');
 const Logger = require('@logger');
 
