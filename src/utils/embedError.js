@@ -8,6 +8,7 @@ const { colors, emojis } = require('@config');
  * @param {import('discord.js').Message} message - Mensagem original.
  * @param {string} content - Texto a ser exibido.
  */
+
 async function sendError(message, content) {
   const embed = new EmbedBuilder()
     .setColor(colors.red)
@@ -16,7 +17,7 @@ async function sendError(message, content) {
       iconURL: emojis.errorIcon
     });
 
-  return message.channel.send({
+  return message.reply({
     embeds: [embed],
     allowedMentions: { repliedUser: false }
   });
