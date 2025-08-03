@@ -30,7 +30,7 @@ function buildEmbedFields(target, moderator, reason, channel, extraFields) {
     {
       name: '📄 Motivo',
       value: reason || 'Não especificado.',
-      inline: true
+      inline: false
     }
   ];
 
