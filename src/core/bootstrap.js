@@ -10,7 +10,7 @@ const { loadMenus } = require('@loadMenus/loader');
 const { loadSlashCommands } = require('@loadSlashCommands/loader');
 const { loadButtonInteractions } = require('@loadButtonInteractions/loader');
 
-const { showStartupDiagnostic } = require('@coreBot/diagnostic');
+const { showStartupDiagnostic } = require('@core/diagnostic');
 
 /**
  * Ponto principal de inicialização do Punishment.
