@@ -2,7 +2,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 const GlobalBan = require('@models/GlobalBan');
-const { sendWarning } = require('@utils/embedWarning');
+const { sendWarning } = require('@embeds/embedWarning');
 const { emojis, colors, bot } = require('@config');
 
 module.exports = {
