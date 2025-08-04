@@ -1,7 +1,7 @@
 'use strict';
 
 const GuildConfig = require('@models/GuildConfig');
-const { sendWarning } = require('@utils/embedWarning');
+const { sendWarning } = require('@embeds/embedWarning');
 const { emojis } = require('@config');
 
 module.exports = {
