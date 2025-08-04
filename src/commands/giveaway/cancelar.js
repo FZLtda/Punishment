@@ -2,7 +2,7 @@
 
 
 const { EmbedBuilder } = require('discord.js');
-const { sendWarning } = require('@utils/embedWarning');
+const { sendWarning } = require('@embeds/embedWarning');
 const Giveaway = require('@models/Giveaway');
 const { colors, emojis } = require('@config');
 const logger = require('@logger');
