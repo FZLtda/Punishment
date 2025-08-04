@@ -3,8 +3,8 @@
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
-const { sendWarning } = require('@utils/embedWarning');
-const { checkMemberGuard } = require('@utils/memberGuards');
+const { sendWarning } = require('@embeds/embedWarning');
+const { checkMemberGuard } = require('@permissions/memberGuards');
 
 module.exports = {
   name: 'unmute',
