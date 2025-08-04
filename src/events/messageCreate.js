@@ -1,12 +1,12 @@
 'use strict';
 
-const { getPrefix } = require('@utils/helpers/prefixManager');
+const { getPrefix } = require('@helpers/prefixManager');
 const Logger = require('@logger');
 const checkTerms = require('@middlewares/checkTerms');
 const checkGlobalBan = require('@middlewares/checkGlobalBan');
-const checkUserPermissions = require('@utils/permissions/checkUserPermissions');
-const checkBotPermissions = require('@utils/permissions/checkBotPermissions');
-const { sendWarning } = require('@utils/embeds/embedWarning');
+const checkUserPermissions = require('@permissions/checkUserPermissions');
+const checkBotPermissions = require('@permissions/checkBotPermissions');
+const { sendWarning } = require('@embeds/embedWarning');
 
 /**
  * Determina o prefixo do servidor dinamicamente.
