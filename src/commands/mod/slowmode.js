@@ -2,7 +2,7 @@
 
 const { ChannelType, EmbedBuilder } = require('discord.js');
 const { emojis, colors } = require('@config');
-const { sendWarning } = require('@utils/embedWarning');
+const { sendWarning } = require('@embeds/embedWarning');
 const { sendModLog } = require('@modules/modlog');
 
 module.exports = {
