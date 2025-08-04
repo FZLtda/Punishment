@@ -3,7 +3,7 @@
 require('module-alias/register');
 require('dotenv').config();
 
-const { reportErrorToWebhook } = require('@utils/webhookMonitor');
+const { reportErrorToWebhook } = require('@monitors/webhookMonitor');
 const bootstrap = require('@core/bootstrap');
 const { bot } = require('@config');
 const Logger = require('@logger');
