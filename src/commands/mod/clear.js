@@ -2,7 +2,7 @@
 
 const { emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
-const { sendWarning } = require('@utils/embedWarning');
+const { sendWarning } = require('@embeds/embedWarning');
 
 module.exports = {
   name: 'clear',
