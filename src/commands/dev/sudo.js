@@ -2,7 +2,7 @@
 
 const { Collection } = require('discord.js');
 const { bot } = require('@config');
-const { sendWarning } = require('@utils/embedWarning');
+const { sendWarning } = require('@embeds/embedWarning');
 
 module.exports = {
   name: 'sudo',
