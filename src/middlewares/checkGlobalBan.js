@@ -3,7 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const GlobalBan = require('@models/GlobalBan');
 const { colors, emojis } = require('@config');
-const { isOnCooldown } = require('@utils/globalBanCache');
+const { isOnCooldown } = require('@cache/globalBanCache');
 
 /**
  * Verifica se o usuário está banido globalmente e envia a mensagem adequada.
