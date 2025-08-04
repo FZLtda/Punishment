@@ -4,7 +4,7 @@ module.exports = [
   {
     id: 'adm',
     name: 'Administração',
-    emoji: '<:1000079909:1401856979504336976>',
+    emoji: '<:1000079910:1401858796497801347>',
     description: 'Comandos administrativos e de configuração do servidor.',
     commands: [
       {
