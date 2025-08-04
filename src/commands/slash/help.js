@@ -8,8 +8,8 @@ const {
 } = require('discord.js');
 
 const { colors, emojis } = require('@config');
-const categories = require('@utils/helpCategories');
-const { sendWarning } = require('@utils/embedWarning');
+const categories = require('@helpers/helpCategories');
+const { sendWarning } = require('@embeds/embedWarning');
 
 module.exports = {
   data: new SlashCommandBuilder()
