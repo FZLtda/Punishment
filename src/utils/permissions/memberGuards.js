@@ -1,6 +1,6 @@
 'use strict';
 
-const { sendWarning } = require('@utils/embedWarning');
+const { sendWarning } = require('@embeds/embedWarning');
 
 /**
  * Verifica se uma ação de moderação pode ser executada em um membro.
