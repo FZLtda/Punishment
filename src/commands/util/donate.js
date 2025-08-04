@@ -8,7 +8,7 @@ const {
 } = require('discord.js');
 const { criarPagamento } = require('@services/mercadoPago');
 const { colors } = require('@config');
-const { sendWarning } = require('@utils/embedWarning');
+const { sendWarning } = require('@embeds/embedWarning');
 
 module.exports = {
   name: 'doar',
