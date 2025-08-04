@@ -23,7 +23,7 @@ module.exports = {
       const prefix = await getPrefix(interaction.guildId);
 
       const embed = new EmbedBuilder()
-        .setTitle(`\`\`\`${category.emoji || ''} ${category.name}\`\`\``)
+        .setTitle(`\`\`\`${category.name}\`\`\``)
         .setColor('#FE3838')
         .setAuthor({
           name: 'Comando de ajuda',
