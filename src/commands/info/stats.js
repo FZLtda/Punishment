@@ -2,9 +2,9 @@
 
 const os = require('os');
 const { EmbedBuilder } = require('discord.js');
-const { getSystemHealth } = require('@utils/healthMonitor');
+const { getSystemHealth } = require('@monitors/healthMonitor');
 const { colors, emojis, bot } = require('@config');
-const { sendWarning } = require('@utils/embedWarning');
+const { sendWarning } = require('@embeds/embedWarning');
 const packageJson = require('@package.json');
 const Logger = require('@logger');
 
