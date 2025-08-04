@@ -4,7 +4,7 @@ const { EventEmitter } = require('node:events');
 const os = require('os');
 const Logger = require('@logger');
 const { bot } = require('@config');
-const { reportErrorToWebhook } = require('@utils/webhookMonitor');
+const { reportErrorToWebhook } = require('@monitors/webhookMonitor');
 
 /**
  * Central de Monitoramento — núcleo de observabilidade e diagnósticos do sistema.
