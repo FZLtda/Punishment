@@ -1,6 +1,6 @@
 'use strict';
 
-const { sendError } = require('@utils/embedError');
+const { sendError } = require('@embeds/embedError');
 
 /**
  * Verifica se o bot possui as permissões necessárias.
