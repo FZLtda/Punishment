@@ -2,10 +2,10 @@
 
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
-const { getPrefix } = require('@utils/prefixManager');
-const { sendWarning } = require('@utils/embedWarning');
+const { getPrefix } = require('@helpers/prefixManager');
+const { sendWarning } = require('@embeds/embedWarning');
+const categories = require('@helpers/helpCategories');
 const Logger = require('@logger');
-const categories = require('@utils/helpCategories');
 
 module.exports = {
   customId: 'help-category',
