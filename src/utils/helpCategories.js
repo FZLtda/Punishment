@@ -76,7 +76,7 @@ module.exports = [
   {
     id: 'mod',
     name: 'Moderação',
-    emoji: '<:1000079908:1401856703162482768>',
+    emoji: '<:1000079912:1401859732922437643>',
     description: 'Ferramentas para moderação de usuários e canais.',
     commands: [
       {
@@ -168,7 +168,7 @@ module.exports = [
   {
     id: 'info',
     name: 'Informações',
-    emoji: '<:1000079907:1401856353756119060>',
+    emoji: '<:1000079913:1401859781542674452>',
     description: 'Comandos para exibir informações.',
     commands: [
       {
@@ -211,7 +211,7 @@ module.exports = [
   {
     id: 'util',
     name: 'Utilitários',
-    emoji: '<:1000079906:1401856203457433642>',
+    emoji: '<:1000079911:1401859810806468658>',
     description: 'Utilitários gerais para o servidor.',
     commands: [
       {
@@ -243,7 +243,7 @@ module.exports = [
   {
     id: 'giveaway',
     name: 'Sorteios',
-    emoji: '<:1000079905:1401855859532890202>',
+    emoji: '<:1000079914:1401860323950202890>',
     description: 'Gerenciamento de sorteios no servidor.',
     commands: [
       {
