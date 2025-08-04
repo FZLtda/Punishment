@@ -11,7 +11,7 @@ const {
 } = require('discord.js');
 
 const { colors, emojis } = require('@config');
-const { sendWarning } = require('@utils/embedWarning');
+const { sendWarning } = require('@embeds/embedWarning');
 const { sendModLog } = require('@modules/modlog');
 const fs = require('fs');
 const path = require('path');
