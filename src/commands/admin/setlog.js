@@ -3,7 +3,7 @@
 const { ChannelType } = require('discord.js');
 const GuildSettings = require('@models/GuildSettings');
 const { emojis } = require('@config');
-const { sendWarning } = require('@utils/embedWarning');
+const { sendWarning } = require('@embeds/embedWarning');
 
 module.exports = {
   name: 'setlog',
