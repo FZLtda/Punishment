@@ -1,7 +1,7 @@
 'use strict';
 
 const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
-const { sendWarning } = require('@utils/embedWarning');
+const { sendWarning } = require('@embeds/embedWarning');
 const Logger = require('@logger');
 const { colors, emojis } = require('@config');
 
