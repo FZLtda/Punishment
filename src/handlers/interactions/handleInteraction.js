@@ -1,7 +1,7 @@
 'use strict';
 
 const Logger = require('@logger');
-const { sendInteractionError } = require('@utils/responses');
+const { sendInteractionError } = require('@embeds/responses');
 
 /**
  * Manipula todos os tipos de interação do Discord
