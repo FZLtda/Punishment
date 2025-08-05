@@ -3,7 +3,7 @@
 const { InteractionType, EmbedBuilder } = require('discord.js');
 const Logger = require('@logger');
 const handleInteraction = require('@interactions/handleInteraction');
-const { sendInteractionError } = require('@embeds/responses');
+const { sendInteractionError } = require('@helpers/responses');
 const { emojis, colors } = require('@config');
 
 module.exports = {
