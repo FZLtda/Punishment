@@ -6,7 +6,7 @@ module.exports = [
   {
     id: 'adm',
     name: 'Administração',
-    emoji: emoji.adm,
+    emoji: emojis.adm,
     description: 'Comandos administrativos e de configuração do servidor.',
     commands: [
       {
@@ -78,7 +78,7 @@ module.exports = [
   {
     id: 'mod',
     name: 'Moderação',
-    emoji: emoji.mod,
+    emoji: emojis.mod,
     description: 'Ferramentas para moderação de usuários e canais.',
     commands: [
       {
@@ -170,7 +170,7 @@ module.exports = [
   {
     id: 'info',
     name: 'Informações',
-    emoji: emoji.info,
+    emoji: emojis.info,
     description: 'Comandos para exibir informações.',
     commands: [
       {
@@ -213,7 +213,7 @@ module.exports = [
   {
     id: 'util',
     name: 'Utilitários',
-    emoji: emoji.util,
+    emoji: emojis.util,
     description: 'Utilitários gerais para o servidor.',
     commands: [
       {
@@ -245,7 +245,7 @@ module.exports = [
   {
     id: 'giveaway',
     name: 'Sorteios',
-    emoji: emoji.give,
+    emoji: emojis.give,
     description: 'Gerenciamento de sorteios no servidor.',
     commands: [
       {
