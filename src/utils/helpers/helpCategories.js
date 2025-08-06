@@ -4,7 +4,7 @@ module.exports = [
   {
     id: 'adm',
     name: 'Administração',
-    emoji: '<:1000079910:1401858796497801347>',
+    emoji: '<:1000079912:1401859732922437643>',
     description: 'Comandos administrativos e de configuração do servidor.',
     commands: [
       {
@@ -76,7 +76,7 @@ module.exports = [
   {
     id: 'mod',
     name: 'Moderação',
-    emoji: '<:1000079912:1401859732922437643>',
+    emoji: '<:1000079910:1401858796497801347>',
     description: 'Ferramentas para moderação de usuários e canais.',
     commands: [
       {
