@@ -3,6 +3,7 @@
 const { emojis } = require('@config');
 
 module.exports = [
+  // Administração
   {
     id: 'adm',
     name: 'Administração',
@@ -75,6 +76,8 @@ module.exports = [
       },
     ],
   },
+
+  // Moderação
   {
     id: 'mod',
     name: 'Moderação',
@@ -167,6 +170,8 @@ module.exports = [
       },
     ],
   },
+
+  // Informações
   {
     id: 'info',
     name: 'Informações',
@@ -210,6 +215,8 @@ module.exports = [
       },
     ],
   },
+
+  // Utilitários
   {
     id: 'util',
     name: 'Utilitários',
@@ -242,6 +249,8 @@ module.exports = [
       },
     ],
   },
+
+  // Sorteios
   {
     id: 'giveaway',
     name: 'Sorteios',
