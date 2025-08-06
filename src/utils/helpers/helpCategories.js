@@ -1,10 +1,12 @@
 'use strict';
 
+const { emojis } = require('@config');
+
 module.exports = [
   {
     id: 'adm',
     name: 'Administração',
-    emoji: '<:1000080399:1402774926204862534>',
+    emoji: emoji.adm,
     description: 'Comandos administrativos e de configuração do servidor.',
     commands: [
       {
@@ -76,7 +78,7 @@ module.exports = [
   {
     id: 'mod',
     name: 'Moderação',
-    emoji: '<:1000079910:1401858796497801347>',
+    emoji: emoji.mod,
     description: 'Ferramentas para moderação de usuários e canais.',
     commands: [
       {
@@ -168,7 +170,7 @@ module.exports = [
   {
     id: 'info',
     name: 'Informações',
-    emoji: '<:1000079913:1401859781542674452>',
+    emoji: emoji.info,
     description: 'Comandos para exibir informações.',
     commands: [
       {
@@ -211,7 +213,7 @@ module.exports = [
   {
     id: 'util',
     name: 'Utilitários',
-    emoji: '<:1000079911:1401859810806468658>',
+    emoji: emoji.util,
     description: 'Utilitários gerais para o servidor.',
     commands: [
       {
@@ -243,7 +245,7 @@ module.exports = [
   {
     id: 'giveaway',
     name: 'Sorteios',
-    emoji: '<:1000079914:1401860323950202890>',
+    emoji: emoji.give,
     description: 'Gerenciamento de sorteios no servidor.',
     commands: [
       {
