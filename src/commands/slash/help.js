@@ -7,7 +7,7 @@ const {
   EmbedBuilder,
 } = require('discord.js');
 
-const { colors, emojis } = require('@config');
+const { bot, colors, emojis } = require('@config');
 const categories = require('@helpers/helpCategories');
 const { sendWarning } = require('@embeds/embedWarning');
 
@@ -44,10 +44,10 @@ module.exports = {
         name: 'Comando de ajuda',
         iconURL: emojis.helpIcon
       })
-      .setColor('#FE3838')
+      .setColor(colors.red)
       .setDescription([
         '```',
-        'Punishment - Help Menu',
+        `${bot.name} - Help Menu`,
         '```',
         '>>> Selecione uma categoria abaixo para exibir os comandos disponíveis, exemplos de uso e permissões.',
         '',
