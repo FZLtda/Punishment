@@ -21,7 +21,6 @@ module.exports = {
     const pingAPI = Math.round(message.client.ws.ping);
     const uptime = formatUptime(process.uptime());
 
-    // Escolhe cor com base na latência
     const embedColor = getPingColor(Math.max(pingBot, pingAPI));
 
     const embed = new EmbedBuilder()
@@ -33,7 +32,7 @@ module.exports = {
         `⏱️ **Uptime:** \`${uptime}\``
       ].join('\n'))
       .setFooter({
-        text: `Solicitado por ${message.author.tag}`,
+        text: `${message.author.tag}`,
         iconURL: message.author.displayAvatarURL({ dynamic: true })
       })
       .setTimestamp();
@@ -47,6 +46,7 @@ module.exports = {
  * @param {number} seconds - Uptime em segundos.
  * @returns {string}
  */
+
 function formatUptime(seconds) {
   const months = Math.floor(seconds / 2592000);
   seconds %= 2592000;
@@ -75,8 +75,9 @@ function formatUptime(seconds) {
  * @param {number} ping - Latência em ms.
  * @returns {string}
  */
+
 function getPingColor(ping) {
-  if (ping <= 100) return '#00FF7F';
-  if (ping <= 200) return '#FFD700';
-  return '#FF4500';
+  if (ping <= 100) return colors.green;
+  if (ping <= 200) return colors.yellow;
+  return colors.red;
 }
