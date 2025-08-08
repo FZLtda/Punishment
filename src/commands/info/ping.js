@@ -2,6 +2,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 const { performance } = require('node:perf_hooks');
+const { sendWarning } = require('@embeds/embedWarning');
 const { colors } = require('@config');
 
 module.exports = {
@@ -13,31 +14,39 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
-    const start = performance.now();
-    const sent = await message.channel.send('🏓 Calculando ping...');
-    const end = performance.now();
+    try {
+      const start = performance.now();
+      const sent = await message.channel.send('🏓 Calculando ping...');
+      const end = performance.now();
 
-    const pingBot = Math.round(end - start);
-    const pingAPI = Math.round(message.client.ws.ping);
-    const uptime = formatUptime(process.uptime());
+      const pingBot = isFinite(end - start) ? Math.round(end - start) : 0;
+      const pingAPI = isFinite(message.client.ws.ping) ? Math.round(message.client.ws.ping) : 0;
+      const uptime = formatUptime(process.uptime());
 
-    const embedColor = getPingColor(Math.max(pingBot, pingAPI));
+      const embedColor = getPingColor(Math.max(pingBot, pingAPI));
 
-    const embed = new EmbedBuilder()
-      .setTitle('🏓 Pong!')
-      .setColor(embedColor)
-      .setDescription([
-        `📡 **Latência do Bot:** \`${pingBot}ms\``,
-        `🌐 **Latência da API:** \`${pingAPI}ms\``,
-        `⏱️ **Uptime:** \`${uptime}\``
-      ].join('\n'))
-      .setFooter({
-        text: `${message.author.tag}`,
-        iconURL: message.author.displayAvatarURL({ dynamic: true })
-      })
-      .setTimestamp();
+      const embed = new EmbedBuilder()
+        .setTitle('🏓 Pong!')
+        .setColor(embedColor)
+        .setDescription([
+          `📡 **Latência do Bot:** \`${pingBot}ms\``,
+          `🌐 **Latência da API:** \`${pingAPI}ms\``,
+          `⏱️ **Uptime:** \`${uptime}\``
+        ].join('\n'))
+        .setFooter({
+          text: message.author.tag,
+          iconURL: message.author.displayAvatarURL({ dynamic: true })
+        })
+        .setTimestamp();
 
-    await sent.edit({ content: null, embeds: [embed] });
+      await sent.edit({ content: null, embeds: [embed] });
+
+    } catch (error) {
+      console.error(`[Comando: ping] Erro ao executar:`, error);
+      if (message.channel?.send) {
+        await sendWarning(message, 'Não foi possível calcular o ping.');
+      }
+    }
   }
 };
 
@@ -46,7 +55,6 @@ module.exports = {
  * @param {number} seconds - Uptime em segundos.
  * @returns {string}
  */
-
 function formatUptime(seconds) {
   const months = Math.floor(seconds / 2592000);
   seconds %= 2592000;
@@ -61,13 +69,24 @@ function formatUptime(seconds) {
   const secs = Math.floor(seconds % 60);
 
   const parts = [];
-  if (months) parts.push(`${months}mês${months > 1 ? 'es' : ''}`);
-  if (days) parts.push(`${days}d`);
-  if (hours) parts.push(`${hours}h`);
-  if (minutes) parts.push(`${minutes}m`);
-  if (secs) parts.push(`${secs}s`);
+  if (months) parts.push(`${months} ${pluralize(months, 'mês', 'meses')}`);
+  if (days) parts.push(`${days} ${pluralize(days, 'dia', 'dias')}`);
+  if (hours) parts.push(`${hours} ${pluralize(hours, 'hora', 'horas')}`);
+  if (minutes) parts.push(`${minutes} ${pluralize(minutes, 'minuto', 'minutos')}`);
+  if (secs) parts.push(`${secs} ${pluralize(secs, 'segundo', 'segundos')}`);
 
-  return parts.join(' ') || '0s';
+  return parts.join(' ') || '0 segundos';
+}
+
+/**
+ * Pluraliza uma palavra com base na quantidade.
+ * @param {number} count - Quantidade.
+ * @param {string} singular - Forma singular.
+ * @param {string} plural - Forma plural.
+ * @returns {string}
+ */
+function pluralize(count, singular, plural) {
+  return count === 1 ? singular : plural;
 }
 
 /**
@@ -75,7 +94,6 @@ function formatUptime(seconds) {
  * @param {number} ping - Latência em ms.
  * @returns {string}
  */
-
 function getPingColor(ping) {
   if (ping <= 100) return colors.green;
   if (ping <= 200) return colors.yellow;
