@@ -70,6 +70,7 @@
     "@monitors": "src/utils/monitors",
     "@middlewares": "src/middlewares",
     "@loadMenus": "src/handlers/menus",
+    "@loadModals": "src/handlers/modals",
     "@handleSlash": "src/handlers/slash",
     "@loadEvents": "src/handlers/events",
     "@permissions": "src/utils/permissions",
