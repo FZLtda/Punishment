@@ -7,6 +7,7 @@ const { connectMongo } = require('@database');
 const { loadCommands } = require('@loadCommands/loader');
 const { loadEvents } = require('@loadEvents/loader');
 const { loadMenus } = require('@loadMenus/loader');
+const { loadModals } = require('@loadModals/loader');
 const { loadSlashCommands } = require('@loadSlashCommands/loader');
 const { loadButtonInteractions } = require('@loadButtonInteractions/loader');
 
@@ -21,7 +22,6 @@ const { showStartupDiagnostic } = require('@core/diagnostic');
  * - Login do bot no Discord
  * - Exibição de diagnósticos
  */
-
 module.exports = async function bootstrap() {
   validateEnvironment();
 
@@ -36,7 +36,8 @@ module.exports = async function bootstrap() {
     loadEvents(client),
     loadMenus(client),
     loadSlashCommands(client),
-    loadButtonInteractions(client)
+    loadButtonInteractions(client),
+    loadModals(client)
   ]);
 
   await client.login(process.env.TOKEN);
