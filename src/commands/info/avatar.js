@@ -33,7 +33,7 @@ module.exports = {
 
     const userSelectMenu = new UserSelectMenuBuilder()
       .setCustomId('select-avatar-user')
-      .setPlaceholder('Selecione um usuário para ver o avatar');
+      .setPlaceholder('Veja o avatar de outro usuário');
 
     const row = new ActionRowBuilder().addComponents(userSelectMenu);
 
