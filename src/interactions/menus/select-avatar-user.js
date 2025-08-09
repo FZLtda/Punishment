@@ -14,19 +14,19 @@ module.exports = {
     const commandUserId = interaction.message.interaction?.user?.id;
 
     if (commandUserId && interaction.user.id !== commandUserId) {
-      return sendWarning(interaction, 'Somente quem executou o comando pode usar este menu.', true);
+      return sendWarning(interaction, 'Você não pode interagir com esse menu.', true);
     }
 
     const selectedUser = interaction.users.first();
 
     if (!selectedUser) {
-      return sendWarning(interaction, 'Usuário não encontrado.', true);
+      return sendWarning(interaction, 'Não foi possível encontrar esse usuário.', true);
     }
 
     const guildMember = interaction.guild.members.cache.get(selectedUser.id);
 
     if (!guildMember) {
-      return sendWarning(interaction, 'Usuário não encontrado no servidor.', true);
+      return sendWarning(interaction, 'Não foi possível encontrar esse usuário.', true);
     }
 
     const avatarUrl = guildMember.displayAvatarURL({ dynamic: true, size: 1024 });
@@ -43,7 +43,7 @@ module.exports = {
 
     const userSelectMenu = new UserSelectMenuBuilder()
       .setCustomId('select-avatar-user')
-      .setPlaceholder('Selecione um usuário para ver o avatar');
+      .setPlaceholder('Veja o avatar de outro usuário');
 
     const row = new ActionRowBuilder().addComponents(userSelectMenu);
 
