@@ -1,8 +1,8 @@
 'use strict';
 
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ActionRowBuilder, UserSelectMenuBuilder } = require('discord.js');
 const { sendWarning } = require('@embeds/embedWarning');
-const { emojis, colors } = require('@config');
+const { colors } = require('@config');
 
 module.exports = {
   name: 'avatar',
@@ -13,11 +13,6 @@ module.exports = {
   userPermissions: [],
   deleteMessage: true,
 
-  /**
-   * Executa o comando de avatar
-   * @param {import('discord.js').Message} message
-   * @param {string[]} args
-   */
   async execute(message, args) {
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.member;
 
@@ -36,6 +31,12 @@ module.exports = {
       })
       .setTimestamp();
 
-    return message.channel.send({ embeds: [embed] });
+    const userSelectMenu = new UserSelectMenuBuilder()
+      .setCustomId('select-avatar-user')
+      .setPlaceholder('Selecione um usuário para ver o avatar');
+
+    const row = new ActionRowBuilder().addComponents(userSelectMenu);
+
+    await message.channel.send({ embeds: [embed], components: [row] });
   }
 };
