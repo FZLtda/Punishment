@@ -39,6 +39,7 @@ class PunishmentClient extends Client {
     this.contexts = new Collection();
     this.buttons = new Collection();
     this.menus = new Collection();
+    this.modals = new Collection();
     this.cooldowns = new Collection();
 
     // Carga dinâmica
