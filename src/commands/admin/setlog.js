@@ -30,10 +30,14 @@ module.exports = {
         { upsert: true, new: true }
       );
 
-      return message.channel.send({
+      const confirmMsg = await message.channel.send({
         content: `${emojis.successEmoji} Canal de log definido para ${canal}.`,
         allowedMentions: { parse: [] }
       });
+
+      setTimeout(() => {
+        confirmMsg.delete().catch(() => {});
+      }, 10000);
 
     } catch (error) {
       console.error(error);
