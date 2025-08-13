@@ -1,7 +1,7 @@
 'use strict';
 
 const { sendWarning } = require('@embeds/embedWarning');
-const { finalizarSorteio } = require('@utils/sorteio');
+const { finalizarSorteio } = require('@utils/sorteios');
 const Giveaway = require('@models/Giveaway');
 const { emojis } = require('@config');
 const Logger = require('@logger');
