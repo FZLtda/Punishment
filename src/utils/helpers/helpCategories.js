@@ -267,16 +267,23 @@ module.exports = [
       {
         name: 'rerolar',
         description: 'Escolhe um novo vencedor.',
-        usage: 'rerolar <ID>',
+        usage: 'rerolar <ID_da_mensagem>',
         permissions: ['ManageMessages'],
         id: '000000000000000030',
       },
       {
+        name: 'finalizar',
+        description: 'Finaliza manualmente um sorteio ativo.',
+        usage: 'finalizar <ID_da_mensagem>',
+        userPermissions: ['ManageMessages'],
+        id: '000000000000000031',
+      }
+      {
         name: 'cancelar',
         description: 'Cancela um sorteio em andamento.',
-        usage: 'cancelar <ID>',
+        usage: 'cancelar <ID_da_mensagem>',
         permissions: ['ManageMessages'],
-        id: '000000000000000031',
+        id: '000000000000000032',
       },
     ],
   },
