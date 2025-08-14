@@ -21,7 +21,7 @@ module.exports = {
     const prefix = await getPrefix(message.guild?.id);
 
     if (args.length < 4) {
-      return sendWarning(message, `Uso correto: \`${prefix}${this.usage}\``);
+      return sendWarning(message, `Uso correto: ${prefix}${this.usage}`);
     }
 
     // Detecta o canal
