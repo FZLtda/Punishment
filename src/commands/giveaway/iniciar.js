@@ -10,8 +10,8 @@ const ms = require('ms');
 
 module.exports = {
   name: 'sorteio',
-  description: '🎉 Inicia um sorteio em um canal.',
-  usage: '<prêmio> <vencedores> <duração> <#canal>',
+  description: 'Inicia um sorteio em um canal.',
+  usage: 'sorteio <prêmio> <vencedores> <duração> <#canal>',
   category: 'Utilidades',
   userPermissions: [PermissionFlagsBits.ManageMessages],
   botPermissions: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.AddReactions],
