@@ -1,62 +1,65 @@
 'use strict';
 
-const { EmbedBuilder, ChannelType } = require('discord.js');
+const { EmbedBuilder, ChannelType, PermissionFlagsBits } = require('discord.js');
 const { sendWarning } = require('@embeds/embedWarning');
-const Giveaway = require('@models/Giveaway');
+const { getPrefix } = require('@utils/prefixManager');
 const { colors, emojis } = require('@config');
+const Giveaway = require('@models/Giveaway');
 const logger = require('@logger');
 const ms = require('ms');
 
 module.exports = {
   name: 'sorteio',
-  description: 'Cria um novo sorteio no canal especificado.',
-  usage: '${currentPrefix}sorteio "<prêmio>" <vencedores> <duração> <#canal>',
+  description: '🎉 Inicia um sorteio em um canal.',
+  usage: '<prêmio> <vencedores> <duração> <#canal>',
   category: 'Utilidades',
-  userPermissions: ['ManageMessages'],
-  botPermissions: ['SendMessages', 'AddReactions'],
+  userPermissions: [PermissionFlagsBits.ManageMessages],
+  botPermissions: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.AddReactions],
   deleteMessage: true,
 
   async execute(message, args) {
-    const conteudo = message.content.trim();
+    const prefix = await getPrefix(message.guild?.id);
 
-    // Regex: aspas duplas ou curvas + espaço flexível
-    const regex = /["“”](.+?)["“”]\s+(\d+)\s+([^\s]+)\s+<#(\d+)>/;
-    const match = conteudo.match(regex);
-
-    if (!match) {
-      logger.warn(`[SORTEIO] Formato inválido por ${message.author.tag} (${message.author.id})`);
-      return sendWarning(message,`Formato inválido.\nUso correto: \`${this.usage.replace('${currentPrefix}', '.')}\``
-      );
+    if (args.length < 4) {
+      return sendWarning(message, `Uso correto: \`${prefix}${this.usage}\``);
     }
 
-    const [_, premio, vencedoresRaw, duracaoRaw, canalId] = match;
-    const vencedores = parseInt(vencedoresRaw, 10);
-    const duracao = ms(duracaoRaw);
+    // Detecta o canal
+    const canalMention = args[args.length - 1];
+    const canalId = canalMention.replace(/[<#>]/g, '');
     const canal = message.guild.channels.cache.get(canalId);
 
-    if (!premio || isNaN(vencedores) || !duracao || !canal) {
-      logger.warn(
-        `[SORTEIO] Dados inválidos recebidos por ${message.author.tag} (${message.author.id}) | prêmio=${premio}, vencedores=${vencedores}, duração=${duracaoRaw}, canal=${canalId}`
-      );
-      return sendWarning(message, 'Um ou mais parâmetros são inválidos. Verifique se todos os campos foram preenchidos corretamente.');
+    // Detecta duração
+    const duracaoRaw = args[args.length - 2];
+    const duracao = ms(duracaoRaw);
+
+    // Detecta número de vencedores
+    const vencedoresRaw = args[args.length - 3];
+    const vencedores = parseInt(vencedoresRaw, 10);
+
+    // O resto é o prêmio
+    const premio = args.slice(0, args.length - 3).join(' ');
+
+    // Validações
+    if (!premio || isNaN(vencedores) || vencedores <= 0 || !duracao || duracao < 10000 || !canal) {
+      return sendWarning(message, 'Parâmetros inválidos. Preencha todos corretamente.');
     }
 
     if (canal.type !== ChannelType.GuildText) {
-      logger.warn(`[SORTEIO] Canal inválido mencionado (${canalId}) por ${message.author.tag}`);
-      return sendWarning(message, 'O canal mencionado precisa ser um **canal de texto**.');
+      return sendWarning(message, 'Mencione um canal de texto válido.');
     }
 
     const terminaEm = new Date(Date.now() + duracao);
     const plural = vencedores === 1 ? 'vencedor' : 'vencedores';
 
     const embed = new EmbedBuilder()
-      .setTitle('🎉 Novo Sorteio Iniciado!')
+      .setTitle('🎉 Novo Sorteio!')
       .setDescription([
         `**Prêmio:** ${premio}`,
-        `**Participação:** Reaja com 🎉`,
-        `**Duração:** termina <t:${Math.floor(terminaEm.getTime() / 1000)}:R>`
+        `**Participe:** Reaja com 🎉`,
+        `**Duração:** Termina <t:${Math.floor(terminaEm.getTime() / 1000)}:R>`
       ].join('\n'))
-      .setColor(colors.red)
+      .setColor(colors.primary || colors.red)
       .setFooter({
         text: `Ser${vencedores === 1 ? 'á' : 'ão'} ${vencedores} ${plural}`,
         iconURL: message.client.user.displayAvatarURL()
@@ -77,13 +80,18 @@ module.exports = {
         createdBy: message.author.id
       });
 
-      const confirm = `${emojis.successEmoji} Sorteio criado com sucesso em ${canal}!`;
-      logger.info(`[SORTEIO] Criado por ${message.author.tag} | Prêmio: "${premio}" | Vencedores: ${vencedores} | Canal: ${canal.name}`);
-      return message.channel.send({ content: confirm, allowedMentions: { repliedUser: false } });
+      logger.info(`[SORTEIO] Criado | Por: ${message.author.tag} | Prêmio: "${premio}" | Canal: ${canal.name}`);
+
+      if (canal.id !== message.channel.id) {
+        return message.channel.send({
+          content: `${emojis.successEmoji} Sorteio criado em ${canal}!`,
+          allowedMentions: { repliedUser: false }
+        });
+      }
 
     } catch (err) {
-      logger.error(`[SORTEIO] Erro ao criar sorteio: ${err.stack || err.message}`);
-      return sendWarning(message, 'Não foi possível criar o sorteio devido a um erro interno. Tente novamente mais tarde.');
+      logger.error(`[SORTEIO] Erro: ${err.stack || err.message}`);
+      return sendWarning(message, 'Erro interno ao criar sorteio. Tente novamente.');
     }
   }
 };
