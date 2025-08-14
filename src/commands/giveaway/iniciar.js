@@ -2,7 +2,7 @@
 
 const { EmbedBuilder, ChannelType, PermissionFlagsBits } = require('discord.js');
 const { sendWarning } = require('@embeds/embedWarning');
-const { getPrefix } = require('@utils/prefixManager');
+const { getPrefix } = require('@helpers/prefixManager');
 const { colors, emojis } = require('@config');
 const Giveaway = require('@models/Giveaway');
 const logger = require('@logger');
