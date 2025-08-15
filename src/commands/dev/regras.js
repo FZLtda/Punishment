@@ -62,7 +62,7 @@ module.exports = {
         .setCustomId('verify_user')
         .setLabel('Aceitar Regras')
         .setStyle(ButtonStyle.Success)
-        .setEmoji(emojis.successEmoji)
+        .setEmoji(emojis.checkEmoji)
     );
 
     try {
