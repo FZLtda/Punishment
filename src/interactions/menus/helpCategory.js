@@ -31,7 +31,7 @@ module.exports = {
         })
         .setDescription(
           category.commands.map(cmd => {
-            const linha1 = `**${prefix}${cmd.name}**`;
+            const linha1 = `**${cmd.name}**`;
             const linha2 = cmd.description ? `> ${cmd.description}` : null;
             const linha3 = cmd.usage ? `> **Uso:** \`${prefix}${cmd.usage}\`` : null;
             const linha4 = cmd.permissions?.length ? `> **Acesso:** \`${cmd.permissions.join(', ')}\`` : null;
@@ -43,7 +43,7 @@ module.exports = {
           }).join('\n\n')
         )
         .setFooter({
-          text: `${category.name} • Total: ${category.commands.length} comando(s)`,
+          text: `${category.name} • Total: ${category.commands.length} comandos`,
         });
 
       await interaction.update({
