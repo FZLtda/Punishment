@@ -23,7 +23,7 @@ module.exports = [
         description: 'Adiciona um emoji ao servidor.',
         usage: 'addemoji <URL> [nome]',
         permissions: ['ManageEmojisAndStickers'],
-        details: 'Você pode usar um emoji de outro servidor ou uma URL de imagem válida.',
+        details: 'É necessário usar uma URL de imagem válida (PNG, JPEG ou GIF) para criar o emoji.',
         id: '000000000000000002',
       },
       {
