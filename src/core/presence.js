@@ -15,7 +15,7 @@ async function setBotPresence(client) {
       status: 'dnd',
       activities: [
         {
-          name: '/help • Punições distribuídas com amor!',
+          name: '/help • punições distribuídas com amor!',
           type: 0
         }
       ]
