@@ -4,6 +4,7 @@ const { InteractionType, EmbedBuilder } = require('discord.js');
 const Logger = require('@logger');
 const handleInteraction = require('@interactions/handleInteraction');
 const { sendInteractionError } = require('@helpers/responses');
+const checkGlobalBan = require('@middlewares/checkGlobalBan');
 const { emojis, colors } = require('@config');
 
 module.exports = {
@@ -19,6 +20,9 @@ module.exports = {
     const interactionLabel = getInteractionLabel(interaction);
 
     try {
+      // Global Ban
+      if (await checkGlobalBan(interaction)) return;
+      
       const handled = await handleInteraction(interaction, client);
 
       if (!handled) {
