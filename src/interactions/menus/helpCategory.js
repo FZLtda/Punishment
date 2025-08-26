@@ -24,7 +24,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setTitle(`\`\`\`${category.name}\`\`\``)
-        .setColor('#FE3838')
+        .setColor(colors.red)
         .setAuthor({
           name: 'Comando de ajuda',
           iconURL: emojis.helpIcon,
