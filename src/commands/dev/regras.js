@@ -57,7 +57,7 @@ const embed = new EmbedBuilder()
     `**6. Punições**   
     <:seta2:1325132415542231140> O descumprimento das regras resultará em punições. A moderação tem a palavra final.`,  
     ``,  
-    `> **__Clique no botão abaixo para aceitar as regras.__**`,  
+    `> **__Clique no botão abaixo para aceitar nossas regras.__**`,  
   ].join('\n'))  
   .setFooter({ text: 'FuncZone', iconURL: message.guild.iconURL() });  
 
