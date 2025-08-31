@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  red:    0xFC544C,
+  red:    0xFE3838,
   yellow: 0xFBD35B,
   green:  0x2ECC71,
   blue:   0x3498DB,
