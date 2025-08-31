@@ -41,7 +41,7 @@ async function finalizarSorteio(giveaway, client) {
       .setDescription(
         ganhadores.length
           ? `**Prêmio:** ${giveaway.prize}\n**${tituloGanhadores}:** ${ganhadores.map(id => `<@${id}>`).join(', ')}`
-          : `**Prêmio:** ${giveaway.prize}\n${emojis.attent} Nenhum vencedor definido. Participações insuficientes.`
+          : `**Prêmio:** ${giveaway.prize}\n${emojis.attentionEmoji} Nenhum vencedor definido. Participações insuficientes.`
       )
       .setFooter({
         text: 'Punishment',
