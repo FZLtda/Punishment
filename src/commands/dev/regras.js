@@ -49,7 +49,7 @@ const embed = new EmbedBuilder()
     <:seta2:1325132415542231140> Use o canal de suporte apenas para dúvidas ou problemas relacionados ao **Punishment**.`,  
     ``,  
     `**4. Divulgação**   
-    <:seta2:1325132415542231140> É proibido divulgar qualquer conteúdo sem autorização da equipe.`,  
+    <:seta2:1325132415542231140> É proibido divulgar qualquer conteúdo sem autorização de um administrador.`,  
     ``,  
     `**5. Segurança**   
     <:seta2:1325132415542231140> Nunca compartilhe dados pessoais. A equipe nunca pedirá suas informações sensíveis.`,  
