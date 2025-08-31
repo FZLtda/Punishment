@@ -92,7 +92,7 @@ async function sendModLog(guild, {
     }
 
     const embed = new EmbedBuilder()
-      .setTitle(`📝 Ação de Moderação: ${action}`)
+      .setTitle(`Ação de Moderação: ${action}`)
       .setColor(colors.red)
       .addFields(buildEmbedFields(target, moderator, reason, channel, extraFields))
       .setTimestamp()
