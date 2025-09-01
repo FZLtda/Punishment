@@ -34,7 +34,7 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setTitle(`${emojis.lock} Canal bloqueado`)
         .setColor(colors.red)
-        .setDescription(`Este canal foi bloqueado com sucesso.`)
+        .setDescription(`Este canal está temporariamente bloqueado para novas mensagens.`)
         .addFields(
           { name: 'Canal', value: `${canal}`, inline: true },
           { name: 'Motivo', value: `\`${motivo}\``, inline: true }
