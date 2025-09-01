@@ -5,7 +5,7 @@
  */
 module.exports = {
   // Emojis de status e feedback
-  attentionEmoji: '<:1000055967:1358918618808717704>',
+  attentionEmoji: '<:1000085391:1412017917217869906>',
   successEmoji:   '<:1000075728:1394121393947545720>',
   errorEmoji:     '<:1000075729:1394121565645443204>',
   infoEmoji:      '<:1000046547:1340465282568945675>',
