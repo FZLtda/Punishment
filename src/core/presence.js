@@ -15,7 +15,7 @@ async function setBotPresence(client) {
       status: 'dnd',
       activities: [
         {
-          name: '/help • punições distribuídas com amor!',
+          name: '/help • Translate smarter with DeepL',
           type: 0
         }
       ]
