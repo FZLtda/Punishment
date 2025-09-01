@@ -46,7 +46,7 @@ module.exports = {
       .setDescription(
         ganhadores.length
           ? `**Prêmio:** ${sorteio.prize}\n**Novos ${plural}:** ${ganhadores.join(', ')}`
-          : `**Prêmio:** ${sorteio.prize}\n${emojis.attent} Nenhum participante suficiente para rerolar.`
+          : `**Prêmio:** ${sorteio.prize}\n${emojis.attentionEmoji} Nenhum participante suficiente para rerolar.`
       )
       .setColor(colors.red)
       .setTimestamp()
