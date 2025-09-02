@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { EmbedBuilder } = require('discord.js');
 const { sendWarning } = require('@embeds/embedWarning');
-const { bot, colors } = require('@config');
+const { bot, colors, emojis } = require('@config');
 
 module.exports = {
   name: 'reload',
@@ -38,7 +38,7 @@ module.exports = {
         await reloadAll(commandsDir, message.client.commands, 'command');
         await reloadAll(eventsDir, message.client.events, 'event');
 
-        return sendSuccess(message, 'Todos os comandos e eventos foram recarregados com sucesso.');
+        return sendSuccess(message, `${emojis.successEmoji} Todos os comandos e eventos foram recarregados com sucesso.`);
       }
 
       if (type === 'command' || type === 'comando') {
@@ -57,7 +57,7 @@ module.exports = {
         const updatedCommand = require(commandFile);
         message.client.commands.set(updatedCommand.name, updatedCommand);
 
-        return sendSuccess(message, `Comando \`${updatedCommand.name}\` recarregado com sucesso.`);
+        return sendSuccess(message, `${emojis.successEmoji} Comando \`${updatedCommand.name}\` recarregado com sucesso.`);
       }
 
       if (type === 'event') {
@@ -74,7 +74,7 @@ module.exports = {
         message.client.removeAllListeners(eventName);
         message.client.on(eventName, updatedEvent.execute.bind(null));
 
-        return sendSuccess(message, `Evento \`${eventName}\` recarregado com sucesso.`);
+        return sendSuccess(message, `${emojis.successEmoji} Evento \`${eventName}\` recarregado com sucesso.`);
       }
     } catch (error) {
       console.error('[reload] Erro ao recarregar:', error);
