@@ -54,6 +54,8 @@ module.exports = {
     if (canal.id !== message.channel.id) {
       message.channel.send({
         content: `${emojis.successEmoji} Sua mensagem foi enviada para ${canal}.`
+      }).then(msg => {
+        setTimeout(() => msg.delete().catch(() => {}), 5000);
       }).catch(() => {});
     }
 
