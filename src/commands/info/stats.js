@@ -3,7 +3,7 @@
 const os = require('os');
 const { EmbedBuilder } = require('discord.js');
 const { getSystemHealth } = require('@monitors/healthMonitor');
-const { colors, emojis, bot } = require('@config');
+const { colors, bot } = require('@config');
 const { sendWarning } = require('@embeds/embedWarning');
 const packageJson = require('@package.json');
 const Logger = require('@logger');
@@ -40,18 +40,19 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor(colors.green)
-        .setTitle(`${emojis.ping || '📶'} Diagnóstico e Estatísticas`)
-        .setDescription('Abaixo estão os dados técnicos do sistema e desempenho do bot.')
+        .setTitle('Diagnóstico do Sistema')
+        .setDescription('Informações técnicas sobre o desempenho e status do Punishment.')
         .addFields(
-          { name: '📡 Latência Discord', value: discordLatency, inline: true },
-          { name: '🧠 Uso de Memória', value: `\`${usedMB}MB / ${totalMB}MB\``, inline: true },
-          { name: '🧩 Versão do Bot', value: `v${packageJson.version}`, inline: true },
-          { name: '📁 Servidores Ativos', value: `${client.guilds.cache.size}`, inline: true },
-          { name: '⏱️ Uptime', value: uptime, inline: true },
-          { name: '⚙️ Carga da CPU', value: cpuLoad, inline: true },
-          { name: '🗃️ MongoDB', value: mongoStatus, inline: true },
-          { name: '📜 Comandos Carregados', value: `Prefix: \`${prefixCount}\`\nSlash: \`${slashCount}\``, inline: true },
-          { name: '🛠️ Node.js', value: process.version, inline: true }
+          { name: 'Latência Discord', value: discordLatency, inline: true },
+          { name: 'Uso de Memória', value: `${usedMB}MB / ${totalMB}MB`, inline: true },
+          { name: 'Versão do Bot', value: `v${packageJson.version}`, inline: true },
+          { name: 'Servidores Ativos', value: `${client.guilds.cache.size}`, inline: true },
+          { name: 'Uptime', value: uptime, inline: true },
+          { name: 'Carga da CPU', value: cpuLoad, inline: true },
+          { name: 'Banco de Dados', value: mongoStatus, inline: true },
+          { name: 'Comandos Carregados', value: `Prefix: ${prefixCount}\nSlash: ${slashCount}`, inline: true },
+          { name: 'Node.js', value: process.version, inline: true },
+          { name: 'Desenvolvedor', value: bot.owner ?? 'Não definido', inline: true }
         )
         .setFooter({
           text: `${message.author.username}`,
