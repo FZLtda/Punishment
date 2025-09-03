@@ -4,6 +4,7 @@ const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
 const { sendWarning } = require('@embeds/embedWarning');
+const ChannelLock = require('@models/ChannelLock');
 
 module.exports = {
   name: 'unlock',
@@ -45,7 +46,28 @@ module.exports = {
         })
         .setTimestamp();
 
-      await canal.send({ embeds: [embed] });
+      // Busca no banco a mensagem de lock
+      const lockData = await ChannelLock.findOne({
+        guildId: message.guild.id,
+        channelId: canal.id
+      });
+
+      if (lockData) {
+        try {
+          const lockMsg = await canal.messages.fetch(lockData.messageId);
+          await lockMsg.edit({ embeds: [embed] });
+        } catch (err) {
+          await canal.send({ embeds: [embed] });
+        }
+
+        // Remove do banco
+        await ChannelLock.deleteOne({
+          guildId: message.guild.id,
+          channelId: canal.id
+        });
+      } else {
+        await canal.send({ embeds: [embed] });
+      }
 
       await sendModLog(message.guild, {
         action: 'Unlock',
