@@ -52,7 +52,7 @@ module.exports = {
           { name: 'Banco de Dados', value: mongoStatus, inline: true },
           { name: 'Comandos Carregados', value: `Prefix: ${prefixCount}\nSlash: ${slashCount}`, inline: true },
           { name: 'Node.js', value: process.version, inline: true },
-          { name: 'Desenvolvedor', value: bot.owner ?? 'Não definido', inline: true }
+          { name: 'Desenvolvedor', value: bot.ownerTag ?? 'Não definido', inline: true }
         )
         .setFooter({
           text: `${message.author.username}`,
