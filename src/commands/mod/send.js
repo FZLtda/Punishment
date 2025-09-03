@@ -4,6 +4,7 @@ const { EmbedBuilder, ChannelType } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendWarning } = require('@embeds/embedWarning');
 const { sendModLog } = require('@modules/modlog');
+const Logger = require('@logger');
 
 module.exports = {
   name: 'send',
@@ -34,9 +35,9 @@ module.exports = {
 
         const embed = new EmbedBuilder()
           .setColor(colors.red)
-          .setDescription(texto)
+          .setDescription(texto || '*[sem conteúdo]*')
           .setFooter({
-            text: `${message.author.username}`,
+            text: message.author.username,
             iconURL: message.author.displayAvatarURL({ dynamic: true })
           })
           .setTimestamp();
@@ -46,24 +47,26 @@ module.exports = {
         mensagemEnviada = await canal.send({ content: conteudo });
       }
     } catch (err) {
-      console.error('[send] Erro ao enviar mensagem:', err);
-      return sendWarning(message, 'Não foi possível enviar a mensagem.');
+      Logger.error(`[send] Falha ao enviar mensagem: ${err.message}`);
+      return sendWarning(message, 'Não foi possível enviar a mensagem. Verifique as permissões do canal.');
     }
 
-    // Confirmação silenciosa
-    message.channel.send({
-      content: `${emojis.successEmoji} Sua mensagem foi enviada.`
-    }).catch(() => {});
+    if (canal.id !== message.channel.id) {
+      message.channel.send({
+        content: `${emojis.successEmoji} Sua mensagem foi enviada para ${canal}.`
+      }).catch(() => {});
+    }
 
-    // Log da ação
+    // Registro no ModLog
     try {
       await sendModLog('send', {
         executor: message.author,
         channel: canal,
-        content: conteudo
+        content: conteudo,
+        isEmbed
       });
     } catch (logErr) {
-      console.warn('[send] Erro ao registrar log da ação:', logErr.message);
+      Logger.warn(`[send] Erro ao registrar log da ação: ${logErr.message}`);
     }
   }
 };
