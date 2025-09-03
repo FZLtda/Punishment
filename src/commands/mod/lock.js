@@ -4,6 +4,7 @@ const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendModLog } = require('@modules/modlog');
 const { sendWarning } = require('@embeds/embedWarning');
+const ChannelLock = require('@models/ChannelLock');
 
 module.exports = {
   name: 'lock',
@@ -45,7 +46,14 @@ module.exports = {
         })
         .setTimestamp();
 
-      await canal.send({ embeds: [embed] });
+      const msg = await canal.send({ embeds: [embed] });
+
+      // Salva no banco
+      await ChannelLock.findOneAndUpdate(
+        { guildId: message.guild.id, channelId: canal.id },
+        { guildId: message.guild.id, channelId: canal.id, messageId: msg.id },
+        { upsert: true }
+      );
 
       await sendModLog(message.guild, {
         action: 'Lock',
