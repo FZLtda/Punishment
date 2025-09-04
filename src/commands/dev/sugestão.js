@@ -1,29 +1,36 @@
 'use strict';
 
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { emojis, colors, bot } = require('@config');
+const { colors, emojis, bot } = require('@config');
+const { sendWarning } = require('@embeds/embedWarning');
 
 module.exports = {
   name: 'sugestao',
-  description: 'Abre o painel do sistema de sugestões',
+  description: 'Abre o painel do sistema de sugestões.',
+  usage: '${currentPrefix}sugestao',
+  userPermissions: [],
+  botPermissions: [],
+  deleteMessage: true,
 
   /**
    * Executa o comando sugestao
    * @param {import('discord.js').Message} message
-   * @param {import('discord.js').Client} client
+   * @param {string[]} args
    */
-  async run(client, message) {
+  async execute(message, args) {
+    const client = message.client;
     const suggestionsChannel = process.env.SUGGESTIONS_CHANNEL;
+
     if (!suggestionsChannel) {
-      return message.reply(`${emojis.error} O canal de sugestões não está configurado no .env.`);
+      return sendWarning(message, 'O canal de sugestões não está configurado no `.env`.');
     }
 
     const embed = new EmbedBuilder()
       .setTitle(`${emojis.idea} Sistema de Sugestões`)
       .setDescription(
         `📌 Escolha uma opção abaixo:\n\n` +
-        `📝 **Fazer Sugestão** – Envie sua ideia para o canal de sugestões.\n` +
-        `📂 **Ver Sugestões** – Veja todas as ideias já enviadas pela comunidade.`
+        `📝 **Fazer Sugestão** – Envie sua ideia diretamente.\n` +
+        `📂 **Ver Sugestões** – Acesse o canal de sugestões e veja o que já foi enviado.`
       )
       .setColor(colors.primary)
       .setFooter({ text: bot.name, iconURL: client.user.displayAvatarURL() });
