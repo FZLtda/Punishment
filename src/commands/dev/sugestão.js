@@ -31,7 +31,7 @@ module.exports = {
       message.guild.channels.cache.get(args[0]) ||
       message.channel;
 
-    const isValid = await checkMemberGuard(message, targetChannel, 'sugestao');
+    const isValid = await checkMemberGuard(message, message.guild.members.me, 'sugestao');
     if (!isValid) return;
 
     try {
