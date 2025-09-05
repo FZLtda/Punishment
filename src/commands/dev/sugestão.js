@@ -5,11 +5,11 @@ const {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
-  PermissionsBitField,
 } = require('discord.js');
 const Logger = require('@logger');
 const { colors, emojis, bot } = require('@config');
 const { sendWarning } = require('@embeds/embedWarning');
+const { checkMemberGuard } = require('@permissions/memberGuards');
 
 module.exports = {
   name: 'sugestao',
@@ -31,26 +31,8 @@ module.exports = {
       message.guild.channels.cache.get(args[0]) ||
       message.channel;
 
-    if (!targetChannel?.isTextBased?.()) {
-      return sendWarning(
-        message,
-        'Canal inválido. Informe um canal de texto ou deixe em branco para usar o atual.'
-      );
-    }
-
-    const me = message.guild.members.me;
-    const perms = targetChannel.permissionsFor(me);
-    const missing = [];
-
-    if (!perms?.has(PermissionsBitField.Flags.SendMessages)) missing.push('SendMessages');
-    if (!perms?.has(PermissionsBitField.Flags.EmbedLinks)) missing.push('EmbedLinks');
-
-    if (missing.length) {
-      return sendWarning(
-        message,
-        'Não tenho permissões no canal'
-      );
-    }
+    const isValid = await checkMemberGuard(message, targetChannel, 'sugestao');
+    if (!isValid) return;
 
     try {
       const embed = new EmbedBuilder()
@@ -58,11 +40,10 @@ module.exports = {
         .setTitle('Sistema de Sugestões')
         .setDescription(
           [
-            '💡 Quer nos ajudar a tornar o Punishment ainda melhor?',
+            'Quer nos ajudar a tornar o **Punishment** ainda melhor?',
             '',
             '• Envie ideias de novos comandos, melhorias ou ajustes;',
             '• Todas as sugestões serão analisadas pela equipe de desenvolvimento;',
-            '• Participação ativa faz a diferença na evolução do bot!',
           ].join('\n')
         )
         .setFooter({
