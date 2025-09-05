@@ -3,7 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const Logger = require('@logger');
 const { colors, emojis, channels, bot } = require('@config');
-
+const { sendWarning } = require('@embeds/embedWarning');
 
 module.exports = {
   customId: 'suggestModal',
@@ -18,6 +18,11 @@ module.exports = {
     const description = interaction.fields.getTextInputValue('suggestDescription');
 
     Logger.info(`[modal:suggestModal] Nova sugestão de ${interaction.user.tag}: ${title}`);
+
+    // Validação básica
+    if (!title || !description) {
+      return sendWarning(interaction, 'Você precisa preencher todos os campos para enviar uma sugestão.');
+    }
 
     const embed = new EmbedBuilder()
       .setColor(colors.green)
@@ -36,12 +41,12 @@ module.exports = {
     try {
       const channel = await client.channels.fetch(channels.suggestion);
       if (!channel) {
-        return interaction.reply({ content: 'Canal de sugestões não encontrado!', flags: 1 << 6 });
+        return sendWarning(interaction, 'Canal de sugestões não encontrado!');
       }
 
       const message = await channel.send({ embeds: [embed] });
-      await message.react('👍');
-      await message.react('👎');
+      await message.react(emojis.successEmoji);
+      await message.react(emojis.errorEmoji);
 
       await interaction.reply({
         content: `${emojis.successEmoji} Sua sugestão foi enviada com sucesso!`,
@@ -49,10 +54,7 @@ module.exports = {
       });
     } catch (err) {
       Logger.error(`[modal:suggestModal] Erro: ${err.message}`);
-      await interaction.reply({
-        content: 'Não foi possível processar sua sugestão!',
-        flags: 1 << 6,
-      });
+      return sendWarning(interaction, 'Não foi possível processar sua sugestão devido a um erro inesperado.');
     }
   },
 };
