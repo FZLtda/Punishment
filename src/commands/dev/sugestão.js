@@ -75,7 +75,7 @@ module.exports = {
         new ButtonBuilder()
           .setCustomId('openSuggestionModal')
           .setLabel('Fazer Sugestão')
-          .setEmoji(emojis.check)
+          .setEmoji(emojis.checkEmoji)
           .setStyle(ButtonStyle.Success)
       );
 
