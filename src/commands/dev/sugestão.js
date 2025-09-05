@@ -34,7 +34,7 @@ module.exports = {
     if (!targetChannel?.isTextBased?.()) {
       return sendWarning(
         message,
-        `${emojis.errorEmoji} Canal inválido. Informe um canal de texto ou deixe em branco para usar o atual.`
+        'Canal inválido. Informe um canal de texto ou deixe em branco para usar o atual.'
       );
     }
 
@@ -48,8 +48,7 @@ module.exports = {
     if (missing.length) {
       return sendWarning(
         message,
-        `${emojis.errorEmoji} Não tenho permissões no canal ${targetChannel}.\n` +
-          `Permissões faltando: \`${missing.join(', ')}\`.`
+        'Não tenho permissões no canal'
       );
     }
 
