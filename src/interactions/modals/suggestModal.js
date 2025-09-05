@@ -2,7 +2,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 const Logger = require('@logger');
-const { colors, emojis, suggestion_channel } = require('@config');
+const { colors, emojis, channels } = require('@config');
 
 
 module.exports = {
@@ -34,7 +34,7 @@ module.exports = {
       .setTimestamp();
 
     try {
-      const channel = await client.channels.fetch(SUGGESTION_CHANNEL_ID);
+      const channel = await client.channels.fetch(channels.suggestion);
       if (!channel) {
         return interaction.reply({ content: 'Canal de sugestões não encontrado!', flags: 1 << 6 });
       }
