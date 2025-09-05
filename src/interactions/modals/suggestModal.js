@@ -2,7 +2,7 @@
 
 const { EmbedBuilder } = require('discord.js');
 const Logger = require('@logger');
-const { colors, emojis, channels } = require('@config');
+const { colors, emojis, channels, bot } = require('@config');
 
 
 module.exports = {
