@@ -17,20 +17,15 @@ module.exports = {
     const title = interaction.fields.getTextInputValue('suggestTitle');
     const description = interaction.fields.getTextInputValue('suggestDescription');
 
-    Logger.info(`[modal:suggestModal] Nova sugestão de ${interaction.user.tag}: ${title}`);
-
-    // Validação básica
-    if (!title || !description) {
-      return sendWarning(interaction, 'Você precisa preencher todos os campos para enviar uma sugestão.');
-    }
+    Logger.info(`[modal:suggestModal] Sugestão recebida de ${interaction.user.tag}: ${title}`);
 
     const embed = new EmbedBuilder()
       .setColor(colors.green)
-      .setTitle('Nova Sugestão')
+      .setTitle('📢 Nova Sugestão')
       .addFields(
         { name: '👤 Autor', value: `${interaction.user}`, inline: true },
-        { name: '📌 Título', value: title, inline: true },
-        { name: '📝 Descrição', value: description }
+        { name: '📌 Título', value: title || 'Não informado', inline: true },
+        { name: '📝 Descrição', value: description || 'Não informado' }
       )
       .setFooter({
         text: bot.name,
@@ -45,16 +40,21 @@ module.exports = {
       }
 
       const message = await channel.send({ embeds: [embed] });
-      await message.react(emojis.successEmoji);
-      await message.react(emojis.errorEmoji);
+      await Promise.all([
+        message.react(emojis.successEmoji),
+        message.react(emojis.errorEmoji),
+      ]);
 
       await interaction.reply({
         content: `${emojis.successEmoji} Sua sugestão foi enviada com sucesso!`,
         flags: 1 << 6,
       });
     } catch (err) {
-      Logger.error(`[modal:suggestModal] Erro: ${err.message}`);
-      return sendWarning(interaction, 'Não foi possível processar sua sugestão devido a um erro inesperado.');
+      Logger.error(`[modal:suggestModal] Erro ao processar sugestão: ${err.message}`);
+      return sendWarning(
+        interaction,
+        'Não foi possível processar sua sugestão devido a um erro inesperado.'
+      );
     }
   },
 };
