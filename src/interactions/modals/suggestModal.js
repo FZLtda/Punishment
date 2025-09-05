@@ -46,7 +46,7 @@ module.exports = {
       ]);
 
       await interaction.reply({
-        content: `${emojis.successEmoji} Sua sugestão foi enviada com sucesso!`,
+        content: `${emojis.successEmoji} Mandou bem! Sua sugestão foi enviada!`,
         flags: 1 << 6,
       });
     } catch (err) {
