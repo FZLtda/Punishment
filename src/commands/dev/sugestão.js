@@ -59,10 +59,11 @@ module.exports = {
         .setTitle('Sistema de Sugestões')
         .setDescription(
           [
-            'Clique no botão abaixo para enviar sua sugestão.',
+            '💡 Quer nos ajudar a tornar o Punishment ainda melhor?',
             '',
-            '• Um modal será aberto pedindo **título** e **descrição**;',
-            '• Sua sugestão será enviada ao canal configurado pela staff.',
+            '• Envie ideias de novos comandos, melhorias ou ajustes;',
+            '• Todas as sugestões serão analisadas pela equipe de desenvolvimento;',
+            '• Participação ativa faz a diferença na evolução do bot!',
           ].join('\n')
         )
         .setFooter({
