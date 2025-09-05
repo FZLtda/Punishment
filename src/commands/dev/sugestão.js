@@ -41,8 +41,8 @@ module.exports = {
           [
             'Quer nos ajudar a tornar o **Punishment** ainda melhor?',
             '',
-            '• Envie ideias de novos comandos, melhorias ou ajustes;',
-            '• Todas as sugestões serão analisadas pela equipe de desenvolvimento;',
+            '• Envie ideias de novos comandos, melhorias ou ajustes',
+            '• Todas as sugestões serão analisadas pela equipe de desenvolvimento',
           ].join('\n')
         )
         .setFooter({
