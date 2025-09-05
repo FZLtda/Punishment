@@ -9,7 +9,6 @@ const {
 const Logger = require('@logger');
 const { colors, emojis, bot } = require('@config');
 const { sendWarning } = require('@embeds/embedWarning');
-const { checkMemberGuard } = require('@permissions/memberGuards');
 
 module.exports = {
   name: 'sugestao',
@@ -26,13 +25,13 @@ module.exports = {
    * @param {string[]} args
    */
   async execute(message, args) {
+    if (message.author.id !== bot.ownerId)
+      return;
+    
     const targetChannel =
       message.mentions.channels.first() ||
       message.guild.channels.cache.get(args[0]) ||
       message.channel;
-
-    const isValid = await checkMemberGuard(message, message.guild.members.me, 'sugestao');
-    if (!isValid) return;
 
     try {
       const embed = new EmbedBuilder()
