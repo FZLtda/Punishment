@@ -13,28 +13,38 @@ module.exports = {
   category: 'Utilidades',
   userPermissions: ['ManageMessages'],
   botPermissions: ['SendMessages'],
+  deleteMessage: true,
 
   async execute(message, args) {
     const msgId = args[0];
 
+    // Validação de ID
     if (!msgId || !/^\d{17,20}$/.test(msgId)) {
       logger.warn(`[REROLL] ID inválido fornecido por ${message.author.tag} (${message.author.id})`);
       return sendWarning(message, 'Forneça um ID de mensagem válido para rerolar o sorteio.');
     }
 
-    const sorteio = await Giveaway.findOne({ messageId: msgId, status: 'encerrado' });
+    let sorteio;
+    try {
+      sorteio = await Giveaway.findOne({ messageId: msgId, status: 'encerrado' });
+    } catch (error) {
+      logger.error(`[REROLL] Erro ao buscar sorteio | ID: ${msgId} | Erro: ${error.message}`);
+      return sendWarning(message, 'Ocorreu um erro interno ao buscar o sorteio.');
+    }
 
     if (!sorteio) {
       logger.warn(`[REROLL] Sorteio encerrado não encontrado para o ID ${msgId}`);
       return sendWarning(message, 'Não foi encontrado nenhum sorteio com esse ID.');
     }
 
-    const participantes = [...sorteio.participants];
+    const participantes = Array.isArray(sorteio.participants) ? [...sorteio.participants] : [];
     const ganhadores = [];
 
+    // Seleção dos ganhadores
     if (participantes.length >= sorteio.winners) {
       for (let i = 0; i < sorteio.winners; i++) {
-        const escolhido = participantes.splice(Math.floor(Math.random() * participantes.length), 1)[0];
+        const index = Math.floor(Math.random() * participantes.length);
+        const escolhido = participantes.splice(index, 1)[0];
         if (escolhido) ganhadores.push(`<@${escolhido}>`);
       }
     }
@@ -52,7 +62,10 @@ module.exports = {
       .setTimestamp()
       .setFooter({ text: 'Punishment', iconURL: message.client.user.displayAvatarURL() });
 
-    logger.info(`[REROLL] Sorteio rerolado ${message.author.tag} | ID: ${msgId} | Ganhadores: ${ganhadores.length}`);
+    logger.info(
+      `[REROLL] Sorteio rerolado por ${message.author.tag} (${message.author.id}) | ID: ${msgId} | Ganhadores: ${ganhadores.length}`
+    );
+
     return message.channel.send({ embeds: [rerollEmbed], allowedMentions: { parse: [] } });
   }
 };
