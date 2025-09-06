@@ -1,6 +1,5 @@
 'use strict';
 
-
 const { EmbedBuilder } = require('discord.js');
 const { sendWarning } = require('@embeds/embedWarning');
 const Giveaway = require('@models/Giveaway');
@@ -14,13 +13,19 @@ module.exports = {
   category: 'Utilidades',
   userPermissions: ['ManageMessages'],
   botPermissions: ['SendMessages'],
+  deleteMessage: true,
 
   async execute(message, args) {
     const msgId = args[0];
 
     if (!msgId || !/^\d{17,20}$/.test(msgId)) {
-      logger.warn(`[CANCELAR] ID inválido fornecido por ${message.author.tag} (${message.author.id})`);
-      return sendWarning(message, 'Informe um ID de mensagem válido do sorteio que deseja cancelar.');
+      logger.warn(
+        `[CANCELAR] ID inválido fornecido por ${message.author.tag} (${message.author.id})`
+      );
+      return sendWarning(
+        message,
+        'Informe um ID de mensagem válido do sorteio que deseja cancelar.'
+      );
     }
 
     const sorteio = await Giveaway.findOne({ messageId: msgId, status: 'ativo' });
@@ -40,27 +45,40 @@ module.exports = {
       if (mensagem) {
         const embedCancelado = new EmbedBuilder()
           .setTitle(`${emojis.errorEmoji} Sorteio Cancelado`)
-          .setDescription('Este sorteio foi **cancelado manualmente** por um administrador.')
+          .setDescription(
+            'Este sorteio foi cancelado pela administração.\n' +
+            'A decisão segue as regras do servidor, garantindo transparência e organização para todos os membros.'
+          )
           .addFields({ name: 'Prêmio', value: sorteio.prize })
           .setColor(colors.red)
-          .setFooter({ 
-            text: 'Punishment', 
-            iconURL: message.client.user.displayAvatarURL() })
+          .setFooter({
+            text: 'Punishment',
+            iconURL: message.client.user.displayAvatarURL(),
+          })
           .setTimestamp();
 
         await mensagem.edit({ embeds: [embedCancelado] }).catch(() => null);
+
+        await mensagem.reactions.removeAll().catch(() => null);
       }
 
-      const confirm = new EmbedBuilder()
-        .setColor(colors.green)
-        .setDescription(`${emojis.successEmoji} Sorteio **cancelado com sucesso**.`);
+      if (message.channel.id !== sorteio.channelId) {
+        const confirm = new EmbedBuilder()
+          .setColor(colors.green)
+          .setDescription(`${emojis.successEmoji} Sorteio **cancelado com sucesso**.`);
 
-      logger.info(`[CANCELAR] Sorteio "${sorteio.prize}" cancelado por ${message.author.tag}`);
-      return message.channel.send({ embeds: [confirm], allowedMentions: { repliedUser: false } });
+        await message.channel.send({
+          embeds: [confirm],
+          allowedMentions: { repliedUser: false },
+        });
+      }
 
+      logger.info(
+        `[CANCELAR] Sorteio "${sorteio.prize}" cancelado por ${message.author.tag}`
+      );
     } catch (err) {
       logger.error(`[CANCELAR] Erro ao cancelar sorteio: ${err.stack || err.message}`);
       return sendWarning(message, 'Não foi possível editar a mensagem do sorteio.');
     }
-  }
+  },
 };
