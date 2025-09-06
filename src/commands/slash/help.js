@@ -41,7 +41,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setAuthor({
-        name: 'Comando de ajuda',
+        name: 'Central de Recursos',
         iconURL: emojis.helpIcon
       })
       .setColor(colors.red)
