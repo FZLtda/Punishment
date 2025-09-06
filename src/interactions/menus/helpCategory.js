@@ -26,7 +26,7 @@ module.exports = {
         .setTitle(`\`\`\`${category.name}\`\`\``)
         .setColor(colors.red)
         .setAuthor({
-          name: 'Comando de ajuda',
+          name: 'Central de Recursos',
           iconURL: emojis.helpIcon,
         })
         .setDescription(
