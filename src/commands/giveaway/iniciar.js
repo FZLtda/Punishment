@@ -11,7 +11,7 @@ const ms = require('ms');
 module.exports = {
   name: 'sorteio',
   description: 'Inicia um sorteio em um canal.',
-  usage: 'sorteio <prêmio> <vencedores> <duração> <#canal>',
+  usage: 'sorteio <prêmio> <vencedores> <duração> [#canal]',
   category: 'Utilidades',
   userPermissions: [PermissionFlagsBits.ManageMessages],
   botPermissions: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.AddReactions],
@@ -20,28 +20,13 @@ module.exports = {
   async execute(message, args) {
     const prefix = await getPrefix(message.guild?.id);
 
-    if (args.length < 4) {
+    if (args.length < 3) {
       return sendWarning(message, `Uso correto: ${prefix}${this.usage}`);
     }
 
-    // Detecta o canal
-    const canalMention = args[args.length - 1];
-    const canalId = canalMention.replace(/[<#>]/g, '');
-    const canal = message.guild.channels.cache.get(canalId);
-
-    // Detecta duração
-    const duracaoRaw = args[args.length - 2];
-    const duracao = ms(duracaoRaw);
-
-    // Detecta número de vencedores
-    const vencedoresRaw = args[args.length - 3];
-    const vencedores = parseInt(vencedoresRaw, 10);
-
-    // O resto é o prêmio
-    const premio = args.slice(0, args.length - 3).join(' ');
-
-    // Validações
-    if (!premio || isNaN(vencedores) || vencedores <= 0 || !duracao || duracao < 10000 || !canal) {
+    // Extrai e valida argumentos
+    const { canal, premio, vencedores, duracao } = this.parseArgs(message, args);
+    if (!premio || isNaN(vencedores) || vencedores <= 0 || !duracao || duracao < 10000) {
       return sendWarning(message, 'Parâmetros inválidos. Preencha todos corretamente.');
     }
 
@@ -50,21 +35,9 @@ module.exports = {
     }
 
     const terminaEm = new Date(Date.now() + duracao);
-    const plural = vencedores === 1 ? 'vencedor' : 'vencedores';
 
-    const embed = new EmbedBuilder()
-      .setTitle('🎉 Novo Sorteio!')
-      .setDescription([
-        `**Prêmio:** ${premio}`,
-        `**Participe:** Reaja com 🎉`,
-        `**Duração:** Termina <t:${Math.floor(terminaEm.getTime() / 1000)}:R>`
-      ].join('\n'))
-      .setColor(colors.primary || colors.red)
-      .setFooter({
-        text: `Ser${vencedores === 1 ? 'á' : 'ão'} ${vencedores} ${plural}`,
-        iconURL: message.client.user.displayAvatarURL()
-      })
-      .setTimestamp();
+    // Cria o embed do sorteio
+    const embed = this.createEmbed(message, premio, vencedores, terminaEm);
 
     try {
       const sorteioMsg = await canal.send({ embeds: [embed] });
@@ -93,5 +66,55 @@ module.exports = {
       logger.error(`[SORTEIO] Erro: ${err.stack || err.message}`);
       return sendWarning(message, 'Erro interno ao criar sorteio. Tente novamente.');
     }
+  },
+
+  parseArgs(message, args) {
+    let canal;
+    let duracaoRaw;
+    let vencedoresRaw;
+    let premioArgs;
+
+    const canalRegex = /^<#\d+>$/;
+
+    if (canalRegex.test(args[args.length - 1])) {
+      const canalMention = args[args.length - 1];
+      const canalId = canalMention.replace(/[<#>]/g, '');
+      canal = message.guild.channels.cache.get(canalId);
+
+      duracaoRaw = args[args.length - 2];
+      vencedoresRaw = args[args.length - 3];
+      premioArgs = args.slice(0, args.length - 3);
+    } else {
+      canal = message.channel;
+
+      duracaoRaw = args[args.length - 1];
+      vencedoresRaw = args[args.length - 2];
+      premioArgs = args.slice(0, args.length - 2);
+    }
+
+    const premio = premioArgs.join(' ');
+    const vencedores = parseInt(vencedoresRaw, 10);
+    const duracao = ms(duracaoRaw);
+
+    return { canal, premio, vencedores, duracao };
+  },
+
+  // Embed do sorteio
+  createEmbed(message, premio, vencedores, terminaEm) {
+    const plural = vencedores === 1 ? 'vencedor' : 'vencedores';
+
+    return new EmbedBuilder()
+      .setTitle('🎉 Novo Sorteio!')
+      .setDescription([
+        `**Prêmio:** ${premio}`,
+        `**Participe:** Reaja com 🎉`,
+        `**Duração:** Termina <t:${Math.floor(terminaEm.getTime() / 1000)}:R>`
+      ].join('\n'))
+      .setColor(colors.primary || colors.red)
+      .setFooter({
+        text: `Ser${vencedores === 1 ? 'á' : 'ão'} ${vencedores} ${plural}`,
+        iconURL: message.client.user.displayAvatarURL()
+      })
+      .setTimestamp();
   }
 };
