@@ -141,7 +141,7 @@ module.exports = [
     emoji: emojis.give,
     description: 'Comandos para criar e gerenciar sorteios no servidor.',
     commands: [
-      { name: 'sorteio', description: 'Inicia um novo sorteio.', usage: 'sorteio <prêmio> <vencedores> <tempo> <#canal>', permissions: ['ManageMessages'], details: 'Exemplo: `sorteio Nitro 1 1h #geral` cria um sorteio de 1 Nitro com duração de 1 hora.', id: '000000000000000029' },
+      { name: 'sorteio', description: 'Inicia um novo sorteio.', usage: 'sorteio <prêmio> <vencedores> <tempo> [#canal]', permissions: ['ManageMessages'], details: 'Exemplo: `sorteio Nitro 1 1h #geral` cria um sorteio de 1 Nitro com duração de 1 hora.', id: '000000000000000029' },
       { name: 'rerolar', description: 'Escolhe um novo vencedor para um sorteio finalizado.', usage: 'rerolar <ID_da_mensagem>', permissions: ['ManageMessages'], details: 'Útil caso o vencedor inicial não seja válido.', id: '000000000000000030' },
       { name: 'finalizar', description: 'Finaliza manualmente um sorteio ativo.', usage: 'finalizar <ID_da_mensagem>', permissions: ['ManageMessages'], details: 'Força o término imediato do sorteio.', id: '000000000000000031' },
       { name: 'cancelar', description: 'Cancela um sorteio em andamento.', usage: 'cancelar <ID_da_mensagem>', permissions: ['ManageMessages'], details: 'O sorteio será encerrado e nenhum vencedor será sorteado.', id: '000000000000000032' },
