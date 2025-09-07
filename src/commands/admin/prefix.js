@@ -2,6 +2,7 @@
 
 const GuildConfig = require('@models/GuildConfig');
 const { sendWarning } = require('@embeds/embedWarning');
+const { sendSuccess } = require('@embeds/embedSuccess');
 const { emojis } = require('@config');
 
 module.exports = {
@@ -36,7 +37,7 @@ module.exports = {
         message.client.setPrefix(guildId, novoPrefixo);
       }
 
-      return message.channel.send(`${emojis.successEmoji} Prefixo alterado para \`${novoPrefixo}\``);
+      return sendSuccess(message, `Prefixo alterado para '${novoPrefixo}'`);
 
     } catch (error) {
       console.error(`[PREFIX] Erro ao salvar novo prefixo para ${guildId}:`, error);
