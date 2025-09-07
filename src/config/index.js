@@ -8,6 +8,7 @@ const roles     = require('./roles');
 const bot       = require('./bot');
 
 module.exports = {
+  env: process.env.NODE_ENV,
   langFlags,
   channels,
   colors,
