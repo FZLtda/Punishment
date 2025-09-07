@@ -8,18 +8,23 @@ const Logger = require('@logger');
 
 module.exports = {
   name: 'send',
-  description: 'Envia uma mensagem personalizada para um canal específico.',
-  usage: '${currentPrefix}send <#canal> <mensagem>',
+  description: 'Envia uma mensagem personalizada para um canal específico ou para o canal atual.',
+  usage: '${currentPrefix}send [#canal] <mensagem>',
   userPermissions: ['ManageMessages'],
   botPermissions: ['SendMessages'],
   deleteMessage: true,
 
   async execute(message, args) {
-    const canal = message.mentions.channels.first();
-    const conteudo = args.slice(1).join(' ');
+    let canal;
+    let conteudo;
 
-    if (!canal || canal.type !== ChannelType.GuildText) {
-      return sendWarning(message, 'Você precisa mencionar um canal de texto válido.');
+    const mencionado = message.mentions.channels.first();
+    if (mencionado && mencionado.type === ChannelType.GuildText) {
+      canal = mencionado;
+      conteudo = args.slice(1).join(' ');
+    } else {
+      canal = message.channel;
+      conteudo = args.join(' ');
     }
 
     if (!conteudo) {
