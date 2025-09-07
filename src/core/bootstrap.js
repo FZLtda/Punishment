@@ -14,13 +14,15 @@ const { loadButtonInteractions } = require('@loadButtonInteractions/loader');
 const { showStartupDiagnostic } = require('@core/diagnostic');
 
 /**
- * Ponto principal de inicialização do Punishment.
- * Aqui são ativados os sistemas essenciais:
- * - Verificação do ambiente
- * - Conexão com o banco de dados
- * - Carregamento dos módulos
- * - Login do bot no Discord
- * - Exibição de diagnósticos
+ * Bootstrap do Punishment.
+ * Responsável por:
+ * - Validar ambiente
+ * - Conectar ao MongoDB
+ * - Carregar módulos principais
+ * - Fazer login no Discord
+ * - Exibir diagnósticos de inicialização
+ *
+ * @returns {Promise<{ discordClient: import('discord.js').Client, mongo: any }>}
  */
 module.exports = async function bootstrap() {
   validateEnvironment();
@@ -29,7 +31,7 @@ module.exports = async function bootstrap() {
     throw new Error('[BOOTSTRAP] Variável de ambiente TOKEN ausente.');
   }
 
-  await connectMongo();
+  const mongo = await connectMongo();
 
   await Promise.all([
     loadCommands(client),
@@ -37,10 +39,11 @@ module.exports = async function bootstrap() {
     loadMenus(client),
     loadSlashCommands(client),
     loadButtonInteractions(client),
-    loadModals(client)
+    loadModals(client),
   ]);
 
   await client.login(process.env.TOKEN);
-
   await showStartupDiagnostic(client);
+
+  return { discordClient: client, mongo };
 };
