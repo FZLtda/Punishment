@@ -94,7 +94,7 @@ module.exports = [
       { name: 'unlock', description: 'Destrava um canal.', usage: 'unlock [motivo]', permissions: ['ManageChannels'], details: 'Remove as restrições aplicadas com o comando `lock`.', id: '000000000000000016' },
       { name: 'lockuser', description: 'Impede um usuário específico de enviar mensagens.', usage: 'lockuser <@usuário>', permissions: ['ManageRoles'], details: 'Aplica uma restrição personalizada ao usuário.', id: '000000000000000017' },
       { name: 'unlockuser', description: 'Libera um usuário silenciado.', usage: 'unlockuser <@usuário>', permissions: ['ManageRoles'], details: 'Remove a restrição aplicada com `lockuser`.', id: '000000000000000018' },
-      { name: 'send', description: 'Envia uma mensagem como o bot.', usage: 'send <#canal> <mensagem>', permissions: ['Administrator'], details: 'Permite que o bot envie mensagens personalizadas em qualquer canal.', id: '000000000000000019' },
+      { name: 'send', description: 'Envia uma mensagem como o bot.', usage: 'send [#canal] <mensagem>', permissions: ['Administrator'], details: 'Permite que o bot envie mensagens personalizadas em qualquer canal.', id: '000000000000000019' },
       { name: 'slowmode', description: 'Define o modo lento em um canal.', usage: 'slowmode <tempo>', permissions: ['ManageChannels'], details: 'O tempo pode ser definido em segundos, minutos ou horas.', id: '000000000000000020' },
     ],
   },
