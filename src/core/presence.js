@@ -5,14 +5,22 @@ const Logger = require('@logger');
 /**
  * Define a presença do bot (status e atividade personalizada).
  * @param {import('discord.js').Client} client - Instância do cliente Discord.
- * @param {string} [contexto='manual'] - Contexto de chamada (ex: ready, shardResume, shardReady).
+ * @param {string} [contexto='manual'] - Contexto de chamada (ex: ready, shardResume, interval).
+ * @param {number} [tentativas=0] - Contador de tentativas.
  */
-async function setBotPresence(client, contexto = 'manual') {
+async function setBotPresence(client, contexto = 'manual', tentativas = 0) {
   if (!client || !client.user) {
-    Logger.warn(`[Presence] Cliente inválido ao tentar definir presença. Contexto: ${contexto}`);
+    if (tentativas < 5) {
+      Logger.warn(`[Presence] Cliente inválido ao tentar definir presença. Contexto: ${contexto}. Tentativa: ${tentativas + 1}`);
+      setTimeout(() => setBotPresence(client, contexto, tentativas + 1), 5000);
+    } else {
+      Logger.error(`[Presence] Não foi possível definir presença após ${tentativas} tentativas. Contexto: ${contexto}`);
+    }
+    return;
+  }
 
-    // Retry automático em 5s
-    setTimeout(() => setBotPresence(client, contexto), 5000);
+  if (client.ws.status !== 0) {
+    Logger.warn(`[Presence] Conexão não está READY. Status: ${client.ws.status}. Contexto: ${contexto}`);
     return;
   }
 
