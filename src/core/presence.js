@@ -1,12 +1,18 @@
 'use strict';
 
+const Logger = require('@logger');
+
 /**
  * Define a presença do bot (status e atividade personalizada).
  * @param {import('discord.js').Client} client - Instância do cliente Discord.
+ * @param {string} [contexto='manual'] - Contexto de chamada (ex: ready, shardResume, shardReady).
  */
-async function setBotPresence(client) {
+async function setBotPresence(client, contexto = 'manual') {
   if (!client || !client.user) {
-    console.warn('[Presence] Cliente inválido ao tentar definir presença.');
+    Logger.warn(`[Presence] Cliente inválido ao tentar definir presença. Contexto: ${contexto}`);
+
+    // Retry automático em 5s
+    setTimeout(() => setBotPresence(client, contexto), 5000);
     return;
   }
 
@@ -21,9 +27,9 @@ async function setBotPresence(client) {
       ]
     });
 
-    console.log(`[Presence] Presença definida como "Jogando /help" (status: DND).`);
+    Logger.info(`[Presence] Presença definida com sucesso (status: DND). Contexto: ${contexto}`);
   } catch (error) {
-    console.error('[Presence] Falha ao definir presença:', error);
+    Logger.error(`[Presence] Falha ao definir presença (contexto: ${contexto}): ${error.message}`);
   }
 }
 
