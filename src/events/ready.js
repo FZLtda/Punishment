@@ -14,17 +14,26 @@ module.exports = {
    * Executa ações de inicialização após o bot estar pronto.
    * @param {import('discord.js').Client} client
    */
-  
   async execute(client) {
-    global.client = client;
+    Logger.info(`[Ready] Inicializando com usuário: ${client.user?.tag || 'desconhecido'}`);
+
+    if (!client.isReady()) {
+      Logger.warn('[Ready] Client não está marcado como pronto. Aguardando próximo ciclo...');
+      return;
+    }
 
     try {
-      await setBotPresence(client);
-      iniciarSorteiosTask(client);
-      iniciarAtribuicaoDeDoadores(client);
+      await setBotPresence(client, 'ready');
+
+      await Promise.allSettled([
+        iniciarSorteiosTask(client),
+        iniciarAtribuicaoDeDoadores(client)
+      ]);
+
       monitor.emit('ready', client.user.tag);
+      Logger.info('[Ready] Inicialização concluída com sucesso.');
     } catch (err) {
-      Logger.fatal(`Falha ao iniciar evento 'ready': ${err.stack || err.message}`);
+      Logger.fatal(`[Ready] Falha durante inicialização: ${err.stack || err.message}`);
       monitor.emit('error', 'event:ready', err);
     }
   }
