@@ -11,6 +11,6 @@ module.exports = {
    * @param {number} id ID da shard
    */
   async execute(id) {
-    Logger.warn(`Shard ${id} tentando reconectar...`);
+    Logger.info(`[Shard ${id}] Reconexão iniciada... (event:shardReconnecting)`);
   }
 };
