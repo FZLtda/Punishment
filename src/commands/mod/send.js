@@ -21,10 +21,15 @@ module.exports = {
     const mencionado = message.mentions.channels.first();
     if (mencionado && mencionado.type === ChannelType.GuildText) {
       canal = mencionado;
-      conteudo = args.slice(1).join(' ');
+      conteudo = message.content
+        .replace(`${args[0]}`, '')
+        .replace(mencionado.toString(), '')
+        .trim();
     } else {
       canal = message.channel;
-      conteudo = args.join(' ');
+      conteudo = message.content
+        .replace(`${args[0]}`, '')
+        .trim();
     }
 
     if (!conteudo) {
