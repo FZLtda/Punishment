@@ -18,17 +18,20 @@ module.exports = {
     let canal;
     let conteudo;
 
+    const prefix = '.';
+    const comando = 'send';
+
     const mencionado = message.mentions.channels.first();
     if (mencionado && mencionado.type === ChannelType.GuildText) {
       canal = mencionado;
       conteudo = message.content
-        .replace(`${args[0]}`, '')
+        .replace(`${prefix}${comando}`, '')
         .replace(mencionado.toString(), '')
         .trim();
     } else {
       canal = message.channel;
       conteudo = message.content
-        .replace(`${args[0]}`, '')
+        .replace(`${prefix}${comando}`, '')
         .trim();
     }
 
