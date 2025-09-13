@@ -20,50 +20,51 @@ module.exports = {
     const canal = message.channel;
 
     try {
-      const jaDesbloqueado = !canal.permissionOverwrites.cache
-        .get(message.guild.roles.everyone.id)
-        ?.deny.has(PermissionsBitField.Flags.SendMessages);
+      // Verifica se o canal já está desbloqueado
+      const overwrite = canal.permissionOverwrites.cache.get(message.guild.roles.everyone.id);
+      const jaDesbloqueado = overwrite?.allow.has(PermissionsBitField.Flags.SendMessages);
 
       if (jaDesbloqueado) {
         return sendWarning(message, 'Este canal já está desbloqueado.');
       }
 
+      // Força o desbloqueio do canal
       await canal.permissionOverwrites.edit(message.guild.roles.everyone, {
-        SendMessages: null
+        SendMessages: true,
       });
 
       const embed = new EmbedBuilder()
         .setTitle(`${emojis.unlock} Canal desbloqueado`)
         .setColor(colors.green)
-        .setDescription(`Este canal foi desbloqueado com sucesso.`)
+        .setDescription('Este canal foi desbloqueado com sucesso.')
         .addFields(
           { name: 'Canal', value: `${canal}`, inline: true },
-          { name: 'Motivo', value: `\`${motivo}\``, inline: true }
+          { name: 'Motivo', value: `\`${motivo}\``, inline: true },
         )
         .setFooter({
           text: message.author.username,
-          iconURL: message.author.displayAvatarURL({ dynamic: true })
+          iconURL: message.author.displayAvatarURL({ dynamic: true }),
         })
         .setTimestamp();
 
       // Busca no banco a mensagem de lock
       const lockData = await ChannelLock.findOne({
         guildId: message.guild.id,
-        channelId: canal.id
+        channelId: canal.id,
       });
 
       if (lockData) {
         try {
           const lockMsg = await canal.messages.fetch(lockData.messageId);
           await lockMsg.edit({ embeds: [embed] });
-        } catch (err) {
+        } catch {
           await canal.send({ embeds: [embed] });
         }
 
         // Remove do banco
         await ChannelLock.deleteOne({
           guildId: message.guild.id,
-          channelId: canal.id
+          channelId: canal.id,
         });
       } else {
         await canal.send({ embeds: [embed] });
@@ -73,12 +74,15 @@ module.exports = {
         action: 'Unlock',
         moderator: message.author,
         reason: motivo,
-        channel: canal
+        channel: canal,
       });
 
     } catch (error) {
       console.error(error);
-      return sendWarning(message, 'Não foi possível desbloquear o canal devido a um erro inesperado.');
+      return sendWarning(
+        message,
+        'Não foi possível desbloquear o canal devido a um erro inesperado.',
+      );
     }
-  }
+  },
 };
