@@ -4,13 +4,12 @@ const { WebhookClient, EmbedBuilder } = require('discord.js');
 const { colors, bot } = require('@config');
 const Logger = require('@logger');
 
-const LOGO_BOT = process.env.LOGO_BOT ?? null;
 const MONITOR_WEBHOOK_URL = process.env.MONITOR_WEBHOOK_URL ?? null;
 
 // Tipos de status permitidos
 const TYPES = Object.freeze({
   INFO: 'info',
-  ERROR: 'error'
+  ERROR: 'error',
 });
 
 /**
@@ -20,9 +19,13 @@ const TYPES = Object.freeze({
  * @param {'info'|'error'} [type='error'] - Tipo de mensagem.
  */
 async function reportErrorToWebhook(title, content, type = TYPES.ERROR) {
-  const isError = content instanceof Error;
+  if (!MONITOR_WEBHOOK_URL) {
+    Logger.warn('Webhook de monitoramento não configurado. Envio remoto ignorado.');
+    return;
+  }
 
-  const normalizedType = (typeof type === 'string' && ['info', 'error'].includes(type.toLowerCase()))
+  const isError = content instanceof Error;
+  const normalizedType = ['info', 'error'].includes(type?.toLowerCase())
     ? type.toLowerCase()
     : TYPES.ERROR;
 
@@ -35,19 +38,14 @@ async function reportErrorToWebhook(title, content, type = TYPES.ERROR) {
     .setDescription(description)
     .setColor(normalizedType === TYPES.INFO ? colors.green : colors.red)
     .setTimestamp()
-    .setFooter({ text: bot.name, iconURL: LOGO_BOT });
-
-  if (!MONITOR_WEBHOOK_URL) {
-    Logger.warn('Webhook de monitoramento não configurado. Envio remoto ignorado.');
-    return;
-  }
+    .setFooter({ text: bot.name, iconURL: bot.logo });
 
   try {
     const webhook = new WebhookClient({ url: MONITOR_WEBHOOK_URL });
     await webhook.send({
       username: bot.name,
-      avatarURL: LOGO_BOT,
-      embeds: [embed]
+      avatarURL: bot.logo,
+      embeds: [embed],
     });
     Logger.info('Notificação enviada via webhook.');
   } catch (err) {
