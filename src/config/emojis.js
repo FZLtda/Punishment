@@ -43,5 +43,6 @@ module.exports = {
   successIcon:   'http://bit.ly/3IwDZaW',
   errorIcon:     'http://bit.ly/4eOH7el',
   attentionIcon: 'https://bit.ly/3Ypxwnl',
-  helpIcon:      'http://bit.ly/45U0v7a'
+  helpIcon:      'http://bit.ly/45U0v7a',
+  logs:          'http://bit.ly/4mcsgwp'
 };
