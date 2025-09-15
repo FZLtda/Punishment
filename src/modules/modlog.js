@@ -42,7 +42,7 @@ function buildEmbedDescription(action, target, moderator, reason, channel, extra
     }
   }
 
-  lines.push(`**Ação:** ${action}`);
+  lines.push(`**Ação:** ${action.toLowerCase()}`);
 
   return lines.join('\n');
 }
