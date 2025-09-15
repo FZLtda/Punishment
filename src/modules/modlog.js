@@ -2,11 +2,8 @@
 
 const { EmbedBuilder, ChannelType, TextChannel, User, Guild } = require('discord.js');
 const GuildSettings = require('@models/GuildSettings');
-const { colors, bot, emojis } = require('@config');
+const { colors, bot, emojis, actions } = require('@config');
 const Logger = require('@logger');
-
-const ACTIONS_WITHOUT_USER = new Set(['clear', 'lock', 'send', 'unlock']);
-const ACTIONS_WITHOUT_REASON = new Set(['clear']);
 
 /**
  * Constrói a descrição para o embed de moderação.
@@ -24,11 +21,11 @@ function buildEmbedDescription(action, target, moderator, reason, channel, extra
     `**Moderador:** ${moderator.tag} (\`${moderator.id}\`)`
   ];
 
-  if (target && !ACTIONS_WITHOUT_USER.has(action.toLowerCase())) {
+  if (target && !actions.withoutUser.has(action.toLowerCase())) {
     lines.push(`**Usuário:** ${target.tag} (\`${target.id}\`)`);
   }
 
-  if (reason && !ACTIONS_WITHOUT_REASON.has(action.toLowerCase())) {
+  if (reason && !actions.withoutReason.has(action.toLowerCase())) {
     lines.push(`**Motivo:** ${reason}`);
   }
 
