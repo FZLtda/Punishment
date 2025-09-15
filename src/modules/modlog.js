@@ -5,7 +5,7 @@ const GuildSettings = require('@models/GuildSettings');
 const { colors, bot, emojis } = require('@config');
 const Logger = require('@logger');
 
-const ACTIONS_WITHOUT_USER = new Set(['clear', 'lock', 'unlock']);
+const ACTIONS_WITHOUT_USER = new Set(['clear', 'lock', 'send', 'unlock']);
 const ACTIONS_WITHOUT_REASON = new Set(['clear']);
 
 /**
