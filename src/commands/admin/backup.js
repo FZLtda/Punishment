@@ -101,7 +101,7 @@ module.exports = {
       await message.channel.send({ embeds: [embed] });
 
       await sendModLog(guild, {
-        action: 'Backup de Estrutura',
+        action: 'Backup',
         target: message.author,
         moderator: message.author,
         reason: 'Backup manual solicitado.',
