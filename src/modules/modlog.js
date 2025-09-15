@@ -9,59 +9,47 @@ const ACTIONS_WITHOUT_USER = new Set(['clear', 'lock', 'unlock']);
 const ACTIONS_WITHOUT_REASON = new Set(['clear']);
 
 /**
- * Monta os campos principais para o embed de moderação.
- * 
- * @param {string} action - Nome da ação realizada.
- * @param {User|null} target - Usuário alvo da ação (se aplicável).
- * @param {User} moderator - Usuário que realizou a ação.
+ * Constrói a descrição para o embed de moderação.
+ *
+ * @param {string} action - Ação realizada.
+ * @param {User|null} target - Usuário alvo (se aplicável).
+ * @param {User} moderator - Moderador responsável pela ação.
  * @param {string} reason - Motivo da ação.
  * @param {TextChannel|null} channel - Canal relacionado (se aplicável).
- * @param {Array<{ name: string, value: string, inline?: boolean }>} extraFields - Campos adicionais.
- * @returns {Array<{ name: string, value: string, inline?: boolean }>}
+ * @param {Array<{ name: string, value: string }>} extraFields - Campos adicionais.
+ * @returns {string} - Texto formatado para o embed.
  */
-function buildEmbedFields(action, target, moderator, reason, channel, extraFields) {
-  const fields = [];
+function buildEmbedDescription(action, target, moderator, reason, channel, extraFields) {
+  const lines = [
+    `**Moderador:** ${moderator.tag} (\`${moderator.id}\`)`
+  ];
 
   if (target && !ACTIONS_WITHOUT_USER.has(action.toLowerCase())) {
-    fields.push({
-      name: 'Usuário',
-      value: `${target.tag} (\`${target.id}\`)`,
-      inline: true
-    });
+    lines.push(`**Usuário:** ${target.tag} (\`${target.id}\`)`);
   }
 
-  fields.push({
-    name: 'Moderador',
-    value: `${moderator.tag} (\`${moderator.id}\`)`,
-    inline: true
-  });
-
   if (reason && !ACTIONS_WITHOUT_REASON.has(action.toLowerCase())) {
-    fields.push({
-      name: 'Motivo',
-      value: reason,
-      inline: false
-    });
+    lines.push(`**Motivo:** ${reason}`);
   }
 
   if (channel) {
-    fields.push({
-      name: 'Canal',
-      value: `${channel}`,
-      inline: true
-    });
+    lines.push(`**Canal:** ${channel}`);
   }
 
   if (Array.isArray(extraFields) && extraFields.length > 0) {
-    fields.push(...extraFields);
+    for (const { name, value } of extraFields) {
+      lines.push(`**${name}:** ${value}`);
+    }
   }
 
-  return fields;
+  lines.push(`**Ação:** ${action}`);
+
+  return lines.join('\n');
 }
 
 /**
- * Envia um embed de log de moderação para o canal configurado.
- * 
+ * Envia um log de moderação formatado para o canal configurado.
+ *
  * @param {Guild} guild - Servidor onde ocorreu a ação.
  * @param {{
  *   action: string,
@@ -69,20 +57,19 @@ function buildEmbedFields(action, target, moderator, reason, channel, extraField
  *   moderator: User,
  *   reason?: string,
  *   channel?: TextChannel|null,
- *   extraFields?: Array<{ name: string, value: string, inline?: boolean }>
- * }} options - Informações do log.
+ *   extraFields?: Array<{ name: string, value: string }>
+ * }} options - Detalhes do log de moderação.
  */
-async function sendModLog(
-  guild,
-  {
+async function sendModLog(guild, options) {
+  const {
     action,
     target = null,
     moderator,
     reason = 'Não especificado.',
     channel = null,
     extraFields = []
-  }
-) {
+  } = options;
+
   const context = `[MODLOG][${guild?.id ?? 'unknown'}]`;
 
   try {
@@ -106,9 +93,8 @@ async function sendModLog(
         name: 'Registro de Moderação',
         iconURL: emojis.logs
       })
-      .addFields(
-        { name: 'Ação', value: action, inline: false },
-        ...buildEmbedFields(action, target, moderator, reason, channel, extraFields)
+      .setDescription(
+        buildEmbedDescription(action, target, moderator, reason, channel, extraFields)
       )
       .setTimestamp()
       .setFooter({
