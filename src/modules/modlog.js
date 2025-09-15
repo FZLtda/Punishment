@@ -103,8 +103,8 @@ async function sendModLog(
     const embed = new EmbedBuilder()
       .setColor(colors.yellow)
       .setAuthor({
-        name: 'Histórico de Ações',
-        iconURL: emojis.attentionIcon
+        name: 'Registro de Moderação',
+        iconURL: emojis.logs
       })
       .addFields(
         { name: 'Ação', value: action, inline: false },
