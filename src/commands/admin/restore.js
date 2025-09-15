@@ -163,7 +163,7 @@ module.exports = {
     await message.channel.send({ embeds: [embed] });
 
     await sendModLog(guild, {
-      action: 'Restore Estrutural',
+      action: 'Restore',
       target: message.author,
       moderator: message.author,
       reason: `Restore de itens ausentes mantendo hierarquia (Backup ${backupId})`,
