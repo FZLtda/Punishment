@@ -1,18 +1,21 @@
 'use strict';
 
 const withoutUser = new Set([
-  'clear',
   'lock',
-  'backup',
-  'restore',
   'send',
-  'unlock'
+  'clear',
+  'backup',
+  'unlock',
+  'restore',
+  'slowmode'
 ]);
 
 const withoutReason = new Set([
+  'send',
   'clear',
   'backup',
-  'restore'
+  'restore',
+  'slowmode'
 ]);
 
 module.exports = {
