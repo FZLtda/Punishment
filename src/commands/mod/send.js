@@ -1,127 +1,76 @@
 'use strict';
 
-const { EmbedBuilder, ChannelType, PermissionsBitField } = require('discord.js');
+const { EmbedBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendWarning } = require('@embeds/embedWarning');
 const { sendModLog } = require('@modules/modlog');
-const Logger = require('@logger');
-
-/**
- * Escapa caracteres especiais para uso seguro em regex.
- * @param {string} str
- * @returns {string}
- */
-function escapeRegex(str = '') {
-  return str.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
-}
 
 module.exports = {
   name: 'send',
-  description: 'Envia uma mensagem personalizada para um canal específico ou para o canal atual.',
-  usage: '${currentPrefix}send [#canal] <mensagem | --embed <mensagem>>',
-  userPermissions: [PermissionsBitField.Flags.ManageMessages],
-  botPermissions: [PermissionsBitField.Flags.SendMessages],
+  description: 'Envia uma mensagem para um canal específico.',
+  usage: '${currentPrefix}send #canal <mensagem>',
+  userPermissions: ['ManageMessages'],
+  botPermissions: ['SendMessages'],
   deleteMessage: true,
 
-  /**
-   * Executa o comando.
-   * @param {import('discord.js').Message} message
-   * @param {string[]} args
-   */
   async execute(message, args) {
-    const prefix =
-      (message.client.prefixes && message.client.prefixes.get(message.guild?.id)) || '.';
+    const targetChannel = message.mentions.channels.first();
 
-    if (!args.length) {
-      return sendWarning(
-        message,
-        `Uso incorreto. Forma correta:\n\`${this.usage.replace('${currentPrefix}', prefix)}\``
-      );
+    if (!targetChannel) {
+      return sendWarning(message, 'Você precisa mencionar um canal para continuar.');
     }
 
-    // Extrair conteúdo após o comando
-    const rawContent = message.content;
-    const regex = new RegExp(`^\\s*${escapeRegex(prefix)}${escapeRegex(this.name)}\\b`, 'i');
-    let afterCommand = rawContent.replace(regex, '').trim();
-
-    // Identificar canal de destino
-    const mentionedChannel = message.mentions.channels.first();
-    let targetChannel = message.channel;
-
-    if (mentionedChannel && mentionedChannel.type === ChannelType.GuildText) {
-      targetChannel = mentionedChannel;
-      afterCommand = afterCommand.replace(mentionedChannel.toString(), '').trim();
+    const content = args.slice(1).join(' ');
+    if (!content) {
+      return sendWarning(message, 'Você precisa fornecer uma mensagem para enviar.');
     }
 
-    if (!afterCommand) {
-      return sendWarning(message, 'Você precisa inserir uma mensagem para enviar.');
+    if (targetChannel.type !== ChannelType.GuildText) {
+      return sendWarning(message, 'Só é possível enviar mensagens em **canais de texto**.');
     }
 
-    // Verificar se é embed
-    const isEmbed = /^--embed\b/i.test(afterCommand);
-    let sentMessage;
+    const botMember = await message.guild.members.fetch(message.client.user.id);
+    const botPermissions = targetChannel.permissionsFor(botMember);
+
+    if (!botPermissions || !botPermissions.has(PermissionFlagsBits.SendMessages)) {
+      return sendWarning(message, `Não tenho permissão para enviar mensagens em ${targetChannel}.`);
+    }
 
     try {
-      if (isEmbed) {
-        const embedText = afterCommand.replace(/^--embed\b/i, '').trim();
+      await targetChannel.send({ content });
 
-        const embed = new EmbedBuilder()
-          .setColor(colors.red)
-          .setDescription(embedText || '*[sem conteúdo]*')
-          .setFooter({
-            text: `Enviado por ${message.author.username}`,
-            iconURL: message.author.displayAvatarURL({ dynamic: true })
-          })
-          .setTimestamp();
+      const confirmation = await message.channel.send({
+        embeds: [
+          new EmbedBuilder()
+            .setTitle(`${emojis.successEmoji} Mensagem enviada`)
+            .setColor(colors.green)
+            .setDescription(`Sua mensagem foi enviada para ${targetChannel}.`)
+            .setFooter({
+              text: message.author.username,
+              iconURL: message.author.displayAvatarURL({ dynamic: true }),
+            })
+            .setTimestamp()
+        ]
+      });
 
-        sentMessage = await targetChannel.send({ embeds: [embed] });
-      } else {
-        sentMessage = await targetChannel.send({ content: afterCommand });
-      }
+      setTimeout(() => {
+        confirmation.delete().catch(() => null);
+      }, 5000);
 
-      Logger.info(
-        `[send] ${message.author.tag} enviou uma mensagem em #${targetChannel.name} (${targetChannel.id})`
-      );
-    } catch (err) {
-      Logger.error(
-        `[send] Falha ao enviar mensagem para ${targetChannel.id}: ${err.stack || err.message}`
-      );
-
-      return sendWarning(
-        message,
-        'Não foi possível enviar a mensagem. Verifique as permissões do canal.'
-      );
-    }
-
-    // Feedback no canal original
-    if (targetChannel.id !== message.channel.id) {
-      message.channel
-        .send({
-          content: `${emojis.successEmoji} Sua mensagem foi enviada para ${targetChannel}.`
-        })
-        .then(m => setTimeout(() => m.delete().catch(() => {}), 5000))
-        .catch(() => {});
-    }
-
-    // Registrar no ModLog
-    try {
+      // Log no modlog
       await sendModLog(message.guild, {
         action: 'Send',
         target: targetChannel,
         moderator: message.author,
-        reason: isEmbed ? 'Mensagem embed enviada' : 'Mensagem de texto enviada',
+        reason: 'Envio manual de mensagem',
         extraFields: [
-          {
-            name: 'Conteúdo',
-            value: afterCommand.length > 1000
-              ? `${afterCommand.slice(0, 1000)}...`
-              : afterCommand
-          }
+          { name: 'Conteúdo', value: content.slice(0, 1000) },
         ],
-        messageId: sentMessage?.id
       });
-    } catch (logErr) {
-      Logger.warn(`[send] Erro ao registrar log da ação: ${logErr.stack || logErr.message}`);
+
+    } catch (error) {
+      console.error('[send] Erro ao enviar mensagem:', error);
+      return sendWarning(message, 'Não foi possível enviar a mensagem devido a um erro inesperado.');
     }
   }
 };
