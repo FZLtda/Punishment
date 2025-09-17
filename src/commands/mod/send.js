@@ -14,26 +14,39 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message, args) {
-    let targetChannel = message.mentions.channels.first();
+    const rawContent = message.content;
+    const commandLength = rawContent.indexOf(' ') > -1 ? rawContent.indexOf(' ') + 1 : rawContent.length;
+    const afterCommand = rawContent.slice(commandLength).trim();
+
+    if (!afterCommand) {
+      return sendWarning(message, 'Você precisa fornecer uma mensagem para enviar.');
+    }
+
+    const targetChannelMention = message.mentions.channels.first();
+    let targetChannel;
     let content;
 
-    // Se não mencionou canal, usa o canal atual
-    if (!targetChannel) {
-      targetChannel = message.channel;
-      content = message.content.slice(message.content.indexOf(' ') + 1); // pega o conteúdo após o comando
-      if (!content) {
-        return sendWarning(message, 'Você precisa fornecer uma mensagem para enviar.');
-      }
-    } else {
-      // Se mencionou canal, remove a menção do conteúdo
-      const mention = `<#${targetChannel.id}>`;
-      content = message.content.slice(message.content.indexOf(mention) + mention.length).trim();
-      if (!content) {
-        return sendWarning(message, 'Você precisa fornecer uma mensagem para enviar.');
-      }
+    if (targetChannelMention) {
+      targetChannel = targetChannelMention;
+
+      const mentionString = `<#${targetChannel.id}>`;
+      const mentionIndex = afterCommand.indexOf(mentionString);
+      if (mentionIndex === -1) return sendWarning(message, 'Erro ao processar a menção do canal.');
+
+      content = afterCommand.slice(mentionIndex + mentionString.length).trim();
+      if (!content) return sendWarning(message, 'Você precisa fornecer uma mensagem para enviar.');
+
       if (targetChannel.type !== ChannelType.GuildText) {
-        return sendWarning(message, 'Só é possível enviar mensagens em **canais de texto**.');
+        return sendWarning(message, 'Só é possível enviar mensagens em canais de texto.');
       }
+
+    } else {
+      targetChannel = message.channel;
+      content = afterCommand;
+    }
+
+    if (content.length > 2000) {
+      return sendWarning(message, 'A mensagem é muito longa. Limite máximo: 2000 caracteres.');
     }
 
     const botMember = await message.guild.members.fetch(message.client.user.id);
@@ -46,8 +59,7 @@ module.exports = {
     try {
       await targetChannel.send({ content });
 
-      // Apenas se foi mencionado um canal, mostra confirmação
-      if (message.mentions.channels.first()) {
+      if (targetChannelMention) {
         const confirmation = await message.channel.send({
           embeds: [
             new EmbedBuilder()
@@ -73,9 +85,7 @@ module.exports = {
         target: targetChannel,
         moderator: message.author,
         reason: 'Envio manual de mensagem',
-        extraFields: [
-          { name: 'Conteúdo', value: content.slice(0, 1000) },
-        ],
+        extraFields: [{ name: 'Conteúdo', value: content.slice(0, 1000) }],
       });
 
     } catch (error) {
