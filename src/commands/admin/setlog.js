@@ -9,6 +9,7 @@ module.exports = {
   name: 'setlog',
   description: 'Define o canal de log de moderação.',
   usage: '${currentPrefix}setlog <#canal>',
+  aliases: ['setlogs', 'setar logs'],
   category: 'Administração',
   userPermissions: ['Administrator'],
   botPermissions: ['ManageChannels'],
@@ -18,7 +19,7 @@ module.exports = {
     const canal = message.mentions.channels.first();
 
     if (!canal)
-      return sendWarning(message, 'Mencione um canal válido.');
+      return sendWarning(message, 'Você precisa mencionar um canal.');
 
     if (canal.type !== ChannelType.GuildText)
       return sendWarning(message, 'O canal precisa ser de texto.');
@@ -31,7 +32,7 @@ module.exports = {
       );
 
       const confirmMsg = await message.channel.send({
-        content: `${emojis.successEmoji} Canal de log definido para ${canal}.`,
+        content: `${emojis.successEmoji} Logs configurados no canal: ${canal}.`,
         allowedMentions: { parse: [] }
       });
 
