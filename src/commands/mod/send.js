@@ -19,7 +19,7 @@ module.exports = {
     let afterCommand = rawContent.slice(commandLength).trim();
 
     if (!afterCommand) {
-      return sendWarning(message, 'Você precisa fornecer uma mensagem para enviar.');
+      return sendWarning(message, 'Você precisa mencionar um canal ou inserir uma mensagem.');
     }
 
     const firstMention = message.mentions.channels.first();
