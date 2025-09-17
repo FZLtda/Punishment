@@ -16,24 +16,20 @@ module.exports = {
   async execute(message, args) {
     const rawContent = message.content;
     const commandLength = rawContent.indexOf(' ') > -1 ? rawContent.indexOf(' ') + 1 : rawContent.length;
-    const afterCommand = rawContent.slice(commandLength).trim();
+    let afterCommand = rawContent.slice(commandLength).trim();
 
     if (!afterCommand) {
       return sendWarning(message, 'Você precisa fornecer uma mensagem para enviar.');
     }
 
-    const targetChannelMention = message.mentions.channels.first();
+    const firstMention = message.mentions.channels.first();
     let targetChannel;
     let content;
 
-    if (targetChannelMention) {
-      targetChannel = targetChannelMention;
+    if (firstMention && afterCommand.startsWith(`<#${firstMention.id}>`)) {
+      targetChannel = firstMention;
+      content = afterCommand.slice(`<#${firstMention.id}>`.length).trim();
 
-      const mentionString = `<#${targetChannel.id}>`;
-      const mentionIndex = afterCommand.indexOf(mentionString);
-      if (mentionIndex === -1) return sendWarning(message, 'Erro ao processar a menção do canal.');
-
-      content = afterCommand.slice(mentionIndex + mentionString.length).trim();
       if (!content) return sendWarning(message, 'Você precisa fornecer uma mensagem para enviar.');
 
       if (targetChannel.type !== ChannelType.GuildText) {
@@ -59,7 +55,7 @@ module.exports = {
     try {
       await targetChannel.send({ content });
 
-      if (targetChannelMention) {
+      if (firstMention && afterCommand.startsWith(`<#${firstMention.id}>`)) {
         const confirmation = await message.channel.send({
           embeds: [
             new EmbedBuilder()
