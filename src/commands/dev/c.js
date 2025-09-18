@@ -1,6 +1,6 @@
 'use strict';
 
-const { emojis } = require('@config');
+const { emojis, bot } = require('@config');
 const { sendModLog } = require('@modules/modlog');
 const { sendWarning } = require('@embeds/embedWarning');
 
