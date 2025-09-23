@@ -28,7 +28,7 @@ module.exports = {
     }
 
     if (member.roles.cache.has(roles.verified)) {
-      return sendEphemeralError(interaction, 'Você já está verificado em nosso servidor.');
+      return sendEphemeralError(interaction, 'As regras já foram aceitas por você.');
     }
 
     try {
@@ -37,7 +37,7 @@ module.exports = {
       Logger.info(`[VERIFY] Cargo verificado adicionado para ${member.user.tag} (${member.id})`);
 
       await interaction.reply({
-        content: `${emojis.successEmoji} Você foi verificado com sucesso!`,
+        content: `${emojis.successEmoji} Pronto! Nossa comunidade já está disponível para você.`,
         flags: 1 << 6
       });
 
