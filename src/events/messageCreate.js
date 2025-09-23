@@ -23,7 +23,10 @@ async function resolvePrefix(client, guildId) {
 function parseCommand(messageContent, prefix) {
   if (!messageContent.startsWith(prefix)) return null;
 
-  const args = messageContent.slice(prefix.length).trim().split(/\s+/);
+  // Garante que não haja espaço logo após o prefixo
+  if (messageContent[prefix.length] === ' ') return null;
+
+  const args = messageContent.slice(prefix.length).split(/\s+/);
   const commandName = args.shift()?.toLowerCase();
 
   if (!commandName || ['__proto__', 'constructor', 'prototype'].includes(commandName)) return null;
