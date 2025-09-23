@@ -17,7 +17,7 @@ module.exports = {
     async execute(member, client) {
         try {
             // Garantir que o evento só funcione no servidor configurado
-            if (member.guild.id !== bot.serverID) return;
+            if (member.guild.id !== bot.serverId) return;
 
             const channel = await client.channels.fetch(channels.log).catch(() => null);
             if (!channel) {
