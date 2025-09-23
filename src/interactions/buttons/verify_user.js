@@ -37,7 +37,7 @@ module.exports = {
       Logger.info(`[VERIFY] Cargo verificado adicionado para ${member.user.tag} (${member.id})`);
 
       await interaction.reply({
-        content: `${emojis.successEmoji} Pronto! Nossa comunidade já está disponível para você.`,
+        content: `${emojis.done} Pronto! Nossa comunidade já está disponível para você.`,
         flags: 1 << 6
       });
 
