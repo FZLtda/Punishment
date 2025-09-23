@@ -8,5 +8,6 @@ module.exports = {
   logo: 'http://bit.ly/4kzlmjU',
   ownerTag: 'funczero',
   ownerId: '1006909671908585586',
+  serverId: '1006910950286299246',
   createdAt: '2023-09-23'
 };
