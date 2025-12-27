@@ -17,13 +17,15 @@ module.exports = {
    * @param {import('discord.js').Message} message
    * @param {string[]} args
    */
-  
   async execute(message, args) {
     const novoPrefixo = args[0];
     const guildId = message.guild.id;
 
     if (!novoPrefixo || novoPrefixo.length > 5) {
-      return sendWarning(message, 'Forneça um prefixo válido com até 5 caracteres.');
+      return sendWarning(
+        message,
+        'Forneça um prefixo válido com até 5 caracteres.'
+      );
     }
 
     try {
@@ -37,11 +39,19 @@ module.exports = {
         message.client.setPrefix(guildId, novoPrefixo);
       }
 
-      return sendSuccess(message, `Prefixo alterado para '${novoPrefixo}'`);
-
+      return message.channel.send(
+        `${emojis.done} Prefixo alterado para: \`${novoPrefixo}\``
+      );
     } catch (error) {
-      console.error(`[PREFIX] Erro ao salvar novo prefixo para ${guildId}:`, error);
-      return sendWarning(message, 'Não foi possível salvar o novo prefixo.');
+      console.error(
+        `[PREFIX] Erro ao salvar novo prefixo para ${guildId}:`,
+        error
+      );
+
+      return sendWarning(
+        message,
+        'Não foi possível salvar o novo prefixo.'
+      );
     }
   }
 };
