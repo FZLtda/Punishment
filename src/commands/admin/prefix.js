@@ -9,6 +9,7 @@ module.exports = {
   name: 'prefix',
   description: 'Altera o prefixo usado pelo bot neste servidor.',
   usage: '${currentPrefix}prefix <novo_prefixo>',
+  aliases: ['setprefix', 'prefixo'],
   userPermissions: ['ManageGuild'],
   deleteMessage: true,
 
