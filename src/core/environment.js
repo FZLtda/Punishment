@@ -8,7 +8,6 @@ const Logger = require('@logger');
 const REQUIRED_ENV_VARS = {
   Discord: ['TOKEN', 'CLIENT_ID', 'OWNER_ID', 'DEFAULT_PREFIX', 'COMMAND_SCOPE'],
   MongoDB: ['MONGO_URI'],
-  Stripe: ['STRIPE_SECRET_KEY'],
   Webhook: ['WEBHOOK', 'LOG_CHANNEL'],
   Logging: ['LOG_LEVEL']
 };
@@ -36,7 +35,9 @@ function validateEnvironment() {
       Logger.error(`Variável ausente [${group}]: ${key}`);
     });
 
-    Logger.fatal(`Inicialização abortada. Variáveis faltando: ${missing.map(m => m.key).join(', ')}`);
+    Logger.fatal(
+      `Inicialização abortada. Variáveis faltando: ${missing.map(m => m.key).join(', ')}`
+    );
     Logger.warn('Verifique seu arquivo .env e defina as variáveis necessárias.');
     process.exit(1);
   }
