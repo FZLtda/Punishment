@@ -23,12 +23,13 @@ module.exports = async function checkGlobalBan(context) {
 
   const embed = new EmbedBuilder()
     .setColor(colors.yellow)
-    .setTitle(`${emojis.attentionEmoji} Global Ban Notification`)
+    .setTitle(`${emojis.attentionEmoji} Permanent Global Ban`)
     .setDescription([
-      'You have been **permanently banned** from using the bot system due to a violation of our terms of service.',
-      'You are no longer able to use any commands or access features provided by this bot.',
+      'You have been **permanently banned** from this bot for violating our **Terms of Service**.',
+      'This decision is **final**, and all access to commands and features has been **permanently revoked**.',
       '',
-      `If you believe this was a mistake, please contact: **contato@funczero.xyz**`
+      'Appeals will only be reviewed if a mistake is suspected.',
+      'Contact: **contato@funczero.xyz**'
     ].join('\n'))
     .setFooter({
       text: user.username,
