@@ -9,13 +9,15 @@ const logger = require('@logger');
 module.exports = {
   name: 'cancelar',
   description: 'Cancela manualmente um sorteio ativo.',
-  usage: '${currentPrefix}cancelar <ID da mensagem>',
+  usage: `${currentPrefix}cancelar <ID da mensagem>`,
   category: 'Utilidades',
   userPermissions: ['ManageMessages'],
   botPermissions: ['SendMessages'],
   deleteMessage: true,
 
   async execute(message, args) {
+    if (!message.guild) return;
+
     const msgId = args[0];
 
     /* Validação por ID */
@@ -74,31 +76,33 @@ module.exports = {
         .fetch(sorteio.channelId)
         .catch(() => null);
 
-      const mensagem = await canal?.messages
-        ?.fetch(sorteio.messageId)
-        .catch(() => null);
+      if (canal?.isTextBased()) {
+        const mensagem = await canal.messages
+          .fetch(sorteio.messageId)
+          .catch(() => null);
 
-      if (mensagem) {
-        const embedCancelado = new EmbedBuilder()
-          .setTitle(`${emojis.errorEmoji} Sorteio Cancelado`)
-          .setDescription(
-            'Este sorteio foi **cancelado pela administração**.\n' +
-            'A ação segue as regras do servidor, garantindo organização e transparência.'
-          )
-          .addFields({
-            name: '🎁 Prêmio',
-            value: sorteio.prize,
-            inline: false,
-          })
-          .setColor(colors.red)
-          .setFooter({
-            text: 'Punishment',
-            iconURL: message.client.user.displayAvatarURL(),
-          })
-          .setTimestamp();
+        if (mensagem) {
+          const embedCancelado = new EmbedBuilder()
+            .setTitle(`${emojis.errorEmoji} Sorteio Cancelado`)
+            .setDescription(
+              'Este sorteio foi **cancelado pela administração**.\n' +
+              'A ação segue as regras do servidor, garantindo organização e transparência.'
+            )
+            .addFields({
+              name: '🎁 Prêmio',
+              value: sorteio.prize,
+              inline: false,
+            })
+            .setColor(colors.red)
+            .setFooter({
+              text: 'Punishment',
+              iconURL: message.client.user.displayAvatarURL(),
+            })
+            .setTimestamp();
 
-        await mensagem.edit({ embeds: [embedCancelado] }).catch(() => null);
-        await mensagem.reactions.removeAll().catch(() => null);
+          await mensagem.edit({ embeds: [embedCancelado] }).catch(() => null);
+          await mensagem.reactions.removeAll().catch(() => null);
+        }
       }
 
       /* Confirmação */
