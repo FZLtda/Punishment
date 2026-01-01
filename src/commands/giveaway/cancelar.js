@@ -44,7 +44,7 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Não encontrei nenhum sorteio ativo neste servidor com esse ID.'
+        'Não há sorteio ativo neste servidor correspondente a este ID.'
       );
     }
 
