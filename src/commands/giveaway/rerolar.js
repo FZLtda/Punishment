@@ -1,6 +1,6 @@
 'use strict';
 
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const { sendWarning } = require('@embeds/embedWarning');
 const { colors, emojis } = require('@config');
 const Giveaway = require('@models/Giveaway');
@@ -18,35 +18,84 @@ module.exports = {
   async execute(message, args) {
     const msgId = args[0];
 
-    // Validação de ID
+    /* Validação do ID */
     if (!msgId || !/^\d{17,20}$/.test(msgId)) {
-      logger.warn(`[REROLL] ID inválido fornecido por ${message.author.tag} (${message.author.id})`);
-      return sendWarning(message, 'Forneça um ID de mensagem válido para rerolar o sorteio.');
+      logger.warn(
+        `[REROLL] ID inválido fornecido por ${message.author.tag} (${message.author.id})`
+      );
+
+      return sendWarning(
+        message,
+        'Informe um **ID de mensagem válido** do sorteio que deseja rerolar.'
+      );
     }
 
+    /* Busca segura por servidor */
     let sorteio;
     try {
-      sorteio = await Giveaway.findOne({ messageId: msgId, status: 'encerrado' });
+      sorteio = await Giveaway.findOne({
+        messageId: msgId,
+        guildId: message.guild.id,
+        status: 'encerrado',
+      });
     } catch (error) {
-      logger.error(`[REROLL] Erro ao buscar sorteio | ID: ${msgId} | Erro: ${error.message}`);
-      return sendWarning(message, 'Ocorreu um erro interno ao buscar o sorteio.');
+      logger.error(
+        `[REROLL] Erro ao buscar sorteio | ID: ${msgId} | ${error.stack || error.message}`
+      );
+
+      return sendWarning(
+        message,
+        'Ocorreu um erro interno ao buscar o sorteio.'
+      );
     }
 
     if (!sorteio) {
-      logger.warn(`[REROLL] Sorteio encerrado não encontrado para o ID ${msgId}`);
-      return sendWarning(message, 'Não foi encontrado nenhum sorteio com esse ID.');
+      logger.warn(
+        `[REROLL] Sorteio não encontrado ou fora do servidor | ID: ${msgId} | Guild: ${message.guild.id}`
+      );
+
+      return sendWarning(
+        message,
+        'Não há sorteio encerrado neste servidor correspondente a este ID.'
+      );
     }
 
-    const participantes = Array.isArray(sorteio.participants) ? [...sorteio.participants] : [];
-    const ganhadores = [];
+    /* Autorização */
+    const isCreator = sorteio.createdBy === message.author.id;
+    const isAdmin = message.member.permissions.has(
+      PermissionsBitField.Flags.Administrator
+    );
 
-    // Seleção dos ganhadores
-    if (participantes.length >= sorteio.winners) {
-      for (let i = 0; i < sorteio.winners; i++) {
-        const index = Math.floor(Math.random() * participantes.length);
-        const escolhido = participantes.splice(index, 1)[0];
-        if (escolhido) ganhadores.push(`<@${escolhido}>`);
-      }
+    if (!isCreator && !isAdmin) {
+      logger.warn(
+        `[REROLL] Tentativa não autorizada por ${message.author.tag} (${message.author.id})`
+      );
+
+      return sendWarning(
+        message,
+        'Apenas o criador do sorteio ou um administrador podem rerolá-lo.'
+      );
+    }
+
+    /* Processo de rerol */
+    const participantes = Array.isArray(sorteio.participants)
+      ? [...sorteio.participants]
+      : [];
+
+    if (participantes.length === 0) {
+      return sendWarning(
+        message,
+        'Este sorteio não possui participantes suficientes para rerolar.'
+      );
+    }
+
+    const ganhadores = [];
+    const totalWinners = Math.min(sorteio.winners, participantes.length);
+
+    for (let i = 0; i < totalWinners; i++) {
+      const index = Math.floor(Math.random() * participantes.length);
+      const escolhido = participantes.splice(index, 1)[0];
+      if (escolhido) ganhadores.push(`<@${escolhido}>`);
     }
 
     const plural = ganhadores.length === 1 ? 'vencedor' : 'vencedores';
@@ -54,18 +103,23 @@ module.exports = {
     const rerollEmbed = new EmbedBuilder()
       .setTitle('🔁 Sorteio Rerolado')
       .setDescription(
-        ganhadores.length
-          ? `**Prêmio:** ${sorteio.prize}\n**Novos ${plural}:** ${ganhadores.join(', ')}`
-          : `**Prêmio:** ${sorteio.prize}\n${emojis.attentionEmoji} Nenhum participante suficiente para rerolar.`
+        `**Prêmio:** ${sorteio.prize}\n` +
+        `**Novo(s) ${plural}:** ${ganhadores.join(', ')}`
       )
       .setColor(colors.red)
       .setTimestamp()
-      .setFooter({ text: 'Punishment', iconURL: message.client.user.displayAvatarURL() });
+      .setFooter({
+        text: 'Punishment',
+        iconURL: message.client.user.displayAvatarURL(),
+      });
 
     logger.info(
-      `[REROLL] Sorteio rerolado por ${message.author.tag} (${message.author.id}) | ID: ${msgId} | Ganhadores: ${ganhadores.length}`
+      `[REROLL] Sorteio "${sorteio.prize}" (${msgId}) rerolado por ${message.author.tag} (${message.author.id}) | Ganhadores: ${ganhadores.length}`
     );
 
-    return message.channel.send({ embeds: [rerollEmbed], allowedMentions: { parse: [] } });
-  }
+    return message.channel.send({
+      embeds: [rerollEmbed],
+      allowedMentions: { parse: [] },
+    });
+  },
 };
