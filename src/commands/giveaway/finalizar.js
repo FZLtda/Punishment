@@ -1,10 +1,11 @@
 'use strict';
 
+const { PermissionsBitField } = require('discord.js');
 const { sendWarning } = require('@embeds/embedWarning');
 const { finalizarSorteio } = require('@utils/sorteios');
 const Giveaway = require('@models/Giveaway');
 const { emojis } = require('@config');
-const Logger = require('@logger');
+const logger = require('@logger');
 
 module.exports = {
   name: 'finalizar',
@@ -18,59 +19,77 @@ module.exports = {
   async execute(message, args) {
     const messageId = args[0];
 
-    if (!messageId) {
-      Logger.warn(`[SORTEIO] Uso inválido por ${message.author.tag} (${message.author.id})`);
-      return sendWarning(message, 'Você precisa informar o ID da mensagem do sorteio.');
+    /* Validação do ID*/
+    if (!messageId || !/^\d{17,20}$/.test(messageId)) {
+      logger.warn(
+        `[FINALIZAR] ID inválido fornecido por ${message.author.tag} (${message.author.id})`
+      );
+
+      return sendWarning(
+        message,
+        'Informe um ID de mensagem válido do sorteio que deseja finalizar.'
+      );
     }
 
     try {
-      const giveaway = await this.validarSorteio(message.guild.id, messageId);
-      if (!giveaway) return sendWarning(message, 'Não há sorteio ativo correspondente a este ID.');
+      /* Busca segura por servidor */
+      const giveaway = await Giveaway.findOne({
+        guildId: message.guild.id,
+        messageId,
+        status: 'ativo',
+      });
 
+      if (!giveaway) {
+        logger.warn(
+          `[FINALIZAR] Sorteio não encontrado ou fora do servidor | ID: ${messageId} | Guild: ${message.guild.id}`
+        );
+
+        return sendWarning(
+          message,
+          'Não há sorteio ativo neste servidor correspondente a este ID.'
+        );
+      }
+
+      /* Autorização */
+      const isCreator = giveaway.createdBy === message.author.id;
+      const isAdmin = message.member.permissions.has(
+        PermissionsBitField.Flags.Administrator
+      );
+
+      if (!isCreator && !isAdmin) {
+        logger.warn(
+          `[FINALIZAR] Tentativa não autorizada por ${message.author.tag} (${message.author.id})`
+        );
+
+        return sendWarning(
+          message,
+          'Apenas o **criador do sorteio** ou um **administrador** podem finalizá-lo.'
+        );
+      }
+
+      /* Finalização */
       await finalizarSorteio(giveaway, message.client);
 
-      await this.enviarConfirmacao(message, giveaway);
+      /* Confirmação */
+      if (message.channel.id !== giveaway.channelId) {
+        await message.channel.send({
+          content: `${emojis.successEmoji} O sorteio **${giveaway.prize}** foi finalizado com sucesso.`,
+          allowedMentions: { repliedUser: false },
+        });
+      }
 
-      Logger.info(`[SORTEIO] Sorteio finalizado manualmente | ID: ${giveaway.messageId} | Prêmio: "${giveaway.prize}" | Por: ${message.author.tag}`);
-
+      logger.info(
+        `[FINALIZAR] Sorteio "${giveaway.prize}" (${giveaway.messageId}) finalizado por ${message.author.tag} (${message.author.id})`
+      );
     } catch (error) {
-      Logger.error(`[SORTEIO] Erro ao finalizar sorteio manualmente: ${error.stack || error.message}`);
-      return sendWarning(message, 'Não foi possível finalizar o sorteio.');
+      logger.error(
+        `[FINALIZAR] Erro ao finalizar sorteio | ID: ${messageId} | ${error.stack || error.message}`
+      );
+
+      return sendWarning(
+        message,
+        'Não foi possível finalizar o sorteio no momento.'
+      );
     }
   },
-
-  /**
-   * Valida se o sorteio existe e está ativo
-   * @param {string} guildId 
-   * @param {string} messageId 
-   * @returns {Promise<Giveaway|null>}
-   */
-  async validarSorteio(guildId, messageId) {
-    const giveaway = await Giveaway.findOne({
-      guildId,
-      messageId,
-      status: 'ativo'
-    });
-
-    if (!giveaway) {
-      Logger.warn(`[SORTEIO] Sorteio não encontrado ou já encerrado (ID: ${messageId})`);
-      return null;
-    }
-
-    return giveaway;
-  },
-
-  /**
-   * Envia mensagem de confirmação se o comando for em outro canal
-   * @param {Message} message 
-   * @param {Giveaway} giveaway 
-   */
-  async enviarConfirmacao(message, giveaway) {
-    if (message.channel.id === giveaway.channelId) return;
-
-    return message.channel.send({
-      content: `${emojis.successEmoji} O sorteio **${giveaway.prize}** foi finalizado com sucesso.`,
-      allowedMentions: { repliedUser: false }
-    });
-  }
 };
