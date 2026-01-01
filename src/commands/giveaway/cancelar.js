@@ -1,6 +1,6 @@
 'use strict';
 
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const { sendWarning } = require('@embeds/embedWarning');
 const Giveaway = require('@models/Giveaway');
 const { colors, emojis } = require('@config');
@@ -18,38 +18,78 @@ module.exports = {
   async execute(message, args) {
     const msgId = args[0];
 
+    /* Validação por ID */
     if (!msgId || !/^\d{17,20}$/.test(msgId)) {
       logger.warn(
         `[CANCELAR] ID inválido fornecido por ${message.author.tag} (${message.author.id})`
       );
+
       return sendWarning(
         message,
         'Informe um ID de mensagem válido do sorteio que deseja cancelar.'
       );
     }
 
-    const sorteio = await Giveaway.findOne({ messageId: msgId, status: 'ativo' });
+    /* Busca segura por servidor */
+    const sorteio = await Giveaway.findOne({
+      messageId: msgId,
+      guildId: message.guild.id,
+      status: 'ativo',
+    });
 
     if (!sorteio) {
-      logger.warn(`[CANCELAR] Nenhum sorteio ativo encontrado com o ID ${msgId}`);
-      return sendWarning(message, 'Não foi encontrado nenhum sorteio ativo com esse ID.');
+      logger.warn(
+        `[CANCELAR] Sorteio não encontrado ou fora do servidor | ID: ${msgId} | Guild: ${message.guild.id}`
+      );
+
+      return sendWarning(
+        message,
+        'Não encontrei nenhum sorteio ativo neste servidor com esse ID.'
+      );
     }
 
+    /* Autorização */
+    const isCreator = sorteio.createdBy === message.author.id;
+    const isAdmin = message.member.permissions.has(
+      PermissionsBitField.Flags.Administrator
+    );
+
+    if (!isCreator && !isAdmin) {
+      logger.warn(
+        `[CANCELAR] Tentativa não autorizada por ${message.author.tag} (${message.author.id})`
+      );
+
+      return sendWarning(
+        message,
+        'Apenas o criador do sorteio ou um administrador pode cancelá-lo.'
+      );
+    }
+
+    /* Cancelamento */
     sorteio.status = 'cancelado';
     await sorteio.save();
 
     try {
-      const canal = await message.guild.channels.fetch(sorteio.channelId).catch(() => null);
-      const mensagem = await canal?.messages?.fetch(msgId).catch(() => null);
+      const canal = await message.guild.channels
+        .fetch(sorteio.channelId)
+        .catch(() => null);
+
+      const mensagem = await canal?.messages
+        ?.fetch(sorteio.messageId)
+        .catch(() => null);
 
       if (mensagem) {
         const embedCancelado = new EmbedBuilder()
           .setTitle(`${emojis.errorEmoji} Sorteio Cancelado`)
           .setDescription(
-            'Este sorteio foi cancelado pela administração.\n' +
-            'A decisão segue as regras do servidor, garantindo transparência e organização para todos os membros.'
+            'Este sorteio foi **cancelado pela administração**.\n' +
+            'A ação segue as regras do servidor, garantindo organização e transparência.'
           )
-          .addFields({ name: 'Prêmio', value: sorteio.prize })
+          .addFields({
+            name: '🎁 Prêmio',
+            value: sorteio.prize,
+            inline: false,
+          })
           .setColor(colors.red)
           .setFooter({
             text: 'Punishment',
@@ -58,14 +98,16 @@ module.exports = {
           .setTimestamp();
 
         await mensagem.edit({ embeds: [embedCancelado] }).catch(() => null);
-
         await mensagem.reactions.removeAll().catch(() => null);
       }
 
+      /* Confirmação */
       if (message.channel.id !== sorteio.channelId) {
         const confirm = new EmbedBuilder()
           .setColor(colors.green)
-          .setDescription(`${emojis.successEmoji} Sorteio **cancelado com sucesso**.`);
+          .setDescription(
+            `${emojis.successEmoji} Sorteio **cancelado com sucesso**.`
+          );
 
         await message.channel.send({
           embeds: [confirm],
@@ -74,11 +116,17 @@ module.exports = {
       }
 
       logger.info(
-        `[CANCELAR] Sorteio "${sorteio.prize}" cancelado por ${message.author.tag}`
+        `[CANCELAR] Sorteio "${sorteio.prize}" (${msgId}) cancelado por ${message.author.tag} (${message.author.id})`
       );
     } catch (err) {
-      logger.error(`[CANCELAR] Erro ao cancelar sorteio: ${err.stack || err.message}`);
-      return sendWarning(message, 'Não foi possível editar a mensagem do sorteio.');
+      logger.error(
+        `[CANCELAR] Erro ao cancelar sorteio | ID: ${msgId} | ${err.stack || err.message}`
+      );
+
+      return sendWarning(
+        message,
+        'O sorteio foi cancelado, mas não foi possível atualizar a mensagem original.'
+      );
     }
   },
 };
