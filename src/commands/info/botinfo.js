@@ -47,7 +47,7 @@ module.exports = {
         { name: 'Ping', value: `\`${client.ws.ping}ms\``, inline: true },
         { name: 'Servidores', value: `\`${client.guilds.cache.size}\``, inline: true },
         { name: 'Usuários', value: `\`${client.users.cache.size}\``, inline: true },
-        { name: 'Criado em', value: `<t:${Math.floor(client.user.createdTimestamp / 1000)}:R>`, inline: true },
+        { name: 'Criado', value: `<t:${Math.floor(client.user.createdTimestamp / 1000)}:R>`, inline: true },
 
         { name: 'Uptime', value: `\`${uptime}\``, inline: true },
         { name: 'Node.js', value: `\`${process.version}\``, inline: true },
