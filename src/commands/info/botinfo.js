@@ -15,13 +15,12 @@ module.exports = {
   deleteMessage: true,
 
   /**
-   * Executa o comando e envia um embed com informações técnicas do bot.
    * @param {import('discord.js').Message} message
    */
-  
   async execute(message) {
     const { client } = message;
 
+    /* Uptime */
     const totalSeconds = Math.floor(client.uptime / 1000);
     const days = Math.floor(totalSeconds / 86400);
     const hours = Math.floor((totalSeconds % 86400) / 3600);
@@ -29,24 +28,31 @@ module.exports = {
     const seconds = totalSeconds % 60;
     const uptime = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
+    /* Memória */
     const heapUsedMB = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
     const totalMemoryMB = (os.totalmem() / 1024 / 1024).toFixed(0);
 
+    /* Sistema */
     const osType = os.type();
     const platform = os.platform();
     const architecture = os.arch();
     const cpuModel = os.cpus()[0].model;
+
+    /* Usuários */
+    const totalUsers = client.guilds.cache.reduce(
+      (acc, guild) => acc + guild.memberCount,
+      0
+    );
 
     const embed = new EmbedBuilder()
       .setColor(colors.red)
       .setTitle('Informações do Bot')
       .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
       .addFields(
-        
         { name: 'Nome', value: `\`${client.user.username}\``, inline: true },
         { name: 'Ping', value: `\`${client.ws.ping}ms\``, inline: true },
         { name: 'Servidores', value: `\`${client.guilds.cache.size}\``, inline: true },
-        { name: 'Usuários', value: `\`${client.users.cache.size}\``, inline: true },
+        { name: 'Usuários', value: `\`${totalUsers.toLocaleString('pt-BR')}\``, inline: true },
         { name: 'Criado', value: `<t:${Math.floor(client.user.createdTimestamp / 1000)}:R>`, inline: true },
 
         { name: 'Uptime', value: `\`${uptime}\``, inline: true },
