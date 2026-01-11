@@ -8,6 +8,7 @@ const { bot, colors, emojis } = require('@config');
 
 module.exports = {
   name: 'reload',
+  aliases: ['rl'],
   description: 'Recarrega comandos, eventos ou todos os módulos do bot.',
   usage: 'reload <comando|event|all>',
   category: 'Administrador',
