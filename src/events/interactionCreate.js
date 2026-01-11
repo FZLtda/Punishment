@@ -1,5 +1,13 @@
 'use strict';
 
+/*
+ * interactionCreate
+ * - Middleware pipeline
+ * - GlobalBan
+ * - Terms enforcement
+ * - Metrics & observability
+ */
+
 const { InteractionType } = require('discord.js');
 
 const Logger = require('@logger');
@@ -42,7 +50,10 @@ module.exports = {
       if (!handled) {
         METRICS.unhandled++;
         Logger.warn(`[INTERACTION] Não tratada: ${ctx.label}`);
-        await sendInteractionError(interaction, 'Essa interação não pôde ser processada.');
+        await sendInteractionError(
+          interaction,
+          'Essa interação não pôde ser processada.'
+        );
       }
 
     } catch (error) {
@@ -65,6 +76,8 @@ async function globalBanMiddleware(ctx) {
 }
 
 async function termsMiddleware(ctx) {
+  if (isTermsInteraction(ctx.interaction)) return true;
+
   const accepted = await withTimeout(
     () => checkTerms({
       user: ctx.user,
@@ -116,6 +129,10 @@ function createSafeReply(interaction) {
 
 function shouldIgnore(interaction) {
   return !interaction.guild || interaction.user?.bot;
+}
+
+function isTermsInteraction(interaction) {
+  return interaction.isButton() && interaction.customId === 'terms_accept';
 }
 
 function logError(ctx, error) {
