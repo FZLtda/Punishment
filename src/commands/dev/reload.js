@@ -9,7 +9,7 @@ const { bot, colors, emojis } = require('@config');
 module.exports = {
   name: 'reload',
   description: 'Recarrega comandos, eventos ou todos os módulos do bot.',
-  usage: '${currentPrefix}reload <comando|event|all>',
+  usage: 'reload <comando|event|all>',
   category: 'Administrador',
   deleteMessage: true,
 
@@ -18,13 +18,13 @@ module.exports = {
    * @param {import('discord.js').Message} message
    * @param {string[]} args
    */
-  
   async execute(message, args) {
     if (message.author.id !== bot.ownerId) return;
 
     const type = args[0]?.toLowerCase();
     const target = args[1]?.toLowerCase();
-    const validTypes = ['command', 'comando', 'event', 'all'];
+
+    const validTypes = ['command', 'commands', 'comando', 'event', 'events', 'all'];
 
     if (!type || !validTypes.includes(type)) {
       return sendWarning(message, 'Uso correto: `reload <comando|event|all>`');
@@ -38,18 +38,26 @@ module.exports = {
         await reloadAll(commandsDir, message.client.commands, 'command');
         await reloadAll(eventsDir, message.client.events, 'event');
 
-        return sendSuccess(message, `${emojis.successEmoji} Todos os comandos e eventos foram recarregados com sucesso.`);
+        return sendSuccess(
+          message,
+          `${emojis.successEmoji} Todos os comandos e eventos foram recarregados com sucesso.`
+        );
       }
 
-      if (type === 'command' || type === 'comando') {
+      if (type === 'command' || type === 'commands' || type === 'comando') {
         if (!target) return sendWarning(message, 'Especifique o nome do comando.');
 
         const command = message.client.commands.get(target);
-        if (!command) return sendWarning(message, `Comando \`${target}\` não encontrado.`);
+        if (!command) {
+          return sendWarning(message, `Comando \`${target}\` não encontrado.`);
+        }
 
         const commandsDir = path.resolve(__dirname, '..', '..', 'commands');
         const commandFile = findCommandFile(commandsDir, command.name);
-        if (!commandFile) return sendWarning(message, `Arquivo do comando \`${command.name}\` não encontrado.`);
+
+        if (!commandFile) {
+          return sendWarning(message, `Arquivo do comando \`${command.name}\` não encontrado.`);
+        }
 
         delete require.cache[require.resolve(commandFile)];
         message.client.commands.delete(command.name);
@@ -57,24 +65,34 @@ module.exports = {
         const updatedCommand = require(commandFile);
         message.client.commands.set(updatedCommand.name, updatedCommand);
 
-        return sendSuccess(message, `${emojis.successEmoji} Comando \`${updatedCommand.name}\` recarregado com sucesso.`);
+        return sendSuccess(
+          message,
+          `${emojis.successEmoji} Comando \`${updatedCommand.name}\` recarregado com sucesso.`
+        );
       }
 
-      if (type === 'event') {
+      if (type === 'event' || type === 'events') {
         if (!target) return sendWarning(message, 'Especifique o nome do evento.');
 
         const eventsDir = path.resolve(__dirname, '..', '..', 'events');
         const eventFile = findEventFile(eventsDir, target);
-        if (!eventFile) return sendWarning(message, `Evento \`${target}\` não encontrado.`);
+
+        if (!eventFile) {
+          return sendWarning(message, `Evento \`${target}\` não encontrado.`);
+        }
 
         delete require.cache[require.resolve(eventFile)];
+
         const updatedEvent = require(eventFile);
         const eventName = path.basename(eventFile, '.js');
 
         message.client.removeAllListeners(eventName);
         message.client.on(eventName, updatedEvent.execute.bind(null));
 
-        return sendSuccess(message, `${emojis.successEmoji} Evento \`${eventName}\` recarregado com sucesso.`);
+        return sendSuccess(
+          message,
+          `${emojis.successEmoji} Evento \`${eventName}\` recarregado com sucesso.`
+        );
       }
     } catch (error) {
       console.error('[reload] Erro ao recarregar:', error);
@@ -83,9 +101,6 @@ module.exports = {
   },
 };
 
-/**
- * Envia embed manual apenas para mensagens de sucesso.
- */
 function sendSuccess(message, text) {
   const embed = new EmbedBuilder()
     .setColor(colors.green)
@@ -94,9 +109,6 @@ function sendSuccess(message, text) {
   return message.channel.send({ embeds: [embed] });
 }
 
-/**
- * Recarrega todos os arquivos .js de um diretório recursivamente.
- */
 function getAllJsFiles(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
 
@@ -108,16 +120,13 @@ function getAllJsFiles(dir) {
   });
 }
 
-/**
- * Recarrega dinamicamente todos os comandos ou eventos.
- */
 async function reloadAll(basePath, collection, type) {
   const files = getAllJsFiles(basePath);
 
   for (const file of files) {
     delete require.cache[require.resolve(file)];
-
     const mod = require(file);
+
     if (type === 'command') {
       collection.set(mod.name, mod);
     } else if (type === 'event') {
@@ -128,18 +137,14 @@ async function reloadAll(basePath, collection, type) {
   }
 }
 
-/**
- * Localiza o caminho real do comando baseado no nome.
- */
 function findCommandFile(dir, commandName) {
-  const files = getAllJsFiles(dir);
-  return files.find(file => path.basename(file, '.js') === commandName);
+  return getAllJsFiles(dir).find(
+    file => path.basename(file, '.js') === commandName
+  );
 }
 
-/**
- * Localiza o caminho real do evento baseado no nome.
- */
 function findEventFile(dir, eventName) {
-  const files = getAllJsFiles(dir);
-  return files.find(file => path.basename(file, '.js') === eventName);
-        }
+  return getAllJsFiles(dir).find(
+    file => path.basename(file, '.js') === eventName
+  );
+}
