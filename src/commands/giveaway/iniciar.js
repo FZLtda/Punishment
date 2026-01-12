@@ -53,13 +53,21 @@ module.exports = {
         createdBy: message.author.id
       });
 
-      logger.info(`[SORTEIO] Criado | Por: ${message.author.tag} | Prêmio: "${premio}" | Canal: ${canal.name}`);
+      logger.info(
+        `[SORTEIO] Criado | Por: ${message.author.tag} | Prêmio: "${premio}" | Canal: ${canal.name}`
+      );
 
       if (canal.id !== message.channel.id) {
-        return message.channel.send({
-          content: `${emojis.successEmoji} Sorteio criado em ${canal}!`,
+        const confirmMsg = await message.channel.send({
+          content: `${emojis.done} Sorteio criado e postado em ${canal}!`,
           allowedMentions: { repliedUser: false }
         });
+
+        setTimeout(() => {
+          confirmMsg.delete().catch(() => {});
+        }, 5000);
+
+        return;
       }
 
     } catch (err) {
