@@ -10,15 +10,10 @@ module.exports = {
   name: 'reload',
   aliases: ['rl'],
   description: 'Recarrega comandos, eventos ou todos os módulos do bot.',
-  usage: 'reload <comando|event|all>',
+  usage: 'reload <command|event|all>', // 🔹 pequena melhoria
   category: 'Administrador',
   deleteMessage: true,
 
-  /**
-   * Recarrega comandos ou eventos dinamicamente.
-   * @param {import('discord.js').Message} message
-   * @param {string[]} args
-   */
   async execute(message, args) {
     if (message.author.id !== bot.ownerId) return;
 
@@ -28,7 +23,10 @@ module.exports = {
     const validTypes = ['command', 'commands', 'comando', 'event', 'events', 'all'];
 
     if (!type || !validTypes.includes(type)) {
-      return sendWarning(message, 'Uso correto: `reload <comando|event|all>`');
+      return sendWarning(
+        message,
+        'Uso correto: `reload <command|event|all>`' // 🔹 alinhado com usage
+      );
     }
 
     try {
@@ -101,51 +99,3 @@ module.exports = {
     }
   },
 };
-
-function sendSuccess(message, text) {
-  const embed = new EmbedBuilder()
-    .setColor(colors.green)
-    .setDescription(text);
-
-  return message.channel.send({ embeds: [embed] });
-}
-
-function getAllJsFiles(dir) {
-  const entries = fs.readdirSync(dir, { withFileTypes: true });
-
-  return entries.flatMap(entry => {
-    const res = path.resolve(dir, entry.name);
-    return entry.isDirectory()
-      ? getAllJsFiles(res)
-      : res.endsWith('.js') ? [res] : [];
-  });
-}
-
-async function reloadAll(basePath, collection, type) {
-  const files = getAllJsFiles(basePath);
-
-  for (const file of files) {
-    delete require.cache[require.resolve(file)];
-    const mod = require(file);
-
-    if (type === 'command') {
-      collection.set(mod.name, mod);
-    } else if (type === 'event') {
-      const eventName = path.basename(file, '.js');
-      collection.client?.removeAllListeners?.(eventName);
-      collection.client?.on?.(eventName, mod.execute.bind(null));
-    }
-  }
-}
-
-function findCommandFile(dir, commandName) {
-  return getAllJsFiles(dir).find(
-    file => path.basename(file, '.js') === commandName
-  );
-}
-
-function findEventFile(dir, eventName) {
-  return getAllJsFiles(dir).find(
-    file => path.basename(file, '.js') === eventName
-  );
-}
