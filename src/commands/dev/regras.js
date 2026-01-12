@@ -12,8 +12,9 @@ const { emojis, colors, channels, bot } = require('@config');
 
 /**
  * @typedef {import('discord.js').Message} Message
- * @typedef {import('discord.js').Client} Client
  */
+
+const VERIFY_BUTTON_ID = 'verify_user';
 
 module.exports = {
   name: 'regras',
@@ -27,7 +28,10 @@ module.exports = {
    * @param {string[]} args
    */
   async execute(message, args) {
-    if (message.author.id !== bot.ownerId) return;
+    if (message.author.id !== bot.ownerId) {
+      console.warn('[REGRAS] Tentativa de uso sem permissão:', message.author.id);
+      return;
+    }
 
     const rulesChannel = await message.client.channels
       .fetch(channels.rules)
@@ -35,40 +39,40 @@ module.exports = {
 
     if (!rulesChannel || rulesChannel.type !== ChannelType.GuildText) {
       return message.channel.send(
-        `${emojis.attentionEmoji} Canal de regras não encontrado ou não é um canal de texto.`
+        `${emojis.attentionEmoji} Canal de regras não encontrado ou inválido.`
       );
     }
 
     const embed = new EmbedBuilder()
-      .setTitle('Regras do Servidor')
+      .setTitle('📜 Regras do Servidor')
       .setColor(colors.green)
       .setDescription([
-        `**1. Respeito**   
+        `**1. Respeito**  
         <:seta2:1325132415542231140> Trate todos com educação. Ofensas, discriminação e discussões desnecessárias não serão toleradas.`,
 
         ``,
 
-        `**2. Conteúdo Apropriado**   
+        `**2. Conteúdo Apropriado**  
         <:seta2:1325132415542231140> Não publique spam, flood, links maliciosos ou conteúdos inadequados.`,
 
         ``,
 
-        `**3. Suporte**   
+        `**3. Suporte**  
         <:seta2:1325132415542231140> Use o canal de suporte apenas para dúvidas ou problemas relacionados ao **Punishment**.`,
 
         ``,
 
-        `**4. Divulgação**   
+        `**4. Divulgação**  
         <:seta2:1325132415542231140> É proibido divulgar qualquer conteúdo sem autorização de um administrador.`,
 
         ``,
 
-        `**5. Segurança**   
+        `**5. Segurança**  
         <:seta2:1325132415542231140> Nunca compartilhe dados pessoais. A equipe nunca pedirá suas informações sensíveis.`,
 
         ``,
 
-        `**6. Punições**   
+        `**6. Punições**  
         <:seta2:1325132415542231140> O descumprimento das regras resultará em punições. A moderação tem a palavra final.`,
 
         ``,
@@ -78,11 +82,12 @@ module.exports = {
       .setFooter({
         text: 'FuncZone',
         iconURL: message.guild.iconURL(),
-      });
+      })
+      .setTimestamp();
 
     const actionRow = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setCustomId('verify_user')
+        .setCustomId(VERIFY_BUTTON_ID)
         .setLabel('Aceitar Regras')
         .setStyle(ButtonStyle.Success)
         .setEmoji(emojis.checkEmoji)
@@ -96,7 +101,7 @@ module.exports = {
 
       if (message.channel.id !== rulesChannel.id) {
         await message.channel.send(
-          `${emojis.successEmoji} Mensagem de regras enviada.`
+          `${emojis.successEmoji} Mensagem de regras enviada com sucesso.`
         );
       }
     } catch (error) {
