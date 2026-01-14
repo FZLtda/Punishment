@@ -11,11 +11,11 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message) {
-    const lastUpdated = '<t:1736649600:f>'; // 12/01/2026
+    const lastUpdated = '12/01/2026';
 
     const embed = new EmbedBuilder()
       .setColor(colors.red)
-      .setTitle('Política de Privacidade — Punishment')
+      .setTitle('Política de Privacidade')
       .setDescription(
         'Esta Política de Privacidade descreve como o **Punishment** coleta, utiliza, ' +
         'armazena e protege informações relacionadas ao uso do bot no Discord.'
