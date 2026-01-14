@@ -47,7 +47,7 @@ module.exports = {
 
           await message.client.user.setUsername(value);
 
-          return message.reply({
+          return message.channel.send({
             content: `${emojis.done} Nome do bot alterado para **${value}**.`,
           });
         }
@@ -62,7 +62,7 @@ module.exports = {
 
           await message.client.user.setAvatar(value);
 
-          return message.reply({
+          return message.channel.send({
             content: `${emojis.done} Avatar do bot atualizado com sucesso.`,
           });
         }
@@ -95,7 +95,7 @@ module.exports = {
 
           await botMember.setNickname(value);
 
-          return message.reply({
+          return message.channel.send({
             content: `${emojis.done} Apelido do bot alterado para **${value}** neste servidor.`,
           });
         }
