@@ -8,13 +8,14 @@ function registerGlobalErrorHandlers() {
   process.on('uncaughtException', async (err) => {
     Logger.fatal('[uncaughtException]', err);
     await reportErrorToWebhook('uncaughtException', err);
+
     await gracefulExit(1);
   });
 
   process.on('unhandledRejection', async (reason) => {
-    Logger.fatal('[unhandledRejection]', reason);
+    Logger.error('[unhandledRejection]', reason);
     await reportErrorToWebhook('unhandledRejection', reason);
-    await gracefulExit(1);
+
   });
 }
 
