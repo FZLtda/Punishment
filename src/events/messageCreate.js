@@ -8,40 +8,28 @@ const checkUserPermissions = require('@permissions/checkUserPermissions');
 const checkBotPermissions = require('@permissions/checkBotPermissions');
 const { sendWarning } = require('@embeds/embedWarning');
 
-/**
- * Determina o prefixo do servidor dinamicamente.
- * Suporta customizações futuras via injeção de dependências.
- */
 async function resolvePrefix(client, guildId) {
   if (client.getPrefix) return await client.getPrefix(guildId);
   return await getPrefix(guildId);
 }
 
-/**
- * Verifica se o conteúdo da mensagem é um comando válido.
- */
 function parseCommand(messageContent, prefix) {
   if (!messageContent.startsWith(prefix)) return null;
-
-  // Garante que não haja espaço logo após o prefixo
   if (messageContent[prefix.length] === ' ') return null;
 
   const args = messageContent.slice(prefix.length).split(/\s+/);
   const commandName = args.shift()?.toLowerCase();
 
-  if (!commandName || ['__proto__', 'constructor', 'prototype'].includes(commandName)) return null;
+  if (!commandName || ['__proto__', 'constructor', 'prototype'].includes(commandName)) {
+    return null;
+  }
 
   return { commandName, args };
 }
 
-/**
- * Executa um pipeline de validações antes de executar o comando.
- */
 async function preExecutionPipeline({ message, command, member, botMember }) {
-  // Global Ban
   if (await checkGlobalBan(message)) return false;
 
-  // Termos
   const accepted = await checkTerms({
     user: message.author,
     client: message.client,
@@ -53,13 +41,11 @@ async function preExecutionPipeline({ message, command, member, botMember }) {
     return false;
   }
 
-  // Permissões do usuário
   if (command.userPermissions) {
     const has = await checkUserPermissions(member, message, command.userPermissions);
     if (!has) return false;
   }
 
-  // Permissões do bot
   if (command.botPermissions) {
     const has = await checkBotPermissions(botMember, message, command.botPermissions);
     if (!has) return false;
@@ -68,16 +54,9 @@ async function preExecutionPipeline({ message, command, member, botMember }) {
   return true;
 }
 
-/**
- * Handler do evento messageCreate.
- */
 module.exports = {
   name: 'messageCreate',
 
-  /**
-   * Evento que escuta mensagens e executa comandos prefixados.
-   * @param {import('discord.js').Message} message
-   */
   async execute(message) {
     try {
       if (!message.guild || message.author.bot) return;
@@ -87,15 +66,22 @@ module.exports = {
       if (!parsed) return;
 
       const { commandName, args } = parsed;
-      const command = message.client.commands.get(commandName)
-        ?? message.client.commands.find(cmd => cmd.aliases?.includes(commandName));
+      const command =
+        message.client.commands.get(commandName) ??
+        message.client.commands.find(cmd => cmd.aliases?.includes(commandName));
 
       if (!command) return;
 
       const member = await message.guild.members.fetch(message.author.id);
       const botMember = message.guild.members.me;
 
-      const canProceed = await preExecutionPipeline({ message, command, member, botMember });
+      const canProceed = await preExecutionPipeline({
+        message,
+        command,
+        member,
+        botMember,
+      });
+
       if (!canProceed) return;
 
       if (command.deleteMessage) {
@@ -109,11 +95,18 @@ module.exports = {
       await command.execute(message, args);
 
     } catch (error) {
-      Logger.error(`[ERROR][${message?.guild?.name}] Comando falhou: ${error.stack || error}`);
+      Logger.error(
+        `[ERROR][${message?.guild?.name ?? 'DM'}] Comando falhou:`,
+        error
+      );
 
-      if (message?.channel?.send) {
-        await sendWarning(message, 'Não foi possível executar o comando.');
+      try {
+        if (message?.channel && message.client?.isReady()) {
+          await sendWarning(message, 'Não foi possível executar o comando.');
+        }
+      } catch (warnError) {
+        Logger.warn('[messageCreate] Falha ao enviar aviso de erro', warnError);
       }
     }
-  }
+  },
 };
