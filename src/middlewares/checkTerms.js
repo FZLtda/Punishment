@@ -51,7 +51,7 @@ module.exports = async function checkTerms(context) {
       embeds: [termsEmbed],
       components: [buttons],
       allowedMentions: { repliedUser: false },
-      ephemeral: true
+      flags: 1 << 6
     };
 
     if (message?.reply) {
