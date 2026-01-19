@@ -21,9 +21,9 @@ module.exports = [
       {
         name: 'addemoji',
         description: 'Adiciona um emoji ao servidor.',
-        usage: 'addemoji <URL> [nome]',
+        usage: 'addemoji <nome> <URL>',
         permissions: ['ManageEmojisAndStickers'],
-        details: 'É necessário usar uma URL de imagem válida (PNG, JPEG ou GIF). O nome é opcional, caso não seja informado o bot tentará usar o nome do arquivo.',
+        details: 'Adiciona um emoji personalizado ao servidor usando um nome e uma URL de imagem válida.',
         id: '000000000000000002',
       },
       {
