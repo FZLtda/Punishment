@@ -47,7 +47,7 @@ module.exports = {
       });
 
       const embed = new EmbedBuilder()
-        .setTitle(`${emojis.successEmoji} Emoji copiado com sucesso!`)
+        .setTitle(`${emojis.done} Emoji copiado`)
         .setColor(colors.green)
         .setDescription(`Emoji ${emoji} criado com o nome \`${emojiName}\`.`)
         .setThumbnail(emoji.imageURL())
