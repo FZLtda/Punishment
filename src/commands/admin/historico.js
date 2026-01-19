@@ -62,18 +62,20 @@ module.exports = {
         .setTimestamp();
 
       punishments.slice(0, MAX_RESULTS).forEach((punishment, index) => {
+        const timestamp = punishment.createdAt
+          ? Math.floor(new Date(punishment.createdAt).getTime() / 1000)
+          : Math.floor(Date.now() / 1000);
+
         embed.addFields({
           name: `Caso #${index + 1}`,
           value: [
-            `🔨 **Ação:** ${punishment.type}`,
+            `🔨 **Ação:** ${punishment.action}`,
             `👮 **Moderador:** <@${punishment.moderatorId}>`,
             `📝 **Motivo:** ${punishment.reason || 'Não informado.'}`,
             punishment.duration
               ? `⏱️ **Duração:** ${punishment.duration}`
               : null,
-            `📅 **Data:** <t:${Math.floor(
-              punishment.createdAt / 1000
-            )}:f>`
+            `📅 **Data:** <t:${timestamp}:f>`
           ]
             .filter(Boolean)
             .join('\n')
@@ -83,7 +85,7 @@ module.exports = {
       await message.channel.send({ embeds: [embed] });
 
     } catch (error) {
-      console.error('[HISTÓRICO]', error);
+      console.error('[HISTORICO_COMMAND]', error);
       return sendWarning(
         message,
         'Não foi possível buscar o histórico de punições.'
