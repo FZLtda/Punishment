@@ -29,7 +29,7 @@ module.exports = [
       {
         name: 'copyemoji',
         description: 'Copia um emoji de outro servidor.',
-        usage: 'copyemoji <emoji>',
+        usage: 'copyemoji <emoji> [nome]',
         permissions: ['ManageEmojisAndStickers'],
         details: 'Ideal para importar emojis personalizados rapidamente. O emoji precisa ser acessível para o bot (servidor em comum).',
         id: '000000000000000003',
