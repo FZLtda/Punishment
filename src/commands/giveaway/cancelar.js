@@ -9,7 +9,7 @@ const logger = require('@logger');
 module.exports = {
   name: 'cancelar',
   description: 'Cancela manualmente um sorteio ativo.',
-  usage: `${currentPrefix}cancelar <ID da mensagem>`,
+  usage: '${currentPrefix}cancelar <ID da mensagem>',
   category: 'Utilidades',
   userPermissions: ['ManageMessages'],
   botPermissions: ['SendMessages'],
