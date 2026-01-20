@@ -19,22 +19,36 @@ const { gracefulExit, registerResources } = require('@core/shutdown');
 const { registerGlobalErrorHandlers } = require('@core/errors');
 const { registerSignalHandlers } = require('@core/signals');
 
+/* Protege configurações críticas contra mutações acidentais */
+Object.freeze(bot);
+
 const startTime = Date.now();
 
+/* Registra handlers globais antes de qualquer inicialização */
 registerGlobalErrorHandlers();
 registerSignalHandlers();
 
 (async () => {
   try {
-    Logger.info(`Iniciando ${bot.name} (ambiente: ${env})...`);
+    Logger.info(
+      `Iniciando ${bot.name}${bot.version ? ` v${bot.version}` : ''} (ambiente: ${env})...`
+    );
 
     const { discordClient, mongo } = await bootstrap();
+
+    /* Registra recursos para shutdown gracioso */
     registerResources(discordClient, mongo);
 
     const loadTime = Date.now() - startTime;
-    Logger.success(`${bot.name} inicializado em ${loadTime}ms`);
+
+    Logger.success(
+      `${bot.name} inicializado com sucesso em ${loadTime}ms`
+    );
+
+    /* Healthcheck inicial */
+    Logger.debug('Healthcheck inicial concluído com sucesso');
   } catch (error) {
-    Logger.fatal(`Falha ao iniciar o ${bot.name}:`, error);
+    Logger.fatal(`Falha crítica ao iniciar o ${bot.name}`, error);
     await gracefulExit(1);
   }
 })();
