@@ -30,7 +30,7 @@ module.exports = {
       );
     }
 
-    /* Busca segura por servidor */
+    /* Busca por servidor */
     let sorteio;
     try {
       sorteio = await Giveaway.findOne({
@@ -77,7 +77,7 @@ module.exports = {
       );
     }
 
-    /* Processo de rerol */
+    /* Processo de reroll */
     const participantes = Array.isArray(sorteio.participants)
       ? [...sorteio.participants]
       : [];
@@ -98,13 +98,15 @@ module.exports = {
       if (escolhido) ganhadores.push(`<@${escolhido}>`);
     }
 
-    const plural = ganhadores.length === 1 ? 'vencedor' : 'vencedores';
+    /* Pluralização */
+    const winnersLabel =
+      ganhadores.length === 1 ? 'Novo ganhador' : 'Novos ganhadores';
 
     const rerollEmbed = new EmbedBuilder()
       .setTitle('🔁 Sorteio Rerolado')
       .setDescription(
         `**Prêmio:** ${sorteio.prize}\n` +
-        `**Novo(s) ${plural}:** ${ganhadores.join(', ')}`
+        `**${winnersLabel}:** ${ganhadores.join(', ')}`
       )
       .setColor(colors.red)
       .setTimestamp()
