@@ -36,7 +36,7 @@ module.exports = {
       sorteio = await Giveaway.findOne({
         messageId: msgId,
         guildId: message.guild.id,
-        status: 'encerrado',
+        status: 'finalizado',
       });
     } catch (error) {
       logger.error(
