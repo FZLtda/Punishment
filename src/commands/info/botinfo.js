@@ -8,7 +8,7 @@ const { colors } = require('@config');
 
 module.exports = {
   name: 'botinfo',
-  description: 'Exibe informações detalhadas e técnicas sobre o bot.',
+  description: 'Exibe informações técnicas e detalhadas sobre o bot.',
   usage: '${currentPrefix}botinfo',
   category: 'Informação',
   botPermissions: ['SendMessages'],
@@ -21,26 +21,36 @@ module.exports = {
     const { client } = message;
 
     /* Uptime */
-    const totalSeconds = Math.floor(client.uptime / 1000);
-    const days = Math.floor(totalSeconds / 86400);
-    const hours = Math.floor((totalSeconds % 86400) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
+    const uptimeSeconds = Math.floor(process.uptime());
+    const days = Math.floor(uptimeSeconds / 86400);
+    const hours = Math.floor((uptimeSeconds % 86400) / 3600);
+    const minutes = Math.floor((uptimeSeconds % 3600) / 60);
+    const seconds = uptimeSeconds % 60;
     const uptime = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
     /* Memória */
-    const heapUsedMB = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
-    const totalMemoryMB = (os.totalmem() / 1024 / 1024).toFixed(0);
+    const memory = process.memoryUsage();
+    const rssMB = (memory.rss / 1024 / 1024).toFixed(2);
+    const heapUsedMB = (memory.heapUsed / 1024 / 1024).toFixed(2);
+    const heapTotalMB = (memory.heapTotal / 1024 / 1024).toFixed(2);
+    const totalSystemMemoryMB = (os.totalmem() / 1024 / 1024).toFixed(0);
+    const memoryPercent = ((memory.rss / os.totalmem()) * 100).toFixed(2);
+
+    /* CPU */
+    const cpuUsage = process.cpuUsage();
+    const cpuUserMs = (cpuUsage.user / 1000).toFixed(0);
+    const cpuSystemMs = (cpuUsage.system / 1000).toFixed(0);
+    const cpuInfo = os.cpus();
+    const cpuModel = cpuInfo?.[0]?.model ?? 'Desconhecido';
+    const cpuCores = cpuInfo.length;
 
     /* Sistema */
-    const osType = os.type();
-    const platform = os.platform();
+    const platform = `${os.type()} (${os.platform()})`;
     const architecture = os.arch();
-    const cpuModel = os.cpus()[0].model;
 
     /* Usuários */
     const totalUsers = client.guilds.cache.reduce(
-      (acc, guild) => acc + guild.memberCount,
+      (acc, guild) => acc + (guild.memberCount || 0),
       0
     );
 
@@ -49,22 +59,57 @@ module.exports = {
       .setTitle('Informações do Bot')
       .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
       .addFields(
-        { name: 'Nome', value: `\`${client.user.username}\``, inline: true },
-        { name: 'Ping', value: `\`${client.ws.ping}ms\``, inline: true },
-        { name: 'Servidores', value: `\`${client.guilds.cache.size}\``, inline: true },
-        { name: 'Usuários', value: `\`${totalUsers.toLocaleString('pt-BR')}\``, inline: true },
-        { name: 'Criado', value: `<t:${Math.floor(client.user.createdTimestamp / 1000)}:R>`, inline: true },
-
-        { name: 'Uptime', value: `\`${uptime}\``, inline: true },
-        { name: 'Node.js', value: `\`${process.version}\``, inline: true },
-        { name: 'Discord.js', value: `\`v${discordJsVersion}\``, inline: true },
-
-        { name: 'Memória usada', value: `\`${heapUsedMB} MB / ${totalMemoryMB} MB\``, inline: true },
-        { name: 'Sistema', value: `\`${osType} (${platform})\``, inline: true },
-        { name: 'CPU', value: `\`${architecture} - ${cpuModel}\`` }
+        {
+          name: 'Bot',
+          value:
+            `Nome: \`${client.user.username}\`\n` +
+            `ID: \`${client.user.id}\`\n` +
+            `Criado: <t:${Math.floor(client.user.createdTimestamp / 1000)}:R>`,
+          inline: false
+        },
+        {
+          name: 'Estatísticas',
+          value:
+            `Ping: \`${client.ws.ping}ms\`\n` +
+            `Servidores: \`${client.guilds.cache.size}\`\n` +
+            `Usuários: \`${totalUsers.toLocaleString('pt-BR')}\``,
+          inline: true
+        },
+        {
+          name: 'Uptime',
+          value: `\`${uptime}\``,
+          inline: true
+        },
+        {
+          name: 'Sistema',
+          value:
+            `OS: \`${platform}\`\n` +
+            `Arquitetura: \`${architecture}\`\n` +
+            `CPU: \`${cpuModel}\`\n` +
+            `Cores: \`${cpuCores}\``,
+          inline: false
+        },
+        {
+          name: 'Memória',
+          value:
+            `RSS: \`${rssMB} MB\`\n` +
+            `Heap: \`${heapUsedMB} / ${heapTotalMB} MB\`\n` +
+            `RAM do sistema: \`${totalSystemMemoryMB} MB\`\n` +
+            `Uso da RAM: \`${memoryPercent}%\``,
+          inline: true
+        },
+        {
+          name: 'Processo',
+          value:
+            `Node.js: \`${process.version}\`\n` +
+            `Discord.js: \`v${discordJsVersion}\`\n` +
+            `CPU user: \`${cpuUserMs} ms\`\n` +
+            `CPU system: \`${cpuSystemMs} ms\``,
+          inline: true
+        }
       )
       .setFooter({
-        text: `ID: ${client.user.id}`,
+        text: 'Punishment',
         iconURL: client.user.displayAvatarURL({ dynamic: true })
       })
       .setTimestamp();
