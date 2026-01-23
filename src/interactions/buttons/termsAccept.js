@@ -33,7 +33,7 @@ module.exports = {
       const successEmbed = new EmbedBuilder()
         .setColor(colors.green)
         .setTitle(`${emojis.successEmoji} Termos Aceitos`)
-        .setDescription('Agora você tem acesso completo aos meus comandos.')
+        .setDescription('Agora você tem acesso completo às minhas funcionalidades.')
         .setFooter({
           text: bot.name,
           iconURL: client.user.displayAvatarURL()
