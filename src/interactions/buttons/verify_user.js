@@ -28,7 +28,7 @@ module.exports = {
     }
 
     if (member.roles.cache.has(roles.verified)) {
-      return sendEphemeralError(interaction, 'As regras já foram aceitas por você.');
+      return sendEphemeralError(interaction, 'As regras já estão aceitas em sua conta.');
     }
 
     try {
