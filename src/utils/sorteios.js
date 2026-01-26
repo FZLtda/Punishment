@@ -32,7 +32,7 @@ async function finalizarSorteio(giveaway, client) {
     const participantes = Array.isArray(giveaway.participants) ? [...giveaway.participants] : [];
     const ganhadores = sortearParticipantes(participantes, giveaway.winners);
 
-    const tituloGanhadores = ganhadores.length === 1 ? 'Vencedor' : 'Vencedores';
+    const tituloGanhadores = ganhadores.length === 1 ? 'Ganhador' : 'Ganhadores';
 
     const embedEncerrado = new EmbedBuilder()
       .setTitle('🎉 Sorteio Encerrado')
