@@ -109,14 +109,14 @@ module.exports = {
 
   // Embed do sorteio
   createEmbed(message, premio, vencedores, terminaEm) {
-    const plural = vencedores === 1 ? 'vencedor' : 'vencedores';
+    const plural = vencedores === 1 ? 'ganhador' : 'ganhadores';
 
     return new EmbedBuilder()
       .setTitle('🎉 Novo Sorteio!')
       .setDescription([
         `**Prêmio:** ${premio}`,
         `**Participe:** Reaja com 🎉`,
-        `**Duração:** Termina <t:${Math.floor(terminaEm.getTime() / 1000)}:R>`
+        `**Termina:** <t:${Math.floor(terminaEm.getTime() / 1000)}:R>`
       ].join('\n'))
       .setColor(colors.primary || colors.red)
       .setFooter({
