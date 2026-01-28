@@ -2,15 +2,17 @@
 
 /**
  * Evento: messageReactionAdd
- * Descrição: Executado quando um usuário reage a uma mensagem.
- * - Adiciona o usuário ao sorteio se reagir com 🎉
- * - Traduz o conteúdo da mensagem se reagir com uma bandeira registrada em langFlags
+ * Descrição:
+ * - Adiciona usuário ao sorteio 🎉
+ * - Traduz mensagens por bandeiras
+ * 🔒 Protegido pelo sistema de Global Ban
  */
 
 const { EmbedBuilder } = require('discord.js');
 const Giveaway = require('@models/Giveaway');
 const { colors, emojis, langFlags } = require('@config');
 const { translateText } = require('@services/deeplService');
+const checkGlobalBan = require('@middlewares/checkGlobalBan');
 const Logger = require('@logger').child({ module: 'messageReactionAdd' });
 
 const translationCooldown = new Map();
@@ -18,12 +20,6 @@ const translationCooldown = new Map();
 module.exports = {
   name: 'messageReactionAdd',
 
-  /**
-   * Executa quando uma reação é adicionada a uma mensagem
-   * @param {import('discord.js').MessageReaction} reaction - Reação adicionada
-   * @param {import('discord.js').User} user - Usuário que reagiu
-   */
-  
   async execute(reaction, user) {
     if (user.bot) return;
 
@@ -31,11 +27,28 @@ module.exports = {
       const message = reaction.message.partial
         ? await reaction.message.fetch().catch(() => null)
         : reaction.message;
-      if (!message) return;
+
+      if (!message || !message.guild) return;
+
+      const isBlocked = await checkGlobalBan({
+        author: user,
+        guild: message.guild,
+        channel: message.channel,
+        client: message.client,
+        reply: () => null,
+      });
+
+      if (isBlocked) {
+        Logger.debug(
+          `[GLOBAL BAN] ${user.tag} tentou usar sistemas por reação.`
+        );
+        return;
+      }
 
       const emoji = reaction.emoji.name;
 
-      // Sorteio
+      // 🎉 Sistema de sorteio
+      
       if (emoji === '🎉') {
         const giveaway = await Giveaway.findOne({
           messageId: message.id,
@@ -48,16 +61,18 @@ module.exports = {
         giveaway.participants.push(user.id);
         await giveaway.save();
 
-        Logger.debug(`[SORTEIO] ${user.tag} (${user.id}) participou do sorteio ${giveaway.messageId}`);
+        Logger.debug(
+          `[SORTEIO] ${user.tag} (${user.id}) entrou no sorteio ${giveaway.messageId}`
+        );
         return;
       }
 
-      // Tradução por bandeira
+      // 🌍 Sistema de tradução
+      
       const targetLang = langFlags[emoji];
       if (!targetLang || typeof targetLang !== 'string') return;
       if (!message.content || message.content.trim().length === 0) return;
 
-      // Cooldown de 5 segundos por usuário
       const cooldownKey = `${user.id}-${message.id}`;
       if (translationCooldown.has(cooldownKey)) return;
 
@@ -68,11 +83,14 @@ module.exports = {
       try {
         translated = await translateText(message.content, targetLang);
       } catch (translationError) {
-        Logger.warn(`[TRADUÇÃO] Falha na tradução: ${translationError.message}`);
+        Logger.warn(
+          `[TRADUÇÃO] Falha na tradução: ${translationError.message}`
+        );
         return;
       }
 
       const truncated = translated.length > 1024;
+
       const translationEmbed = new EmbedBuilder()
         .setTitle(`${emojis.trad} Tradução`)
         .setColor(colors.red)
@@ -92,14 +110,18 @@ module.exports = {
         embeds: [translationEmbed],
         allowedMentions: { repliedUser: false },
       }).catch((err) => {
-        Logger.warn(`[TRADUÇÃO] Não foi possível enviar resposta: ${err.message}`);
+        Logger.warn(
+          `[TRADUÇÃO] Não foi possível enviar resposta: ${err.message}`
+        );
       });
 
-      // Remove a reação do usuário após a tradução
+      // Remove a reação após traduzir
       await reaction.users.remove(user.id).catch(() => {});
 
     } catch (error) {
-      Logger.error(`[REACTION] Erro no processamento: ${error.stack || error.message}`);
+      Logger.error(
+        `[REACTION] Erro no processamento: ${error.stack || error.message}`
+      );
     }
   },
 };
