@@ -39,7 +39,7 @@ module.exports = {
       });
 
       if (isBlocked) {
-        Logger.debug(
+        Logger.warn(
           `[GLOBAL BAN] ${user.tag} tentou usar sistemas por reação.`
         );
         return;
@@ -61,7 +61,7 @@ module.exports = {
         giveaway.participants.push(user.id);
         await giveaway.save();
 
-        Logger.debug(
+        Logger.info(
           `[SORTEIO] ${user.tag} (${user.id}) entrou no sorteio ${giveaway.messageId}`
         );
         return;
