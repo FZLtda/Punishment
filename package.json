@@ -1,8 +1,8 @@
 {
   "name": "punishment",
   "version": "1.0.0",
-  "description": "Moderação inteligente com arquitetura modular, punições escaláveis e integrações avançadas.",
-  "author": "FuncZero",
+  "description": "Sistema avançado de moderação para Discord com arquitetura modular, punições escaláveis e integrações modernas.",
+  "author": "FuncZero (Edimar Ferreira)",
   "license": "MIT",
   "type": "commonjs",
   "main": "index.js",
@@ -10,17 +10,16 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "postinstall": "npm install"
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [
     "discord",
-    "bot",
+    "discord-bot",
     "moderation",
+    "security",
     "punishment",
     "discord.js",
     "modular",
-    "typescript-ready",
     "winston",
     "openai",
     "deepl"
@@ -38,7 +37,7 @@
     "node-fetch": "^2.7.0",
     "module-alias": "^2.2.2",
     "mercadopago": "^1.5.14",
-    "discord.js": "^14.13.0",
+    "discord.js": "^14.15.3",
     "better-sqlite3": "^11.9.1",
     "moment-timezone": "^0.5.48",
     "systeminformation": "^5.23.3"
