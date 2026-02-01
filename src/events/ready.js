@@ -5,6 +5,7 @@ const Logger = require('@logger');
 const monitor = require('@core/monitor');
 const iniciarSorteiosTask = require('@tasks/sorteios');
 const iniciarAtribuicaoDeDoadores = require('@tasks/atribuirDoadoresPendentes');
+const { sendBotStatus } = require('@jobs/botStatusJob');
 
 module.exports = {
   name: 'ready',
@@ -30,8 +31,20 @@ module.exports = {
         iniciarAtribuicaoDeDoadores(client)
       ]);
 
+      // Integração com a API
+
+      Logger.info('[API] Monitoramento remoto iniciado.');
+
+      await sendBotStatus(client);
+
+      setInterval(() => {
+        sendBotStatus(client);
+      }, 300000);
+
+
       monitor.emit('ready', client.user.tag);
       Logger.info('[Ready] Inicialização concluída com sucesso.');
+
     } catch (err) {
       Logger.fatal(`[Ready] Falha durante inicialização: ${err.stack || err.message}`);
       monitor.emit('error', 'event:ready', err);
