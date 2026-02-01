@@ -52,6 +52,7 @@
   },
   "_moduleAliases": {
     "@core": "src/core",
+    "@jobs": "src/jobs",
     "@utils": "src/utils",
     "@tasks": "src/tasks",
     "@events": "src/events",
