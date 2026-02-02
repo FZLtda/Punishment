@@ -1,54 +1,62 @@
 'use strict';
 
-/**
- * Entry point do Punishment.
- * Responsável por:
- * - Inicialização principal
- * - Tratamento global de erros
- * - Encerramento gracioso de recursos
- */
-
 require('module-alias/register');
 require('dotenv').config();
 
-const bootstrap = require('@core/bootstrap');
 const { bot, env } = require('@config');
 const Logger = require('@logger');
-
+const bootstrap = require('@core/bootstrap');
 const { gracefulExit, registerResources } = require('@core/shutdown');
 const { registerGlobalErrorHandlers } = require('@core/errors');
 const { registerSignalHandlers } = require('@core/signals');
 
-/* Protege configurações críticas contra mutações acidentais */
 Object.freeze(bot);
 
-const startTime = Date.now();
+async function main() {
+  const startTime = performance.now();
 
-/* Registra handlers globais antes de qualquer inicialização */
-registerGlobalErrorHandlers();
-registerSignalHandlers();
-
-(async () => {
   try {
+    registerGlobalErrorHandlers();
+    registerSignalHandlers();
+
     Logger.info(
-      `Iniciando ${bot.name}${bot.version ? ` v${bot.version}` : ''} (ambiente: ${env})...`
+      `[Main] Iniciando ${bot.name} v${bot.version || '1.0.0'}...`,
+      {
+        environment: env,
+        nodeVersion: process.version,
+        memoryLimit: `${Math.round(
+          require('v8').getHeapStatistics().heap_size_limit / 1024 / 1024
+        )}MB`
+      }
     );
 
-    const { discordClient, mongo } = await bootstrap();
+    const resources = await bootstrap();
+    registerResources(resources);
 
-    /* Registra recursos para shutdown gracioso */
-    registerResources(discordClient, mongo);
+    const loadTime = (performance.now() - startTime).toFixed(2);
 
-    const loadTime = Date.now() - startTime;
+    Logger.success(`[Main] ${bot.name} online e operando.`);
+    Logger.info(`[Main] Tempo de carregamento: ${loadTime}ms`);
 
-    Logger.success(
-      `${bot.name} inicializado com sucesso em ${loadTime}ms`
-    );
+    if (typeof process.send === 'function') {
+      process.send('ready');
+    }
 
-    /* Healthcheck inicial */
-    Logger.debug('Healthcheck inicial concluído com sucesso');
   } catch (error) {
-    Logger.fatal(`Falha crítica ao iniciar o ${bot.name}`, error);
+    Logger.fatal(
+      `[Critical] Erro catastrófico na inicialização do ${bot.name}`,
+      {
+        message: error.message,
+        stack: error.stack,
+        context: 'Bootstrap'
+      }
+    );
+
     await gracefulExit(1);
   }
-})();
+}
+
+main().catch(async (err) => {
+  console.error('Unhandled Error in Main Exec context:', err);
+  process.exit(1);
+});
