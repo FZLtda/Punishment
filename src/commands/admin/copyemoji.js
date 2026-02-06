@@ -8,6 +8,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis } = require('@config');
 const { sendWarning } = require('@embeds/embedWarning');
+const { sendModLog } = require('@modules/modlog');
 const Logger = require('@logger');
 
 module.exports = {
@@ -59,11 +60,28 @@ module.exports = {
 
       await message.channel.send({ embeds: [embed] });
 
-      Logger.info(`[COPYEMOJI] Emoji copiado: ${emojiName} (${emojiId}) por ${message.author.tag}`);
+      await sendModLog(message.guild, {
+        action: 'Emoji Copied',
+        moderator: message.author,
+        target: emoji,
+        reason: 'Cópia de emoji',
+        extraFields: [
+          { name: 'Animado', value: animated ? 'Sim' : 'Não' }
+        ]
+      });
+
+      Logger.info(
+        `[COPYEMOJI] Emoji copiado: ${emojiName} (${emojiId}) por ${message.author.tag}`
+      );
 
     } catch (error) {
-      Logger.error(`[COPYEMOJI] Falha ao copiar emoji: ${error.stack || error.message}`);
-      return sendWarning(message, 'Não foi possível copiar o emoji. Verifique se o bot tem permissões suficientes e se o servidor atingiu o limite de emojis.');
+      Logger.error(
+        `[COPYEMOJI] Falha ao copiar emoji: ${error.stack || error.message}`
+      );
+      return sendWarning(
+        message,
+        'Não foi possível copiar o emoji. Verifique se o bot tem permissões suficientes e se o servidor atingiu o limite de emojis.'
+      );
     }
   }
 };
