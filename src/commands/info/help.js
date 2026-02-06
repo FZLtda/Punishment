@@ -1,10 +1,11 @@
 'use strict';
 
-
 const {
   ActionRowBuilder,
   StringSelectMenuBuilder,
   EmbedBuilder,
+  ButtonBuilder,
+  ButtonStyle,
 } = require('discord.js');
 
 const { bot, colors, emojis } = require('@config');
@@ -43,7 +44,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setAuthor({
         name: 'Central de Recursos',
-        iconURL: emojis.helpIcon
+        iconURL: emojis.helpIcon,
       })
       .setColor(colors.red)
       .setDescription([
@@ -52,7 +53,7 @@ module.exports = {
         '```',
         '>>> Selecione uma categoria abaixo para exibir os comandos disponíveis, exemplos de uso e permissões.',
         '',
-        'Você verá tudo — desde ferramentas de moderação até recursos de personalização do servidor.'
+        'Você verá tudo — desde ferramentas de moderação até recursos de personalização do servidor.',
       ].join('\n'));
 
     const menu = new StringSelectMenuBuilder()
@@ -62,12 +63,25 @@ module.exports = {
       .setMaxValues(1)
       .addOptions(options);
 
-    const row = new ActionRowBuilder().addComponents(menu);
+    const menuRow = new ActionRowBuilder().addComponents(menu);
+
+    const buttonsRow = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setLabel('Me Adicione')
+        .setStyle(ButtonStyle.Link)
+        .setURL(
+          'https://discord.com/oauth2/authorize?client_id=1155843839932764253&permissions=8&integration_type=0&scope=applications.commands+bot'
+        ),
+      new ButtonBuilder()
+        .setCustomId('help_close')
+        .setLabel('Fechar')
+        .setStyle(ButtonStyle.Danger)
+    );
 
     return message.reply({
       embeds: [embed],
-      components: [row],
-      allowedMentions: { repliedUser: false }
+      components: [menuRow, buttonsRow],
+      allowedMentions: { repliedUser: false },
     });
   },
 };
