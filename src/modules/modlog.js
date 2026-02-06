@@ -1,61 +1,106 @@
 'use strict';
 
-const { EmbedBuilder, ChannelType, TextChannel, User, Guild } = require('discord.js');
+const {
+  EmbedBuilder,
+  ChannelType,
+  TextChannel,
+  User,
+  GuildMember
+} = require('discord.js');
+
 const GuildSettings = require('@models/GuildSettings');
-const { colors, bot, emojis, actions } = require('@config');
+const { colors, bot, emojis } = require('@config');
 const Logger = require('@logger');
 
 /**
- * Constrói a descrição para o embed de moderação.
+ * Resolve dinamicamente os campos relacionados ao alvo da ação.
  *
- * @param {string} action - Ação realizada.
- * @param {User|null} target - Usuário alvo (se aplicável).
- * @param {User} moderator - Moderador responsável pela ação.
- * @param {string} reason - Motivo da ação.
- * @param {TextChannel|null} channel - Canal relacionado (se aplicável).
- * @param {Array<{ name: string, value: string }>} extraFields - Campos adicionais.
- * @returns {string} - Texto formatado para o embed.
+ * @param {*} target
+ * @returns {string[]}
  */
-function buildEmbedDescription(action, target, moderator, reason, channel, extraFields) {
-  const lines = [
-    `**Moderador:** ${moderator.tag} (\`${moderator.id}\`)`
-  ];
+function resolveTargetLines(target) {
+  if (!target) return [];
 
-  if (target && !actions.withoutUser.has(action.toLowerCase())) {
-    lines.push(`**Usuário:** ${target.tag} (\`${target.id}\`)`);
+  // User
+  if (target instanceof User) {
+    return [
+      `**Usuário:** ${target.tag} (\`${target.id}\`)`
+    ];
   }
 
-  if (reason && !actions.withoutReason.has(action.toLowerCase())) {
+  // GuildMember
+  if (target instanceof GuildMember) {
+    return [
+      `**Usuário:** ${target.user.tag} (\`${target.user.id}\`)`
+    ];
+  }
+
+  // Emoji
+  if (typeof target.imageURL === 'function' && target.id) {
+    return [
+      `**Nome:** ${target.name}`,
+      `**ID:** ${target.id}`
+    ];
+  }
+
+  // Fallback seguro
+  if (typeof target === 'object' && target.id) {
+    return [
+      `**ID:** ${target.id}`
+    ];
+  }
+
+  return [];
+}
+
+/**
+ * Constrói a descrição do embed de forma segura e inteligente.
+ */
+function buildEmbedDescription({
+  action,
+  target,
+  moderator,
+  reason,
+  channel,
+  extraFields
+}) {
+  const lines = [];
+
+  // Moderador (sempre)
+  if (moderator?.tag && moderator?.id) {
+    lines.push(`**Moderador:** ${moderator.tag} (\`${moderator.id}\`)`);
+  }
+
+  // Target dinâmico
+  lines.push(...resolveTargetLines(target));
+
+  // Motivo
+  if (reason) {
     lines.push(`**Motivo:** ${reason}`);
   }
 
+  // Canal
   if (channel) {
     lines.push(`**Canal:** ${channel}`);
   }
 
-  if (Array.isArray(extraFields) && extraFields.length > 0) {
-    for (const { name, value } of extraFields) {
-      lines.push(`**${name}:** ${value}`);
+  // Campos extras
+  if (Array.isArray(extraFields)) {
+    for (const field of extraFields) {
+      if (field?.name && field?.value) {
+        lines.push(`**${field.name}:** ${field.value}`);
+      }
     }
   }
 
-  lines.push(`**Ação:** ${action.toLowerCase()}`);
+  // Ação (sempre por último)
+  lines.push(`**Ação:** ${String(action).toLowerCase()}`);
 
   return lines.join('\n');
 }
 
 /**
- * Envia um log de moderação formatado para o canal configurado.
- *
- * @param {Guild} guild - Servidor onde ocorreu a ação.
- * @param {{
- *   action: string,
- *   target?: User|null,
- *   moderator: User,
- *   reason?: string,
- *   channel?: TextChannel|null,
- *   extraFields?: Array<{ name: string, value: string }>
- * }} options - Detalhes do log de moderação.
+ * Envia um log de moderação formatado.
  */
 async function sendModLog(guild, options) {
   const {
@@ -71,17 +116,17 @@ async function sendModLog(guild, options) {
 
   try {
     if (!guild?.id) {
-      return Logger.warn(`${context} Objeto 'guild' inválido.`);
+      return Logger.warn(`${context} Guild inválida.`);
     }
 
     const config = await GuildSettings.findOne({ guildId: guild.id });
     if (!config?.logChannelId) {
-      return Logger.warn(`${context} Nenhum canal de logs configurado.`);
+      return Logger.warn(`${context} Canal de logs não configurado.`);
     }
 
     const logChannel = guild.channels.cache.get(config.logChannelId);
     if (!(logChannel instanceof TextChannel) || logChannel.type !== ChannelType.GuildText) {
-      return Logger.warn(`${context} Canal de log configurado é inválido ou não é de texto.`);
+      return Logger.warn(`${context} Canal de logs inválido.`);
     }
 
     const embed = new EmbedBuilder()
@@ -91,7 +136,14 @@ async function sendModLog(guild, options) {
         iconURL: emojis.logs
       })
       .setDescription(
-        buildEmbedDescription(action, target, moderator, reason, channel, extraFields)
+        buildEmbedDescription({
+          action,
+          target,
+          moderator,
+          reason,
+          channel,
+          extraFields
+        })
       )
       .setTimestamp()
       .setFooter({
@@ -100,7 +152,7 @@ async function sendModLog(guild, options) {
       });
 
     await logChannel.send({ embeds: [embed] });
-    Logger.info(`${context} Log de moderação enviado: ${action}`);
+    Logger.info(`${context} Log enviado: ${action}`);
   } catch (error) {
     Logger.error(`${context} Falha ao enviar log: ${error.stack || error.message}`);
   }
