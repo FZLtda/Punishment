@@ -2,10 +2,14 @@
 
 const { getPrefix } = require('@helpers/prefixManager');
 const Logger = require('@logger');
+
 const checkTerms = require('@middlewares/checkTerms');
 const checkGlobalBan = require('@middlewares/checkGlobalBan');
+const checkCooldown = require('@middlewares/checkCooldown');
+
 const checkUserPermissions = require('@permissions/checkUserPermissions');
 const checkBotPermissions = require('@permissions/checkBotPermissions');
+
 const { sendWarning } = require('@embeds/embedWarning');
 
 async function resolvePrefix(client, guildId) {
@@ -17,7 +21,7 @@ function parseCommand(messageContent, prefix) {
   if (!messageContent.startsWith(prefix)) return null;
   if (messageContent[prefix.length] === ' ') return null;
 
-  const args = messageContent.slice(prefix.length).split(/\s+/);
+  const args = messageContent.slice(prefix.length).trim().split(/\s+/);
   const commandName = args.shift()?.toLowerCase();
 
   if (!commandName || ['__proto__', 'constructor', 'prototype'].includes(commandName)) {
@@ -28,6 +32,7 @@ function parseCommand(messageContent, prefix) {
 }
 
 async function preExecutionPipeline({ message, command, member, botMember }) {
+
   if (await checkGlobalBan(message)) return false;
 
   const accepted = await checkTerms({
@@ -40,6 +45,8 @@ async function preExecutionPipeline({ message, command, member, botMember }) {
     Logger.info(`[TERMS] ${message.author.tag} não aceitou os termos.`);
     return false;
   }
+
+  if (!(await checkCooldown({ message, command }))) return false;
 
   if (command.userPermissions) {
     const has = await checkUserPermissions(member, message, command.userPermissions);
@@ -72,7 +79,9 @@ module.exports = {
 
       if (!command) return;
 
-      const member = await message.guild.members.fetch(message.author.id);
+      const member =
+        message.member ?? await message.guild.members.fetch(message.author.id);
+
       const botMember = message.guild.members.me;
 
       const canProceed = await preExecutionPipeline({
@@ -88,15 +97,22 @@ module.exports = {
         try {
           await message.delete();
         } catch (err) {
-          Logger.warn(`[DELETE] Falha ao apagar msg de ${message.author.tag}: ${err.message}`);
+          Logger.warn(
+            `[DELETE] Falha ao apagar msg de ${message.author.tag}: ${err.message}`
+          );
         }
       }
+
+      Logger.info(
+        `[COMMAND] ${message.author.tag} (${message.author.id}) ` +
+        `usou ${prefix}${commandName} em #${message.channel.name} (${message.guild.name})`
+      );
 
       await command.execute(message, args);
 
     } catch (error) {
       Logger.error(
-        `[ERROR][${message?.guild?.name ?? 'DM'}] Comando falhou:`,
+        `[ERROR][${message?.guild?.name ?? 'Unknown'}] Falha ao executar comando`,
         error
       );
 
