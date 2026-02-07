@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 const API_URL = process.env.PUNISHMENT_API_URL;
-const API_KEY = process.env.BOT_API_KEY;
+const API_KEY = process.env.PUNISHMENT_API_KEY;
 
 const api = axios.create({
   baseURL: API_URL,
