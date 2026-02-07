@@ -3,7 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { sendWarning } = require('@embeds/embedWarning');
 const { colors, emojis } = require('@config');
-const { sendModLog } = require('@modules/modlog'); // ← ADICIONADO
+const { sendModLog } = require('@modules/modlog');
 const Logger = require('@logger');
 const path = require('path');
 
