@@ -17,18 +17,23 @@ module.exports = {
   description: 'Mostra todos os comandos disponíveis e como utilizá-los.',
   usage: 'help',
   category: 'util',
+  deleteMessage: true,
 
   async execute(message, args, client) {
     if (!Array.isArray(categories) || categories.length === 0) {
-      return sendWarning(message, 'Nenhuma categoria de ajuda foi encontrada.');
+      return sendWarning(
+        message,
+        'Nenhuma categoria de ajuda foi encontrada.'
+      );
     }
 
     const options = categories
-      .filter(cat =>
-        cat &&
-        typeof cat.id === 'string' &&
-        typeof cat.name === 'string' &&
-        typeof cat.description === 'string'
+      .filter(
+        cat =>
+          cat &&
+          typeof cat.id === 'string' &&
+          typeof cat.name === 'string' &&
+          typeof cat.description === 'string'
       )
       .map(cat => ({
         label: cat.name,
@@ -38,7 +43,10 @@ module.exports = {
       }));
 
     if (options.length === 0) {
-      return sendWarning(message, 'Nenhuma categoria válida foi encontrada.');
+      return sendWarning(
+        message,
+        'Nenhuma categoria válida foi encontrada.'
+      );
     }
 
     const embed = new EmbedBuilder()
@@ -47,14 +55,16 @@ module.exports = {
         iconURL: emojis.helpIcon,
       })
       .setColor(colors.red)
-      .setDescription([
-        '```',
-        `${bot.name} - Help Menu`,
-        '```',
-        '>>> Selecione uma categoria abaixo para exibir os comandos disponíveis, exemplos de uso e permissões.',
-        '',
-        'Você verá tudo — desde ferramentas de moderação até recursos de personalização do servidor.',
-      ].join('\n'));
+      .setDescription(
+        [
+          '```',
+          `${bot.name} - Help Menu`,
+          '```',
+          '>>> Selecione uma categoria abaixo para exibir os comandos disponíveis, exemplos de uso e permissões.',
+          '',
+          'Você verá tudo — desde ferramentas de moderação até recursos de personalização do servidor.',
+        ].join('\n')
+      );
 
     const menu = new StringSelectMenuBuilder()
       .setCustomId('help-category')
@@ -78,7 +88,7 @@ module.exports = {
         .setStyle(ButtonStyle.Danger)
     );
 
-    return message.reply({
+    return message.channel.send({
       embeds: [embed],
       components: [menuRow, buttonsRow],
       allowedMentions: { repliedUser: false },
