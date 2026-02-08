@@ -12,7 +12,7 @@ async function sendBotStatus(client) {
       node: process.version
     });
 
-    Logger.info('[API] Status enviado com sucesso.');
+    Logger.debug('[API] Status enviado com sucesso.');
   } catch (err) {
     Logger.error('[API] Erro ao enviar status:', err.message);
   }
