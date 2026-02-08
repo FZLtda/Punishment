@@ -1,0 +1,29 @@
+name: ✨ Feature Request
+description: Sugira uma nova funcionalidade
+title: "[Feature]: "
+labels: [enhancement]
+assignees:
+  - FuncZero
+
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema
+      description: Que problema essa feature resolve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solução proposta
+      description: Descreva como você imagina essa feature
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas
+      required: false
