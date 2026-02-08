@@ -72,11 +72,13 @@ module.exports = [
         usage: 'log <set|off|status> [#canal]',
         permissions: ['ManageGuild'],
         details:
-          'Permite configurar e gerenciar o sistema de logs do servidor.\n\n' +
-          'Subcomandos disponíveis:\n' +
-          '- set: Define o canal onde os logs serão enviados.\n' +
-          '- off: Desativa o sistema de logs no servidor.\n' +
-          '- status: Exibe o estado atual do sistema de logs e o canal configurado.',
+          'Você pode gerenciar o sistema de logs de três formas:\n\n' +
+          '1. Ativar logs → `log set #canal`\n' +
+          'Define o canal onde os logs do servidor serão enviados.\n\n' +
+          '2. Desativar logs → `log off`\n' +
+          'Desliga completamente o sistema de logs no servidor.\n\n' +
+          '3. Ver status → `log status`\n' +
+          'Mostra se o sistema está ativo e qual canal está configurado.',
         id: '000000000000000008',
       },
     ],
