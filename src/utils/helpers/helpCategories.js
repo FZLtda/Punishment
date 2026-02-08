@@ -67,11 +67,16 @@ module.exports = [
         id: '000000000000000007',
       },
       {
-        name: 'setlog',
-        description: 'Define o canal de logs.',
-        usage: 'setlog <#canal>',
+        name: 'log',
+        description: 'Gerencia o sistema de logs do servidor.',
+        usage: 'log <set|off|status> [#canal]',
         permissions: ['ManageGuild'],
-        details: 'O canal configurado receberá registros de moderação, punições, alterações de configuração e eventos importantes.',
+        details:
+          'Permite configurar e gerenciar o sistema de logs do servidor.\n\n' +
+          'Subcomandos disponíveis:\n' +
+          '- set: Define o canal onde os logs serão enviados.\n' +
+          '- off: Desativa o sistema de logs no servidor.\n' +
+          '- status: Exibe o estado atual do sistema de logs e o canal configurado.',
         id: '000000000000000008',
       },
     ],
