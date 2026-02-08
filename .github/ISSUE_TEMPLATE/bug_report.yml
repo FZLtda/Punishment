@@ -1,0 +1,38 @@
+name: 🐞 Bug Report
+description: Reporte um bug no Punishment
+title: "[Bug]: "
+labels: [bug]
+assignees:
+  - FuncZero
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição
+      description: Explique claramente o problema
+      placeholder: O que aconteceu?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passos para reproduzir
+      placeholder: |
+        1. Execute o comando...
+        2. Veja o erro...
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Versão do bot
+      placeholder: ex: v1.4.0
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs ou prints
+      description: Se possível, cole logs relevantes
