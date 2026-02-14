@@ -12,9 +12,6 @@ module.exports = {
   category: 'Administrador',
   deleteMessage: true,
 
-  /**
-   * @param {import('discord.js').Message} message
-   */
   async execute(message) {
     if (message.author.id !== bot.ownerId) return;
 
@@ -32,21 +29,20 @@ module.exports = {
         );
       }
 
-      const content  = await this.buildFileContent(
+      const content = await this.buildFileContent(
         message.client,
         agreements
       );
 
-      const buffer   = Buffer.from(content, 'utf-8');
-      const fileName = `punishment-terms-${Date.now()}.txt`;
+      const buffer = Buffer.from('\uFEFF' + content, 'utf-8');
 
       const attachment = new AttachmentBuilder(buffer, {
-        name: fileName
+        name: `punishment-terms-${Date.now()}.txt`
       });
 
       await message.channel.send({
         content: `${emojis.done} Exportação concluída!`,
-        files:   [attachment],
+        files: [attachment],
       });
 
     } catch (error) {
@@ -59,19 +55,18 @@ module.exports = {
     }
   },
 
-  /**
-   * Gera o conteúdo do TXT com Display Name + ID
-   * @param {import('discord.js').Client} client
-   * @param {Array<{ userId: string, acceptedAt: Date }>} agreements
-   */
   async buildFileContent(client, agreements) {
     const lines = [];
+
+    const nowFormatted = new Date().toLocaleString('pt-BR', {
+      timeZone: 'America/Sao_Paulo'
+    });
 
     lines.push('========================================');
     lines.push('          TERMS AGREEMENTS EXPORT       ');
     lines.push('========================================');
     lines.push(`Usuários: ${agreements.length}`);
-    lines.push(`Gerado em: ${new Date().toISOString()}`);
+    lines.push(`Gerado em: ${nowFormatted}`);
     lines.push('========================================');
     lines.push('');
 
@@ -79,11 +74,8 @@ module.exports = {
       const { userId, acceptedAt } = agreements[i];
 
       let user = client.users.cache.get(userId);
-
       if (!user) {
-        user = await client.users
-          .fetch(userId)
-          .catch(() => null);
+        user = await client.users.fetch(userId).catch(() => null);
       }
 
       const displayName =
@@ -91,7 +83,11 @@ module.exports = {
         user?.username   ||
         'Usuário desconhecido';
 
-      const acceptedDate = new Date(acceptedAt).toISOString();
+      const acceptedDate = acceptedAt
+        ? new Date(acceptedAt).toLocaleString('pt-BR', {
+            timeZone: 'America/Sao_Paulo'
+          })
+        : 'Data não registrada';
 
       lines.push(`[${i + 1}]`);
       lines.push(`Display Name : ${displayName}`);
