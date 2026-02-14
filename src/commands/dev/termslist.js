@@ -1,57 +1,105 @@
 'use strict';
 
-const { bot, emojis } = require('@config');
-const { sendWarning } = require('@embeds/embedWarning');
-const TermsAgreement = require('@models/TermsAgreement');
+const { AttachmentBuilder }  = require('discord.js');
+const { bot, emojis }        = require('@config');
+const { sendWarning }        = require('@embeds/embedWarning');
+const TermsAgreement         = require('@models/TermsAgreement');
 
 module.exports = {
   name: 'termslist',
-  description: 'Lista todos os usuários que aceitaram os Termos de Uso.',
+  description: 'Exporta em TXT todos os usuários que aceitaram os Termos de Uso.',
   usage: '${currentPrefix}termslist',
   category: 'Administrador',
   deleteMessage: true,
 
   /**
-   * Lista usuários que aceitaram os termos.
    * @param {import('discord.js').Message} message
    */
   async execute(message) {
     if (message.author.id !== bot.ownerId) return;
 
-    const agreements = await TermsAgreement.find()
-      .sort({ acceptedAt: -1 });
+    try {
+      const agreements = await TermsAgreement
+        .find({}, { userId: 1, acceptedAt: 1 })
+        .sort({ acceptedAt: -1 })
+        .lean()
+        .exec();
 
-    if (!agreements.length) {
-      return sendWarning(message, 'Nenhum usuário aceitou os Termos de Uso ainda.');
-    }
+      if (!agreements?.length) {
+        return sendWarning(
+          message,
+          'Nenhum usuário aceitou os Termos de Uso ainda.'
+        );
+      }
 
-    const lines = [];
+      const content  = await this.buildFileContent(
+        message.client,
+        agreements
+      );
 
-    for (let index = 0; index < agreements.length; index++) {
-      const { userId, acceptedAt } = agreements[index];
+      const buffer   = Buffer.from(content, 'utf-8');
+      const fileName = `punishment-terms-${Date.now()}.txt`;
 
-      const user =
-        message.client.users.cache.get(userId) ||
-        (await message.client.users.fetch(userId).catch(() => null));
+      const attachment = new AttachmentBuilder(buffer, {
+        name: fileName
+      });
 
-      const displayName =
-        user?.displayName ||
-        user?.username ||
-        'Usuário desconhecido';
+      await message.channel.send({
+        content: `${emojis.done} Exportação concluída!`,
+        files:   [attachment],
+      });
 
-      const timestamp = Math.floor(acceptedAt.getTime() / 1000);
+    } catch (error) {
+      console.error('[TERMSLIST_EXPORT_ERROR]', error);
 
-      lines.push(
-        `-# **${index + 1}.** ${emojis.done} ${displayName} (\`${userId}\`) — <t:${timestamp}:R>`
+      return sendWarning(
+        message,
+        'Erro interno ao exportar os termos.'
       );
     }
+  },
 
-    return message.channel.send({
-      content: [
-        '📄 **Usuários que aceitaram os Termos de Uso:**',
-        '',
-        lines.join('\n'),
-      ].join('\n'),
-    });
+  /**
+   * Gera o conteúdo do TXT com Display Name + ID
+   * @param {import('discord.js').Client} client
+   * @param {Array<{ userId: string, acceptedAt: Date }>} agreements
+   */
+  async buildFileContent(client, agreements) {
+    const lines = [];
+
+    lines.push('========================================');
+    lines.push('          TERMS AGREEMENTS EXPORT       ');
+    lines.push('========================================');
+    lines.push(`Usuários: ${agreements.length}`);
+    lines.push(`Gerado em: ${new Date().toISOString()}`);
+    lines.push('========================================');
+    lines.push('');
+
+    for (let i = 0; i < agreements.length; i++) {
+      const { userId, acceptedAt } = agreements[i];
+
+      let user = client.users.cache.get(userId);
+
+      if (!user) {
+        user = await client.users
+          .fetch(userId)
+          .catch(() => null);
+      }
+
+      const displayName =
+        user?.globalName ||
+        user?.username   ||
+        'Usuário desconhecido';
+
+      const acceptedDate = new Date(acceptedAt).toISOString();
+
+      lines.push(`[${i + 1}]`);
+      lines.push(`Display Name : ${displayName}`);
+      lines.push(`User ID      : ${userId}`);
+      lines.push(`Accepted At  : ${acceptedDate}`);
+      lines.push('----------------------------------------');
+    }
+
+    return lines.join('\n');
   },
 };
