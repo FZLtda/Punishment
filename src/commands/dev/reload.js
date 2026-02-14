@@ -2,8 +2,8 @@
 
 const fs               = require('fs');
 const path             = require('path');
-const { sendWarning }  = require('@embeds');
 const { bot, emojis }  = require('@config');
+const { sendWarning }  = require('@embeds/sendWarning');
 
 module.exports = {
   name: 'reload',
