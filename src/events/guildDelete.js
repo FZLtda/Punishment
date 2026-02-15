@@ -3,7 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis, channels } = require('@config');
 const Logger = require('@logger');
-const { sendBotStatus } = require('@services/apiClient');
+const { sendBotStatus } = require('@jobs/botStatusJob');
 
 /**
  * Evento disparado quando o Punishment é removido de um servidor.
@@ -28,7 +28,7 @@ module.exports = {
         .setColor(colors.red)
         .setThumbnail(guild.iconURL({ dynamic: true }))
         .addFields(
-          { name: 'Nome', value: guild.name, inline: true },
+          { name: 'Nome', value: guild.name || 'Desconhecido', inline: true },
           { name: 'ID', value: `\`${guild.id}\``, inline: true },
           { name: 'Membros', value: `\`${guild.memberCount ?? 'Desconhecido'}\``, inline: true }
         )
@@ -38,7 +38,10 @@ module.exports = {
       await logChannel.send({ embeds: [embed] });
 
     } catch (error) {
-      Logger.error('[Guild Leave] Erro ao processar saída do servidor:', error);
+      Logger.error(
+        '[Guild Leave] Erro ao processar saída do servidor:',
+        error?.stack || error
+      );
     }
   }
 };
