@@ -13,7 +13,8 @@ async function sendBotStatus(client) {
     const guildsData = client.guilds.cache.map(guild => ({
       id: guild.id,
       name: guild.name,
-      icon: guild.icon
+      icon: guild.icon,
+      members: guild.memberCount
     }));
 
     await api.post('/bot/status', {
