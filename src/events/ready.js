@@ -11,15 +11,11 @@ module.exports = {
   name: 'ready',
   once: true,
 
-  /**
-   * Executa ações de inicialização após o bot estar pronto.
-   * @param {import('discord.js').Client} client
-   */
   async execute(client) {
     Logger.info(`[Ready] Inicializando com usuário: ${client.user?.tag || 'desconhecido'}`);
 
     if (!client.isReady()) {
-      Logger.warn('[Ready] Client não está marcado como pronto. Aguardando próximo ciclo...');
+      Logger.warn('[Ready] Client não está marcado como pronto.');
       return;
     }
 
@@ -31,16 +27,15 @@ module.exports = {
         iniciarAtribuicaoDeDoadores(client)
       ]);
 
-      // Integração com a API
-
-      Logger.info('[API] Monitoramento remoto iniciado.');
-
+      // Envia status imediatamente
       await sendBotStatus(client);
 
-      setInterval(() => {
-        sendBotStatus(client);
-      }, 300000);
-
+      // Atualiza a cada 1 minuto
+      if (!client.statusInterval) {
+        client.statusInterval = setInterval(() => {
+          sendBotStatus(client);
+        }, 60000);
+      }
 
       monitor.emit('ready', client.user.tag);
       Logger.info('[Ready] Inicialização concluída com sucesso.');
