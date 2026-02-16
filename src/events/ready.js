@@ -5,7 +5,7 @@ const Logger = require('@logger');
 const monitor = require('@core/monitor');
 const iniciarSorteiosTask = require('@tasks/sorteios');
 const iniciarAtribuicaoDeDoadores = require('@tasks/atribuirDoadoresPendentes');
-const { sendBotData } = require('@jobs/sendBotData');
+const { sendBotData } = require('@jobs/botStatusJob');
 
 module.exports = {
   name: 'ready',
