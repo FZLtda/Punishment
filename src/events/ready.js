@@ -33,7 +33,7 @@ module.exports = {
       // Atualiza a cada 1 minuto
       if (!client.statusInterval) {
         client.statusInterval = setInterval(() => {
-          sendBotSData(client);
+          sendBotData(client);
         }, 60000);
       }
 
