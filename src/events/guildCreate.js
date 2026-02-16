@@ -3,7 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis, channels } = require('@config');
 const Logger = require('@logger');
-const { sendBotStatus } = require('@services/botStatusJob');
+const { sendBotStatus } = require('@jobs/botStatusJob');
 
 /**
  * Evento disparado quando o Punishment entra em um servidor.
