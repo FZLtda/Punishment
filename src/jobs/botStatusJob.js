@@ -3,7 +3,7 @@
 const { api } = require('../services/apiClient');
 const Logger = require('@logger');
 
-async function sendBotStatus(client) {
+async function sendBotData(client) {
   try {
     const totalUsers = client.guilds.cache.reduce(
       (total, guild) => total + guild.memberCount,
@@ -17,22 +17,25 @@ async function sendBotStatus(client) {
       members: guild.memberCount
     }));
 
+    // Status
     await api.post('/bot/status', {
-      online: true,
-      guilds: guildsData,
-      users: totalUsers,
-      uptime: process.uptime(),
-      memoryMB: Number(
-        (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)
-      ),
-      ping: client.ws.ping,
-      node: process.version
+      online: true
     });
 
-    Logger.debug('[API] Status enviado com sucesso.');
+    // Guilds
+    await api.post('/bot/guilds', {
+      guilds: guildsData
+    });
+
+    // Users
+    await api.post('/bot/users', {
+      total: totalUsers
+    });
+
+    Logger.debug('[API] Dados enviados com sucesso.');
   } catch (err) {
-    Logger.error('[API] Erro ao enviar status:', err.message);
+    Logger.error('[API] Erro ao enviar dados:', err.message);
   }
 }
 
-module.exports = { sendBotStatus };
+module.exports = { sendBotData };
