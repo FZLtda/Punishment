@@ -5,7 +5,7 @@ const Logger = require('@logger');
 const monitor = require('@core/monitor');
 const iniciarSorteiosTask = require('@tasks/sorteios');
 const iniciarAtribuicaoDeDoadores = require('@tasks/atribuirDoadoresPendentes');
-const { sendBotStatus } = require('@jobs/botStatusJob');
+const { sendBotData } = require('@jobs/sendBotData');
 
 module.exports = {
   name: 'ready',
@@ -28,12 +28,12 @@ module.exports = {
       ]);
 
       // Envia status imediatamente
-      await sendBotStatus(client);
+      await sendBotData(client);
 
       // Atualiza a cada 1 minuto
       if (!client.statusInterval) {
         client.statusInterval = setInterval(() => {
-          sendBotStatus(client);
+          sendBotSData(client);
         }, 60000);
       }
 
