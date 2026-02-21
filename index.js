@@ -3,6 +3,9 @@
 require('module-alias/register');
 require('dotenv').config();
 
+const { performance } = require('node:perf_hooks');
+const v8 = require('v8');
+
 const { bot, env } = require('@config');
 const Logger = require('@logger');
 const bootstrap = require('@core/bootstrap');
@@ -17,7 +20,6 @@ async function main() {
 
   try {
     registerGlobalErrorHandlers();
-    registerSignalHandlers();
 
     Logger.info(
       `[Main] Iniciando ${bot.name} v${bot.version || '1.0.0'}...`,
@@ -25,13 +27,24 @@ async function main() {
         environment: env,
         nodeVersion: process.version,
         memoryLimit: `${Math.round(
-          require('v8').getHeapStatistics().heap_size_limit / 1024 / 1024
+          v8.getHeapStatistics().heap_size_limit / 1024 / 1024
         )}MB`
       }
     );
 
-    const resources = await bootstrap();
-    registerResources(resources);
+    const { discordClient, mongo } = await bootstrap();
+
+    if (!discordClient || typeof discordClient.destroy !== 'function') {
+      throw new TypeError(
+        '[Main] Instância inválida do Discord Client recebida no bootstrap.'
+      );
+    }
+
+    global.client = discordClient;
+
+    registerResources(discordClient, mongo);
+
+    registerSignalHandlers();
 
     const loadTime = (performance.now() - startTime).toFixed(2);
 
@@ -56,7 +69,7 @@ async function main() {
   }
 }
 
-main().catch(async (err) => {
+main().catch((err) => {
   console.error('Unhandled Error in Main Exec context:', err);
   process.exit(1);
 });
