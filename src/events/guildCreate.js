@@ -3,7 +3,7 @@
 const { EmbedBuilder } = require('discord.js');
 const { colors, emojis, channels } = require('@config');
 const Logger = require('@logger');
-const { sendBotStatus } = require('@jobs/botStatusJob');
+const { sendBotData } = require('@jobs/sendBotData');
 
 /**
  * Evento disparado quando o Punishment entra em um servidor.
@@ -16,7 +16,7 @@ module.exports = {
       Logger.info(`[Guild Join] Entrou em: ${guild.name} (${guild.id})`);
 
       // Atualiza status na API
-      await sendBotStatus(client);
+      await sendBotData(client);
 
       const logChannel = client.channels.cache.get(channels.log);
       if (!logChannel) {
