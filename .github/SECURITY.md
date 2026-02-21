@@ -1,14 +1,17 @@
-# 🔐 Security Policy
+# Security Policy
 
 ## Supported Versions
-Atualmente apenas a versão mais recente do Punishment recebe correções de segurança.
+
+Only the latest version of Punishment receives security updates and patches.  
+Please ensure you are using the most recent version before reporting issues.
 
 ## Reporting a Vulnerability
-Se você encontrou uma falha de segurança:
 
-- ❌ Não abra uma issue pública
-- ✅ Entre em contato diretamente
+If you discover a security vulnerability, please report it responsibly.
 
-📧 Email: contato@funczero.xyz
+- Do not open a public issue.
+- Report the vulnerability privately via email.
 
-Nós responderemos o mais rápido possível.
+Contact: contato@funczero.xyz
+
+We will review the report and respond as quickly as possible.
