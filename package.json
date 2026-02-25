@@ -7,10 +7,16 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "pm2 start ecosystem.config.js --env production",
+    "stop": "pm2 stop punishment-bot",
+    "restart": "pm2 restart punishment-bot",
+    "monit": "pm2 monit",
+    "logs": "pm2 logs punishment-bot",
     "dev": "nodemon index.js",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "clean": "rm -rf logs/*.log"
   },
   "keywords": [
     "discord",
@@ -48,7 +54,8 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-n": "^16.6.2",
     "eslint-plugin-promise": "^6.6.0",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5"
   },
   "_moduleAliases": {
     "@core": "src/core",
