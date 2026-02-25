@@ -8,10 +8,10 @@
   "main": "index.js",
   "scripts": {
     "start": "pm2 start ecosystem.config.js --env production",
-    "stop": "pm2 stop punishment-bot",
-    "restart": "pm2 restart punishment-bot",
+    "stop": "pm2 stop punishment",
+    "restart": "pm2 restart punishment",
     "monit": "pm2 monit",
-    "logs": "pm2 logs punishment-bot",
+    "logs": "pm2 logs punishment",
     "dev": "nodemon index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
