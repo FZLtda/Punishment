@@ -23,7 +23,7 @@ async function updatePresence(client) {
 
   try {
     await client.user.setPresence({
-      status: 'online', 
+      status: 'dnd',
       activities: [activity],
     });
 
