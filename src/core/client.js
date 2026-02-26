@@ -29,12 +29,6 @@ class PunishmentClient extends Client {
         Partials.Message,
         Partials.Reaction
       ],
-      
-      ws: {
-        properties: {
-          browser: "Discord iOS"
-        }
-      },
       ...options
     });
 
