@@ -1,6 +1,6 @@
 'use strict';
 
-const { api } = require('../services/apiClient');
+const { api } = require('@services/apiClient');
 const Logger = require('@logger');
 
 async function sendBotData(client) {
