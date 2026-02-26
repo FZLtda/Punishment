@@ -14,7 +14,7 @@ let activityIndex = 0;
 let rotationInterval = null;
 
 /**
- * Atualiza a activity atual do bot.
+ * Atualiza a activity atual do Punishment.
  */
 async function updatePresence(client) {
   if (!client?.user || !client.isReady()) return;
@@ -23,7 +23,7 @@ async function updatePresence(client) {
 
   try {
     await client.user.setPresence({
-      status: 'dnd',
+      status: 'online', 
       activities: [activity],
     });
 
