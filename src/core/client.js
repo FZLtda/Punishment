@@ -8,8 +8,7 @@ const {
 } = require('discord.js');
 
 /**
- * Classe personalizada que estende o Client do Discord.js,
- * projetada para oferecer uma estrutura modular, escalável e de fácil manutenção
+ * Classe personalizada que estende o Client do Discord.js
  */
 
 class PunishmentClient extends Client {
@@ -30,6 +29,12 @@ class PunishmentClient extends Client {
         Partials.Message,
         Partials.Reaction
       ],
+      
+      ws: {
+        properties: {
+          browser: "Discord iOS"
+        }
+      },
       ...options
     });
 
