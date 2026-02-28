@@ -22,7 +22,7 @@ async function main() {
     registerGlobalErrorHandlers();
 
     Logger.info(
-      `[Main] Iniciando ${bot.name} v${bot.version || '1.0.0'}...`,
+      `[Main] Iniciando ${bot.name} v${bot.version}...`,
       {
         environment: env,
         nodeVersion: process.version,
