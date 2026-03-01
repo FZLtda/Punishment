@@ -9,7 +9,7 @@ const v8 = require('v8');
 const Logger = require('@logger');
 const { bot, env } = require('@config');
 
-const { validateEnvironment } = require('@core/env');
+const { validateEnvironment } = require('@core/environment');
 const bootstrap = require('@core/bootstrap');
 const { registerResources, gracefulExit } = require('@core/shutdown');
 const { registerGlobalErrorHandlers } = require('@core/errors');
