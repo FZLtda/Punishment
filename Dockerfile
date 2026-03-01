@@ -6,19 +6,22 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci
+RUN npm ci --omit=dev
 
 COPY . .
+
+# -----------------------------
 
 FROM node:20-alpine
 
 ENV NODE_ENV=production
+
 WORKDIR /app
+
+RUN addgroup -S nodejs && adduser -S node -G nodejs
 
 USER node
 
-COPY --from=builder --chown=node:node /app/node_modules ./node_modules
-COPY --from=builder --chown=node:node /app/package.json ./package.json
 COPY --from=builder --chown=node:node /app ./
 
-CMD ["node", "index.js"]
+CMD ["node", "src/index.js"]
