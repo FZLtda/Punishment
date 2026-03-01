@@ -6,10 +6,12 @@ require('dotenv').config();
 const { performance } = require('node:perf_hooks');
 const v8 = require('v8');
 
-const { bot, env } = require('@config');
 const Logger = require('@logger');
+const { bot, env } = require('@config');
+
+const { validateEnvironment } = require('@core/env');
 const bootstrap = require('@core/bootstrap');
-const { gracefulExit, registerResources } = require('@core/shutdown');
+const { registerResources, gracefulExit } = require('@core/shutdown');
 const { registerGlobalErrorHandlers } = require('@core/errors');
 const { registerSignalHandlers } = require('@core/signals');
 
@@ -19,57 +21,45 @@ async function main() {
   const startTime = performance.now();
 
   try {
+    validateEnvironment();
+
     registerGlobalErrorHandlers();
 
-    Logger.info(
-      `[Main] Iniciando ${bot.name} v${bot.version}...`,
-      {
-        environment: env,
-        nodeVersion: process.version,
-        memoryLimit: `${Math.round(
-          v8.getHeapStatistics().heap_size_limit / 1024 / 1024
-        )}MB`
-      }
-    );
+    Logger.info(`[Startup] Iniciando ${bot.name} v${bot.version}`, {
+      environment: env,
+      node: process.version,
+      memoryLimitMB: Math.round(
+        v8.getHeapStatistics().heap_size_limit / 1024 / 1024
+      )
+    });
 
     const { discordClient, mongo } = await bootstrap();
 
-    if (!discordClient || typeof discordClient.destroy !== 'function') {
-      throw new TypeError(
-        '[Main] Instância inválida do Discord Client recebida no bootstrap.'
-      );
+    if (!discordClient?.destroy) {
+      throw new TypeError('[Startup] Discord client inválido recebido.');
     }
 
-    global.client = discordClient;
-
-    registerResources(discordClient, mongo);
+    registerResources({ discordClient, mongo });
 
     registerSignalHandlers();
 
     const loadTime = (performance.now() - startTime).toFixed(2);
 
-    Logger.success(`[Main] ${bot.name} online e operando.`);
-    Logger.info(`[Main] Tempo de carregamento: ${loadTime}ms`);
+    Logger.success(`[Startup] ${bot.name} online.`);
+    Logger.info(`[Startup] Boot concluído em ${loadTime}ms.`);
 
-    if (typeof process.send === 'function') {
+    if (process.send) {
       process.send('ready');
     }
 
   } catch (error) {
-    Logger.fatal(
-      `[Critical] Erro catastrófico na inicialização do ${bot.name}`,
-      {
-        message: error.message,
-        stack: error.stack,
-        context: 'Bootstrap'
-      }
-    );
+    Logger.fatal('[Startup] Falha crítica na inicialização.', {
+      message: error.message,
+      stack: error.stack
+    });
 
     await gracefulExit(1);
   }
 }
 
-main().catch((err) => {
-  console.error('Unhandled Error in Main Exec context:', err);
-  process.exit(1);
-});
+main();
