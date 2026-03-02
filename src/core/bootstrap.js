@@ -13,23 +13,9 @@ const { loadButtonInteractions } = require('@loadButtonInteractions/loader');
 
 const { showStartupDiagnostic } = require('@core/diagnostic');
 
-/**
- * Bootstrap do Punishment.
- * Responsável por:
- * - Validar ambiente
- * - Conectar ao MongoDB
- * - Carregar módulos principais
- * - Fazer login no Discord
- * - Exibir diagnósticos de inicialização
- *
- * @returns {Promise<{ discordClient: import('discord.js').Client, mongo: any }>}
- */
 module.exports = async function bootstrap() {
+  
   validateEnvironment();
-
-  if (!process.env.TOKEN) {
-    throw new Error('[BOOTSTRAP] Variável de ambiente TOKEN ausente.');
-  }
 
   const mongo = await connectMongo();
 
