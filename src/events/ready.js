@@ -1,5 +1,6 @@
 'use strict';
 
+const axios = require('axios');
 const { setBotPresence } = require('@core/presence');
 const Logger = require('@logger');
 const monitor = require('@core/monitor');
@@ -27,13 +28,27 @@ module.exports = {
         iniciarAtribuicaoDeDoadores(client)
       ]);
 
-      // Envia status imediatamente
-      await sendBotData(client);
+      const sendBetterStackHeartbeat = async () => {
+        const url = process.env.BETTERSTACK_HEARTBEAT_URL;
+        if (!url) {
+          Logger.warn('[BetterStack] URL de heartbeat não encontrada no .env');
+          return;
+        }
 
-      // Atualiza a cada 1 minuto
+        try {
+          await axios.get(url);
+        } catch (err) {
+          Logger.error(`[BetterStack] Falha ao enviar heartbeat: ${err.message}`);
+        }
+      };
+
+      await sendBotData(client);
+      await sendBetterStackHeartbeat();
+
       if (!client.statusInterval) {
-        client.statusInterval = setInterval(() => {
-          sendBotData(client);
+        client.statusInterval = setInterval(async () => {
+          await sendBotData(client);
+          await sendBetterStackHeartbeat();
         }, 60000);
       }
 
