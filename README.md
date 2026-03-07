@@ -1,8 +1,7 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/FZLtda/Punishment/main/src/assets/logos/logo.png" width="90" alt="Punishment Logo" style="margin-bottom: 12px;">
+  <img src="https://raw.githubusercontent.com/FZLtda/Punishment/351649551909c0bee04f7ea2db9109097daac5f0/src/assets/logos/logo.png" width="90" alt="Punishment Logo" style="margin-bottom: 12px;">
 
-  <h1 style="color:#FE3838; font-weight:700; margin-bottom:8px;">Punishment</h1>
-
+  
   <p style="max-width:680px; font-size:15px; margin-bottom:14px;">
     <strong>Punishment</strong> is a Discord moderation bot designed to help servers remain
     <strong>secure, organized, and well-managed</strong>. The project was built with a focus on
