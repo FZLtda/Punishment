@@ -18,7 +18,7 @@ const VERIFY_BUTTON_ID = 'verify_user';
 
 module.exports = {
   name: 'regras',
-  description: 'Envia as regras do servidor com botão para aceitar',
+  description: 'Envia as regras do servidor com o novo visual v2',
   usage: '.regras',
   permissions: ['SendMessages', 'ViewChannel'],
   deleteMessage: true,
@@ -29,7 +29,6 @@ module.exports = {
    */
   async execute(message, args) {
     if (message.author.id !== bot.ownerId) {
-      console.warn('[REGRAS] Tentativa de uso sem permissão:', message.author.id);
       return;
     }
 
@@ -39,58 +38,42 @@ module.exports = {
 
     if (!rulesChannel || rulesChannel.type !== ChannelType.GuildText) {
       return message.channel.send(
-        `${emojis.attentionEmoji} Canal de regras não encontrado ou inválido.`
+        `${emojis.attentionEmoji} Canal de regras não encontrado.`
       );
     }
 
     const embed = new EmbedBuilder()
-      .setTitle('📜 Regras do Servidor')
-      .setColor(colors.green)
+      .setColor('#2b2d31') // Cor escura padrão para um visual flat
+      .setTitle('FuncZone')
+      .setThumbnail(message.guild.iconURL()) // Logo no canto superior direito como na imagem
       .setDescription([
-        `**1. Respeito**  
-        <:seta2:1325132415542231140> Trate todos com educação. Ofensas, discriminação e discussões desnecessárias não serão toleradas.`,
+        'Regras do servidor',
+        '',
+        '**Seja consciente nas interações**',
+        'Não compartilhe conteúdo nocivo, como vírus, pornografia ou material violento. Qualquer tipo de conteúdo prejudicial resultará em banimento imediato e permanente.',
+        '',
+        '**Respeite a todos**',
+        'Trate moderadores e membros com respeito. Evite discussões ofensivas, provocações, desinformação ou mensagens que atrapalhem o convívio. Nosso servidor é um espaço inclusivo — mantenha o respeito sempre.',
+        '',
+        '**Sem divulgação ou spam**',
+        'Não é permitido divulgar outros servidores, links, redes sociais, nem enviar mensagens repetitivas, emojis ou imagens em excesso (spam).',
+        '',
+        '**Mantenha tudo limpo e apropriado**',
+        'Evite nomes, avatares, status ou perfis com conteúdo ofensivo, político, apelativo ou confuso. Use emojis e símbolos com moderação.',
+        '',
+        '**Importante**',
+        'As punições não podem ser apeladas, portanto siga as regras com atenção.',
+        '',
+        '*Essas regras não cobrem todos os casos possíveis. A moderação pode agir em qualquer comportamento inadequado. Use o bom senso e mantenha o respeito.*'
+      ].join('\n'));
 
-        ``,
-
-        `**2. Conteúdo Apropriado**  
-        <:seta2:1325132415542231140> Não publique spam, flood, links maliciosos ou conteúdos inadequados.`,
-
-        ``,
-
-        `**3. Suporte**  
-        <:seta2:1325132415542231140> Use o canal de suporte apenas para dúvidas ou problemas relacionados ao **Punishment**.`,
-
-        ``,
-
-        `**4. Divulgação**  
-        <:seta2:1325132415542231140> É proibido divulgar qualquer conteúdo sem autorização de um administrador.`,
-
-        ``,
-
-        `**5. Segurança**  
-        <:seta2:1325132415542231140> Nunca compartilhe dados pessoais. A equipe nunca pedirá suas informações sensíveis.`,
-
-        ``,
-
-        `**6. Punições**  
-        <:seta2:1325132415542231140> O descumprimento das regras resultará em punições. A moderação tem a palavra final.`,
-
-        ``,
-
-        `> **__Clique no botão abaixo para aceitar nossas regras.__**`,
-      ].join('\n'))
-      .setFooter({
-        text: 'FuncZone',
-        iconURL: message.guild.iconURL(),
-      })
-      .setTimestamp();
-
+    // Componente V2: Botão estilo "Secondary" para parecer um campo de seleção
     const actionRow = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId(VERIFY_BUTTON_ID)
-        .setLabel('Aceitar Regras')
-        .setStyle(ButtonStyle.Success)
-        .setEmoji(emojis.checkEmoji)
+        .setLabel('Reaja aqui para acessar o servidor.')
+        .setStyle(ButtonStyle.Secondary)
+        .setEmoji('➡️') 
     );
 
     try {
@@ -100,16 +83,10 @@ module.exports = {
       });
 
       if (message.channel.id !== rulesChannel.id) {
-        await message.channel.send(
-          `${emojis.successEmoji} Mensagem de regras enviada com sucesso.`
-        );
+        await message.channel.send(`${emojis.successEmoji} Interface de regras enviada.`);
       }
     } catch (error) {
-      console.error('[REGRAS] Erro ao enviar mensagem:', error);
-
-      await message.channel.send(
-        `${emojis.attentionEmoji} Não foi possível enviar a mensagem no canal de regras.`
-      );
+      console.error('[REGRAS] Erro:', error);
     }
   },
 };
