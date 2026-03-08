@@ -213,7 +213,8 @@ module.exports = {
 
         embed
           .setFooter({
-            text: `${message.author.tag}`
+            text: `${message.author.tag}`,
+            iconURL: message.author.displayAvatarURL({ dynamic: true })
           })
           .setTimestamp();
 
