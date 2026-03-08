@@ -16,43 +16,56 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message, args) {
+
     const subcommand = args[0]?.toLowerCase();
 
-    if (!subcommand)
+    if (!subcommand) {
       return sendWarning(
         message,
         'Subcomando não informado. Utilize set, off ou status.'
       );
+    }
 
     try {
-      
+
       if (subcommand === 'set') {
+
         const channel = message.mentions.channels.first();
 
-        if (!channel)
+        if (!channel) {
           return sendWarning(
             message,
             'Nenhum canal foi informado. Mencione um canal de texto válido.'
           );
+        }
 
-        if (channel.type !== ChannelType.GuildText)
+        if (channel.type !== ChannelType.GuildText) {
           return sendWarning(
             message,
             'O canal informado não é um canal de texto válido.'
           );
+        }
 
-        const botPermissions = channel.permissionsFor(message.guild.members.me);
+        const permissions = channel.permissionsFor(message.guild.members.me);
 
-        if (!botPermissions?.has(PermissionsBitField.Flags.SendMessages))
+        if (!permissions?.has(PermissionsBitField.Flags.SendMessages)) {
           return sendWarning(
             message,
             'Não tenho permissão para enviar mensagens no canal informado.'
           );
+        }
 
         await GuildSettings.findOneAndUpdate(
           { guildId: message.guild.id },
-          { logChannelId: channel.id },
-          { upsert: true, new: true }
+          {
+            logChannelId: channel.id,
+            logEnabledBy: message.author.id,
+            logEnabledAt: new Date()
+          },
+          {
+            upsert: true,
+            new: true
+          }
         );
 
         const sentMessage = await message.channel.send({
@@ -67,19 +80,26 @@ module.exports = {
         return;
       }
 
-      
       if (subcommand === 'off') {
+
         const data = await GuildSettings.findOne({ guildId: message.guild.id });
 
-        if (!data?.logChannelId)
+        if (!data?.logChannelId) {
           return sendWarning(
             message,
             'O sistema de logs já se encontra desativado neste servidor.'
           );
+        }
 
         await GuildSettings.findOneAndUpdate(
           { guildId: message.guild.id },
-          { $unset: { logChannelId: '' } }
+          {
+            $unset: {
+              logChannelId: '',
+              logEnabledBy: '',
+              logEnabledAt: ''
+            }
+          }
         );
 
         const sentMessage = await message.channel.send({
@@ -94,45 +114,98 @@ module.exports = {
         return;
       }
 
-      
       if (subcommand === 'status') {
+
         const data = await GuildSettings.findOne({ guildId: message.guild.id });
-        const active = Boolean(data?.logChannelId);
 
         const embed = new EmbedBuilder()
-          .setColor(active ? colors.green : colors.red)
-          .setTitle('📑 Sistema de Logs')
-          .addFields(
-            {
-              name: 'Estado',
-              value: active
-                ? `${emojis.successEmoji} Ativo`
-                : `${emojis.errorEmoji} Desativado`,
-              inline: true
-            },
-            {
-              name: 'Canal',
-              value: active ? `<#${data.logChannelId}>` : 'Nenhum',
-              inline: true
-            }
-          )
-          .setFooter({ text: `Servidor: ${message.guild.name}` });
+          .setTitle('📑 Sistema de Logs');
+
+        if (!data) {
+
+          embed
+            .setColor(colors.red)
+            .addFields(
+              {
+                name: 'Estado',
+                value: `${emojis.errorEmoji} Desativado`,
+                inline: true
+              },
+              {
+                name: 'Canal',
+                value: 'Nenhum',
+                inline: true
+              },
+              {
+                name: 'Status do sistema',
+                value: 'Nunca configurado neste servidor.',
+                inline: false
+              }
+            );
+
+        } else {
+
+          const active = Boolean(data.logChannelId);
+
+          embed
+            .setColor(active ? colors.green : colors.red)
+            .addFields(
+              {
+                name: 'Estado',
+                value: active
+                  ? `${emojis.successEmoji} Ativo`
+                  : `${emojis.errorEmoji} Desativado`,
+                inline: true
+              },
+              {
+                name: 'Canal',
+                value: active
+                  ? `<#${data.logChannelId}>`
+                  : 'Nenhum',
+                inline: true
+              },
+              {
+                name: 'Ativado por',
+                value: data.logEnabledBy
+                  ? `<@${data.logEnabledBy}>`
+                  : 'Desconhecido',
+                inline: true
+              },
+              {
+                name: 'Data de ativação',
+                value: data.logEnabledAt
+                  ? `<t:${Math.floor(data.logEnabledAt.getTime() / 1000)}:f>`
+                  : 'Não disponível',
+                inline: true
+              }
+            );
+
+        }
+
+        embed
+          .setFooter({
+            text: `${message.author.tag}`
+          })
+          .setTimestamp();
 
         return message.channel.send({ embeds: [embed] });
+
       }
 
-      
       return sendWarning(
         message,
         'Subcomando inválido. Utilize set, off ou status.'
       );
+
     } catch (error) {
+
       console.error('[LOG COMMAND ERROR]', error);
 
       return sendWarning(
         message,
         'Não foi possível executar o comando no momento. Tente novamente mais tarde.'
       );
+
     }
   }
 };
