@@ -119,7 +119,7 @@ module.exports = {
         const data = await GuildSettings.findOne({ guildId: message.guild.id });
 
         const embed = new EmbedBuilder()
-          .setTitle(`${emojis.logs} Registro de Moderação`);
+          .setTitle(`${emojis.recent} Registro de Moderação`);
 
         if (!data) {
 
