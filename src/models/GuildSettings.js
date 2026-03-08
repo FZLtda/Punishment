@@ -3,10 +3,12 @@
 const mongoose = require('mongoose');
 
 const GuildSettingsSchema = new mongoose.Schema({
+
   guildId: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
+    index: true
   },
 
   logChannelId: {
@@ -20,6 +22,16 @@ const GuildSettingsSchema = new mongoose.Schema({
   },
 
   logEnabledAt: {
+    type: Date,
+    default: null
+  },
+
+  logDisabledBy: {
+    type: String,
+    default: null
+  },
+
+  logDisabledAt: {
     type: Date,
     default: null
   }
