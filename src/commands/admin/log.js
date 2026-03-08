@@ -213,7 +213,7 @@ module.exports = {
 
         embed
           .setFooter({
-            text: `Executado por ${message.author.tag}`
+            text: `${message.author.tag}`
           })
           .setTimestamp();
 
