@@ -60,7 +60,9 @@ module.exports = {
           {
             logChannelId: channel.id,
             logEnabledBy: message.author.id,
-            logEnabledAt: new Date()
+            logEnabledAt: new Date(),
+            logDisabledBy: null,
+            logDisabledAt: null
           },
           {
             upsert: true,
@@ -94,11 +96,9 @@ module.exports = {
         await GuildSettings.findOneAndUpdate(
           { guildId: message.guild.id },
           {
-            $unset: {
-              logChannelId: '',
-              logEnabledBy: '',
-              logEnabledAt: ''
-            }
+            logChannelId: null,
+            logDisabledBy: message.author.id,
+            logDisabledAt: new Date()
           }
         );
 
@@ -137,8 +137,8 @@ module.exports = {
                 inline: true
               },
               {
-                name: 'Status do sistema',
-                value: 'Nunca configurado neste servidor.',
+                name: 'Status',
+                value: 'O sistema de logs nunca foi configurado neste servidor.',
                 inline: false
               }
             );
@@ -147,44 +147,73 @@ module.exports = {
 
           const active = Boolean(data.logChannelId);
 
-          embed
-            .setColor(active ? colors.green : colors.red)
-            .addFields(
-              {
-                name: 'Estado',
-                value: active
-                  ? `${emojis.successEmoji} Ativo`
-                  : `${emojis.errorEmoji} Desativado`,
-                inline: true
-              },
-              {
-                name: 'Canal',
-                value: active
-                  ? `<#${data.logChannelId}>`
-                  : 'Nenhum',
-                inline: true
-              },
-              {
-                name: 'Ativado por',
-                value: data.logEnabledBy
-                  ? `<@${data.logEnabledBy}>`
-                  : 'Desconhecido',
-                inline: true
-              },
-              {
-                name: 'Data de ativação',
-                value: data.logEnabledAt
-                  ? `<t:${Math.floor(data.logEnabledAt.getTime() / 1000)}:f>`
-                  : 'Não disponível',
-                inline: true
-              }
-            );
+
+          if (active) {
+
+            embed
+              .setColor(colors.green)
+              .addFields(
+                {
+                  name: 'Estado',
+                  value: `${emojis.successEmoji} Ativo`,
+                  inline: true
+                },
+                {
+                  name: 'Canal',
+                  value: `<#${data.logChannelId}>`,
+                  inline: true
+                },
+                {
+                  name: 'Ativado por',
+                  value: data.logEnabledBy
+                    ? `<@${data.logEnabledBy}>`
+                    : 'Desconhecido',
+                  inline: true
+                },
+                {
+                  name: 'Data de ativação',
+                  value: data.logEnabledAt
+                    ? `<t:${Math.floor(data.logEnabledAt.getTime() / 1000)}:f>`
+                    : 'Não disponível',
+                  inline: true
+                }
+              );
+
+          }
+
+          else {
+
+            embed
+              .setColor(colors.red)
+              .addFields(
+                {
+                  name: 'Estado',
+                  value: `${emojis.errorEmoji} Desativado`,
+                  inline: true
+                },
+                {
+                  name: 'Desativado por',
+                  value: data.logDisabledBy
+                    ? `<@${data.logDisabledBy}>`
+                    : 'Desconhecido',
+                  inline: true
+                },
+                {
+                  name: 'Data de desativação',
+                  value: data.logDisabledAt
+                    ? `<t:${Math.floor(data.logDisabledAt.getTime() / 1000)}:f>`
+                    : 'Não disponível',
+                  inline: true
+                }
+              );
+
+          }
 
         }
 
         embed
           .setFooter({
-            text: `${message.author.tag}`
+            text: `Executado por ${message.author.tag}`
           })
           .setTimestamp();
 
@@ -207,5 +236,6 @@ module.exports = {
       );
 
     }
+
   }
 };
