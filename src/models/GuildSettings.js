@@ -8,10 +8,22 @@ const GuildSettingsSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+
   logChannelId: {
     type: String,
     default: null
+  },
+
+  logEnabledBy: {
+    type: String,
+    default: null
+  },
+
+  logEnabledAt: {
+    type: Date,
+    default: null
   }
+
 }, {
   timestamps: true
 });
