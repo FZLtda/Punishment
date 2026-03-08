@@ -70,7 +70,7 @@ module.exports = {
     const actionRow = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
         .setCustomId(VERIFY_BUTTON_ID)
-        .setLabel('Reaja aqui para acessar o servidor.')
+        .setLabel('Clique aqui para acessar o servidor')
         .setStyle(ButtonStyle.Secondary)
         .setEmoji(emojis.done) 
     );
