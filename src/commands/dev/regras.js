@@ -72,7 +72,7 @@ module.exports = {
         .setCustomId(VERIFY_BUTTON_ID)
         .setLabel('Reaja aqui para acessar o servidor.')
         .setStyle(ButtonStyle.Secondary)
-        .setEmoji(emojis.check) 
+        .setEmoji(emojis.done) 
     );
 
     try {
