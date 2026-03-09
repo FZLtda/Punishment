@@ -19,28 +19,29 @@ module.exports = {
   async execute(message, args) {
     if (message.author.id !== bot.ownerId) return;
 
-    const action = args[0];
+    const client = message.client;
+    const action = args[0]?.toLowerCase();
 
     if (action === 'fault_handler') {
-      const originalCommands = global.client.commands;
+      const originalCommands = client.commands;
 
       try {
-        // Simula falha: Esvazia a coleção de comandos na memória
-        // Isso fará o monitor.js reportar erro (size === 0)
-        global.client.commands = new Map();
+        // Simula falha: Esvazia a coleção de comandos na memória do client
+        // Isso fará o monitor.js reportar erro (size === 0) no próximo ciclo
+        client.commands = new Map();
 
         Logger.warn(`[DEBUG] Simulação de falha no Interaction Engine iniciada por ${message.author.tag}`);
         
         message.channel.send('⚠️ **SIMULAÇÃO:** Interaction Engine (Command Handler) agora reportará FALHA ao Better Stack.\nRestaurando em **60 segundos**...');
 
         setTimeout(() => {
-          global.client.commands = originalCommands;
+          client.commands = originalCommands;
           Logger.info('[DEBUG] Monitoramento do Interaction Engine restaurado com sucesso.');
           message.channel.send('✅ **RESTAURADO:** O Interaction Engine voltou ao normal.');
         }, 60000);
 
       } catch (error) {
-        global.client.commands = originalCommands;
+        client.commands = originalCommands;
         Logger.error('[DEBUG] Erro ao executar simulação de falha:', error);
       }
       return;
@@ -49,4 +50,3 @@ module.exports = {
     return sendWarning(message, 'Ações disponíveis: `fault_handler`');
   }
 };
-
