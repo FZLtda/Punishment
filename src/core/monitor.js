@@ -56,21 +56,28 @@ class Monitor extends EventEmitter {
 
   /**
    * Monitoramento Externo (Better Stack)
-   * Envia batimentos para o Bot e para a Database
+   * Envia batimentos para o Bot, Database e Command Handler
    */
   _startExternalHeartbeats() {
-    const { HB_BOT, HB_DB } = process.env;
+    const { HB_BOT, HB_DB, HB_HANDLER } = process.env;
 
-    if (!HB_BOT || !HB_DB) {
-      return Logger.warn('[MONITOR][EXTERNAL] URLs de Heartbeat ausentes no .env.');
+    if (!HB_BOT || !HB_DB || !HB_HANDLER) {
+      return Logger.warn('[MONITOR][EXTERNAL] URLs de Heartbeat (Bot, DB ou Handler) ausentes no .env.');
     }
 
     setInterval(async () => {
       try {
+        // Sinal de vida do Bot (Presença básica)
         await axios.get(HB_BOT);
 
+        // Sinal de vida da Database (Conexão ativa)
         if (mongoose.connection.readyState === 1) {
           await axios.get(HB_DB);
+        }
+
+        // Sinal de vida do Command Handler (Comandos carregados)
+        if (global.client?.commands?.size > 0) {
+          await axios.get(HB_HANDLER);
         }
       } catch (err) {
         Logger.debug(`[MONITOR][EXTERNAL] Falha no sinal externo: ${err.message}`);
