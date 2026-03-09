@@ -2,7 +2,7 @@
 
   <img src="https://raw.githubusercontent.com/FZLtda/Punishment/main/src/assets/logos/logo.png" width="240" alt="Punishment Logo">
 
-  <p>
+  <p style="margin-top:4px;">
     <strong>Punishment</strong> is a Discord moderation bot designed to help servers remain
     <strong>secure, organized, and well-managed</strong>. The project was built with a focus on
     <strong>efficient moderation, detailed logging</strong>, and practical tools for server administrators.
