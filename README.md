@@ -1,8 +1,6 @@
 <div align="center">
 
-  <img src="https://raw.githubusercontent.com/FZLtda/Punishment/main/src/assets/logos/logo.png" width="80" alt="Punishment Logo">
-
-  <h1>Punishment</h1>
+  <img src="https://raw.githubusercontent.com/FZLtda/Punishment/main/src/assets/logos/logo.png" width="240" alt="Punishment Logo">
 
   <p>
     <strong>Punishment</strong> is a Discord moderation bot designed to help servers remain
