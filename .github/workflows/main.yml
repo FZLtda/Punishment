@@ -33,7 +33,7 @@ jobs:
           cache: 'npm'
 
       - name: Instalar dependências
-        run: npm install
+        run: npm ci
 
       - name: Verificar Lint (Sintaxe)
         run: npm run lint --if-present
@@ -43,8 +43,8 @@ jobs:
 
   # --- ETAPA 2: O ENTREGADOR (CD) ---
   deploy:
-    name: 🚀 Deploy para VPS Hostinger
-    needs: build-and-test
+    name: Deploy para VPS Hostinger
+    needs: build-and-test # O DEPLOY SÓ COMEÇA SE OS TESTES PASSAREM!
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
 
@@ -60,7 +60,7 @@ jobs:
             set -e
             cd ~/Punishment
             git pull origin main
-            npm npm install --production
+            npm ci --production
             pm2 restart punishment --update-env
             echo "Deploy concluído com sucesso nível Expert!"
             
