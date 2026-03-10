@@ -14,6 +14,7 @@ const bootstrap = require('@core/bootstrap');
 const { registerResources, gracefulExit } = require('@core/shutdown');
 const { registerGlobalErrorHandlers } = require('@core/errors');
 const { registerSignalHandlers } = require('@core/signals');
+const Monitor = require('@core/monitor'); 
 
 Object.freeze(bot);
 
@@ -38,6 +39,8 @@ async function main() {
     if (!discordClient?.destroy) {
       throw new TypeError('[Startup] Discord client inválido recebido.');
     }
+
+    Monitor.setClient(discordClient);
 
     registerResources({ discordClient, mongo });
 
