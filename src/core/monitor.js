@@ -16,11 +16,18 @@ class Monitor extends EventEmitter {
     this.EXTERNAL_HEARTBEAT_INTERVAL = 1000 * 55;
     
     this.eventHandlers = new Map();
+    
+    this.client = null; 
 
     this._bindHandlers();
     this._registerDefaultListeners();
     this._startInternalHeartbeat();
     this._startExternalHeartbeats();
+  }
+  
+  setClient(client) {
+    this.client = client;
+    Logger.info('[MONITOR] Discord Client injetado com sucesso.');
   }
 
   _bindHandlers() {
@@ -67,16 +74,13 @@ class Monitor extends EventEmitter {
 
     setInterval(async () => {
       try {
-        // Sinal de vida do Bot (Presença básica)
         await axios.get(HB_BOT);
 
-        // Sinal de vida da Database (Conexão ativa)
         if (mongoose.connection.readyState === 1) {
           await axios.get(HB_DB);
         }
 
-        // Sinal de vida do Command Handler (Comandos carregados)
-        if (global.client?.commands?.size > 0) {
+        if (this.client?.commands?.size > 0) {
           await axios.get(HB_HANDLER);
         }
       } catch (err) {
@@ -91,10 +95,10 @@ class Monitor extends EventEmitter {
   _startInternalHeartbeat() {
     setInterval(() => {
       try {
-        if (!global.client) return;
+        if (!this.client) return;
 
-        const guilds = global.client.guilds.cache.size;
-        const users = global.client.users.cache.size;
+        const guilds = this.client.guilds.cache.size;
+        const users = this.client.users.cache.size;
         const uptime = (process.uptime() / 60).toFixed(1);
         const mem = this._formatMemory(process.memoryUsage());
         const cpu = this._formatCPU(os.loadavg());
