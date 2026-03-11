@@ -60,7 +60,7 @@ module.exports = [
         usage: "copyemoji <emoji> [nome]",
         permissions: ["ManageEmojisAndStickers"],
         details:
-          "Importa um emoji diretamente de outro servidor onde o bot também esteja presente.\n\n" +
+          "Importa um emoji diretamente de outro servidor.\n\n" +
           "Se nenhum nome for definido, o nome original do emoji será utilizado.",
         id: "000000000000000003",
       },
@@ -287,7 +287,7 @@ module.exports = [
         usage: "botinfo",
         permissions: [],
         details:
-          "Mostra versão, tempo online, servidores conectados e desenvolvedor.",
+          "Mostra versão, tempo online, servidores conectados.",
         id: "000000000000000022",
       },
       {
