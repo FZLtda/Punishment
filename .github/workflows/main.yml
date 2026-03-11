@@ -14,7 +14,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # --- ETAPA 1: O INSPETOR (CI) ---
   build-and-test:
     name: Qualidade & Testes
     runs-on: ubuntu-latest
@@ -41,10 +40,9 @@ jobs:
       - name: Rodar Testes Unitários
         run: npm test --if-present
 
-  # --- ETAPA 2: O ENTREGADOR (CD) ---
   deploy:
     name: Deploy para VPS Hostinger
-    needs: build-and-test # O DEPLOY SÓ COMEÇA SE OS TESTES PASSAREM!
+    needs: build-and-test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
 
