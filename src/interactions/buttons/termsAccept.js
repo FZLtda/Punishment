@@ -55,7 +55,7 @@ module.exports = {
       console.error("[TERMS_BUTTON] Erro ao processar aceitação de termos:", error);
       if (!interaction.replied) {
         await interaction.reply({
-          content: `${emoji.attentionEmoji} Não foi possível processar sua aceitação dos termos.`,
+          content: `${emojis.attentionEmoji} Não foi possível processar sua aceitação dos termos.`,
           flags: 1 << 6
         });
       }
