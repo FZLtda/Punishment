@@ -75,7 +75,7 @@ module.exports = [
           "• Cargos\n" +
           "• Permissões\n\n" +
           "Observação:\n" +
-          "Mensagens, arquivos e histórico de chat **não são incluídos**.",
+          "Mensagens, arquivos e histórico de chat não são incluídos.",
         id: "000000000000000004",
       },
       {
