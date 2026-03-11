@@ -1,176 +1,411 @@
 "use strict";
 
+/**
+ * Punishment - Command Categories
+ *
+ * Este arquivo define todas as categorias e comandos
+ * exibidos no sistema de ajuda do bot.
+ *
+ * Estrutura:
+ * Categoria → Comandos → Metadados
+ *
+ * Cada comando possui:
+ * name        → Nome do comando
+ * description → Descrição curta
+ * usage       → Como usar o comando
+ * permissions → Permissões necessárias
+ * details     → Explicação detalhada
+ * id          → ID interno do comando
+ */
+
 const { emojis } = require("@config");
 
 module.exports = [
+  
   // Administração
+  
   {
     id: "adm",
     name: "Administração",
     emoji: emojis.adm,
-    description: "Configurações avançadas e gestão do servidor.",
+    description: "Comandos administrativos e de configuração do servidor.",
     commands: [
       {
         name: "prefix",
-        aliases: ["setprefix", "p"],
-        description: "Altera o prefixo do bot.",
+        description: "Altera o prefixo utilizado pelo bot no servidor.",
         usage: "prefix <novo_prefixo>",
-        example: "prefix !",
         permissions: ["Administrator"],
-        cooldown: 5,
-        details: "Define o caractere que o bot usará para identificar comandos. Exemplo: `prefix !` fará com que o bot responda a `!help`.",
-        id: "adm_01",
+        details:
+          "Define um novo prefixo para os comandos do bot.\n\n" +
+          "Exemplo:\n" +
+          "`prefix !`\n\n" +
+          "Após alterar, os comandos passarão a funcionar assim:\n" +
+          "`!ban`, `!kick`, `!help`.",
+        id: "000000000000000001",
       },
       {
         name: "addemoji",
-        aliases: ["ae", "uploademoji"],
-        description: "Adiciona um emoji ao servidor.",
+        description: "Adiciona um novo emoji personalizado ao servidor.",
         usage: "addemoji <nome> <URL>",
-        example: "addemoji smile https://i.imgur.com/link.png",
         permissions: ["ManageEmojisAndStickers"],
-        cooldown: 3,
-        details: "Faz o upload de uma imagem externa diretamente para os emojis do servidor.",
-        id: "adm_02",
+        details:
+          "Permite adicionar um emoji ao servidor utilizando o nome desejado e a URL de uma imagem.\n\n" +
+          "Exemplo:\n" +
+          "`addemoji smile https://site.com/emoji.png`",
+        id: "000000000000000002",
       },
       {
         name: "copyemoji",
-        aliases: ["ce", "steal"],
         description: "Copia um emoji de outro servidor.",
         usage: "copyemoji <emoji> [nome]",
-        example: "copyemoji :cool_dog: dog",
         permissions: ["ManageEmojisAndStickers"],
-        cooldown: 3,
-        details: "Importa um emoji que você viu em outro servidor. O bot deve estar presente em ambos.",
-        id: "adm_03",
+        details:
+          "Importa um emoji diretamente de outro servidor onde o bot também esteja presente.\n\n" +
+          "Se nenhum nome for definido, o nome original do emoji será utilizado.",
+        id: "000000000000000003",
       },
       {
         name: "backup",
-        aliases: ["bcreate"],
-        description: "Cria um backup do servidor.",
+        description: "Cria um backup da estrutura atual do servidor.",
         usage: "backup",
-        example: "backup",
         permissions: ["Administrator"],
-        cooldown: 60,
-        details: "Gera um código único com a estrutura de canais e cargos. Útil para migrações.",
-        id: "adm_04",
+        details:
+          "Salva a estrutura do servidor, incluindo:\n" +
+          "• Canais\n" +
+          "• Cargos\n" +
+          "• Permissões\n\n" +
+          "Observação:\n" +
+          "Mensagens, arquivos e histórico de chat **não são incluídos**.",
+        id: "000000000000000004",
       },
       {
         name: "restore",
-        aliases: ["bload"],
-        description: "Restaura um backup existente.",
+        description: "Restaura um backup previamente criado.",
         usage: "restore <ID>",
-        example: "restore abc-123-xyz",
         permissions: ["Administrator"],
-        cooldown: 300,
-        details: `${emojis.attentionEmoji} Cuidado: Isso apagará canais e cargos atuais para aplicar o backup.`,
-        id: "adm_05",
+        details:
+          `${emojis.attentionEmoji} Atenção!\n\n` +
+          "Restaurar um backup substituirá a estrutura atual do servidor.\n\n" +
+          "Isso pode alterar:\n" +
+          "• Canais\n" +
+          "• Cargos\n" +
+          "• Permissões\n\n" +
+          "Use este comando apenas se tiver certeza.",
+        id: "000000000000000005",
       },
       {
         name: "addroles",
-        aliases: ["ar", "multirole"],
         description: "Adiciona múltiplos cargos a um usuário.",
         usage: "addroles <@usuário> <@cargo1> [@cargo2] ...",
-        example: "addroles @Zev @VIP @Membro",
         permissions: ["ManageRoles"],
-        cooldown: 3,
-        details: "Atribui vários cargos de uma vez só, otimizando o trabalho da staff.",
-        id: "adm_06",
+        details:
+          "Permite adicionar vários cargos a um usuário em um único comando.\n\n" +
+          "Exemplo:\n" +
+          "`addroles @User @VIP @Membro`",
+        id: "000000000000000006",
       },
       {
         name: "removeroles",
-        aliases: ["rr", "clearroles"],
         description: "Remove todos os cargos de um usuário.",
         usage: "removeroles <@usuário>",
-        example: "removeroles @User",
         permissions: ["ManageRoles"],
-        cooldown: 5,
-        details: "Limpa todos os cargos customizados do membro, deixando-o apenas com @everyone.",
-        id: "adm_07",
+        details:
+          "Remove todos os cargos personalizados do usuário.\n\n" +
+          "O cargo padrão `@everyone` não é removido.",
+        id: "000000000000000007",
       },
       {
         name: "log",
-        aliases: ["logs", "setlog"],
-        description: "Gerencia o sistema de logs.",
+        description: "Gerencia o sistema de logs do servidor.",
         usage: "log <set|off|status> [#canal]",
-        example: "log set #puni-logs",
         permissions: ["ManageGuild"],
-        cooldown: 10,
-        details: "Configura onde o bot enviará registros de auditoria (mensagens apagadas, bans, etc).",
-        id: "adm_08",
+        details:
+          "Permite configurar o sistema de logs do servidor.\n\n" +
+          "**Ativar logs**\n" +
+          "`log set #canal`\n\n" +
+          "**Desativar logs**\n" +
+          "`log off`\n\n" +
+          "**Verificar status**\n" +
+          "`log status`",
+        id: "000000000000000008",
       },
     ],
   },
 
   // Moderação
+  
   {
     id: "mod",
     name: "Moderação",
     emoji: emojis.mod,
-    description: "Ferramentas disciplinares para a Staff.",
+    description: "Ferramentas para gerenciar e moderar usuários no servidor.",
     commands: [
-      { name: "ban", aliases: ["b", "punish"], description: "Bane um usuário.", usage: "ban <@usuário> [motivo]", example: "ban @User Spam", permissions: ["BanMembers"], cooldown: 2, details: "Remove o membro permanentemente.", id: "mod_01" },
-      { name: "unban", aliases: ["ub"], description: "Remove banimento.", usage: "unban <ID>", example: "unban 123456789", permissions: ["BanMembers"], cooldown: 2, details: "Revoga o banimento usando o ID do usuário.", id: "mod_02" },
-      { name: "kick", aliases: ["k"], description: "Expulsa um usuário.", usage: "kick <@usuário> [motivo]", example: "kick @User Desrespeito", permissions: ["KickMembers"], cooldown: 2, details: "Remove o usuário, mas permite retorno via convite.", id: "mod_03" },
-      { name: "mute", aliases: ["timeout", "m"], description: "Silencia temporariamente.", usage: "mute <@usuário> <tempo> [motivo]", example: "mute @User 10m Flood", permissions: ["ModerateMembers"], cooldown: 2, details: "Usa o sistema de timeout oficial do Discord.", id: "mod_04" },
-      { name: "unmute", aliases: ["untimeout"], description: "Remove o silêncio.", usage: "unmute <@usuário>", example: "unmute @User", permissions: ["ModerateMembers"], cooldown: 2, details: "Retira o timeout antes do tempo expirar.", id: "mod_05" },
-      { name: "clear", aliases: ["purge", "c"], description: "Limpa o chat.", usage: "clear <quantidade>", example: "clear 50", permissions: ["ManageMessages"], cooldown: 5, details: "Apaga mensagens em massa (máximo 100).", id: "mod_06" },
-      { name: "lock", aliases: ["l"], description: "Trava o canal.", usage: "lock [motivo]", example: "lock Raid", permissions: ["ManageChannels"], cooldown: 5, details: "Ninguém sem permissão poderá digitar.", id: "mod_07" },
-      { name: "unlock", aliases: ["ul"], description: "Destrava o canal.", usage: "unlock", example: "unlock", permissions: ["ManageChannels"], cooldown: 5, details: "Libera o chat novamente.", id: "mod_08" },
-      { name: "lockuser", aliases: ["lu"], description: "Trava um usuário específico.", usage: "lockuser <@user>", example: "lockuser @User", permissions: ["ManageRoles"], cooldown: 3, details: "Impede um membro de falar em todos os canais.", id: "mod_09" },
-      { name: "send", aliases: ["say", "echo"], description: "Fala pelo bot.", usage: "send [#canal] <texto>", example: "send #geral Olá!", permissions: ["Administrator"], cooldown: 2, details: "O bot envia sua mensagem de forma anônima.", id: "mod_10" },
-      { name: "slowmode", aliases: ["sm"], description: "Define modo lento.", usage: "slowmode <tempo>", example: "slowmode 10s", permissions: ["ManageChannels"], cooldown: 5, details: "Controla a velocidade das mensagens no canal.", id: "mod_11" },
+      {
+        name: "ban",
+        description: "Remove permanentemente um usuário do servidor.",
+        usage: "ban <@usuário> [motivo]",
+        permissions: ["BanMembers"],
+        details:
+          "Bane o usuário do servidor.\n\n" +
+          "Ele só poderá voltar caso seja desbanido manualmente.\n\n" +
+          "Exemplo:\n" +
+          "`ban @User Spam`",
+        id: "000000000000000009",
+      },
+      {
+        name: "unban",
+        description: "Remove o banimento de um usuário.",
+        usage: "unban <ID_do_usuário>",
+        permissions: ["BanMembers"],
+        details:
+          "Desbane um usuário utilizando o ID dele.\n\n" +
+          "Exemplo:\n" +
+          "`unban 123456789012345678`",
+        id: "000000000000000010",
+      },
+      {
+        name: "kick",
+        description: "Expulsa um usuário do servidor.",
+        usage: "kick <@usuário> [motivo]",
+        permissions: ["KickMembers"],
+        details:
+          "Remove o usuário do servidor.\n\n" +
+          "Diferente do banimento, ele poderá entrar novamente usando um convite.",
+        id: "000000000000000011",
+      },
+      {
+        name: "mute",
+        description: "Silencia um usuário por um período.",
+        usage: "mute <@usuário> <tempo> [motivo]",
+        permissions: ["ModerateMembers"],
+        details:
+          "Impede o usuário de enviar mensagens por um tempo determinado.\n\n" +
+          "Formatos aceitos:\n" +
+          "`10m` → 10 minutos\n" +
+          "`2h` → 2 horas\n" +
+          "`1d` → 1 dia",
+        id: "000000000000000012",
+      },
+      {
+        name: "unmute",
+        description: "Remove o silêncio de um usuário.",
+        usage: "unmute <@usuário>",
+        permissions: ["ModerateMembers"],
+        details:
+          "Permite que o usuário volte a enviar mensagens normalmente.",
+        id: "000000000000000013",
+      },
+      {
+        name: "clear",
+        description: "Remove múltiplas mensagens de um canal.",
+        usage: "clear <quantidade>",
+        permissions: ["ManageMessages"],
+        details:
+          "Apaga várias mensagens de uma vez.\n\n" +
+          "Exemplo:\n" +
+          "`clear 50`\n\n" +
+          "Limite máximo: **100 mensagens**.",
+        id: "000000000000000014",
+      },
+      {
+        name: "lock",
+        description: "Bloqueia um canal para envio de mensagens.",
+        usage: "lock [motivo]",
+        permissions: ["ManageChannels"],
+        details:
+          "Impede que membros comuns enviem mensagens no canal.",
+        id: "000000000000000015",
+      },
+      {
+        name: "unlock",
+        description: "Desbloqueia um canal.",
+        usage: "unlock [motivo]",
+        permissions: ["ManageChannels"],
+        details:
+          "Remove o bloqueio aplicado pelo comando `lock`.",
+        id: "000000000000000016",
+      },
+      {
+        name: "lockuser",
+        description: "Bloqueia um usuário específico no canal.",
+        usage: "lockuser <@usuário>",
+        permissions: ["ManageRoles"],
+        details:
+          "Impede que o usuário envie mensagens neste canal.",
+        id: "000000000000000017",
+      },
+      {
+        name: "unlockuser",
+        description: "Remove o bloqueio de um usuário.",
+        usage: "unlockuser <@usuário>",
+        permissions: ["ManageRoles"],
+        details:
+          "Permite que o usuário volte a enviar mensagens normalmente.",
+        id: "000000000000000018",
+      },
+      {
+        name: "send",
+        description: "Envia uma mensagem utilizando o bot.",
+        usage: "send [#canal] <mensagem>",
+        permissions: ["Administrator"],
+        details:
+          "Faz o bot enviar uma mensagem personalizada em um canal.",
+        id: "000000000000000019",
+      },
+      {
+        name: "slowmode",
+        description: "Define um intervalo entre mensagens no canal.",
+        usage: "slowmode <tempo>",
+        permissions: ["ManageChannels"],
+        details:
+          "Define o tempo mínimo que usuários devem esperar entre mensagens.",
+        id: "000000000000000020",
+      },
     ],
   },
 
   // Informações
+  
   {
     id: "info",
     name: "Informações",
     emoji: emojis.info,
-    description: "Consulta de dados e estatísticas.",
+    description: "Comandos que exibem informações sobre usuários e o bot.",
     commands: [
-      { name: "avatar", aliases: ["av", "pfp"], description: "Exibe foto de perfil.", usage: "avatar [@user]", example: "avatar @Zev", permissions: [], cooldown: 3, details: "Mostra o avatar em tamanho real.", id: "info_01" },
-      { name: "botinfo", aliases: ["bi", "about"], description: "Info do Punishment.", usage: "botinfo", example: "botinfo", permissions: [], cooldown: 5, details: "Versão, uptime e estatísticas técnicas.", id: "info_02" },
-      { name: "ping", aliases: ["latency"], description: "Latência do bot.", usage: "ping", example: "ping", permissions: [], cooldown: 2, details: "Tempo de resposta com a API do Discord.", id: "info_03" },
-      { name: "stats", aliases: ["status", "sys"], description: "Status do sistema.", usage: "stats", example: "stats", permissions: [], cooldown: 5, details: "Uso de CPU, RAM e sistema operacional.", id: "info_04" },
-      { name: "userinfo", aliases: ["ui", "whois"], description: "Info do usuário.", usage: "userinfo [@user]", example: "userinfo @User", permissions: [], cooldown: 3, details: "Cargos, entrada no servidor e badges.", id: "info_05" },
+      {
+        name: "avatar",
+        description: "Mostra o avatar de um usuário.",
+        usage: "avatar [@usuário]",
+        permissions: [],
+        details:
+          "Se nenhum usuário for mencionado, mostra seu próprio avatar.",
+        id: "000000000000000021",
+      },
+      {
+        name: "botinfo",
+        description: "Exibe informações sobre o bot.",
+        usage: "botinfo",
+        permissions: [],
+        details:
+          "Mostra versão, tempo online, servidores conectados e desenvolvedor.",
+        id: "000000000000000022",
+      },
+      {
+        name: "ping",
+        description: "Mostra a latência do bot.",
+        usage: "ping",
+        permissions: [],
+        details:
+          "Exibe o tempo de resposta entre o bot e a API do Discord.",
+        id: "000000000000000023",
+      },
+      {
+        name: "stats",
+        description: "Exibe estatísticas do bot.",
+        usage: "stats",
+        permissions: [],
+        details:
+          "Mostra uso de memória, tempo de atividade e informações do sistema.",
+        id: "000000000000000024",
+      },
+      {
+        name: "userinfo",
+        description: "Mostra informações de um usuário.",
+        usage: "userinfo [@usuário]",
+        permissions: [],
+        details:
+          "Inclui data de criação da conta, entrada no servidor e cargos.",
+        id: "000000000000000025",
+      },
     ],
   },
 
   // Utilitários
+  
   {
     id: "util",
     name: "Utilitários",
     emoji: emojis.util,
-    description: "Recursos de utilidade geral.",
+    description: "Comandos úteis e ferramentas adicionais.",
     commands: [
-      { name: "doar", aliases: ["pix", "donate"], description: "Apoie o bot.", usage: "doar", example: "doar", permissions: [], cooldown: 10, details: "Link para apoiar o desenvolvimento do bot.", id: "util_01" },
-      { name: "privacy", aliases: ["tos", "termos"], description: "Política de dados.", usage: "privacy", example: "privacy", permissions: [], cooldown: 10, details: "Como tratamos suas informações.", id: "util_02" },
-      { 
-        name: "t", 
-        aliases: ["translate", "traduzir"], 
-        description: "Tradutor multi-idiomas.", 
-        usage: "t <idioma> <texto>", 
-        example: "t en Olá mundo", 
-        permissions: [], 
-        cooldown: 3,
-        details: "Traduz textos via comando ou reação de bandeira.", 
-        id: "util_03" 
+      {
+        name: "doar",
+        description: "Apoie o desenvolvimento do bot com uma doação.",
+        usage: "doar <valor>",
+        permissions: [],
+        details:
+          "Você será redirecionado para a página de pagamento.",
+        id: "000000000000000026",
+      },
+      {
+        name: "privacy",
+        description: "Exibe a política de privacidade.",
+        usage: "privacy",
+        permissions: [],
+        details:
+          "Mostra como os dados são coletados, utilizados e protegidos.",
+        id: "000000000000000027",
+      },
+      {
+        name: "t",
+        description: "Traduz textos para diferentes idiomas.",
+        usage: "t <idioma> <texto>",
+        permissions: [],
+        details:
+          "Métodos de tradução:\n\n" +
+          "**Comando**\n" +
+          "`t en Olá`\n\n" +
+          "**Reação**\n" +
+          "Reaja com a bandeira de um idioma suportado.",
+        id: "000000000000000028",
       },
     ],
   },
 
   // Sorteios
+
   {
     id: "giveaway",
     name: "Sorteios",
     emoji: emojis.give,
-    description: "Criação e gestão de sorteios.",
+    description: "Comandos para criar e gerenciar sorteios no servidor.",
     commands: [
-      { name: "sorteio", aliases: ["gstart", "giveaway"], description: "Inicia sorteio.", usage: "sorteio <premio> <venc> <tempo>", example: "sorteio Nitro 1 1d", permissions: ["ManageMessages"], cooldown: 10, details: "Cria um sorteio interativo no canal.", id: "give_01" },
-      { name: "rerolar", aliases: ["greroll"], description: "Novo vencedor.", usage: "rerolar <ID>", example: "rerolar 123456", permissions: ["ManageMessages"], cooldown: 5, details: "Sorteia outro ganhador para um sorteio encerrado.", id: "give_02" },
-      { name: "finalizar", aliases: ["gend"], description: "Encerra sorteio.", usage: "finalizar <ID>", example: "finalizar 123456", permissions: ["ManageMessages"], cooldown: 5, details: "Termina o sorteio imediatamente.", id: "give_03" },
+      {
+        name: "sorteio",
+        description: "Inicia um novo sorteio.",
+        usage: "sorteio <prêmio> <vencedores> <tempo> [#canal]",
+        permissions: ["ManageMessages"],
+        details:
+          "Cria um sorteio definindo prêmio, quantidade de vencedores e duração.",
+        id: "000000000000000029",
+      },
+      {
+        name: "rerolar",
+        description: "Escolhe um novo vencedor.",
+        usage: "rerolar <ID_da_mensagem>",
+        permissions: ["ManageMessages"],
+        details:
+          "Seleciona outro vencedor caso o anterior não seja válido.",
+        id: "000000000000000030",
+      },
+      {
+        name: "finalizar",
+        description: "Finaliza um sorteio manualmente.",
+        usage: "finalizar <ID_da_mensagem>",
+        permissions: ["ManageMessages"],
+        details:
+          "Encerra imediatamente um sorteio ativo.",
+        id: "000000000000000031",
+      },
+      {
+        name: "cancelar",
+        description: "Cancela um sorteio.",
+        usage: "cancelar <ID_da_mensagem>",
+        permissions: ["ManageMessages"],
+        details:
+          "O sorteio será encerrado sem selecionar vencedores.",
+        id: "000000000000000032",
+      },
     ],
   },
 ];
-
