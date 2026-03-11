@@ -50,7 +50,7 @@ module.exports = async function checkGlobalBan(context) {
       });
     }
   } catch {
-  
+    // Silencia o erro se o bot não tiver permissão para enviar a mensagem
   }
 
   return true;
