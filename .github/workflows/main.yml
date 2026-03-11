@@ -60,7 +60,6 @@ jobs:
             set -e
             cd ~/Punishment
             git fetch origin main
-            git pull origin main
             git reset --hard origin/main
             npm ci --production
             pm2 restart punishment --update-env
