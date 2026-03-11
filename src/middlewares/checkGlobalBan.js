@@ -8,8 +8,7 @@ const { isOnCooldown } = require("@cache/globalBanCache");
 /**
  * Verifica se o usuário está banido globalmente e envia a mensagem adequada.
  * Suporta interações e mensagens.
- * 
- * @param {import('discord.js').Message | import('discord.js').Interaction} context
+ * * @param {import('discord.js').Message | import('discord.js').Interaction} context
  * @returns {Promise<boolean>}
  */
 module.exports = async function checkGlobalBan(context) {
@@ -56,3 +55,4 @@ module.exports = async function checkGlobalBan(context) {
 
   return true;
 };
+
