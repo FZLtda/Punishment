@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const GiveawaySchema = new mongoose.Schema({
   messageId: String,
@@ -10,12 +10,12 @@ const GiveawaySchema = new mongoose.Schema({
   createdBy: String,
   status: {
     type: String,
-    enum: ['ativo', 'encerrado', 'cancelado'],
-    default: 'ativo'
+    enum: ["ativo", "encerrado", "cancelado"],
+    default: "ativo"
   },
   participants: [String]
 }, {
   timestamps: true
 });
 
-module.exports = mongoose.model('Giveaway', GiveawaySchema);
+module.exports = mongoose.model("Giveaway", GiveawaySchema);

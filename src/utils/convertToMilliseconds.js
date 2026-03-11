@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Converte duração em formato 1m, 2h, 3d para milissegundos.
@@ -14,11 +14,11 @@ function convertToMilliseconds(tempo) {
   const unidade = match[2];
 
   switch (unidade) {
-    case 's': return valor * 1000;
-    case 'm': return valor * 60 * 1000;
-    case 'h': return valor * 60 * 60 * 1000;
-    case 'd': return valor * 24 * 60 * 60 * 1000;
-    default: return null;
+  case "s": return valor * 1000;
+  case "m": return valor * 60 * 1000;
+  case "h": return valor * 60 * 60 * 1000;
+  case "d": return valor * 24 * 60 * 60 * 1000;
+  default: return null;
   }
 }
 

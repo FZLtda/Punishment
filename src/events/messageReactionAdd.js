@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Evento: messageReactionAdd
@@ -8,17 +8,17 @@
  * 🔒 Protegido pelo sistema de Global Ban
  */
 
-const { EmbedBuilder } = require('discord.js');
-const Giveaway = require('@models/Giveaway');
-const { colors, emojis, langFlags } = require('@config');
-const { translateText } = require('@services/deeplService');
-const checkGlobalBan = require('@middlewares/checkGlobalBan');
-const Logger = require('@logger').child({ module: 'messageReactionAdd' });
+const { EmbedBuilder } = require("discord.js");
+const Giveaway = require("@models/Giveaway");
+const { colors, emojis, langFlags } = require("@config");
+const { translateText } = require("@services/deeplService");
+const checkGlobalBan = require("@middlewares/checkGlobalBan");
+const Logger = require("@logger").child({ module: "messageReactionAdd" });
 
 const translationCooldown = new Map();
 
 module.exports = {
-  name: 'messageReactionAdd',
+  name: "messageReactionAdd",
 
   async execute(reaction, user) {
     if (user.bot) return;
@@ -49,10 +49,10 @@ module.exports = {
 
       // 🎉 Sistema de sorteio
       
-      if (emoji === '🎉') {
+      if (emoji === "🎉") {
         const giveaway = await Giveaway.findOne({
           messageId: message.id,
-          status: 'ativo',
+          status: "ativo",
         });
 
         if (!giveaway) return;
@@ -70,7 +70,7 @@ module.exports = {
       // 🌍 Sistema de tradução
       
       const targetLang = langFlags[emoji];
-      if (!targetLang || typeof targetLang !== 'string') return;
+      if (!targetLang || typeof targetLang !== "string") return;
       if (!message.content || message.content.trim().length === 0) return;
 
       const cooldownKey = `${user.id}-${message.id}`;
@@ -97,7 +97,7 @@ module.exports = {
         .addFields({
           name: `Traduzido (${targetLang})`,
           value: truncated
-            ? translated.slice(0, 1021) + '...'
+            ? translated.slice(0, 1021) + "..."
             : translated,
         })
         .setFooter({

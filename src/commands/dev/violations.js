@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
-const { AttachmentBuilder } = require('discord.js');
-const GlobalBan             = require('@models/GlobalBan');
-const { sendWarning }       = require('@embeds/embedWarning');
-const { bot, emojis }       = require('@config');
+const { AttachmentBuilder } = require("discord.js");
+const GlobalBan             = require("@models/GlobalBan");
+const { sendWarning }       = require("@embeds/embedWarning");
+const { bot, emojis }       = require("@config");
 
 module.exports = {
-  name: 'violations',
-  description: 'Exporta em TXT todos os usuários banidos globalmente.',
-  usage: '${currentPrefix}violations',
+  name: "violations",
+  description: "Exporta em TXT todos os usuários banidos globalmente.",
+  usage: "${currentPrefix}violations",
   deleteMessage: true,
 
   /**
@@ -27,13 +27,13 @@ module.exports = {
       if (!bans?.length) {
         return sendWarning(
           message,
-          'Não há usuários banidos globalmente no momento.'
+          "Não há usuários banidos globalmente no momento."
         );
       }
 
       const content  = await this.buildFileContent(message.client, bans);
 
-      const buffer   = Buffer.from('\uFEFF' + content, 'utf-8');
+      const buffer   = Buffer.from("\uFEFF" + content, "utf-8");
 
       const fileName = `punishment-violations-${Date.now()}.txt`;
 
@@ -47,11 +47,11 @@ module.exports = {
       });
 
     } catch (error) {
-      console.error('[VIOLATIONS_EXPORT_ERROR]', error);
+      console.error("[VIOLATIONS_EXPORT_ERROR]", error);
 
       return sendWarning(
         message,
-        'Erro interno ao exportar as violações.'
+        "Erro interno ao exportar as violações."
       );
     }
   },
@@ -63,17 +63,17 @@ module.exports = {
   async buildFileContent(client, bans) {
     const lines = [];
 
-    const nowFormatted = new Date().toLocaleString('pt-BR', {
-      timeZone: 'America/Sao_Paulo'
+    const nowFormatted = new Date().toLocaleString("pt-BR", {
+      timeZone: "America/Sao_Paulo"
     });
 
-    lines.push('========================================');
-    lines.push('           GLOBAL BAN EXPORT            ');
-    lines.push('========================================');
+    lines.push("========================================");
+    lines.push("           GLOBAL BAN EXPORT            ");
+    lines.push("========================================");
     lines.push(`Banimentos: ${bans.length}`);
     lines.push(`Gerado em: ${nowFormatted}`);
-    lines.push('========================================');
-    lines.push('');
+    lines.push("========================================");
+    lines.push("");
 
     for (let i = 0; i < bans.length; i++) {
       const { userId, bannedBy, reason, bannedAt } = bans[i];
@@ -91,29 +91,29 @@ module.exports = {
       const bannedName =
         bannedUser?.globalName ||
         bannedUser?.username   ||
-        'Usuário não encontrado';
+        "Usuário não encontrado";
 
       const authorName =
         authorUser?.globalName ||
         authorUser?.username   ||
-        'Desconhecido';
+        "Desconhecido";
 
       const dateFormatted = bannedAt
-        ? new Date(bannedAt).toLocaleString('pt-BR', {
-            timeZone: 'America/Sao_Paulo'
-          })
-        : 'Data não registrada';
+        ? new Date(bannedAt).toLocaleString("pt-BR", {
+          timeZone: "America/Sao_Paulo"
+        })
+        : "Data não registrada";
 
       lines.push(`[${i + 1}]`);
       lines.push(`Usuário Banido : ${bannedName}`);
       lines.push(`User ID        : ${userId}`);
-      lines.push(`Motivo         : ${reason || 'Não especificado'}`);
+      lines.push(`Motivo         : ${reason || "Não especificado"}`);
       lines.push(`Banido Por     : ${authorName}`);
       lines.push(`Autor ID       : ${bannedBy}`);
       lines.push(`Data           : ${dateFormatted}`);
-      lines.push('----------------------------------------');
+      lines.push("----------------------------------------");
     }
 
-    return lines.join('\n');
+    return lines.join("\n");
   },
 };

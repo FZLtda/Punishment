@@ -1,83 +1,83 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder } = require('discord.js');
-const { colors } = require('@config');
+const { EmbedBuilder } = require("discord.js");
+const { colors } = require("@config");
 
 module.exports = {
-  name: 'privacy',
-  description: 'Exibe a Política de Privacidade do Punishment.',
-  usage: '${currentPrefix}privacy',
-  botPermissions: ['SendMessages'],
+  name: "privacy",
+  description: "Exibe a Política de Privacidade do Punishment.",
+  usage: "${currentPrefix}privacy",
+  botPermissions: ["SendMessages"],
   deleteMessage: true,
 
   async execute(message) {
-    const lastUpdated = '12/01/2026';
+    const lastUpdated = "12/01/2026";
 
     const embed = new EmbedBuilder()
       .setColor(colors.red)
-      .setTitle('Política de Privacidade')
+      .setTitle("Política de Privacidade")
       .setDescription(
-        'Esta Política de Privacidade descreve como o **Punishment** coleta, utiliza, ' +
-        'armazena e protege informações relacionadas ao uso do bot no Discord.'
+        "Esta Política de Privacidade descreve como o **Punishment** coleta, utiliza, " +
+        "armazena e protege informações relacionadas ao uso do bot no Discord."
       )
       .addFields(
         {
-          name: '1. Dados Coletados',
+          name: "1. Dados Coletados",
           value:
-            'O Punishment pode coletar e armazenar informações técnicas e operacionais, incluindo:\n' +
-            '• IDs de usuários, servidores, canais e cargos;\n' +
-            '• Configurações definidas dentro do bot;\n' +
-            '• Registros de ações de moderação e eventos (logs).\n\n' +
-            '**Não são coletados dados pessoais sensíveis**, como nome real, endereço, documentos, senhas ou informações financeiras.',
+            "O Punishment pode coletar e armazenar informações técnicas e operacionais, incluindo:\n" +
+            "• IDs de usuários, servidores, canais e cargos;\n" +
+            "• Configurações definidas dentro do bot;\n" +
+            "• Registros de ações de moderação e eventos (logs).\n\n" +
+            "**Não são coletados dados pessoais sensíveis**, como nome real, endereço, documentos, senhas ou informações financeiras.",
         },
         {
-          name: '2. Finalidade do Uso dos Dados',
+          name: "2. Finalidade do Uso dos Dados",
           value:
-            'As informações coletadas são utilizadas exclusivamente para:\n' +
-            '• Garantir o funcionamento correto e seguro do bot;\n' +
-            '• Prevenir abusos e atividades maliciosas;\n' +
-            '• Auditoria, análise técnica e melhoria contínua das funcionalidades.',
+            "As informações coletadas são utilizadas exclusivamente para:\n" +
+            "• Garantir o funcionamento correto e seguro do bot;\n" +
+            "• Prevenir abusos e atividades maliciosas;\n" +
+            "• Auditoria, análise técnica e melhoria contínua das funcionalidades.",
         },
         {
-          name: '3. Compartilhamento de Informações',
+          name: "3. Compartilhamento de Informações",
           value:
-            'O Punishment **não vende, compartilha ou divulga** quaisquer dados coletados a terceiros, ' +
-            'exceto quando exigido por lei ou por ordem legal válida.',
+            "O Punishment **não vende, compartilha ou divulga** quaisquer dados coletados a terceiros, " +
+            "exceto quando exigido por lei ou por ordem legal válida.",
         },
         {
-          name: '4. Armazenamento e Segurança',
+          name: "4. Armazenamento e Segurança",
           value:
-            'Os dados são armazenados de forma segura, utilizando medidas técnicas e organizacionais ' +
-            'razoáveis para protegê-los contra acesso não autorizado, perda ou uso indevido.\n\n' +
-            'Apesar dos esforços de segurança, nenhum sistema é totalmente isento de riscos, ' +
-            'e o uso do Punishment ocorre por conta e responsabilidade do usuário.',
+            "Os dados são armazenados de forma segura, utilizando medidas técnicas e organizacionais " +
+            "razoáveis para protegê-los contra acesso não autorizado, perda ou uso indevido.\n\n" +
+            "Apesar dos esforços de segurança, nenhum sistema é totalmente isento de riscos, " +
+            "e o uso do Punishment ocorre por conta e responsabilidade do usuário.",
         },
         {
-          name: '5. Retenção e Exclusão de Dados',
+          name: "5. Retenção e Exclusão de Dados",
           value:
-            'Os dados são mantidos apenas pelo tempo necessário para cumprir suas finalidades operacionais.\n\n' +
-            'O usuário pode solicitar a exclusão de dados associados entrando em contato pelo e-mail informado abaixo, ' +
-            'sujeita a limitações técnicas ou legais.',
+            "Os dados são mantidos apenas pelo tempo necessário para cumprir suas finalidades operacionais.\n\n" +
+            "O usuário pode solicitar a exclusão de dados associados entrando em contato pelo e-mail informado abaixo, " +
+            "sujeita a limitações técnicas ou legais.",
         },
         {
-          name: '6. Alterações nesta Política',
+          name: "6. Alterações nesta Política",
           value:
-            'Esta Política de Privacidade pode ser atualizada ou modificada a qualquer momento, sem aviso prévio.\n\n' +
-            'O uso contínuo do Punishment após alterações implica aceitação da versão mais recente.',
+            "Esta Política de Privacidade pode ser atualizada ou modificada a qualquer momento, sem aviso prévio.\n\n" +
+            "O uso contínuo do Punishment após alterações implica aceitação da versão mais recente.",
         },
         {
-          name: '7. Contato',
+          name: "7. Contato",
           value:
-            'Para dúvidas ou solicitações relacionadas à privacidade:\n' +
-            '📧 **contato@funczero.xyz**',
+            "Para dúvidas ou solicitações relacionadas à privacidade:\n" +
+            "📧 **contato@funczero.xyz**",
         },
         {
-          name: 'Última Atualização',
+          name: "Última Atualização",
           value: `Esta política foi atualizada em: ${lastUpdated}`,
         }
       )
       .setFooter({
-        text: '© 2026 — Punishment • FuncZero',
+        text: "© 2026 — Punishment • FuncZero",
         iconURL: message.client.user.displayAvatarURL(),
       });
 

@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const {
   ActionRowBuilder,
@@ -6,19 +6,19 @@ const {
   ButtonStyle,
   EmbedBuilder,
   PermissionFlagsBits,
-} = require('discord.js');
+} = require("discord.js");
 
-const Logger = require('@logger');
-const { colors, emojis, bot } = require('@config');
-const { sendWarning } = require('@embeds/embedWarning');
+const Logger = require("@logger");
+const { colors, emojis, bot } = require("@config");
+const { sendWarning } = require("@embeds/embedWarning");
 
 module.exports = {
-  name: 'sugestao',
-  description: 'Cria o painel oficial de sugestões da comunidade.',
-  usage: '${currentPrefix}sugestao [#canal|canal_id]',
-  category: 'Utilitários',
+  name: "sugestao",
+  description: "Cria o painel oficial de sugestões da comunidade.",
+  usage: "${currentPrefix}sugestao [#canal|canal_id]",
+  category: "Utilitários",
   userPermissions: [PermissionFlagsBits.ManageGuild],
-  botPermissions: ['SendMessages', 'EmbedLinks'],
+  botPermissions: ["SendMessages", "EmbedLinks"],
   deleteMessage: true,
 
   /**
@@ -36,31 +36,31 @@ module.exports = {
     if (!targetChannel?.isTextBased()) {
       return sendWarning(
         message,
-        'O canal informado não é válido para criar o painel de sugestões.'
+        "O canal informado não é válido para criar o painel de sugestões."
       );
     }
 
     try {
       const embed = new EmbedBuilder()
         .setColor(colors.green)
-        .setTitle('💡 Sistema de Sugestões')
+        .setTitle("💡 Sistema de Sugestões")
         .setDescription(
           [
-            'Sua opinião é muito importante para a evolução do **Punishment**.',
-            '',
-            '**📌 O que você pode enviar**',
-            '• Ideias de novos comandos ou funcionalidades',
-            '• Melhorias em sistemas já existentes',
-            '• Ajustes que tornem o bot mais útil ou fácil de usar',
-            '',
-            '**🛠️ O que acontece depois?**',
-            '• Todas as sugestões são analisadas pela equipe',
-            '• As ideias viáveis entram no planejamento do bot',
-            '• Nem todas podem ser aplicadas, mas todas são lidas',
-            '',
-            '**🕒 Leva menos de 1 minuto**',
-            'Clique no botão abaixo, escreva sua ideia e envie',
-          ].join('\n')
+            "Sua opinião é muito importante para a evolução do **Punishment**.",
+            "",
+            "**📌 O que você pode enviar**",
+            "• Ideias de novos comandos ou funcionalidades",
+            "• Melhorias em sistemas já existentes",
+            "• Ajustes que tornem o bot mais útil ou fácil de usar",
+            "",
+            "**🛠️ O que acontece depois?**",
+            "• Todas as sugestões são analisadas pela equipe",
+            "• As ideias viáveis entram no planejamento do bot",
+            "• Nem todas podem ser aplicadas, mas todas são lidas",
+            "",
+            "**🕒 Leva menos de 1 minuto**",
+            "Clique no botão abaixo, escreva sua ideia e envie",
+          ].join("\n")
         )
         .setFooter({
           text: `${bot.name} • Sistema oficial de sugestões`,
@@ -70,8 +70,8 @@ module.exports = {
 
       const row = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-          .setCustomId('openSuggestionModal')
-          .setLabel('Enviar sugestão')
+          .setCustomId("openSuggestionModal")
+          .setLabel("Enviar sugestão")
           .setEmoji(emojis.checkEmoji)
           .setStyle(ButtonStyle.Success)
       );
@@ -100,7 +100,7 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Não foi possível criar o painel de sugestões no momento.'
+        "Não foi possível criar o painel de sugestões no momento."
       );
     }
   },

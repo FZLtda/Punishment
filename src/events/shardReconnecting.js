@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-const Logger = require('@logger');
+const Logger = require("@logger");
 
 module.exports = {
-  name: 'shardReconnecting',
+  name: "shardReconnecting",
   once: false,
 
   /**

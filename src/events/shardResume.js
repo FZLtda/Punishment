@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-const { setBotPresence } = require('@core/presence');
-const Logger = require('@logger');
+const { setBotPresence } = require("@core/presence");
+const Logger = require("@logger");
 
 module.exports = {
-  name: 'shardResume',
+  name: "shardResume",
   once: false,
 
   async execute(id, client) {

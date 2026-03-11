@@ -1,18 +1,18 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const { sendWarning } = require('@embeds/embedWarning');
-const { colors, emojis } = require('@config');
-const Giveaway = require('@models/Giveaway');
-const logger = require('@logger');
+const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const { sendWarning } = require("@embeds/embedWarning");
+const { colors, emojis } = require("@config");
+const Giveaway = require("@models/Giveaway");
+const logger = require("@logger");
 
 module.exports = {
-  name: 'rerolar',
-  description: 'Sorteia novamente os vencedores de um sorteio encerrado.',
-  usage: '${currentPrefix}rerolar <ID da mensagem>',
-  category: 'Utilidades',
-  userPermissions: ['ManageMessages'],
-  botPermissions: ['SendMessages'],
+  name: "rerolar",
+  description: "Sorteia novamente os vencedores de um sorteio encerrado.",
+  usage: "${currentPrefix}rerolar <ID da mensagem>",
+  category: "Utilidades",
+  userPermissions: ["ManageMessages"],
+  botPermissions: ["SendMessages"],
   deleteMessage: true,
 
   async execute(message, args) {
@@ -26,7 +26,7 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Informe um **ID de mensagem válido** do sorteio que deseja rerolar.'
+        "Informe um **ID de mensagem válido** do sorteio que deseja rerolar."
       );
     }
 
@@ -36,7 +36,7 @@ module.exports = {
       sorteio = await Giveaway.findOne({
         messageId: msgId,
         guildId: message.guild.id,
-        status: 'finalizado',
+        status: "finalizado",
       });
     } catch (error) {
       logger.error(
@@ -45,7 +45,7 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Ocorreu um erro interno ao buscar o sorteio.'
+        "Ocorreu um erro interno ao buscar o sorteio."
       );
     }
 
@@ -56,7 +56,7 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Não há sorteio encerrado neste servidor correspondente a este ID.'
+        "Não há sorteio encerrado neste servidor correspondente a este ID."
       );
     }
 
@@ -73,7 +73,7 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Apenas o criador do sorteio ou um administrador podem rerolá-lo.'
+        "Apenas o criador do sorteio ou um administrador podem rerolá-lo."
       );
     }
 
@@ -85,7 +85,7 @@ module.exports = {
     if (participantes.length === 0) {
       return sendWarning(
         message,
-        'Este sorteio não possui participantes suficientes para rerolar.'
+        "Este sorteio não possui participantes suficientes para rerolar."
       );
     }
 
@@ -100,18 +100,18 @@ module.exports = {
 
     /* Pluralização */
     const winnersLabel =
-      ganhadores.length === 1 ? 'Novo ganhador' : 'Novos ganhadores';
+      ganhadores.length === 1 ? "Novo ganhador" : "Novos ganhadores";
 
     const rerollEmbed = new EmbedBuilder()
-      .setTitle('🔁 Sorteio Rerolado')
+      .setTitle("🔁 Sorteio Rerolado")
       .setDescription(
         `**Prêmio:** ${sorteio.prize}\n` +
-        `**${winnersLabel}:** ${ganhadores.join(', ')}`
+        `**${winnersLabel}:** ${ganhadores.join(", ")}`
       )
       .setColor(colors.red)
       .setTimestamp()
       .setFooter({
-        text: 'Punishment',
+        text: "Punishment",
         iconURL: message.client.user.displayAvatarURL(),
       });
 

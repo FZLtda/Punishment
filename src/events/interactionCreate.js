@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /*
  * interactionCreate
@@ -9,14 +9,14 @@
  * - Circuit breaker
  */
 
-const { InteractionType } = require('discord.js');
+const { InteractionType } = require("discord.js");
 
-const Logger = require('@logger');
-const handleInteraction = require('@interactions/handleInteraction');
-const { sendInteractionError } = require('@helpers/responses');
+const Logger = require("@logger");
+const handleInteraction = require("@interactions/handleInteraction");
+const { sendInteractionError } = require("@helpers/responses");
 
-const checkGlobalBan = require('@middlewares/checkGlobalBan');
-const checkTerms = require('@middlewares/checkTerms');
+const checkGlobalBan = require("@middlewares/checkGlobalBan");
+const checkTerms = require("@middlewares/checkTerms");
 
 const CONFIG = {
   MIDDLEWARE_TIMEOUT: 3000,
@@ -40,7 +40,7 @@ const CIRCUIT = {
 };
 
 module.exports = {
-  name: 'interactionCreate',
+  name: "interactionCreate",
   once: false,
 
   async execute(interaction, client) {
@@ -58,7 +58,7 @@ module.exports = {
 
       const handled = await withTimeout(
         () => handleInteraction(interaction, client),
-        'handleInteraction',
+        "handleInteraction",
         CONFIG.HANDLER_TIMEOUT
       );
 
@@ -71,7 +71,7 @@ module.exports = {
 
         await sendInteractionError(
           interaction,
-          'Essa interação não pôde ser processada.'
+          "Essa interação não pôde ser processada."
         );
       }
 
@@ -88,7 +88,7 @@ module.exports = {
 
       await sendInteractionError(
         interaction,
-        'Ocorreu um erro inesperado ao processar sua interação.'
+        "Ocorreu um erro inesperado ao processar sua interação."
       );
     }
   },
@@ -98,14 +98,14 @@ module.exports = {
 
 async function globalBanMiddleware(ctx) {
   if (CIRCUIT.globalBanFailures >= CONFIG.CIRCUIT_BREAKER_THRESHOLD) {
-    Logger.warn('[CIRCUIT] GlobalBan em modo degradado');
+    Logger.warn("[CIRCUIT] GlobalBan em modo degradado");
     return true;
   }
 
   try {
     const banned = await withTimeout(
       () => checkGlobalBan(ctx.interaction),
-      'checkGlobalBan'
+      "checkGlobalBan"
     );
 
     CIRCUIT.globalBanFailures = 0;
@@ -121,7 +121,7 @@ async function termsMiddleware(ctx) {
   if (isTermsInteraction(ctx.interaction)) return true;
 
   if (CIRCUIT.termsFailures >= CONFIG.CIRCUIT_BREAKER_THRESHOLD) {
-    Logger.warn('[CIRCUIT] Terms em modo degradado');
+    Logger.warn("[CIRCUIT] Terms em modo degradado");
     return true;
   }
 
@@ -132,7 +132,7 @@ async function termsMiddleware(ctx) {
         client: ctx.client,
         reply: ctx.safeReply,
       }),
-      'checkTerms'
+      "checkTerms"
     );
 
     CIRCUIT.termsFailures = 0;
@@ -189,11 +189,11 @@ function shouldIgnore(interaction) {
 }
 
 function isTermsInteraction(interaction) {
-  return interaction.isButton() && interaction.customId === 'terms_accept';
+  return interaction.isButton() && interaction.customId === "terms_accept";
 }
 
 function isOperationalError(error) {
-  return error?.name === 'TimeoutError';
+  return error?.name === "TimeoutError";
 }
 
 function shouldSampleLog() {
@@ -201,7 +201,7 @@ function shouldSampleLog() {
 }
 
 function logError(ctx, error) {
-  const level = isOperationalError(error) ? 'warn' : 'error';
+  const level = isOperationalError(error) ? "warn" : "error";
 
   Logger[level](
     `[INTERACTION] ${ctx.label}\n${error.stack || error.message}`
@@ -214,7 +214,7 @@ async function withTimeout(fn, label, timeout = CONFIG.MIDDLEWARE_TIMEOUT) {
     new Promise((_, reject) =>
       setTimeout(() => {
         const err = new Error(`Timeout: ${label}`);
-        err.name = 'TimeoutError';
+        err.name = "TimeoutError";
         reject(err);
       }, timeout)
     ),

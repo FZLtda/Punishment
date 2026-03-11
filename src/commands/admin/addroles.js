@@ -1,15 +1,15 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
-const { sendWarning } = require('@embeds/embedWarning');
-const Logger = require('@logger');
-const { colors, emojis } = require('@config');
+const { EmbedBuilder, PermissionFlagsBits } = require("discord.js");
+const { sendWarning } = require("@embeds/embedWarning");
+const Logger = require("@logger");
+const { colors, emojis } = require("@config");
 
 module.exports = {
-  name: 'addroles',
-  description: 'Adiciona múltiplos cargos a um usuário de uma vez.',
-  usage: 'addroles @usuário @cargo1 @cargo2 ...',
-  category: 'Moderação',
+  name: "addroles",
+  description: "Adiciona múltiplos cargos a um usuário de uma vez.",
+  usage: "addroles @usuário @cargo1 @cargo2 ...",
+  category: "Moderação",
   permissions: [PermissionFlagsBits.ManageRoles],
   botPermissions: [PermissionFlagsBits.ManageRoles],
   deleteMessage: true,
@@ -19,17 +19,17 @@ module.exports = {
     const rolesToAdd = message.mentions.roles;
 
     if (!target) {
-      return sendWarning(message, 'Você precisa mencionar o membro que receberá os cargos.');
+      return sendWarning(message, "Você precisa mencionar o membro que receberá os cargos.");
     }
 
     if (!rolesToAdd.size) {
-      return sendWarning(message, 'Você precisa mencionar pelo menos um cargo para adicionar.');
+      return sendWarning(message, "Você precisa mencionar pelo menos um cargo para adicionar.");
     }
 
     const botMember = message.guild.members.me;
 
     if (!botMember.permissions.has(PermissionFlagsBits.ManageRoles)) {
-      return sendWarning(message, 'Não tenho permissão para gerenciar cargos.');
+      return sendWarning(message, "Não tenho permissão para gerenciar cargos.");
     }
 
     const missing = [];
@@ -44,7 +44,7 @@ module.exports = {
     });
 
     if (!filteredRoles.size) {
-      return sendWarning(message, 'Nenhum cargo válido encontrado para adicionar.');
+      return sendWarning(message, "Nenhum cargo válido encontrado para adicionar.");
     }
 
     try {
@@ -60,14 +60,14 @@ module.exports = {
         .setDescription(`${target} recebeu os seguintes cargos:`)
         .addFields([
           {
-            name: 'Cargos aplicados',
-            value: filteredRoles.map(role => `• ${role}`).join('\n'),
+            name: "Cargos aplicados",
+            value: filteredRoles.map(role => `• ${role}`).join("\n"),
           },
           ...(missing.length
             ? [{
-                name: 'Ignorados (hierarquia)',
-                value: missing.map(name => `• ${name}`).join('\n'),
-              }]
+              name: "Ignorados (hierarquia)",
+              value: missing.map(name => `• ${name}`).join("\n"),
+            }]
             : []),
         ])
         .setFooter({
@@ -80,7 +80,7 @@ module.exports = {
 
     } catch (error) {
       Logger.error(`[ADDROLES] Erro ao adicionar cargos: ${error.stack || error.message}`);
-      return sendWarning(message, 'Não foi possível adicionar os cargos.');
+      return sendWarning(message, "Não foi possível adicionar os cargos.");
     }
   },
 };

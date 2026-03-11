@@ -1,18 +1,18 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const { sendWarning } = require('@embeds/embedWarning');
-const Giveaway = require('@models/Giveaway');
-const { colors, emojis } = require('@config');
-const logger = require('@logger');
+const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const { sendWarning } = require("@embeds/embedWarning");
+const Giveaway = require("@models/Giveaway");
+const { colors, emojis } = require("@config");
+const logger = require("@logger");
 
 module.exports = {
-  name: 'cancelar',
-  description: 'Cancela manualmente um sorteio ativo.',
-  usage: '${currentPrefix}cancelar <ID da mensagem>',
-  category: 'Utilidades',
-  userPermissions: ['ManageMessages'],
-  botPermissions: ['SendMessages'],
+  name: "cancelar",
+  description: "Cancela manualmente um sorteio ativo.",
+  usage: "${currentPrefix}cancelar <ID da mensagem>",
+  category: "Utilidades",
+  userPermissions: ["ManageMessages"],
+  botPermissions: ["SendMessages"],
   deleteMessage: true,
 
   async execute(message, args) {
@@ -28,7 +28,7 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Informe um ID de mensagem válido do sorteio que deseja cancelar.'
+        "Informe um ID de mensagem válido do sorteio que deseja cancelar."
       );
     }
 
@@ -36,7 +36,7 @@ module.exports = {
     const sorteio = await Giveaway.findOne({
       messageId: msgId,
       guildId: message.guild.id,
-      status: 'ativo',
+      status: "ativo",
     });
 
     if (!sorteio) {
@@ -46,7 +46,7 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Não há sorteio ativo neste servidor correspondente a este ID.'
+        "Não há sorteio ativo neste servidor correspondente a este ID."
       );
     }
 
@@ -63,12 +63,12 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Apenas o criador do sorteio ou um administrador pode cancelá-lo.'
+        "Apenas o criador do sorteio ou um administrador pode cancelá-lo."
       );
     }
 
     /* Cancelamento */
-    sorteio.status = 'cancelado';
+    sorteio.status = "cancelado";
     await sorteio.save();
 
     try {
@@ -85,17 +85,17 @@ module.exports = {
           const embedCancelado = new EmbedBuilder()
             .setTitle(`${emojis.errorEmoji} Sorteio Cancelado`)
             .setDescription(
-              'Este sorteio foi **cancelado pela administração**.\n' +
-              'A ação segue as regras do servidor, garantindo organização e transparência.'
+              "Este sorteio foi **cancelado pela administração**.\n" +
+              "A ação segue as regras do servidor, garantindo organização e transparência."
             )
             .addFields({
-              name: '🎁 Prêmio',
+              name: "🎁 Prêmio",
               value: sorteio.prize,
               inline: false,
             })
             .setColor(colors.red)
             .setFooter({
-              text: 'Punishment',
+              text: "Punishment",
               iconURL: message.client.user.displayAvatarURL(),
             })
             .setTimestamp();
@@ -129,7 +129,7 @@ module.exports = {
 
       return sendWarning(
         message,
-        'O sorteio foi cancelado, mas não foi possível atualizar a mensagem original.'
+        "O sorteio foi cancelado, mas não foi possível atualizar a mensagem original."
       );
     }
   },

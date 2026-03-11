@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder } = require('discord.js');
-const Giveaway = require('@models/Giveaway');
-const { colors, emojis } = require('@config');
-const Logger = require('@logger');
+const { EmbedBuilder } = require("discord.js");
+const Giveaway = require("@models/Giveaway");
+const { colors, emojis } = require("@config");
+const Logger = require("@logger");
 
 /**
  * Finaliza um sorteio ativo, sorteando vencedores e atualizando a mensagem original.
@@ -12,7 +12,7 @@ const Logger = require('@logger');
  */
 async function finalizarSorteio(giveaway, client) {
   try {
-    if (giveaway.status !== 'ativo') {
+    if (giveaway.status !== "ativo") {
       Logger.warn(`[SORTEIO] Tentativa de finalizar sorteio já encerrado: ${giveaway.messageId}`);
       return;
     }
@@ -32,19 +32,19 @@ async function finalizarSorteio(giveaway, client) {
     const participantes = Array.isArray(giveaway.participants) ? [...giveaway.participants] : [];
     const ganhadores = sortearParticipantes(participantes, giveaway.winners);
 
-    const tituloGanhadores = ganhadores.length === 1 ? 'Ganhador' : 'Ganhadores';
+    const tituloGanhadores = ganhadores.length === 1 ? "Ganhador" : "Ganhadores";
 
     const embedEncerrado = new EmbedBuilder()
-      .setTitle('🎉 Sorteio Encerrado')
+      .setTitle("🎉 Sorteio Encerrado")
       .setColor(colors.red)
       .setTimestamp()
       .setDescription(
         ganhadores.length
-          ? `**Prêmio:** ${giveaway.prize}\n**${tituloGanhadores}:** ${ganhadores.map(id => `<@${id}>`).join(', ')}`
+          ? `**Prêmio:** ${giveaway.prize}\n**${tituloGanhadores}:** ${ganhadores.map(id => `<@${id}>`).join(", ")}`
           : `**Prêmio:** ${giveaway.prize}\n${emojis.attentionEmoji} Nenhum vencedor definido. Participações insuficientes.`
       )
       .setFooter({
-        text: 'Punishment',
+        text: "Punishment",
         iconURL: client.user.displayAvatarURL()
       });
 
@@ -57,7 +57,7 @@ async function finalizarSorteio(giveaway, client) {
       Logger.warn(`[SORTEIO] Não foi possível remover as reações: ${err.message}`);
     });
 
-    giveaway.status = 'encerrado';
+    giveaway.status = "encerrado";
     await giveaway.save();
 
     // Envia mensagem de parabéns individual para cada ganhador

@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder } = require('discord.js');
-const { colors, emojis } = require('@config');
-const { getPrefix } = require('@helpers/prefixManager');
-const { sendWarning } = require('@embeds/embedWarning');
-const categories = require('@helpers/helpCategories');
-const Logger = require('@logger');
+const { EmbedBuilder } = require("discord.js");
+const { colors, emojis } = require("@config");
+const { getPrefix } = require("@helpers/prefixManager");
+const { sendWarning } = require("@embeds/embedWarning");
+const categories = require("@helpers/helpCategories");
+const Logger = require("@logger");
 
 module.exports = {
-  customId: 'help-category',
+  customId: "help-category",
 
   async execute(interaction) {
     const selected = interaction.values[0];
@@ -16,7 +16,7 @@ module.exports = {
 
     if (!category) {
       Logger.warn(`[HELP] Categoria inválida selecionada por ${interaction.user.tag} (${interaction.user.id})`);
-      return sendWarning(interaction, 'Categoria inválida.');
+      return sendWarning(interaction, "Categoria inválida.");
     }
 
     try {
@@ -26,7 +26,7 @@ module.exports = {
         .setTitle(`\`\`\`${category.name}\`\`\``)
         .setColor(colors.red)
         .setAuthor({
-          name: 'Central de Recursos',
+          name: "Central de Recursos",
           iconURL: emojis.helpIcon,
         })
         .setDescription(
@@ -34,13 +34,13 @@ module.exports = {
             const linha1 = `**${cmd.name}**`;
             const linha2 = cmd.description ? `> ${cmd.description}` : null;
             const linha3 = cmd.usage ? `> **Uso:** \`${prefix}${cmd.usage}\`` : null;
-            const linha4 = cmd.permissions?.length ? `> **Acesso:** \`${cmd.permissions.join(', ')}\`` : null;
+            const linha4 = cmd.permissions?.length ? `> **Acesso:** \`${cmd.permissions.join(", ")}\`` : null;
             const linha5 = cmd.details ? `> **Nota:** ${cmd.details}` : null;
 
             return [linha1, linha2, linha3, linha4, linha5]
               .filter(Boolean)
-              .join('\n');
-          }).join('\n\n')
+              .join("\n");
+          }).join("\n\n")
         )
         .setFooter({
           text: `${category.name} • Total: ${category.commands.length} comandos`,
@@ -58,7 +58,7 @@ module.exports = {
       Logger.error(
         `[HELP] Erro ao exibir categoria ${selected} para ${interaction.user.tag}: ${error.stack || error.message}`
       );
-      return sendWarning(interaction, 'Não foi possível exibir essa categoria.');
+      return sendWarning(interaction, "Não foi possível exibir essa categoria.");
     }
   },
 };

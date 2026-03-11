@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const { sendError } = require('@embeds/embedError');
+const { sendError } = require("@embeds/embedError");
 
 /**
  * Verifica se o autor possui as permissões necessárias.
@@ -16,6 +16,6 @@ module.exports = async function checkUserPermissions(member, message, requiredPe
   const missing = requiredPermissions.filter(p => !member.permissions.has(p));
   if (missing.length === 0) return true;
 
-  await sendError(message, 'Você não tem permissão para executar esse comando.');
+  await sendError(message, "Você não tem permissão para executar esse comando.");
   return false;
 };

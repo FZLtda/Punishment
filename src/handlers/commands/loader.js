@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
-const path = require('path');
-const Logger = require('@logger');
+const fs = require("fs");
+const path = require("path");
+const Logger = require("@logger");
 
 async function loadCommands(client) {
-  const commandsPath = path.join(__dirname, '../../../src/commands');
+  const commandsPath = path.join(__dirname, "../../../src/commands");
   const categories = fs.readdirSync(commandsPath);
 
   for (const category of categories) {
@@ -15,7 +15,7 @@ async function loadCommands(client) {
 
     const commandFiles = fs
       .readdirSync(categoryPath)
-      .filter(file => file.endsWith('.js'));
+      .filter(file => file.endsWith(".js"));
 
     for (const file of commandFiles) {
       const filePath = path.join(categoryPath, file);
@@ -23,7 +23,7 @@ async function loadCommands(client) {
       try {
         const command = require(filePath);
 
-        if (!command.name || typeof command.execute !== 'function') {
+        if (!command.name || typeof command.execute !== "function") {
           Logger.warn(`[loadCommands] Comando inválido em: ${filePath}`);
           continue;
         }

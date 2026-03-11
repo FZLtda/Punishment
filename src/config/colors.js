@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 module.exports = {
   red:    0xFE3838,

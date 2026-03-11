@@ -1,18 +1,18 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder, ChannelType, PermissionFlagsBits } = require('discord.js');
-const { sendWarning } = require('@embeds/embedWarning');
-const { getPrefix } = require('@helpers/prefixManager');
-const { colors, emojis } = require('@config');
-const Giveaway = require('@models/Giveaway');
-const logger = require('@logger');
-const ms = require('ms');
+const { EmbedBuilder, ChannelType, PermissionFlagsBits } = require("discord.js");
+const { sendWarning } = require("@embeds/embedWarning");
+const { getPrefix } = require("@helpers/prefixManager");
+const { colors, emojis } = require("@config");
+const Giveaway = require("@models/Giveaway");
+const logger = require("@logger");
+const ms = require("ms");
 
 module.exports = {
-  name: 'sorteio',
-  description: 'Inicia um sorteio em um canal.',
-  usage: 'sorteio <prêmio> <vencedores> <duração> [#canal]',
-  category: 'Utilidades',
+  name: "sorteio",
+  description: "Inicia um sorteio em um canal.",
+  usage: "sorteio <prêmio> <vencedores> <duração> [#canal]",
+  category: "Utilidades",
   userPermissions: [PermissionFlagsBits.ManageMessages],
   botPermissions: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.AddReactions],
   deleteMessage: true,
@@ -27,11 +27,11 @@ module.exports = {
     // Extrai e valida argumentos
     const { canal, premio, vencedores, duracao } = this.parseArgs(message, args);
     if (!premio || isNaN(vencedores) || vencedores <= 0 || !duracao || duracao < 10000) {
-      return sendWarning(message, 'Parâmetros inválidos. Preencha todos corretamente.');
+      return sendWarning(message, "Parâmetros inválidos. Preencha todos corretamente.");
     }
 
     if (canal.type !== ChannelType.GuildText) {
-      return sendWarning(message, 'Mencione um canal de texto válido.');
+      return sendWarning(message, "Mencione um canal de texto válido.");
     }
 
     const terminaEm = new Date(Date.now() + duracao);
@@ -41,7 +41,7 @@ module.exports = {
 
     try {
       const sorteioMsg = await canal.send({ embeds: [embed] });
-      await sorteioMsg.react('🎉');
+      await sorteioMsg.react("🎉");
 
       await Giveaway.create({
         guildId: message.guild.id,
@@ -72,7 +72,7 @@ module.exports = {
 
     } catch (err) {
       logger.error(`[SORTEIO] Erro: ${err.stack || err.message}`);
-      return sendWarning(message, 'Erro interno ao criar sorteio. Tente novamente.');
+      return sendWarning(message, "Erro interno ao criar sorteio. Tente novamente.");
     }
   },
 
@@ -86,7 +86,7 @@ module.exports = {
 
     if (canalRegex.test(args[args.length - 1])) {
       const canalMention = args[args.length - 1];
-      const canalId = canalMention.replace(/[<#>]/g, '');
+      const canalId = canalMention.replace(/[<#>]/g, "");
       canal = message.guild.channels.cache.get(canalId);
 
       duracaoRaw = args[args.length - 2];
@@ -100,7 +100,7 @@ module.exports = {
       premioArgs = args.slice(0, args.length - 2);
     }
 
-    const premio = premioArgs.join(' ');
+    const premio = premioArgs.join(" ");
     const vencedores = parseInt(vencedoresRaw, 10);
     const duracao = ms(duracaoRaw);
 
@@ -109,18 +109,18 @@ module.exports = {
 
   // Embed do sorteio
   createEmbed(message, premio, vencedores, terminaEm) {
-    const plural = vencedores === 1 ? 'ganhador' : 'ganhadores';
+    const plural = vencedores === 1 ? "ganhador" : "ganhadores";
 
     return new EmbedBuilder()
-      .setTitle('🎉 Novo Sorteio!')
+      .setTitle("🎉 Novo Sorteio!")
       .setDescription([
         `**Prêmio:** ${premio}`,
-        `**Participe:** Reaja com 🎉`,
+        "**Participe:** Reaja com 🎉",
         `**Termina:** <t:${Math.floor(terminaEm.getTime() / 1000)}:R>`
-      ].join('\n'))
+      ].join("\n"))
       .setColor(colors.primary || colors.red)
       .setFooter({
-        text: `Ser${vencedores === 1 ? 'á' : 'ão'} ${vencedores} ${plural}`,
+        text: `Ser${vencedores === 1 ? "á" : "ão"} ${vencedores} ${plural}`,
         iconURL: message.client.user.displayAvatarURL()
       })
       .setTimestamp();

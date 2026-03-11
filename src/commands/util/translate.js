@@ -1,16 +1,16 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder } = require('discord.js');
-const { colors, emojis } = require('@config');
-const { sendWarning } = require('@embeds/embedWarning');
-const { translateText } = require('@services/deeplService');
+const { EmbedBuilder } = require("discord.js");
+const { colors, emojis } = require("@config");
+const { sendWarning } = require("@embeds/embedWarning");
+const { translateText } = require("@services/deeplService");
 
 module.exports = {
-  name: 't',
-  description: 'Traduz uma mensagem respondida ou um texto para o idioma desejado.',
-  usage: '${currentPrefix}t [idioma] (texto)',
-  category: 'Utilidade',
-  botPermissions: ['SendMessages'],
+  name: "t",
+  description: "Traduz uma mensagem respondida ou um texto para o idioma desejado.",
+  usage: "${currentPrefix}t [idioma] (texto)",
+  category: "Utilidade",
+  botPermissions: ["SendMessages"],
   deleteMessage: true,
 
   /**
@@ -24,26 +24,26 @@ module.exports = {
       ? await message.channel.messages.fetch(message.reference.messageId).catch(() => null)
       : null;
 
-    let targetLang = 'PT-BR';
-    let content = '';
+    let targetLang = "PT-BR";
+    let content = "";
 
     const langRegex = /^[a-z]{2,3}([-_][A-Z]{2})?$/i;
 
     if (args.length > 0 && langRegex.test(args[0])) {
-      targetLang = args.shift().replace('_', '-').toUpperCase();
+      targetLang = args.shift().replace("_", "-").toUpperCase();
     }
 
-    content = replied?.content || args.join(' ');
+    content = replied?.content || args.join(" ");
 
     if (!content || content.trim().length === 0) {
-      return sendWarning(message, 'Responda uma mensagem de texto ou digite o texto a ser traduzido.');
+      return sendWarning(message, "Responda uma mensagem de texto ou digite o texto a ser traduzido.");
     }
 
     try {
       const resultado = await translateText(content, targetLang);
 
-      if (!resultado || typeof resultado !== 'string' || resultado.trim().length === 0) {
-        return sendWarning(message, 'Não foi possível traduzir o conteúdo.');
+      if (!resultado || typeof resultado !== "string" || resultado.trim().length === 0) {
+        return sendWarning(message, "Não foi possível traduzir o conteúdo.");
       }
 
       const embed = new EmbedBuilder()
@@ -71,7 +71,7 @@ module.exports = {
         });
       }
     } catch (error) {
-      return sendWarning(message, 'Não foi possível traduzir o conteúdo.');
+      return sendWarning(message, "Não foi possível traduzir o conteúdo.");
     }
   },
 };

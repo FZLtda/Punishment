@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Substitui placeholders no campo `usage` de um comando por valores reais, como o prefixo atual.
@@ -12,11 +12,11 @@
  * @returns {string} - Uso formatado com prefixo aplicado
  */
 function formatUsage(usage, prefix, options = {}) {
-  if (typeof usage !== 'string' || usage.length === 0)
-    return '[Usage indisponível]';
+  if (typeof usage !== "string" || usage.length === 0)
+    return "[Usage indisponível]";
 
-  if (typeof prefix !== 'string' || prefix.length === 0)
-    prefix = '.';
+  if (typeof prefix !== "string" || prefix.length === 0)
+    prefix = ".";
 
   let result = usage;
 

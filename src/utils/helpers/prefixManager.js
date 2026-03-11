@@ -1,4 +1,4 @@
-const GuildConfig = require('@models/GuildConfig');
+const GuildConfig = require("@models/GuildConfig");
 
 async function getPrefix(guildId) {
   if (!guildId) return process.env.DEFAULT_PREFIX;

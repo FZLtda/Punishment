@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const { Collection } = require('discord.js');
-const { sendWarning } = require('@embeds/embedWarning');
+const { Collection } = require("discord.js");
+const { sendWarning } = require("@embeds/embedWarning");
 
 const cooldowns = new Collection();
 

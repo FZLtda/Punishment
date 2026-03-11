@@ -1,10 +1,10 @@
-'use strict';
+"use strict";
 
-const path = require('path');
-const moment = require('moment-timezone');
-const fs = require('fs');
+const path = require("path");
+const moment = require("moment-timezone");
+const fs = require("fs");
 
-const logDir = path.resolve(__dirname, '../../logs');
+const logDir = path.resolve(__dirname, "../../logs");
 
 // garante que o diretório existe
 if (!fs.existsSync(logDir)) {
@@ -12,7 +12,7 @@ if (!fs.existsSync(logDir)) {
 }
 
 const getTimestamp = () =>
-  moment().tz('America/Sao_Paulo').format('DD/MM/YYYY HH:mm:ss');
+  moment().tz("America/Sao_Paulo").format("DD/MM/YYYY HH:mm:ss");
 
 const levels = {
   fatal: 0,
@@ -24,12 +24,12 @@ const levels = {
 };
 
 const colors = {
-  fatal: 'bold red',
-  error: 'red',
-  warn: 'yellow',
-  info: 'cyan',
-  success: 'green',
-  debug: 'gray',
+  fatal: "bold red",
+  error: "red",
+  warn: "yellow",
+  info: "cyan",
+  success: "green",
+  debug: "gray",
 };
 
 module.exports = {

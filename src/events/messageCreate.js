@@ -1,16 +1,16 @@
-'use strict';
+"use strict";
 
-const { getPrefix } = require('@helpers/prefixManager');
-const Logger = require('@logger');
+const { getPrefix } = require("@helpers/prefixManager");
+const Logger = require("@logger");
 
-const checkTerms = require('@middlewares/checkTerms');
-const checkGlobalBan = require('@middlewares/checkGlobalBan');
-const checkCooldown = require('@middlewares/checkCooldown');
+const checkTerms = require("@middlewares/checkTerms");
+const checkGlobalBan = require("@middlewares/checkGlobalBan");
+const checkCooldown = require("@middlewares/checkCooldown");
 
-const checkUserPermissions = require('@permissions/checkUserPermissions');
-const checkBotPermissions = require('@permissions/checkBotPermissions');
+const checkUserPermissions = require("@permissions/checkUserPermissions");
+const checkBotPermissions = require("@permissions/checkBotPermissions");
 
-const { sendWarning } = require('@embeds/embedWarning');
+const { sendWarning } = require("@embeds/embedWarning");
 
 async function resolvePrefix(client, guildId) {
   if (client.getPrefix) return await client.getPrefix(guildId);
@@ -19,12 +19,12 @@ async function resolvePrefix(client, guildId) {
 
 function parseCommand(messageContent, prefix) {
   if (!messageContent.startsWith(prefix)) return null;
-  if (messageContent[prefix.length] === ' ') return null;
+  if (messageContent[prefix.length] === " ") return null;
 
   const args = messageContent.slice(prefix.length).trim().split(/\s+/);
   const commandName = args.shift()?.toLowerCase();
 
-  if (!commandName || ['__proto__', 'constructor', 'prototype'].includes(commandName)) {
+  if (!commandName || ["__proto__", "constructor", "prototype"].includes(commandName)) {
     return null;
   }
 
@@ -62,7 +62,7 @@ async function preExecutionPipeline({ message, command, member, botMember }) {
 }
 
 module.exports = {
-  name: 'messageCreate',
+  name: "messageCreate",
 
   async execute(message) {
     try {
@@ -112,16 +112,16 @@ module.exports = {
 
     } catch (error) {
       Logger.error(
-        `[ERROR][${message?.guild?.name ?? 'Unknown'}] Falha ao executar comando`,
+        `[ERROR][${message?.guild?.name ?? "Unknown"}] Falha ao executar comando`,
         error
       );
 
       try {
         if (message?.channel && message.client?.isReady()) {
-          await sendWarning(message, 'Não foi possível executar o comando.');
+          await sendWarning(message, "Não foi possível executar o comando.");
         }
       } catch (warnError) {
-        Logger.warn('[messageCreate] Falha ao enviar aviso de erro', warnError);
+        Logger.warn("[messageCreate] Falha ao enviar aviso de erro", warnError);
       }
     }
   },

@@ -1,22 +1,22 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
-const path = require('path');
-const Logger = require('@logger');
+const fs = require("fs");
+const path = require("path");
+const Logger = require("@logger");
 
 /**
  * Carrega todos os botões do diretório e registra no client.
  * @param {import('discord.js').Client} client
  */
 async function loadButtonInteractions(client) {
-  const buttonsPath = path.join(__dirname, '../../../src/interactions/buttons');
+  const buttonsPath = path.join(__dirname, "../../../src/interactions/buttons");
 
   if (!fs.existsSync(buttonsPath)) {
-    Logger.warn('[LOADER] Pasta de botões não encontrada.');
+    Logger.warn("[LOADER] Pasta de botões não encontrada.");
     return;
   }
 
-  const files = fs.readdirSync(buttonsPath).filter(file => file.endsWith('.js'));
+  const files = fs.readdirSync(buttonsPath).filter(file => file.endsWith(".js"));
 
   if (!client.buttons) client.buttons = new Map();
 
@@ -26,7 +26,7 @@ async function loadButtonInteractions(client) {
     try {
       const button = require(filePath);
 
-      if (!button?.customId || typeof button.execute !== 'function') {
+      if (!button?.customId || typeof button.execute !== "function") {
         Logger.warn(`[BUTTON] Ignorado (inválido): ${file}`);
         continue;
       }

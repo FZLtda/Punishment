@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-const TermsAgreement = require('@models/TermsAgreement');
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { bot, colors } = require('@config');
+const TermsAgreement = require("@models/TermsAgreement");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { bot, colors } = require("@config");
 const { TERMS_URL } = process.env;
 
 /**
@@ -26,10 +26,10 @@ module.exports = async function checkTerms(context) {
 
     const termsEmbed = new EmbedBuilder()
       .setColor(colors.red)
-      .setTitle('Termos de Uso')
+      .setTitle("Termos de Uso")
       .setDescription([
         `Para continuar utilizando o **${bot.name}**, é necessário aceitar nossos **[Termos de Uso](${TERMS_URL})**.`
-      ].join('\n'))
+      ].join("\n"))
       .setFooter({
         text: bot.name,
         iconURL: client.user.displayAvatarURL()
@@ -38,12 +38,12 @@ module.exports = async function checkTerms(context) {
 
     const buttons = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
-        .setLabel('Ler Termos de Uso')
+        .setLabel("Ler Termos de Uso")
         .setStyle(ButtonStyle.Link)
         .setURL(TERMS_URL),
       new ButtonBuilder()
-        .setCustomId('terms_accept')
-        .setLabel('Aceitar Termos de Uso')
+        .setCustomId("terms_accept")
+        .setLabel("Aceitar Termos de Uso")
         .setStyle(ButtonStyle.Success)
     );
 
@@ -66,13 +66,13 @@ module.exports = async function checkTerms(context) {
       await interaction.reply(responsePayload);
     }
       
-    else if (typeof reply === 'function') {
+    else if (typeof reply === "function") {
       await reply(responsePayload);
     }
 
     return false;
   } catch (err) {
-    console.error(`[TERMS] Erro ao verificar os termos para ${context.user?.tag || 'usuário desconhecido'}:`, err);
+    console.error(`[TERMS] Erro ao verificar os termos para ${context.user?.tag || "usuário desconhecido"}:`, err);
     return false;
   }
 };

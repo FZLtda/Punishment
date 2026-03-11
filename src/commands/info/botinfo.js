@@ -1,17 +1,17 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder } = require('discord.js');
-const os = require('node:os');
-const process = require('node:process');
-const { version: discordJsVersion } = require('discord.js');
-const { colors } = require('@config');
+const { EmbedBuilder } = require("discord.js");
+const os = require("node:os");
+const process = require("node:process");
+const { version: discordJsVersion } = require("discord.js");
+const { colors } = require("@config");
 
 module.exports = {
-  name: 'botinfo',
-  description: 'Exibe informações técnicas e detalhadas sobre o bot.',
-  usage: '${currentPrefix}botinfo',
-  category: 'Informação',
-  botPermissions: ['SendMessages'],
+  name: "botinfo",
+  description: "Exibe informações técnicas e detalhadas sobre o bot.",
+  usage: "${currentPrefix}botinfo",
+  category: "Informação",
+  botPermissions: ["SendMessages"],
   deleteMessage: true,
 
   /**
@@ -41,7 +41,7 @@ module.exports = {
     const cpuUserMs = (cpuUsage.user / 1000).toFixed(0);
     const cpuSystemMs = (cpuUsage.system / 1000).toFixed(0);
     const cpuInfo = os.cpus();
-    const cpuModel = cpuInfo?.[0]?.model ?? 'Desconhecido';
+    const cpuModel = cpuInfo?.[0]?.model ?? "Desconhecido";
     const cpuCores = cpuInfo.length;
 
     /* Sistema */
@@ -56,11 +56,11 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(colors.red)
-      .setTitle('Informações do Bot')
+      .setTitle("Informações do Bot")
       .setThumbnail(client.user.displayAvatarURL({ dynamic: true }))
       .addFields(
         {
-          name: 'Bot',
+          name: "Bot",
           value:
             `Nome: \`${client.user.username}\`\n` +
             `ID: \`${client.user.id}\`\n` +
@@ -68,20 +68,20 @@ module.exports = {
           inline: false
         },
         {
-          name: 'Estatísticas',
+          name: "Estatísticas",
           value:
             `Ping: \`${client.ws.ping}ms\`\n` +
             `Servidores: \`${client.guilds.cache.size}\`\n` +
-            `Usuários: \`${totalUsers.toLocaleString('pt-BR')}\``,
+            `Usuários: \`${totalUsers.toLocaleString("pt-BR")}\``,
           inline: true
         },
         {
-          name: 'Uptime',
+          name: "Uptime",
           value: `\`${uptime}\``,
           inline: true
         },
         {
-          name: 'Sistema',
+          name: "Sistema",
           value:
             `OS: \`${platform}\`\n` +
             `Arquitetura: \`${architecture}\`\n` +
@@ -90,7 +90,7 @@ module.exports = {
           inline: false
         },
         {
-          name: 'Memória',
+          name: "Memória",
           value:
             `RSS: \`${rssMB} MB\`\n` +
             `Heap: \`${heapUsedMB} / ${heapTotalMB} MB\`\n` +
@@ -99,7 +99,7 @@ module.exports = {
           inline: true
         },
         {
-          name: 'Processo',
+          name: "Processo",
           value:
             `Node.js: \`${process.version}\`\n` +
             `Discord.js: \`v${discordJsVersion}\`\n` +
@@ -109,7 +109,7 @@ module.exports = {
         }
       )
       .setFooter({
-        text: 'Punishment',
+        text: "Punishment",
         iconURL: client.user.displayAvatarURL({ dynamic: true })
       })
       .setTimestamp();

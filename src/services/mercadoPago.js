@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const mercadopago = require('mercadopago');
-require('dotenv').config();
+const mercadopago = require("mercadopago");
+require("dotenv").config();
 
 mercadopago.configure({
   access_token: process.env.MERCADO_PAGO_ACCESS_TOKEN,
@@ -17,7 +17,7 @@ mercadopago.configure({
 async function criarPagamento(amount, userId) {
   const preference = {
     items: [{
-      title: `Doação para o Punishment`,
+      title: "Doação para o Punishment",
       unit_price: parseFloat(amount),
       quantity: 1,
     }],
@@ -25,11 +25,11 @@ async function criarPagamento(amount, userId) {
       discord_user: userId,
     },
     back_urls: {
-      success: 'https://funczero.xyz/success',
-      failure: 'https://funczero.xyz/failure',
-      pending: 'https://funczero.xyz/pending',
+      success: "https://funczero.xyz/success",
+      failure: "https://funczero.xyz/failure",
+      pending: "https://funczero.xyz/pending",
     },
-    auto_return: 'approved',
+    auto_return: "approved",
   };
 
   const result = await mercadopago.preferences.create(preference);

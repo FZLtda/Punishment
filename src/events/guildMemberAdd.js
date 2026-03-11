@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-const { Events } = require('discord.js');
-const logger = require('@logger');
-const PendingDonor = require('@models/PendingDonor');
+const { Events } = require("discord.js");
+const logger = require("@logger");
+const PendingDonor = require("@models/PendingDonor");
 
 const CARGO_DOADOR_ID = process.env.CARGO_DOADOR_ID;
 

@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder } = require('discord.js');
-const Logger = require('@logger');
-const { emojis, colors, channels, roles } = require('@config');
+const { EmbedBuilder } = require("discord.js");
+const Logger = require("@logger");
+const { emojis, colors, channels, roles } = require("@config");
 
 module.exports = {
-  customId: 'verify_user',
+  customId: "verify_user",
 
   /**
    * Executa o botão de verificação
@@ -17,18 +17,18 @@ module.exports = {
     const guild = interaction.guild;
 
     if (!guild || !member) {
-      return sendEphemeralError(interaction, 'Erro interno. Tente novamente mais tarde.');
+      return sendEphemeralError(interaction, "Erro interno. Tente novamente mais tarde.");
     }
 
     const cargo = guild.roles.cache.get(roles.verified);
 
     if (!cargo) {
       Logger.error(`[VERIFY] Cargo de verificado não encontrado (${roles.verified})`);
-      return sendEphemeralError(interaction, 'Não foi possível encontrar o cargo verificador.');
+      return sendEphemeralError(interaction, "Não foi possível encontrar o cargo verificador.");
     }
 
     if (member.roles.cache.has(roles.verified)) {
-      return sendEphemeralError(interaction, 'As regras já estão aceitas em sua conta.');
+      return sendEphemeralError(interaction, "As regras já estão aceitas em sua conta.");
     }
 
     try {
@@ -42,15 +42,15 @@ module.exports = {
       });
 
       const logEmbed = new EmbedBuilder()
-        .setTitle('Verificação Concluída')
+        .setTitle("Verificação Concluída")
         .setColor(colors.green)
         .addFields(
-          { name: 'Usuário', value: `${member.user.tag} (\`${member.id}\`)`, inline: false },
-          { name: 'Cargo Adicionado', value: `${cargo.name} (\`${cargo.id}\`)`, inline: false },
-          { name: 'Servidor', value: `${guild.name} (\`${guild.id}\`)`, inline: false },
-          { name: 'Horário', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false }
+          { name: "Usuário", value: `${member.user.tag} (\`${member.id}\`)`, inline: false },
+          { name: "Cargo Adicionado", value: `${cargo.name} (\`${cargo.id}\`)`, inline: false },
+          { name: "Servidor", value: `${guild.name} (\`${guild.id}\`)`, inline: false },
+          { name: "Horário", value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: false }
         )
-        .setFooter({ text: 'Sistema de Verificação', iconURL: client.user.displayAvatarURL() });
+        .setFooter({ text: "Sistema de Verificação", iconURL: client.user.displayAvatarURL() });
 
       const logChannel = guild.channels.cache.get(channels.log);
       if (logChannel?.isTextBased()) {
@@ -61,7 +61,7 @@ module.exports = {
 
     } catch (err) {
       Logger.error(`[VERIFY] Erro ao adicionar cargo de verificado: ${err.stack || err.message}`);
-      return sendEphemeralError(interaction, 'Não foi possível verificar você.');
+      return sendEphemeralError(interaction, "Não foi possível verificar você.");
     }
   }
 };

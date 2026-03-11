@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
+const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require("discord.js");
 
 module.exports = {
-  customId: 'openSuggestionModal',
+  customId: "openSuggestionModal",
 
   /**
    * Executa o botão de abrir modal de sugestão.
@@ -12,21 +12,21 @@ module.exports = {
    */
   async execute(interaction, client) {
     const modal = new ModalBuilder()
-      .setCustomId('suggestModal')
-      .setTitle('Nova Sugestão');
+      .setCustomId("suggestModal")
+      .setTitle("Nova Sugestão");
 
     const titleInput = new TextInputBuilder()
-      .setCustomId('suggestTitle')
-      .setLabel('Título da sugestão')
+      .setCustomId("suggestTitle")
+      .setLabel("Título da sugestão")
       .setStyle(TextInputStyle.Short)
-      .setPlaceholder('Ex: Melhorar sistema de logs')
+      .setPlaceholder("Ex: Melhorar sistema de logs")
       .setRequired(true);
 
     const descInput = new TextInputBuilder()
-      .setCustomId('suggestDescription')
-      .setLabel('Descreva sua sugestão')
+      .setCustomId("suggestDescription")
+      .setLabel("Descreva sua sugestão")
       .setStyle(TextInputStyle.Paragraph)
-      .setPlaceholder('Explique sua ideia detalhadamente...')
+      .setPlaceholder("Explique sua ideia detalhadamente...")
       .setRequired(true);
 
     modal.addComponents(

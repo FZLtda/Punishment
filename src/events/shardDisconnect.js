@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-const Logger = require('@logger');
+const Logger = require("@logger");
 
 module.exports = {
-  name: 'shardDisconnect',
+  name: "shardDisconnect",
   once: false,
 
   /**
@@ -13,7 +13,7 @@ module.exports = {
    */
   async execute(event, id) {
     Logger.warn(
-      `[Shard ${id}] Desconectada. Código: ${event.code}, Motivo: ${event.reason || 'desconhecido'} (event:shardDisconnect)`
+      `[Shard ${id}] Desconectada. Código: ${event.code}, Motivo: ${event.reason || "desconhecido"} (event:shardDisconnect)`
     );
   }
 };

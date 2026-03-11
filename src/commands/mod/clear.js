@@ -1,16 +1,16 @@
-'use strict';
+"use strict";
 
-const { emojis } = require('@config');
-const { sendModLog } = require('@modules/modlog');
-const { sendWarning } = require('@embeds/embedWarning');
+const { emojis } = require("@config");
+const { sendModLog } = require("@modules/modlog");
+const { sendWarning } = require("@embeds/embedWarning");
 
 module.exports = {
-  name: 'clear',
-  description: 'Apaga mensagens do canal, com opção de filtrar por usuário.',
-  usage: '${currentPrefix}clear <quantidade> [@usuário]',
-  aliases: ['apagar', 'limpar'],
-  userPermissions: ['ManageMessages'],
-  botPermissions: ['ManageMessages'],
+  name: "clear",
+  description: "Apaga mensagens do canal, com opção de filtrar por usuário.",
+  usage: "${currentPrefix}clear <quantidade> [@usuário]",
+  aliases: ["apagar", "limpar"],
+  userPermissions: ["ManageMessages"],
+  botPermissions: ["ManageMessages"],
   deleteMessage: true,
 
   async execute(message, args) {
@@ -18,7 +18,7 @@ module.exports = {
     const alvo = message.mentions.users.first();
 
     if (!quantidade || isNaN(quantidade) || quantidade < 1 || quantidade > 100) {
-      return sendWarning(message, 'Forneça um valor entre 1 e 100 para apagar mensagens.');
+      return sendWarning(message, "Forneça um valor entre 1 e 100 para apagar mensagens.");
     }
 
     try {
@@ -34,22 +34,22 @@ module.exports = {
       const apagadas = await message.channel.bulkDelete(mensagensParaApagar, true);
 
       const resposta = await message.channel.send({
-        content: `${emojis.done} ${apagadas.size} mensagens foram apagadas${alvo ? ` de ${alvo}` : ''}.`,
+        content: `${emojis.done} ${apagadas.size} mensagens foram apagadas${alvo ? ` de ${alvo}` : ""}.`,
         allowedMentions: { users: [] }
       });
 
       setTimeout(() => resposta.delete().catch(() => null), 4000);
 
       await sendModLog(message.guild, {
-        action: 'Clear',
+        action: "Clear",
         moderator: message.author,
         channel: message.channel,
-        extra: `${apagadas.size} mensagens apagadas${alvo ? ` de ${alvo.tag}` : ''}`
+        extra: `${apagadas.size} mensagens apagadas${alvo ? ` de ${alvo.tag}` : ""}`
       });
 
     } catch (error) {
       console.error(error);
-      return sendWarning(message, 'Não foi possível apagar as mensagens devido a um erro.');
+      return sendWarning(message, "Não foi possível apagar as mensagens devido a um erro.");
     }
   }
 };

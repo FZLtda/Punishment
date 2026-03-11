@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const { sendError } = require('@embeds/embedError');
+const { sendError } = require("@embeds/embedError");
 
 /**
  * Verifica se o bot possui as permissões necessárias.
@@ -16,6 +16,6 @@ module.exports = async function checkBotPermissions(botMember, message, required
   const missing = requiredPermissions.filter(p => !botMember.permissions.has(p));
   if (missing.length === 0) return true;
 
-  await sendError(message, 'Eu não tenho permissão suficiente para executar este comando.');
+  await sendError(message, "Eu não tenho permissão suficiente para executar este comando.");
   return false;
 };

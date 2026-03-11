@@ -1,18 +1,18 @@
-'use strict';
+"use strict";
 
-const { ChannelType, EmbedBuilder, PermissionsBitField } = require('discord.js');
-const GuildSettings = require('@models/GuildSettings');
-const { emojis, colors } = require('@config');
-const { sendWarning } = require('@embeds/embedWarning');
+const { ChannelType, EmbedBuilder, PermissionsBitField } = require("discord.js");
+const GuildSettings = require("@models/GuildSettings");
+const { emojis, colors } = require("@config");
+const { sendWarning } = require("@embeds/embedWarning");
 
 module.exports = {
-  name: 'log',
-  description: 'Gerencia o sistema de logs.',
-  usage: '${currentPrefix}log <set|off|status>',
-  aliases: ['logs', 'setlog', 'setlogs'],
-  category: 'Administração',
-  userPermissions: ['Administrator'],
-  botPermissions: ['ManageChannels'],
+  name: "log",
+  description: "Gerencia o sistema de logs.",
+  usage: "${currentPrefix}log <set|off|status>",
+  aliases: ["logs", "setlog", "setlogs"],
+  category: "Administração",
+  userPermissions: ["Administrator"],
+  botPermissions: ["ManageChannels"],
   deleteMessage: true,
 
   async execute(message, args) {
@@ -22,27 +22,27 @@ module.exports = {
     if (!subcommand) {
       return sendWarning(
         message,
-        'Subcomando não informado. Utilize set, off ou status.'
+        "Subcomando não informado. Utilize set, off ou status."
       );
     }
 
     try {
 
-      if (subcommand === 'set') {
+      if (subcommand === "set") {
 
         const channel = message.mentions.channels.first();
 
         if (!channel) {
           return sendWarning(
             message,
-            'Nenhum canal foi informado. Mencione um canal de texto válido.'
+            "Nenhum canal foi informado. Mencione um canal de texto válido."
           );
         }
 
         if (channel.type !== ChannelType.GuildText) {
           return sendWarning(
             message,
-            'O canal informado não é um canal de texto válido.'
+            "O canal informado não é um canal de texto válido."
           );
         }
 
@@ -51,7 +51,7 @@ module.exports = {
         if (!permissions?.has(PermissionsBitField.Flags.SendMessages)) {
           return sendWarning(
             message,
-            'Não tenho permissão para enviar mensagens no canal informado.'
+            "Não tenho permissão para enviar mensagens no canal informado."
           );
         }
 
@@ -82,14 +82,14 @@ module.exports = {
         return;
       }
 
-      if (subcommand === 'off') {
+      if (subcommand === "off") {
 
         const data = await GuildSettings.findOne({ guildId: message.guild.id });
 
         if (!data?.logChannelId) {
           return sendWarning(
             message,
-            'O sistema de logs já se encontra desativado neste servidor.'
+            "O sistema de logs já se encontra desativado neste servidor."
           );
         }
 
@@ -114,7 +114,7 @@ module.exports = {
         return;
       }
 
-      if (subcommand === 'status') {
+      if (subcommand === "status") {
 
         const data = await GuildSettings.findOne({ guildId: message.guild.id });
 
@@ -127,18 +127,18 @@ module.exports = {
             .setColor(colors.red)
             .addFields(
               {
-                name: 'Estado',
+                name: "Estado",
                 value: `${emojis.errorEmoji} Desativado`,
                 inline: true
               },
               {
-                name: 'Canal',
-                value: 'Nenhum',
+                name: "Canal",
+                value: "Nenhum",
                 inline: true
               },
               {
-                name: 'Status',
-                value: 'O sistema de logs nunca foi configurado neste servidor.',
+                name: "Status",
+                value: "O sistema de logs nunca foi configurado neste servidor.",
                 inline: false
               }
             );
@@ -154,27 +154,27 @@ module.exports = {
               .setColor(colors.green)
               .addFields(
                 {
-                  name: 'Estado',
+                  name: "Estado",
                   value: `${emojis.successEmoji} Ativo`,
                   inline: true
                 },
                 {
-                  name: 'Canal',
+                  name: "Canal",
                   value: `<#${data.logChannelId}>`,
                   inline: true
                 },
                 {
-                  name: 'Ativado por',
+                  name: "Ativado por",
                   value: data.logEnabledBy
                     ? `<@${data.logEnabledBy}>`
-                    : 'Desconhecido',
+                    : "Desconhecido",
                   inline: true
                 },
                 {
-                  name: 'Data de ativação',
+                  name: "Data de ativação",
                   value: data.logEnabledAt
                     ? `<t:${Math.floor(data.logEnabledAt.getTime() / 1000)}:f>`
-                    : 'Não disponível',
+                    : "Não disponível",
                   inline: true
                 }
               );
@@ -187,22 +187,22 @@ module.exports = {
               .setColor(colors.red)
               .addFields(
                 {
-                  name: 'Estado',
+                  name: "Estado",
                   value: `${emojis.errorEmoji} Desativado`,
                   inline: true
                 },
                 {
-                  name: 'Desativado por',
+                  name: "Desativado por",
                   value: data.logDisabledBy
                     ? `<@${data.logDisabledBy}>`
-                    : 'Desconhecido',
+                    : "Desconhecido",
                   inline: true
                 },
                 {
-                  name: 'Data de desativação',
+                  name: "Data de desativação",
                   value: data.logDisabledAt
                     ? `<t:${Math.floor(data.logDisabledAt.getTime() / 1000)}:f>`
-                    : 'Não disponível',
+                    : "Não disponível",
                   inline: true
                 }
               );
@@ -224,16 +224,16 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Subcomando inválido. Utilize set, off ou status.'
+        "Subcomando inválido. Utilize set, off ou status."
       );
 
     } catch (error) {
 
-      console.error('[LOG COMMAND ERROR]', error);
+      console.error("[LOG COMMAND ERROR]", error);
 
       return sendWarning(
         message,
-        'Não foi possível executar o comando no momento. Tente novamente mais tarde.'
+        "Não foi possível executar o comando no momento. Tente novamente mais tarde."
       );
 
     }

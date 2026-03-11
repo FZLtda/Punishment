@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const GuildSettingsSchema = new mongoose.Schema({
 
@@ -40,4 +40,4 @@ const GuildSettingsSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('GuildSettings', GuildSettingsSchema);
+module.exports = mongoose.model("GuildSettings", GuildSettingsSchema);

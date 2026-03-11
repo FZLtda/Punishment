@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
-const path = require('path');
-const { Collection } = require('discord.js');
-const Logger = require('@logger');
+const fs = require("fs");
+const path = require("path");
+const { Collection } = require("discord.js");
+const Logger = require("@logger");
 
 /**
  * Carrega todos os Select Menus personalizados (String/User/Role) e registra no client.
@@ -13,19 +13,19 @@ const Logger = require('@logger');
  */
 
 function loadMenus(client) {
-  const menusPath = path.resolve(__dirname, '../../../src/interactions/menus');
+  const menusPath = path.resolve(__dirname, "../../../src/interactions/menus");
 
-  console.time('[LOADER] Tempo de carregamento dos Select Menus');
+  console.time("[LOADER] Tempo de carregamento dos Select Menus");
   client.menus = new Collection();
 
   if (!fs.existsSync(menusPath)) {
-    Logger.warn('[LOADER] Pasta de Select Menus não encontrada.');
+    Logger.warn("[LOADER] Pasta de Select Menus não encontrada.");
     return;
   }
 
   const menuFiles = getAllJsFiles(menusPath);
   if (menuFiles.length === 0) {
-    Logger.warn('[LOADER] Nenhum menu encontrado na pasta menus.');
+    Logger.warn("[LOADER] Nenhum menu encontrado na pasta menus.");
     return;
   }
 
@@ -35,9 +35,9 @@ function loadMenus(client) {
       const menu = raw?.default || raw;
 
       const isValidCustomId =
-        typeof menu?.customId === 'string' || menu?.customId instanceof RegExp;
+        typeof menu?.customId === "string" || menu?.customId instanceof RegExp;
 
-      if (!isValidCustomId || typeof menu?.execute !== 'function') {
+      if (!isValidCustomId || typeof menu?.execute !== "function") {
         Logger.warn(`[MENU] Ignorado (inválido): ${path.basename(filePath)}`);
         continue;
       }
@@ -49,7 +49,7 @@ function loadMenus(client) {
     }
   }
 
-  console.timeEnd('[LOADER] Tempo de carregamento dos Select Menus');
+  console.timeEnd("[LOADER] Tempo de carregamento dos Select Menus");
   Logger.success(`[LOADER] ${client.menus.size} Select Menus carregados com sucesso.`);
 }
 
@@ -68,7 +68,7 @@ function getAllJsFiles(dir) {
 
     if (entry.isDirectory()) {
       results = results.concat(getAllJsFiles(fullPath));
-    } else if (entry.isFile() && entry.name.endsWith('.js')) {
+    } else if (entry.isFile() && entry.name.endsWith(".js")) {
       results.push(fullPath);
     }
   }

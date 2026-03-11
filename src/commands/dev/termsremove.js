@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
-const { bot, emojis } = require('@config');
-const { sendWarning } = require('@embeds/embedWarning');
-const TermsAgreement = require('@models/TermsAgreement');
+const { bot, emojis } = require("@config");
+const { sendWarning } = require("@embeds/embedWarning");
+const TermsAgreement = require("@models/TermsAgreement");
 
 module.exports = {
-  name: 'termsremove',
-  description: 'Remove os dados de aceite dos Termos de Uso de um usuário.',
-  usage: '${currentPrefix}termsremove <userId>',
-  category: 'Administrador',
+  name: "termsremove",
+  description: "Remove os dados de aceite dos Termos de Uso de um usuário.",
+  usage: "${currentPrefix}termsremove <userId>",
+  category: "Administrador",
   deleteMessage: true,
 
   /**
@@ -21,7 +21,7 @@ module.exports = {
 
     const userId = args[0];
     if (!userId) {
-      return sendWarning(message, 'Você precisa informar o ID do usuário.');
+      return sendWarning(message, "Você precisa informar o ID do usuário.");
     }
 
     const deleted = await TermsAgreement.findOneAndDelete({ userId });
@@ -29,7 +29,7 @@ module.exports = {
     if (!deleted) {
       return sendWarning(
         message,
-        'Nenhum registro de aceite de termos foi encontrado para este usuário.'
+        "Nenhum registro de aceite de termos foi encontrado para este usuário."
       );
     }
 
@@ -39,7 +39,7 @@ module.exports = {
 
     const displayName = user
       ? user.displayName || user.username
-      : 'Usuário desconhecido';
+      : "Usuário desconhecido";
 
     return message.channel.send({
       content: `${emojis.done} Registro de consentimento excluído para **${displayName}** (\`${userId}\`)`,

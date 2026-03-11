@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
 const {
   Client,
   GatewayIntentBits,
   Partials,
   Collection
-} = require('discord.js');
+} = require("discord.js");
 
 /**
  * Classe personalizada que estende o Client do Discord.js

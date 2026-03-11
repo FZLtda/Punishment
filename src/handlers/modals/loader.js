@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
-const path = require('path');
-const { Collection } = require('discord.js');
-const Logger = require('@logger');
+const fs = require("fs");
+const path = require("path");
+const { Collection } = require("discord.js");
+const Logger = require("@logger");
 
 /**
  * Carrega todos os Modals personalizados e registra no client.
@@ -12,19 +12,19 @@ const Logger = require('@logger');
  * @returns {void}
  */
 function loadModals(client) {
-  const modalsPath = path.resolve(__dirname, '../../../src/interactions/modals');
+  const modalsPath = path.resolve(__dirname, "../../../src/interactions/modals");
 
-  console.time('[LOADER] Tempo de carregamento dos Modals');
+  console.time("[LOADER] Tempo de carregamento dos Modals");
   client.modals = new Collection();
 
   if (!fs.existsSync(modalsPath)) {
-    Logger.warn('[LOADER] Pasta de Modals não encontrada.');
+    Logger.warn("[LOADER] Pasta de Modals não encontrada.");
     return;
   }
 
   const modalFiles = getAllJsFiles(modalsPath);
   if (modalFiles.length === 0) {
-    Logger.warn('[LOADER] Nenhum modal encontrado na pasta modals.');
+    Logger.warn("[LOADER] Nenhum modal encontrado na pasta modals.");
     return;
   }
 
@@ -34,9 +34,9 @@ function loadModals(client) {
       const modal = raw?.default || raw;
 
       const isValidCustomId =
-        typeof modal?.customId === 'string' || modal?.customId instanceof RegExp;
+        typeof modal?.customId === "string" || modal?.customId instanceof RegExp;
 
-      if (!isValidCustomId || typeof modal?.execute !== 'function') {
+      if (!isValidCustomId || typeof modal?.execute !== "function") {
         Logger.warn(`[MODAL] Ignorado (inválido): ${path.basename(filePath)}`);
         continue;
       }
@@ -48,7 +48,7 @@ function loadModals(client) {
     }
   }
 
-  console.timeEnd('[LOADER] Tempo de carregamento dos Modals');
+  console.timeEnd("[LOADER] Tempo de carregamento dos Modals");
   Logger.success(`[LOADER] ${client.modals.size} Modals carregados com sucesso.`);
 }
 
@@ -66,7 +66,7 @@ function getAllJsFiles(dir) {
 
     if (entry.isDirectory()) {
       results = results.concat(getAllJsFiles(fullPath));
-    } else if (entry.isFile() && entry.name.endsWith('.js')) {
+    } else if (entry.isFile() && entry.name.endsWith(".js")) {
       results.push(fullPath);
     }
   }

@@ -1,12 +1,12 @@
-'use strict';
+"use strict";
 
-const { EventEmitter } = require('node:events');
-const os = require('os');
-const axios = require('axios');
-const mongoose = require('mongoose');
-const Logger = require('@logger');
-const { bot } = require('@config');
-const { reportErrorToWebhook } = require('@monitors/webhookMonitor');
+const { EventEmitter } = require("node:events");
+const os = require("os");
+const axios = require("axios");
+const mongoose = require("mongoose");
+const Logger = require("@logger");
+const { bot } = require("@config");
+const { reportErrorToWebhook } = require("@monitors/webhookMonitor");
 
 class Monitor extends EventEmitter {
   constructor() {
@@ -27,7 +27,7 @@ class Monitor extends EventEmitter {
   
   setClient(client) {
     this.client = client;
-    Logger.info('[MONITOR] Discord Client injetado com sucesso.');
+    Logger.info("[MONITOR] Discord Client injetado com sucesso.");
   }
 
   _bindHandlers() {
@@ -37,13 +37,13 @@ class Monitor extends EventEmitter {
   }
 
   _registerDefaultListeners() {
-    this.on('ready', this.handleReady);
-    this.on('commandUsed', this.handleCommandUsed);
-    this.on('error', this.handleError);
+    this.on("ready", this.handleReady);
+    this.on("commandUsed", this.handleCommandUsed);
+    this.on("error", this.handleError);
 
-    this.eventHandlers.set('ready', this.handleReady);
-    this.eventHandlers.set('commandUsed', this.handleCommandUsed);
-    this.eventHandlers.set('error', this.handleError);
+    this.eventHandlers.set("ready", this.handleReady);
+    this.eventHandlers.set("commandUsed", this.handleCommandUsed);
+    this.eventHandlers.set("error", this.handleError);
   }
 
   handleReady(tag) {
@@ -69,7 +69,7 @@ class Monitor extends EventEmitter {
     const { HB_BOT, HB_DB, HB_HANDLER } = process.env;
 
     if (!HB_BOT || !HB_DB || !HB_HANDLER) {
-      return Logger.warn('[MONITOR][EXTERNAL] URLs de Heartbeat (Bot, DB ou Handler) ausentes no .env.');
+      return Logger.warn("[MONITOR][EXTERNAL] URLs de Heartbeat (Bot, DB ou Handler) ausentes no .env.");
     }
 
     setInterval(async () => {
@@ -109,7 +109,7 @@ class Monitor extends EventEmitter {
           `⏱️ Uptime: ${uptime} min`,
           `📦 Memória: ${mem}`,
           `⚙️ CPU: ${cpu}`,
-        ].join('\n');
+        ].join("\n");
 
         this._logHeartbeat(heartbeat);
       } catch (err) {
@@ -125,7 +125,7 @@ class Monitor extends EventEmitter {
   }
 
   _formatCPU(load) {
-    return load.map(l => l.toFixed(2)).join(' / ') + ' (1m/5m/15m)';
+    return load.map(l => l.toFixed(2)).join(" / ") + " (1m/5m/15m)";
   }
 
   _logHeartbeat(message) {
@@ -133,7 +133,7 @@ class Monitor extends EventEmitter {
   }
 
   registerEvent(eventName, handler) {
-    if (typeof handler !== 'function') {
+    if (typeof handler !== "function") {
       throw new TypeError(`Handler para evento '${eventName}' deve ser uma função.`);
     }
     this.on(eventName, handler);

@@ -1,18 +1,18 @@
-'use strict';
+"use strict";
 
-const fs = require('fs');
-const path = require('path');
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const { colors, emojis } = require('@config');
-const { sendModLog } = require('@modules/modlog');
-const { sendWarning } = require('@embeds/embedWarning');
+const fs = require("fs");
+const path = require("path");
+const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const { colors, emojis } = require("@config");
+const { sendModLog } = require("@modules/modlog");
+const { sendWarning } = require("@embeds/embedWarning");
 
 module.exports = {
-  name: 'backup',
-  description: 'Cria um backup completo da estrutura do servidor (cargos + canais).',
-  usage: '${currentPrefix}backup',
-  userPermissions: ['Administrator'],
-  botPermissions: ['ManageGuild', 'ManageChannels', 'ManageRoles', 'ViewAuditLog'],
+  name: "backup",
+  description: "Cria um backup completo da estrutura do servidor (cargos + canais).",
+  usage: "${currentPrefix}backup",
+  userPermissions: ["Administrator"],
+  botPermissions: ["ManageGuild", "ManageChannels", "ManageRoles", "ViewAuditLog"],
   deleteMessage: true,
 
   async execute(message) {
@@ -62,20 +62,20 @@ module.exports = {
             type: channel.type,
             parentId: channel.parentId,
             position: channel.position,
-            nsfw: 'nsfw' in channel ? channel.nsfw : false,
+            nsfw: "nsfw" in channel ? channel.nsfw : false,
             permissionOverwrites: channel.permissionOverwrites?.cache
               ? channel.permissionOverwrites.cache.map(perm => ({
-                  id: perm.id,
-                  type: perm.type,
-                  allow: perm.allow.bitfield.toString(),
-                  deny: perm.deny.bitfield.toString()
-                }))
+                id: perm.id,
+                type: perm.type,
+                allow: perm.allow.bitfield.toString(),
+                deny: perm.deny.bitfield.toString()
+              }))
               : []
           });
         });
 
       const fileName = `backup-${guild.id}-${timestamp}.json`;
-      const backupDir = path.join(__dirname, '../../../backups');
+      const backupDir = path.join(__dirname, "../../../backups");
       const filePath = path.join(backupDir, fileName);
 
       fs.mkdirSync(backupDir, { recursive: true });
@@ -84,13 +84,13 @@ module.exports = {
       const embed = new EmbedBuilder()
         .setTitle(`${emojis.backup} Backup concluído`)
         .setColor(colors.green)
-        .setDescription('A estrutura do servidor foi salva com segurança.')
+        .setDescription("A estrutura do servidor foi salva com segurança.")
         .addFields(
-          { name: 'Servidor', value: guild.name, inline: true },
-          { name: 'Cargos salvos', value: `${backupData.roles.length}`, inline: true },
-          { name: 'Canais salvos', value: `${backupData.channels.length}`, inline: true },
-          { name: 'Backup ID', value: `\`${timestamp}\``, inline: false },
-          { name: 'Restauração', value: `Use \`${message.client.prefix || '.'}restore ${timestamp}\` para restaurar.`, inline: false }
+          { name: "Servidor", value: guild.name, inline: true },
+          { name: "Cargos salvos", value: `${backupData.roles.length}`, inline: true },
+          { name: "Canais salvos", value: `${backupData.channels.length}`, inline: true },
+          { name: "Backup ID", value: `\`${timestamp}\``, inline: false },
+          { name: "Restauração", value: `Use \`${message.client.prefix || "."}restore ${timestamp}\` para restaurar.`, inline: false }
         )
         .setFooter({
           text: `${message.author.username}`,
@@ -101,20 +101,20 @@ module.exports = {
       await message.channel.send({ embeds: [embed] });
 
       await sendModLog(guild, {
-        action: 'Backup',
+        action: "Backup",
         target: message.author,
         moderator: message.author,
-        reason: 'Backup manual solicitado.',
+        reason: "Backup manual solicitado.",
         extraFields: [
-          { name: 'Cargos', value: `${backupData.roles.length}`, inline: true },
-          { name: 'Canais', value: `${backupData.channels.length}`, inline: true },
-          { name: 'Backup ID', value: `${timestamp}`, inline: false }
+          { name: "Cargos", value: `${backupData.roles.length}`, inline: true },
+          { name: "Canais", value: `${backupData.channels.length}`, inline: true },
+          { name: "Backup ID", value: `${timestamp}`, inline: false }
         ]
       });
 
     } catch (error) {
-      console.error('[BACKUP ERROR]', error);
-      return sendWarning(message, 'Não foi possível criar o backup.');
+      console.error("[BACKUP ERROR]", error);
+      return sendWarning(message, "Não foi possível criar o backup.");
     }
   }
 };

@@ -1,19 +1,19 @@
-const fs = require('fs');
-const path = require('path');
-const Logger = require('@logger');
+const fs = require("fs");
+const path = require("path");
+const Logger = require("@logger");
 
 async function loadEvents(client) {
-  const eventsPath = path.join(__dirname, '../../../src/events');
+  const eventsPath = path.join(__dirname, "../../../src/events");
   const eventFiles = fs
     .readdirSync(eventsPath)
-    .filter(file => file.endsWith('.js'));
+    .filter(file => file.endsWith(".js"));
 
   for (const file of eventFiles) {
     const filePath = path.join(eventsPath, file);
     try {
       const event = require(filePath);
 
-      if (!event.name || typeof event.execute !== 'function') {
+      if (!event.name || typeof event.execute !== "function") {
         Logger.warn(`[loadEvents] Evento inválido em: ${file}`);
         continue;
       }

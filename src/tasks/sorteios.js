@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
-const Giveaway = require('@models/Giveaway');
-const { finalizarSorteio } = require('@utils/sorteios');
-const Logger = require('@logger');
+const Giveaway = require("@models/Giveaway");
+const { finalizarSorteio } = require("@utils/sorteios");
+const Logger = require("@logger");
 
 /**
  * Finaliza sorteios vencidos automaticamente.
@@ -18,7 +18,7 @@ module.exports = (client) => {
     try {
       sorteios = await Giveaway.find({
         endsAt: { $lte: agora },
-        status: 'ativo'
+        status: "ativo"
       });
     } catch (err) {
       Logger.error(
@@ -37,15 +37,15 @@ module.exports = (client) => {
       try {
         
         await Giveaway.updateOne(
-          { _id: sorteio._id, status: 'ativo' },
-          { $set: { status: 'encerrando' } }
+          { _id: sorteio._id, status: "ativo" },
+          { $set: { status: "encerrando" } }
         );
 
         await finalizarSorteio(sorteio, client);
 
         await Giveaway.updateOne(
           { _id: sorteio._id },
-          { $set: { status: 'finalizado', endedAt: new Date() } }
+          { $set: { status: "finalizado", endedAt: new Date() } }
         );
 
         Logger.info(
@@ -53,13 +53,13 @@ module.exports = (client) => {
         );
 
       } catch (err) {
-        if (err.code === 10008 || err.message === 'GIVEAWAY_MESSAGE_DELETED') {
+        if (err.code === 10008 || err.message === "GIVEAWAY_MESSAGE_DELETED") {
           await Giveaway.updateOne(
             { _id: sorteio._id },
             {
               $set: {
-                status: 'cancelado',
-                cancelReason: 'MESSAGE_DELETED',
+                status: "cancelado",
+                cancelReason: "MESSAGE_DELETED",
                 endedAt: new Date()
               }
             }
@@ -73,7 +73,7 @@ module.exports = (client) => {
 
         await Giveaway.updateOne(
           { _id: sorteio._id },
-          { $set: { status: 'erro' } }
+          { $set: { status: "erro" } }
         );
 
         Logger.error(

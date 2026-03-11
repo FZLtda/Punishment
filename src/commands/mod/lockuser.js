@@ -1,18 +1,18 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder, PermissionsBitField } = require('discord.js');
-const { sendWarning } = require('@embeds/embedWarning');
-const { checkMemberGuard } = require('@permissions/memberGuards');
-const { sendModLog } = require('@modules/modlog');
-const { colors, emojis } = require('@config');
+const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const { sendWarning } = require("@embeds/embedWarning");
+const { checkMemberGuard } = require("@permissions/memberGuards");
+const { sendModLog } = require("@modules/modlog");
+const { colors, emojis } = require("@config");
 
 module.exports = {
-  name: 'lockuser',
-  description: 'Impede que um usuário envie mensagens no canal atual.',
-  usage: '${currentPrefix}lockuser <@usuário>',
-  category: 'Moderação',
-  userPermissions: ['ManageChannels'],
-  botPermissions: ['ManageChannels'],
+  name: "lockuser",
+  description: "Impede que um usuário envie mensagens no canal atual.",
+  usage: "${currentPrefix}lockuser <@usuário>",
+  category: "Moderação",
+  userPermissions: ["ManageChannels"],
+  botPermissions: ["ManageChannels"],
   deleteMessage: true,
 
   async execute(message, args) {
@@ -20,7 +20,7 @@ module.exports = {
       message.mentions.members.first() ||
       message.guild.members.cache.get(args[0]);
 
-    const isValid = await checkMemberGuard(message, target, 'role');
+    const isValid = await checkMemberGuard(message, target, "role");
     if (!isValid) return;
 
     try {
@@ -41,15 +41,15 @@ module.exports = {
       await message.channel.send({ embeds: [embed] });
 
       await sendModLog(message.guild, {
-        action: 'Bloqueio de Canal',
+        action: "Bloqueio de Canal",
         target: target.user,
         moderator: message.author,
         reason: `Usuário bloqueado de enviar mensagens no canal ${message.channel}`,
       });
 
     } catch (error) {
-      console.error('[COMMAND: lockuser] Erro ao aplicar bloqueio:', error);
-      await sendWarning(message, 'Ocorreu um erro ao tentar bloquear o usuário neste canal.');
+      console.error("[COMMAND: lockuser] Erro ao aplicar bloqueio:", error);
+      await sendWarning(message, "Ocorreu um erro ao tentar bloquear o usuário neste canal.");
     }
   },
 };

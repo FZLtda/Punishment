@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const Logger = require('@logger');
-const { bot } = require('@config');
+const Logger = require("@logger");
+const { bot } = require("@config");
 
 let shuttingDown = false;
 let resources = {
@@ -33,7 +33,7 @@ async function gracefulExit(code = 0) {
   Logger.warn(`[Shutdown] Encerrando ${bot.name}...`);
 
   const forceExit = setTimeout(() => {
-    Logger.fatal('[Shutdown] Timeout excedido. Encerramento forçado.');
+    Logger.fatal("[Shutdown] Timeout excedido. Encerramento forçado.");
     process.exit(code);
   }, SHUTDOWN_TIMEOUT);
 
@@ -42,9 +42,9 @@ async function gracefulExit(code = 0) {
     if (resources.discordClient?.destroy) {
       try {
         await resources.discordClient.destroy();
-        Logger.info('[Shutdown] Discord desconectado com sucesso.');
+        Logger.info("[Shutdown] Discord desconectado com sucesso.");
       } catch (err) {
-        Logger.error('[Shutdown] Erro ao desconectar Discord.', {
+        Logger.error("[Shutdown] Erro ao desconectar Discord.", {
           message: err.message,
           stack: err.stack
         });
@@ -54,9 +54,9 @@ async function gracefulExit(code = 0) {
     if (resources.mongo?.connection?.close) {
       try {
         await resources.mongo.connection.close();
-        Logger.info('[Shutdown] Conexão com MongoDB encerrada.');
+        Logger.info("[Shutdown] Conexão com MongoDB encerrada.");
       } catch (err) {
-        Logger.error('[Shutdown] Erro ao encerrar MongoDB.', {
+        Logger.error("[Shutdown] Erro ao encerrar MongoDB.", {
           message: err.message,
           stack: err.stack
         });
@@ -64,7 +64,7 @@ async function gracefulExit(code = 0) {
     }
 
   } catch (err) {
-    Logger.error('[Shutdown] Erro inesperado durante encerramento.', {
+    Logger.error("[Shutdown] Erro inesperado durante encerramento.", {
       message: err.message,
       stack: err.stack
     });

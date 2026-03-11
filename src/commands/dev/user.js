@@ -1,13 +1,13 @@
-'use strict';
+"use strict";
 
-const { bot } = require('@config');
-const { sendWarning } = require('@embeds/embedWarning');
+const { bot } = require("@config");
+const { sendWarning } = require("@embeds/embedWarning");
 
 module.exports = {
-  name: 'user',
-  description: 'Retorna o ID do usuário mencionado ou de quem executou o comando.',
-  usage: '${currentPrefix}user [@usuário]',
-  category: 'Administrador',
+  name: "user",
+  description: "Retorna o ID do usuário mencionado ou de quem executou o comando.",
+  usage: "${currentPrefix}user [@usuário]",
+  category: "Administrador",
   deleteMessage: true,
 
   /**
@@ -24,7 +24,7 @@ module.exports = {
       message.author;
 
     if (!targetUser) {
-      return sendWarning(message, 'Não foi possível identificar o usuário.');
+      return sendWarning(message, "Não foi possível identificar o usuário.");
     }
 
     await message.channel.send({

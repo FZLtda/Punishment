@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 /**
  * Restaura cargos e canais ausentes do servidor mantendo posições e hierarquia.
@@ -8,29 +8,29 @@ const {
   ChannelType,
   PermissionsBitField,
   EmbedBuilder
-} = require('discord.js');
+} = require("discord.js");
 
-const { colors, emojis } = require('@config');
-const { sendWarning } = require('@embeds/embedWarning');
-const { sendModLog } = require('@modules/modlog');
-const fs = require('fs');
-const path = require('path');
+const { colors, emojis } = require("@config");
+const { sendWarning } = require("@embeds/embedWarning");
+const { sendModLog } = require("@modules/modlog");
+const fs = require("fs");
+const path = require("path");
 
 module.exports = {
-  name: 'restore',
-  description: 'Restaura cargos e canais ausentes do servidor mantendo posições e hierarquia.',
-  usage: '${currentPrefix}restore <backupId>',
-  userPermissions: ['Administrator'],
-  botPermissions: ['ManageGuild', 'ManageChannels', 'ManageRoles'],
+  name: "restore",
+  description: "Restaura cargos e canais ausentes do servidor mantendo posições e hierarquia.",
+  usage: "${currentPrefix}restore <backupId>",
+  userPermissions: ["Administrator"],
+  botPermissions: ["ManageGuild", "ManageChannels", "ManageRoles"],
   deleteMessage: true,
 
   async execute(message, args) {
     const backupId = args[0];
     if (!backupId)
-      return sendWarning(message, 'Você precisa fornecer o ID do backup.');
+      return sendWarning(message, "Você precisa fornecer o ID do backup.");
 
     const fileName = `backup-${message.guild.id}-${backupId}.json`;
-    const filePath = path.join(__dirname, '../../../backups', fileName);
+    const filePath = path.join(__dirname, "../../../backups", fileName);
 
     if (!fs.existsSync(filePath)) {
       return sendWarning(message, `Backup com ID \`${backupId}\` não encontrado.`);
@@ -38,11 +38,11 @@ module.exports = {
 
     let backupData;
     try {
-      const raw = fs.readFileSync(filePath, 'utf8');
+      const raw = fs.readFileSync(filePath, "utf8");
       backupData = JSON.parse(raw);
     } catch (err) {
-      console.error('[RESTORE-PARSE]', err);
-      return sendWarning(message, 'Erro ao ler o backup. O arquivo pode estar corrompido.');
+      console.error("[RESTORE-PARSE]", err);
+      return sendWarning(message, "Erro ao ler o backup. O arquivo pode estar corrompido.");
     }
 
     const guild = message.guild;
@@ -150,9 +150,9 @@ module.exports = {
       .setColor(colors.green)
       .setDescription(`Itens ausentes restaurados com sucesso do backup \`${backupId}\`.`)
       .addFields(
-        { name: 'Cargos restaurados', value: `${restoredRoles.length}`, inline: true },
-        { name: 'Categorias restauradas', value: `${restoredCategories.length}`, inline: true },
-        { name: 'Canais restaurados', value: `${restoredChannels.length}`, inline: true }
+        { name: "Cargos restaurados", value: `${restoredRoles.length}`, inline: true },
+        { name: "Categorias restauradas", value: `${restoredCategories.length}`, inline: true },
+        { name: "Canais restaurados", value: `${restoredChannels.length}`, inline: true }
       )
       .setFooter({
         text: `${message.author.tag}`,
@@ -163,14 +163,14 @@ module.exports = {
     await message.channel.send({ embeds: [embed] });
 
     await sendModLog(guild, {
-      action: 'Restore',
+      action: "Restore",
       target: message.author,
       moderator: message.author,
       reason: `Restore de itens ausentes mantendo hierarquia (Backup ${backupId})`,
       extraFields: [
-        { name: 'Cargos', value: `${restoredRoles.length}`, inline: true },
-        { name: 'Categorias', value: `${restoredCategories.length}`, inline: true },
-        { name: 'Canais', value: `${restoredChannels.length}`, inline: true }
+        { name: "Cargos", value: `${restoredRoles.length}`, inline: true },
+        { name: "Categorias", value: `${restoredCategories.length}`, inline: true },
+        { name: "Canais", value: `${restoredChannels.length}`, inline: true }
       ]
     });
   }

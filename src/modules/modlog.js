@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const {
   EmbedBuilder,
@@ -6,11 +6,11 @@ const {
   TextChannel,
   User,
   GuildMember
-} = require('discord.js');
+} = require("discord.js");
 
-const GuildSettings = require('@models/GuildSettings');
-const { colors, bot, emojis } = require('@config');
-const Logger = require('@logger');
+const GuildSettings = require("@models/GuildSettings");
+const { colors, bot, emojis } = require("@config");
+const Logger = require("@logger");
 
 /**
  * Resolve dinamicamente os campos relacionados ao alvo da ação.
@@ -36,7 +36,7 @@ function resolveTargetLines(target) {
   }
 
   // Emoji
-  if (typeof target.imageURL === 'function' && target.id) {
+  if (typeof target.imageURL === "function" && target.id) {
     return [
       `**Nome:** ${target.name}`,
       `**ID:** ${target.id}`
@@ -44,7 +44,7 @@ function resolveTargetLines(target) {
   }
 
   // Fallback seguro
-  if (typeof target === 'object' && target.id) {
+  if (typeof target === "object" && target.id) {
     return [
       `**ID:** ${target.id}`
     ];
@@ -96,7 +96,7 @@ function buildEmbedDescription({
   // Ação (sempre por último)
   lines.push(`**Ação:** ${String(action).toLowerCase()}`);
 
-  return lines.join('\n');
+  return lines.join("\n");
 }
 
 /**
@@ -107,12 +107,12 @@ async function sendModLog(guild, options) {
     action,
     target = null,
     moderator,
-    reason = 'Não especificado.',
+    reason = "Não especificado.",
     channel = null,
     extraFields = []
   } = options;
 
-  const context = `[MODLOG][${guild?.id ?? 'unknown'}]`;
+  const context = `[MODLOG][${guild?.id ?? "unknown"}]`;
 
   try {
     if (!guild?.id) {
@@ -132,7 +132,7 @@ async function sendModLog(guild, options) {
     const embed = new EmbedBuilder()
       .setColor(colors.yellow)
       .setAuthor({
-        name: 'Registro de Moderação',
+        name: "Registro de Moderação",
         iconURL: emojis.logs
       })
       .setDescription(

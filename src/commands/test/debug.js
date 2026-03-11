@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
-const { bot } = require('@config');
-const { sendWarning } = require('@embeds/embedWarning');
-const Logger = require('@logger');
+const { bot } = require("@config");
+const { sendWarning } = require("@embeds/embedWarning");
+const Logger = require("@logger");
 
 module.exports = {
-  name: 'debug',
-  description: 'Simula falhas controladas para testar o monitoramento do status.',
-  usage: '${currentPrefix}debug <action>',
-  category: 'Dono',
+  name: "debug",
+  description: "Simula falhas controladas para testar o monitoramento do status.",
+  usage: "${currentPrefix}debug <action>",
+  category: "Dono",
   deleteMessage: true,
 
   /**
@@ -22,7 +22,7 @@ module.exports = {
     const client = message.client;
     const action = args[0]?.toLowerCase();
 
-    if (action === 'fault_handler') {
+    if (action === "fault_handler") {
       const originalCommands = client.commands;
 
       try {
@@ -32,21 +32,21 @@ module.exports = {
 
         Logger.warn(`[DEBUG] Simulação de falha no Interaction Engine iniciada por ${message.author.tag}`);
         
-        message.channel.send('⚠️ **SIMULAÇÃO:** Interaction Engine (Command Handler) agora reportará FALHA ao Better Stack.\nRestaurando em **60 segundos**...');
+        message.channel.send("⚠️ **SIMULAÇÃO:** Interaction Engine (Command Handler) agora reportará FALHA ao Better Stack.\nRestaurando em **60 segundos**...");
 
         setTimeout(() => {
           client.commands = originalCommands;
-          Logger.info('[DEBUG] Monitoramento do Interaction Engine restaurado com sucesso.');
-          message.channel.send('✅ **RESTAURADO:** O Interaction Engine voltou ao normal.');
+          Logger.info("[DEBUG] Monitoramento do Interaction Engine restaurado com sucesso.");
+          message.channel.send("✅ **RESTAURADO:** O Interaction Engine voltou ao normal.");
         }, 60000);
 
       } catch (error) {
         client.commands = originalCommands;
-        Logger.error('[DEBUG] Erro ao executar simulação de falha:', error);
+        Logger.error("[DEBUG] Erro ao executar simulação de falha:", error);
       }
       return;
     }
 
-    return sendWarning(message, 'Ações disponíveis: `fault_handler`');
+    return sendWarning(message, "Ações disponíveis: `fault_handler`");
   }
 };

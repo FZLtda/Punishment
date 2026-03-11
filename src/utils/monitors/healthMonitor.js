@@ -1,13 +1,13 @@
-const mongoose = require('mongoose');
-const { performance } = require('perf_hooks');
+const mongoose = require("mongoose");
+const { performance } = require("perf_hooks");
 
 async function getSystemHealth(client) {
   const mongoStatus = {
     state: mongoose.connection.readyState,
     status:
       mongoose.connection.readyState === 1
-        ? 'Conectado'
-        : 'Desconectado'
+        ? "Conectado"
+        : "Desconectado"
   };
 
   const discordLatency = client.ws.ping;

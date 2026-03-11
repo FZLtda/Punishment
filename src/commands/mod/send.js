@@ -1,25 +1,25 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder, PermissionFlagsBits, ChannelType } = require('discord.js');
-const { colors, emojis } = require('@config');
-const { sendWarning } = require('@embeds/embedWarning');
-const { sendModLog } = require('@modules/modlog');
+const { EmbedBuilder, PermissionFlagsBits, ChannelType } = require("discord.js");
+const { colors, emojis } = require("@config");
+const { sendWarning } = require("@embeds/embedWarning");
+const { sendModLog } = require("@modules/modlog");
 
 module.exports = {
-  name: 'send',
-  description: 'Envia uma mensagem para um canal específico ou para o canal atual.',
-  usage: '${currentPrefix}send [#canal] <mensagem>',
-  userPermissions: ['ManageMessages'],
-  botPermissions: ['SendMessages'],
+  name: "send",
+  description: "Envia uma mensagem para um canal específico ou para o canal atual.",
+  usage: "${currentPrefix}send [#canal] <mensagem>",
+  userPermissions: ["ManageMessages"],
+  botPermissions: ["SendMessages"],
   deleteMessage: true,
 
   async execute(message, args) {
     const rawContent = message.content;
-    const commandLength = rawContent.indexOf(' ') > -1 ? rawContent.indexOf(' ') + 1 : rawContent.length;
+    const commandLength = rawContent.indexOf(" ") > -1 ? rawContent.indexOf(" ") + 1 : rawContent.length;
     let afterCommand = rawContent.slice(commandLength).trim();
 
     if (!afterCommand) {
-      return sendWarning(message, 'Mencione um canal ou digite uma mensagem.');
+      return sendWarning(message, "Mencione um canal ou digite uma mensagem.");
     }
 
     const firstMention = message.mentions.channels.first();
@@ -30,10 +30,10 @@ module.exports = {
       targetChannel = firstMention;
       content = afterCommand.slice(`<#${firstMention.id}>`.length).trim();
 
-      if (!content) return sendWarning(message, 'Você precisa fornecer uma mensagem para enviar.');
+      if (!content) return sendWarning(message, "Você precisa fornecer uma mensagem para enviar.");
 
       if (targetChannel.type !== ChannelType.GuildText) {
-        return sendWarning(message, 'Só é possível enviar mensagens em canais de texto.');
+        return sendWarning(message, "Só é possível enviar mensagens em canais de texto.");
       }
 
     } else {
@@ -42,7 +42,7 @@ module.exports = {
     }
 
     if (content.length > 2000) {
-      return sendWarning(message, 'A mensagem é muito longa. Limite máximo: 2000 caracteres.');
+      return sendWarning(message, "A mensagem é muito longa. Limite máximo: 2000 caracteres.");
     }
 
     const botMember = await message.guild.members.fetch(message.client.user.id);
@@ -77,16 +77,16 @@ module.exports = {
 
       // Log no modlog
       await sendModLog(message.guild, {
-        action: 'Send',
+        action: "Send",
         target: targetChannel,
         moderator: message.author,
-        reason: 'Envio manual de mensagem',
-        extraFields: [{ name: 'Conteúdo', value: content.slice(0, 1000) }],
+        reason: "Envio manual de mensagem",
+        extraFields: [{ name: "Conteúdo", value: content.slice(0, 1000) }],
       });
 
     } catch (error) {
-      console.error('[send] Erro ao enviar mensagem:', error);
-      return sendWarning(message, 'Não foi possível enviar a mensagem devido a um erro inesperado.');
+      console.error("[send] Erro ao enviar mensagem:", error);
+      return sendWarning(message, "Não foi possível enviar a mensagem devido a um erro inesperado.");
     }
   }
 };

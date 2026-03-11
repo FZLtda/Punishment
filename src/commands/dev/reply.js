@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
-const { ChannelType } = require('discord.js');
-const { bot } = require('@config');
-const { sendWarning } = require('@embeds/embedWarning');
+const { ChannelType } = require("discord.js");
+const { bot } = require("@config");
+const { sendWarning } = require("@embeds/embedWarning");
 
 module.exports = {
-  name: 'reply',
-  description: 'Responde uma mensagem específica pelo ID, mesmo que esteja em outro canal.',
-  usage: '${currentPrefix}reply <id_mensagem> <conteúdo>',
-  category: 'Administrador',
+  name: "reply",
+  description: "Responde uma mensagem específica pelo ID, mesmo que esteja em outro canal.",
+  usage: "${currentPrefix}reply <id_mensagem> <conteúdo>",
+  category: "Administrador",
   deleteMessage: true,
 
   /**
@@ -22,11 +22,11 @@ module.exports = {
 
     const messageId = args[0];
     if (!messageId)
-      return sendWarning(message, 'Você precisa informar o ID da mensagem.');
+      return sendWarning(message, "Você precisa informar o ID da mensagem.");
 
-    const replyContent = args.slice(1).join(' ');
+    const replyContent = args.slice(1).join(" ");
     if (!replyContent)
-      return sendWarning(message, 'Você precisa informar o conteúdo da resposta.');
+      return sendWarning(message, "Você precisa informar o conteúdo da resposta.");
 
     try {
       await message.guild.channels.fetch();
@@ -54,7 +54,7 @@ module.exports = {
       }
 
       if (!targetMessage)
-        return sendWarning(message, 'Mensagem não encontrada em nenhum canal do servidor.');
+        return sendWarning(message, "Mensagem não encontrada em nenhum canal do servidor.");
 
       await targetMessage.reply({
         content: replyContent,
@@ -62,8 +62,8 @@ module.exports = {
       });
 
     } catch (error) {
-      console.error('[reply] Erro ao responder mensagem:', error);
-      return sendWarning(message, 'Não foi possível responder a mensagem.');
+      console.error("[reply] Erro ao responder mensagem:", error);
+      return sendWarning(message, "Não foi possível responder a mensagem.");
     }
   }
 };

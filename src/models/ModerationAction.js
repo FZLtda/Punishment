@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const ModerationActionSchema = new mongoose.Schema({
   guildId: {
@@ -19,12 +19,12 @@ const ModerationActionSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['ban', 'kick', 'mute', 'warn'],
+    enum: ["ban", "kick", "mute", "warn"],
     required: true
   },
   reason: {
     type: String,
-    default: 'Não especificado.'
+    default: "Não especificado."
   },
   roleId: {
     type: String,
@@ -45,7 +45,7 @@ const ModerationActionSchema = new mongoose.Schema({
     default: {}
   }
 }, {
-  timestamps: { createdAt: 'createdAt', updatedAt: false }
+  timestamps: { createdAt: "createdAt", updatedAt: false }
 });
 
-module.exports = mongoose.model('ModerationAction', ModerationActionSchema);
+module.exports = mongoose.model("ModerationAction", ModerationActionSchema);

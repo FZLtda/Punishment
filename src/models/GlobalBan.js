@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const { Schema, model } = require('mongoose');
+const { Schema, model } = require("mongoose");
 
 const GlobalBanSchema = new Schema({
   userId: {
@@ -10,7 +10,7 @@ const GlobalBanSchema = new Schema({
   },
   reason: {
     type: String,
-    default: 'Sem motivo fornecido.'
+    default: "Sem motivo fornecido."
   },
   bannedAt: {
     type: Date,
@@ -22,4 +22,4 @@ const GlobalBanSchema = new Schema({
   }
 });
 
-module.exports = model('GlobalBan', GlobalBanSchema);
+module.exports = model("GlobalBan", GlobalBanSchema);

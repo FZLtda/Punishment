@@ -1,15 +1,15 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
-const { sendWarning } = require('@embeds/embedWarning');
-const Logger = require('@logger');
-const { colors, emojis } = require('@config');
+const { EmbedBuilder, PermissionFlagsBits } = require("discord.js");
+const { sendWarning } = require("@embeds/embedWarning");
+const Logger = require("@logger");
+const { colors, emojis } = require("@config");
 
 module.exports = {
-  name: 'removeroles',
-  description: 'Remove todos os cargos de um usuário (exceto o cargo padrão).',
-  usage: 'removeroles @usuário',
-  category: 'Moderação',
+  name: "removeroles",
+  description: "Remove todos os cargos de um usuário (exceto o cargo padrão).",
+  usage: "removeroles @usuário",
+  category: "Moderação",
   permissions: [PermissionFlagsBits.ManageRoles],
   botPermissions: [PermissionFlagsBits.ManageRoles],
   deleteMessage: true,
@@ -21,7 +21,7 @@ module.exports = {
     if (!target) {
       return sendWarning(
         message,
-        'Você precisa mencionar o membro de quem os cargos serão removidos.'
+        "Você precisa mencionar o membro de quem os cargos serão removidos."
       );
     }
 
@@ -33,7 +33,7 @@ module.exports = {
     if (!removableRoles.size) {
       return sendWarning(
         message,
-        'Nenhum cargo pode ser removido desse usuário.'
+        "Nenhum cargo pode ser removido desse usuário."
       );
     }
 
@@ -50,8 +50,8 @@ module.exports = {
         .setDescription(`${target} teve os seguintes cargos removidos:`)
         .addFields([
           {
-            name: 'Cargos removidos',
-            value: removableRoles.map(role => `• ${role}`).join('\n'),
+            name: "Cargos removidos",
+            value: removableRoles.map(role => `• ${role}`).join("\n"),
           }
         ])
         .setFooter({
@@ -69,7 +69,7 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Não foi possível remover os cargos do usuário.'
+        "Não foi possível remover os cargos do usuário."
       );
     }
   },

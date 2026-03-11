@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder } = require('discord.js');
-const GlobalBan = require('@models/GlobalBan');
-const { colors, emojis } = require('@config');
-const { isOnCooldown } = require('@cache/globalBanCache');
+const { EmbedBuilder } = require("discord.js");
+const GlobalBan = require("@models/GlobalBan");
+const { colors, emojis } = require("@config");
+const { isOnCooldown } = require("@cache/globalBanCache");
 
 /**
  * Verifica se o usuário está banido globalmente e envia a mensagem adequada.
@@ -25,12 +25,12 @@ module.exports = async function checkGlobalBan(context) {
     .setColor(colors.yellow)
     .setTitle(`${emojis.attentionEmoji} Permanent Global Ban`)
     .setDescription([
-      'You have been **permanently banned** from this bot for violating our **Terms of Service**.',
-      'This decision is **final**, and all access to commands and features has been **permanently revoked**.',
-      '',
-      'Appeals will only be reviewed if a mistake is suspected.',
-      'Contact: **contato@funczero.xyz**'
-    ].join('\n'))
+      "You have been **permanently banned** from this bot for violating our **Terms of Service**.",
+      "This decision is **final**, and all access to commands and features has been **permanently revoked**.",
+      "",
+      "Appeals will only be reviewed if a mistake is suspected.",
+      "Contact: **contato@funczero.xyz**"
+    ].join("\n"))
     .setFooter({
       text: user.username,
       iconURL: user.displayAvatarURL({ dynamic: true })
@@ -38,7 +38,7 @@ module.exports = async function checkGlobalBan(context) {
     .setTimestamp();
 
   try {
-    if (typeof context.reply === 'function') {
+    if (typeof context.reply === "function") {
       await context.reply({
         embeds: [embed],
         allowedMentions: { repliedUser: false },

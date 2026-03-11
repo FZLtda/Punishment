@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-const os = require('os');
-const Logger = require('@logger');
-const { bot } = require('@config');
-const packageJson = require('@package.json');
+const os = require("os");
+const Logger = require("@logger");
+const { bot } = require("@config");
+const packageJson = require("@package.json");
 
 module.exports = {
   /**
@@ -16,7 +16,7 @@ module.exports = {
     const totalGuilds = client.guilds.cache.size;
     const totalUsers = client.users.cache.size;
     const platformInfo = `${os.type()} ${os.arch()}`;
-    const discordJsVersion = packageJson.dependencies['discord.js']?.replace('^', '') || 'Desconhecida';
+    const discordJsVersion = packageJson.dependencies["discord.js"]?.replace("^", "") || "Desconhecida";
     const versionInfo = `Node.js ${process.version} | Discord.js v${discordJsVersion}`;
 
     Logger.info(`Servidores ativos     : ${totalGuilds}`);

@@ -1,16 +1,16 @@
-'use strict';
+"use strict";
 
-const fs               = require('fs');
-const path             = require('path');
-const { bot, emojis }  = require('@config');
-const { sendWarning }  = require('@embeds/embedWarning');
+const fs               = require("fs");
+const path             = require("path");
+const { bot, emojis }  = require("@config");
+const { sendWarning }  = require("@embeds/embedWarning");
 
 module.exports = {
-  name: 'reload',
-  aliases: ['rl'],
-  description: 'Recarrega comandos, eventos ou todos os módulos do bot.',
-  usage: 'reload <command|event|all> [nome]',
-  category: 'Administrador',
+  name: "reload",
+  aliases: ["rl"],
+  description: "Recarrega comandos, eventos ou todos os módulos do bot.",
+  usage: "reload <command|event|all> [nome]",
+  category: "Administrador",
   deleteMessage: true,
 
   async execute(message, args) {
@@ -20,31 +20,31 @@ module.exports = {
     const type = args[0]?.toLowerCase();
     const target = args[1]?.toLowerCase();
 
-    const validTypes = ['command', 'commands', 'comando', 'event', 'events', 'all'];
+    const validTypes = ["command", "commands", "comando", "event", "events", "all"];
 
     if (!type || !validTypes.includes(type)) {
       return sendWarning(
         message,
-        'Uso correto: `reload <command|event|all> [nome]`'
+        "Uso correto: `reload <command|event|all> [nome]`"
       );
     }
 
     try {
-      if (type === 'all') {
-        const commandsDir = path.resolve(__dirname, '..', '..', 'commands');
-        const eventsDir = path.resolve(__dirname, '..', '..', 'events');
+      if (type === "all") {
+        const commandsDir = path.resolve(__dirname, "..", "..", "commands");
+        const eventsDir = path.resolve(__dirname, "..", "..", "events");
 
-        await reloadDirectory(commandsDir, client.commands, 'command');
-        await reloadDirectory(eventsDir, client, 'event');
+        await reloadDirectory(commandsDir, client.commands, "command");
+        await reloadDirectory(eventsDir, client, "event");
 
         return message.channel.send(
           `${emojis.done} Todos os módulos foram recarregados com sucesso.`
         );
       }
 
-      if (['command', 'commands', 'comando'].includes(type)) {
+      if (["command", "commands", "comando"].includes(type)) {
         if (!target)
-          return sendWarning(message, 'Especifique o nome do comando.');
+          return sendWarning(message, "Especifique o nome do comando.");
 
         const command =
           client.commands.get(target) ||
@@ -54,20 +54,20 @@ module.exports = {
           return sendWarning(message, `Comando \`${target}\` não encontrado.`);
 
         const filePath = findFile(
-          path.resolve(__dirname, '..', '..', 'commands'),
+          path.resolve(__dirname, "..", "..", "commands"),
           command.name
         );
 
         if (!filePath)
-          return sendWarning(message, `Arquivo do comando não encontrado.`);
+          return sendWarning(message, "Arquivo do comando não encontrado.");
 
         delete require.cache[require.resolve(filePath)];
         client.commands.delete(command.name);
 
         const updatedCommand = require(filePath);
 
-        if (!updatedCommand?.name || typeof updatedCommand.execute !== 'function') {
-          throw new Error('Estrutura inválida do comando.');
+        if (!updatedCommand?.name || typeof updatedCommand.execute !== "function") {
+          throw new Error("Estrutura inválida do comando.");
         }
 
         client.commands.set(updatedCommand.name, updatedCommand);
@@ -77,11 +77,11 @@ module.exports = {
         );
       }
 
-      if (['event', 'events'].includes(type)) {
+      if (["event", "events"].includes(type)) {
         if (!target)
-          return sendWarning(message, 'Especifique o nome do evento.');
+          return sendWarning(message, "Especifique o nome do evento.");
 
-        const eventsDir = path.resolve(__dirname, '..', '..', 'events');
+        const eventsDir = path.resolve(__dirname, "..", "..", "events");
         const filePath = findFile(eventsDir, target);
 
         if (!filePath)
@@ -91,8 +91,8 @@ module.exports = {
 
         const updatedEvent = require(filePath);
 
-        if (!updatedEvent?.name || typeof updatedEvent.execute !== 'function') {
-          throw new Error('Estrutura inválida do evento.');
+        if (!updatedEvent?.name || typeof updatedEvent.execute !== "function") {
+          throw new Error("Estrutura inválida do evento.");
         }
 
         client.removeAllListeners(updatedEvent.name);
@@ -112,7 +112,7 @@ module.exports = {
         );
       }
     } catch (error) {
-      console.error('[RELOAD ERROR]', error);
+      console.error("[RELOAD ERROR]", error);
 
       return sendWarning(
         message,
@@ -130,13 +130,13 @@ async function reloadDirectory(directory, collection, type) {
 
     const module = require(file);
 
-    if (type === 'command') {
+    if (type === "command") {
       if (!module?.name) continue;
       collection.set(module.name, module);
     }
 
-    if (type === 'event') {
-      if (!module?.name || typeof module.execute !== 'function') continue;
+    if (type === "event") {
+      if (!module?.name || typeof module.execute !== "function") continue;
 
       collection.removeAllListeners(module.name);
 
@@ -155,7 +155,7 @@ async function reloadDirectory(directory, collection, type) {
 
 function findFile(directory, name) {
   const files = getAllFiles(directory);
-  return files.find(file => path.basename(file, '.js') === name);
+  return files.find(file => path.basename(file, ".js") === name);
 }
 
 function getAllFiles(dir) {
@@ -168,7 +168,7 @@ function getAllFiles(dir) {
 
     if (stat && stat.isDirectory()) {
       results = results.concat(getAllFiles(fullPath));
-    } else if (file.endsWith('.js')) {
+    } else if (file.endsWith(".js")) {
       results.push(fullPath);
     }
   }

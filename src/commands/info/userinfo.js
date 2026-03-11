@@ -1,14 +1,14 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder } = require('discord.js');
-const { colors, emojis } = require('@config');
+const { EmbedBuilder } = require("discord.js");
+const { colors, emojis } = require("@config");
 
 module.exports = {
-  name: 'userinfo',
-  description: 'Exibe informações detalhadas sobre um usuário.',
-  usage: '${currentPrefix}userinfo [@usuário|ID]',
-  category: 'Informação',
-  botPermissions: ['SendMessages'],
+  name: "userinfo",
+  description: "Exibe informações detalhadas sobre um usuário.",
+  usage: "${currentPrefix}userinfo [@usuário|ID]",
+  category: "Informação",
+  botPermissions: ["SendMessages"],
   deleteMessage: true,
 
   async execute(message, args) {
@@ -21,11 +21,11 @@ module.exports = {
     const cargos = membro.roles.cache
       .filter(role => role.id !== message.guild.id)
       .map(role => role.toString())
-      .join(', ') || 'Nenhum';
+      .join(", ") || "Nenhum";
 
     const formatarData = timestamp => {
       const data = new Date(timestamp);
-      return data.toLocaleDateString('pt-BR') + ' às ' + data.toLocaleTimeString('pt-BR');
+      return data.toLocaleDateString("pt-BR") + " às " + data.toLocaleTimeString("pt-BR");
     };
 
     const embed = new EmbedBuilder()
@@ -33,11 +33,11 @@ module.exports = {
       .setColor(colors.red)
       .setThumbnail(user.displayAvatarURL({ dynamic: true }))
       .addFields(
-        { name: '**Usuário**', value: `${user.tag}`, inline: false },
-        { name: '**ID**', value: `\`${user.id}\``, inline: false },
-        { name: '**Conta criada**', value: formatarData(user.createdAt), inline: false },
-        { name: '**Entrou no servidor**', value: formatarData(membro.joinedAt), inline: false },
-        { name: '**Cargos**', value: cargos, inline: false }
+        { name: "**Usuário**", value: `${user.tag}`, inline: false },
+        { name: "**ID**", value: `\`${user.id}\``, inline: false },
+        { name: "**Conta criada**", value: formatarData(user.createdAt), inline: false },
+        { name: "**Entrou no servidor**", value: formatarData(membro.joinedAt), inline: false },
+        { name: "**Cargos**", value: cargos, inline: false }
       )
       .setFooter({
         text: `${message.author.tag}`,

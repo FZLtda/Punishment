@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const axios = require('axios');
+const axios = require("axios");
 
 const { DEEPL_API_KEY, DEEPL_API_URL } = process.env;
 
@@ -10,13 +10,13 @@ const { DEEPL_API_KEY, DEEPL_API_URL } = process.env;
  * @param {string} targetLang - Idioma de destino (ex: 'EN', 'PT-BR').
  * @returns {Promise<string>} Texto traduzido.
  */
-async function translateText(text, targetLang = 'PT-BR') {
+async function translateText(text, targetLang = "PT-BR") {
   if (!DEEPL_API_KEY) {
-    throw new Error('[DeepL] Chave da API ausente no ambiente.');
+    throw new Error("[DeepL] Chave da API ausente no ambiente.");
   }
 
-  if (!text || typeof text !== 'string') {
-    throw new TypeError('[DeepL] Texto inválido fornecido para tradução.');
+  if (!text || typeof text !== "string") {
+    throw new TypeError("[DeepL] Texto inválido fornecido para tradução.");
   }
 
   const apiUrl = DEEPL_API_URL;
@@ -32,8 +32,8 @@ async function translateText(text, targetLang = 'PT-BR') {
       params.toString(),
       {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `DeepL-Auth-Key ${DEEPL_API_KEY}`
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": `DeepL-Auth-Key ${DEEPL_API_KEY}`
         },
         timeout: 8000
       }
@@ -42,8 +42,8 @@ async function translateText(text, targetLang = 'PT-BR') {
     const translatedText = data?.translations?.[0]?.text;
 
     if (!translatedText) {
-      console.warn('[DeepL] Nenhuma tradução retornada:', text);
-      return 'Não foi possível traduzir a mensagem.';
+      console.warn("[DeepL] Nenhuma tradução retornada:", text);
+      return "Não foi possível traduzir a mensagem.";
     }
 
     return translatedText;
@@ -51,12 +51,12 @@ async function translateText(text, targetLang = 'PT-BR') {
     const status = error.response?.status;
     const message = error.response?.data?.message || error.message;
 
-    console.error('[DeepL] Erro na tradução:', {
+    console.error("[DeepL] Erro na tradução:", {
       status,
       message
     });
 
-    return 'Não foi possível conectar com a API do DeepL.';
+    return "Não foi possível conectar com a API do DeepL.";
   }
 }
 

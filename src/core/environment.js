@@ -1,15 +1,15 @@
-'use strict';
+"use strict";
 
-const Logger = require('@logger');
+const Logger = require("@logger");
 
 /**
  * Lista de variáveis de ambiente obrigatórias agrupadas por responsabilidade
  */
 const REQUIRED_ENV_VARS = {
-  Discord: ['TOKEN', 'CLIENT_ID', 'OWNER_ID', 'DEFAULT_PREFIX', 'COMMAND_SCOPE'],
-  MongoDB: ['MONGO_URI'],
-  Webhook: ['WEBHOOK', 'LOG_CHANNEL'],
-  Logging: ['LOG_LEVEL']
+  Discord: ["TOKEN", "CLIENT_ID", "OWNER_ID", "DEFAULT_PREFIX", "COMMAND_SCOPE"],
+  MongoDB: ["MONGO_URI"],
+  Webhook: ["WEBHOOK", "LOG_CHANNEL"],
+  Logging: ["LOG_LEVEL"]
 };
 
 /**
@@ -36,13 +36,13 @@ function validateEnvironment() {
     });
 
     Logger.fatal(
-      `Inicialização abortada. Variáveis faltando: ${missing.map(m => m.key).join(', ')}`
+      `Inicialização abortada. Variáveis faltando: ${missing.map(m => m.key).join(", ")}`
     );
-    Logger.warn('Verifique seu arquivo .env e defina as variáveis necessárias.');
+    Logger.warn("Verifique seu arquivo .env e defina as variáveis necessárias.");
     process.exit(1);
   }
 
-  Logger.info('Todas as variáveis de ambiente obrigatórias foram validadas com sucesso.');
+  Logger.info("Todas as variáveis de ambiente obrigatórias foram validadas com sucesso.");
 }
 
 module.exports = {

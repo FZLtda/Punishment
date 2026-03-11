@@ -1,19 +1,19 @@
-'use strict';
+"use strict";
 
-const { PermissionsBitField } = require('discord.js');
-const { sendWarning } = require('@embeds/embedWarning');
-const { finalizarSorteio } = require('@utils/sorteios');
-const Giveaway = require('@models/Giveaway');
-const { emojis } = require('@config');
-const logger = require('@logger');
+const { PermissionsBitField } = require("discord.js");
+const { sendWarning } = require("@embeds/embedWarning");
+const { finalizarSorteio } = require("@utils/sorteios");
+const Giveaway = require("@models/Giveaway");
+const { emojis } = require("@config");
+const logger = require("@logger");
 
 module.exports = {
-  name: 'finalizar',
-  description: 'Finaliza manualmente um sorteio ativo.',
-  usage: '${currentPrefix}finalizar <ID_da_mensagem>',
-  category: 'Sorteios',
-  userPermissions: ['ManageMessages'],
-  botPermissions: ['SendMessages'],
+  name: "finalizar",
+  description: "Finaliza manualmente um sorteio ativo.",
+  usage: "${currentPrefix}finalizar <ID_da_mensagem>",
+  category: "Sorteios",
+  userPermissions: ["ManageMessages"],
+  botPermissions: ["SendMessages"],
   deleteMessage: true,
 
   async execute(message, args) {
@@ -27,7 +27,7 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Informe um ID de mensagem válido do sorteio que deseja finalizar.'
+        "Informe um ID de mensagem válido do sorteio que deseja finalizar."
       );
     }
 
@@ -36,7 +36,7 @@ module.exports = {
       const giveaway = await Giveaway.findOne({
         guildId: message.guild.id,
         messageId,
-        status: 'ativo',
+        status: "ativo",
       });
 
       if (!giveaway) {
@@ -46,7 +46,7 @@ module.exports = {
 
         return sendWarning(
           message,
-          'Não há sorteio ativo neste servidor correspondente a este ID.'
+          "Não há sorteio ativo neste servidor correspondente a este ID."
         );
       }
 
@@ -63,7 +63,7 @@ module.exports = {
 
         return sendWarning(
           message,
-          'Apenas o **criador do sorteio** ou um **administrador** podem finalizá-lo.'
+          "Apenas o **criador do sorteio** ou um **administrador** podem finalizá-lo."
         );
       }
 
@@ -88,7 +88,7 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Não foi possível finalizar o sorteio no momento.'
+        "Não foi possível finalizar o sorteio no momento."
       );
     }
   },

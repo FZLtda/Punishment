@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const { sendWarning } = require('@embeds/embedWarning');
+const { sendWarning } = require("@embeds/embedWarning");
 
 /**
  * Verifica se uma ação de moderação pode ser executada em um membro.
@@ -12,30 +12,30 @@ const { sendWarning } = require('@embeds/embedWarning');
  * @returns {Promise<boolean>} Retorna `true` se todas as verificações forem aprovadas, ou `false` com mensagem explicativa.
  */
 
-async function checkMemberGuard(message, target, action = 'ban') {
+async function checkMemberGuard(message, target, action = "ban") {
   const { guild, author, member, client } = message;
   const botMember = guild.members.me;
 
   if (!target)
-    return sendBlock(message, 'Mencione um usuário válido para continuar.');
+    return sendBlock(message, "Mencione um usuário válido para continuar.");
 
   if (target.id === author.id)
-    return sendBlock(message, 'Você não pode executar essa ação em si mesmo.');
+    return sendBlock(message, "Você não pode executar essa ação em si mesmo.");
 
   if (target.id === client.user.id)
-    return sendBlock(message, 'Não posso executar essa ação em mim mesmo.');
+    return sendBlock(message, "Não posso executar essa ação em mim mesmo.");
 
   if (target.id === guild.ownerId)
-    return sendBlock(message, 'Você não pode executar essa ação no dono do servidor.');
+    return sendBlock(message, "Você não pode executar essa ação no dono do servidor.");
 
   if (target.user?.bot)
-    return sendBlock(message, 'Esta ação não pode ser usada contra bots.');
+    return sendBlock(message, "Esta ação não pode ser usada contra bots.");
 
   if (member.roles.highest.comparePositionTo(target.roles.highest) <= 0 && author.id !== guild.ownerId)
-    return sendBlock(message, 'Você não pode executar essa ação em um membro com cargo igual ou superior ao seu.');
+    return sendBlock(message, "Você não pode executar essa ação em um membro com cargo igual ou superior ao seu.");
 
   if (botMember.roles.highest.comparePositionTo(target.roles.highest) <= 0)
-    return sendBlock(message, 'Não consigo executar essa ação devido à minha posição de cargo inferior.');
+    return sendBlock(message, "Não consigo executar essa ação devido à minha posição de cargo inferior.");
 
   const actionChecks = {
     ban: () => target.bannable,

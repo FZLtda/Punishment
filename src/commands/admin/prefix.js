@@ -1,16 +1,16 @@
-'use strict';
+"use strict";
 
-const GuildConfig = require('@models/GuildConfig');
-const { sendWarning } = require('@embeds/embedWarning');
-const { sendSuccess } = require('@embeds/embedSuccess');
-const { emojis } = require('@config');
+const GuildConfig = require("@models/GuildConfig");
+const { sendWarning } = require("@embeds/embedWarning");
+const { sendSuccess } = require("@embeds/embedSuccess");
+const { emojis } = require("@config");
 
 module.exports = {
-  name: 'prefix',
-  description: 'Altera o prefixo usado pelo bot neste servidor.',
-  usage: '${currentPrefix}prefix <novo_prefixo>',
-  aliases: ['setprefix', 'prefixo'],
-  userPermissions: ['ManageGuild'],
+  name: "prefix",
+  description: "Altera o prefixo usado pelo bot neste servidor.",
+  usage: "${currentPrefix}prefix <novo_prefixo>",
+  aliases: ["setprefix", "prefixo"],
+  userPermissions: ["ManageGuild"],
   deleteMessage: true,
 
   /**
@@ -25,7 +25,7 @@ module.exports = {
     if (!novoPrefixo || novoPrefixo.length > 5) {
       return sendWarning(
         message,
-        'Forneça um prefixo válido com até 5 caracteres.'
+        "Forneça um prefixo válido com até 5 caracteres."
       );
     }
 
@@ -51,7 +51,7 @@ module.exports = {
 
       return sendWarning(
         message,
-        'Não foi possível salvar o novo prefixo.'
+        "Não foi possível salvar o novo prefixo."
       );
     }
   }

@@ -1,5 +1,5 @@
-const { EmbedBuilder } = require('discord.js');
-const { emojis, colors } = require('@config');
+const { EmbedBuilder } = require("discord.js");
+const { emojis, colors } = require("@config");
 
 /**
  * Responde a interações com uma embed de erro

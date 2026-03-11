@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const PendingDonor = require('@models/PendingDonor');
-const logger = require('@logger');
+const PendingDonor = require("@models/PendingDonor");
+const logger = require("@logger");
 
 const INTERVALO = 60_000;
 const CARGO_DOADOR_ID = process.env.CARGO_DOADOR_ID;

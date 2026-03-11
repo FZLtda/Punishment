@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder } = require('discord.js');
-const { colors, emojis } = require('@config');
+const { EmbedBuilder } = require("discord.js");
+const { colors, emojis } = require("@config");
 
 /**
  * Envia uma embed de aviso padronizada (amarelo).

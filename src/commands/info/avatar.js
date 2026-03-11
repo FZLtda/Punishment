@@ -1,15 +1,15 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder, ActionRowBuilder, UserSelectMenuBuilder } = require('discord.js');
-const { sendWarning } = require('@embeds/embedWarning');
-const { colors } = require('@config');
+const { EmbedBuilder, ActionRowBuilder, UserSelectMenuBuilder } = require("discord.js");
+const { sendWarning } = require("@embeds/embedWarning");
+const { colors } = require("@config");
 
 module.exports = {
-  name: 'avatar',
-  description: 'Exibe o avatar de um usuário mencionado ou seu próprio.',
-  usage: '${currentPrefix}avatar [@usuário]',
-  category: 'info',
-  botPermissions: ['SendMessages', 'EmbedLinks'],
+  name: "avatar",
+  description: "Exibe o avatar de um usuário mencionado ou seu próprio.",
+  usage: "${currentPrefix}avatar [@usuário]",
+  category: "info",
+  botPermissions: ["SendMessages", "EmbedLinks"],
   userPermissions: [],
   deleteMessage: true,
 
@@ -17,7 +17,7 @@ module.exports = {
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.member;
 
     if (!membro)
-      return sendWarning(message, 'Usuário não encontrado. Tente mencionar alguém ou informar o ID.');
+      return sendWarning(message, "Usuário não encontrado. Tente mencionar alguém ou informar o ID.");
 
     const avatarUrl = membro.displayAvatarURL({ dynamic: true, size: 1024 });
 
@@ -32,8 +32,8 @@ module.exports = {
       .setTimestamp();
 
     const userSelectMenu = new UserSelectMenuBuilder()
-      .setCustomId('select-avatar-user')
-      .setPlaceholder('Veja o avatar de outro usuário');
+      .setCustomId("select-avatar-user")
+      .setPlaceholder("Veja o avatar de outro usuário");
 
     const row = new ActionRowBuilder().addComponents(userSelectMenu);
 

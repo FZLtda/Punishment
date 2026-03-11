@@ -1,15 +1,15 @@
-'use strict';
+"use strict";
 
-const { EmbedBuilder } = require('discord.js');
-const { colors, emojis, channels } = require('@config');
-const Logger = require('@logger');
-const { sendBotData } = require('@jobs/sendBotData');
+const { EmbedBuilder } = require("discord.js");
+const { colors, emojis, channels } = require("@config");
+const Logger = require("@logger");
+const { sendBotData } = require("@jobs/sendBotData");
 
 /**
  * Evento disparado quando o Punishment entra em um servidor.
  */
 module.exports = {
-  name: 'guildCreate',
+  name: "guildCreate",
 
   async execute(guild, client) {
     try {
@@ -20,7 +20,7 @@ module.exports = {
 
       const logChannel = client.channels.cache.get(channels.log);
       if (!logChannel) {
-        return Logger.warn('[Guild Join] Canal de log não encontrado.');
+        return Logger.warn("[Guild Join] Canal de log não encontrado.");
       }
 
       const embed = new EmbedBuilder()
@@ -28,10 +28,10 @@ module.exports = {
         .setColor(colors.green)
         .setThumbnail(guild.iconURL({ dynamic: true }))
         .addFields(
-          { name: 'Nome', value: guild.name, inline: true },
-          { name: 'ID', value: `\`${guild.id}\``, inline: true },
-          { name: 'Membros', value: `\`${guild.memberCount ?? 'Desconhecido'}\``, inline: true },
-          { name: 'Dono', value: `<@${guild.ownerId}> (\`${guild.ownerId}\`)`, inline: false }
+          { name: "Nome", value: guild.name, inline: true },
+          { name: "ID", value: `\`${guild.id}\``, inline: true },
+          { name: "Membros", value: `\`${guild.memberCount ?? "Desconhecido"}\``, inline: true },
+          { name: "Dono", value: `<@${guild.ownerId}> (\`${guild.ownerId}\`)`, inline: false }
         )
         .setFooter({ text: `${client.guilds.cache.size} servidores atuais` })
         .setTimestamp();
@@ -39,7 +39,7 @@ module.exports = {
       await logChannel.send({ embeds: [embed] });
 
     } catch (error) {
-      Logger.error('[Guild Join] Erro ao processar entrada no servidor:', error);
+      Logger.error("[Guild Join] Erro ao processar entrada no servidor:", error);
     }
   }
 };

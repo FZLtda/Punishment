@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-const fetch = require('node-fetch');
+const fetch = require("node-fetch");
 const ERROR_WEBHOOK = process.env.ERROR_WEBHOOK;
 
 /**
@@ -13,7 +13,7 @@ async function sendToWebhook(level, message) {
     embeds: [
       {
         title: `Punishment - ${level.toUpperCase()}`,
-        color: level === 'fatal' ? 0x8B0000 : 0xFF0000,
+        color: level === "fatal" ? 0x8B0000 : 0xFF0000,
         description: `\`\`\`\n${message.slice(0, 4000)}\n\`\`\``,
         timestamp: new Date().toISOString(),
       },
@@ -22,12 +22,12 @@ async function sendToWebhook(level, message) {
 
   try {
     await fetch(ERROR_WEBHOOK, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(embed),
     });
   } catch (err) {
-    console.error('Falha ao enviar log para o Discord:', err.message);
+    console.error("Falha ao enviar log para o Discord:", err.message);
   }
 }
 

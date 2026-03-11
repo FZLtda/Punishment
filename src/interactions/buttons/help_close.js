@@ -1,9 +1,9 @@
-'use strict';
+"use strict";
 
-const Logger = require('@logger');
+const Logger = require("@logger");
 
 module.exports = {
-  customId: 'help_close',
+  customId: "help_close",
 
   /**
    * Fecha o menu de ajuda (slash e prefixo)
