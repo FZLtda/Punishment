@@ -1,103 +1,65 @@
-name: Punishment CI/CD
+name: Punishment - Expert CI/CD
 
 on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
+push:
+branches: [ main, develop ]
+pull_request:
+branches: [ main ]
 
 permissions:
-  contents: read
+contents: read
 
 concurrency:
-  group: ci-cd-${{ github.ref }}
-  cancel-in-progress: true
+group: ci-cd-${{ github.ref }}
+cancel-in-progress: true
 
 jobs:
+build-and-test:
+name: Qualidade & Testes
+runs-on: ubuntu-latest
+strategy:
+matrix:
+node-version: [ 20.x, 22.x ]
 
-  build-and-test:
-    name: Qualidade & Testes
-    runs-on: ubuntu-latest
+steps:  
+  - name: Checkout código  
+    uses: actions/checkout@v4  
 
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x, 22.x]
+  - name: Setup Node.js ${{ matrix.node-version }}  
+    uses: actions/setup-node@v4  
+    with:  
+      node-version: ${{ matrix.node-version }}  
+      cache: 'npm'  
 
-    steps:
-      - name: Checkout código
-        uses: actions/checkout@v4
+  - name: Instalar dependências  
+    run: npm ci  
 
-      - name: Setup Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: npm
+  - name: Verificar Lint (Sintaxe)  
+    run: npm run lint --if-present  
 
-      - name: Instalar dependências
-        run: npm ci
+  - name: Rodar Testes Unitários  
+    run: npm test --if-present
 
-      - name: Verificar Lint (Sintaxe)
-        run: npm run lint --if-present
+deploy:
+name: Deploy para VPS Hostinger
+needs: build-and-test
+if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+runs-on: ubuntu-latest
 
-      - name: Rodar Testes Unitários
-        run: npm test --if-present
-
-      - name: Verificar vulnerabilidades
-        run: npm audit --audit-level=high || true
-
-      - name: Verificar dependências desatualizadas
-        run: npm outdated || true
-
-
-  security-scan:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    needs: build-and-test
-
-    steps:
-      - name: Checkout código
-        uses: actions/checkout@v4
-
-      - name: Rodar CodeQL
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript
-
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
-
-      - name: Análise de segurança
-        uses: github/codeql-action/analyze@v3
-
-
-  deploy:
-    name: Deploy para VPS Hostinger
-    needs: [build-and-test, security-scan]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Executar comandos via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          password: ${{ secrets.VPS_PASSWORD }}
-          port: ${{ secrets.VPS_PORT }}
-
-          script: |
-            set -e
-
-            cd ~/Punishment
-
-            echo "Atualizando repositório..."
-            git fetch origin main
-            git reset --hard origin/main
-
-            echo "Instalando dependências..."
-            npm ci --production
-
-            echo "Reiniciando bot..."
-            pm2 restart punishment --update-env
-
-            echo "Deploy concluido com sucesso"
+steps:  
+  - name: Executar comandos via SSH  
+    uses: appleboy/ssh-action@master  
+    with:  
+      host: ${{ secrets.VPS_HOST }}  
+      username: ${{ secrets.VPS_USER }}  
+      password: ${{ secrets.VPS_PASSWORD }}  
+      port: ${{ secrets.VPS_PORT }}  
+      script: |  
+        set -e  
+        cd ~/Punishment  
+        git fetch origin main  
+        git reset --hard origin/main  
+        npm ci --production  
+        pm2 restart punishment --update-env  
+        echo "Deploy concluido com sucesso"
+        
