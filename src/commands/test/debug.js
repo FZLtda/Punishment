@@ -47,6 +47,6 @@ module.exports = {
       return;
     }
 
-    return sendWarning(message, "Ações disponíveis: `fault_handler`");
+    return sendWarning(message, "Ações disponíveis: `fault_handler`";
   }
 };
