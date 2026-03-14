@@ -1,6 +1,6 @@
 "use strict";
 
-const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const { sendWarning } = require("@embeds/embedWarning");
 const { checkMemberGuard } = require("@permissions/memberGuards");
 const { sendModLog } = require("@modules/modlog");
