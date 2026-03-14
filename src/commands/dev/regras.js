@@ -25,9 +25,8 @@ module.exports = {
 
   /**
    * @param {Message} message
-   * @param {string[]} args
    */
-  async execute(message, args) {
+  async execute(message) {
     if (message.author.id !== bot.ownerId) {
       return;
     }
