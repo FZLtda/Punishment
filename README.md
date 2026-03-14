@@ -1,6 +1,6 @@
 <div align="center">
 
-  <a href="https://punbot.xyz">
+  <a href="https://punbot.xyz" style="outline:none;">
     <img src="https://raw.githubusercontent.com/FZLtda/Punishment/main/src/assets/logos/logo.png" width="240" alt="Punishment Logo">
   </a>
 
