@@ -19,7 +19,7 @@ module.exports = {
   category: "util",
   deleteMessage: true,
 
-  async execute(message, args, client) {
+  async execute(message) {
     if (!Array.isArray(categories) || categories.length === 0) {
       return sendWarning(
         message,
