@@ -2,7 +2,7 @@
 
 const { EmbedBuilder, PermissionsBitField } = require("discord.js");
 const { sendWarning } = require("@embeds/embedWarning");
-const { colors, emojis } = require("@config");
+const { colors } = require("@config");
 const Giveaway = require("@models/Giveaway");
 const logger = require("@logger");
 
