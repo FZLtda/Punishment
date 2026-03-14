@@ -2,7 +2,6 @@
 
 const os = require("os");
 const Logger = require("@logger");
-const { bot } = require("@config");
 const packageJson = require("@package.json");
 
 module.exports = {
