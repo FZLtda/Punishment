@@ -13,7 +13,7 @@ module.exports = {
   botPermissions: ["SendMessages"],
   deleteMessage: true,
 
-  async execute(message, args) {
+  async execute(message) {
     const rawContent = message.content;
     const commandLength = rawContent.indexOf(" ") > -1 ? rawContent.indexOf(" ") + 1 : rawContent.length;
     let afterCommand = rawContent.slice(commandLength).trim();
