@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { performance } = require("perf_hooks");
 
 async function getSystemHealth(client) {
   const mongoStatus = {
