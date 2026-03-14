@@ -10,7 +10,7 @@ module.exports = {
    * @param {import('discord.js').ButtonInteraction} interaction
    * @param {import('discord.js').Client} client
    */
-  async execute(interaction, client) {
+  async execute(interaction) {
     const modal = new ModalBuilder()
       .setCustomId("suggestModal")
       .setTitle("Nova Sugestão");
