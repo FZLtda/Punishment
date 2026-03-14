@@ -8,7 +8,7 @@ const {
   ChannelType,
 } = require("discord.js");
 
-const { emojis, colors, channels, bot } = require("@config");
+const { emojis, channels, bot } = require("@config");
 
 /**
  * @typedef {import('discord.js').Message} Message
