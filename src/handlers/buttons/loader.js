@@ -1,44 +1,95 @@
 "use strict";
 
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs/promises");
+const path = require("node:path");
 const Logger = require("@logger");
 
 /**
- * Carrega todos os botões do diretório e registra no client.
- * @param {import('discord.js').Client} client
+ * Percorre diretórios recursivamente e retorna todos os arquivos .js
+ */
+async function getButtonFiles(dir) {
+  const entries = await fs.readdir(dir, { withFileTypes: true });
+
+  const files = await Promise.all(
+    entries.map(entry => {
+      const fullPath = path.join(dir, entry.name);
+
+      if (entry.isDirectory()) {
+        return getButtonFiles(fullPath);
+      }
+
+      if (entry.isFile() && entry.name.endsWith(".js")) {
+        return fullPath;
+      }
+
+      return [];
+    })
+  );
+
+  return files.flat();
+}
+
+/**
+ * Carrega todos os botões e registra no client.
+ * @param {import("discord.js").Client} client
  */
 async function loadButtonInteractions(client) {
-  const buttonsPath = path.join(__dirname, "../../../src/interactions/buttons");
+  const start = Date.now();
 
-  if (!fs.existsSync(buttonsPath)) {
-    Logger.warn("[LOADER] Pasta de botões não encontrada.");
-    return;
-  }
-
-  const files = fs.readdirSync(buttonsPath).filter(file => file.endsWith(".js"));
+  const buttonsPath = path.join(
+    __dirname,
+    "../../../src/interactions/buttons"
+  );
 
   if (!client.buttons) client.buttons = new Map();
 
-  for (const file of files) {
-    const filePath = path.join(buttonsPath, file);
-    
-    try {
-      const button = require(filePath);
+  try {
+    const files = await getButtonFiles(buttonsPath);
 
-      if (!button?.customId || typeof button.execute !== "function") {
-        Logger.warn(`[BUTTON] Ignorado (inválido): ${file}`);
-        continue;
-      }
-
-      client.buttons.set(button.customId, button);
-      Logger.success(`[BUTTON] Carregado: ${button.customId}`);
-    } catch (err) {
-      Logger.error(`[BUTTON] Erro ao carregar ${file}: ${err.message}`);
+    if (files.length === 0) {
+      Logger.warn("[BUTTON] Nenhum botão encontrado.");
+      return;
     }
-  }
 
-  Logger.info(`[LOADER] ${client.buttons.size} botões carregados com sucesso.`);
+    let loaded = 0;
+    let skipped = 0;
+
+    for (const filePath of files) {
+      try {
+        delete require.cache[require.resolve(filePath)];
+
+        const raw = require(filePath);
+        const button = raw?.default || raw;
+
+        if (!button?.customId || typeof button?.execute !== "function") {
+          Logger.warn(
+            `[BUTTON] Ignorado (estrutura inválida): ${path.basename(filePath)}`
+          );
+          skipped++;
+          continue;
+        }
+
+        client.buttons.set(button.customId, button);
+
+        Logger.success(`[BUTTON] Carregado: ${button.customId}`);
+        loaded++;
+      } catch (err) {
+        Logger.error(
+          `[BUTTON] Falha ao carregar ${path.basename(filePath)}\n${err.stack || err.message}`
+        );
+      }
+    }
+
+    const duration = Date.now() - start;
+
+    Logger.info(
+      `[BUTTON] Concluído: ${loaded} carregados | ${skipped} ignorados | ${duration}ms`
+    );
+  } catch (err) {
+    Logger.error(
+      `[BUTTON] Falha crítica ao ler diretório de botões\n${err.stack || err.message}`
+    );
+  }
 }
 
 module.exports = {
