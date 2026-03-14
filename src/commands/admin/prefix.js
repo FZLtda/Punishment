@@ -2,7 +2,6 @@
 
 const GuildConfig = require("@models/GuildConfig");
 const { sendWarning } = require("@embeds/embedWarning");
-const { sendSuccess } = require("@embeds/embedSuccess");
 const { emojis } = require("@config");
 
 module.exports = {
