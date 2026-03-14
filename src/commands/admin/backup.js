@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
-const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const { colors, emojis } = require("@config");
 const { sendModLog } = require("@modules/modlog");
 const { sendWarning } = require("@embeds/embedWarning");
