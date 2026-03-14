@@ -51,7 +51,7 @@ module.exports = [
         details:
           "Permite adicionar um emoji ao servidor utilizando o nome desejado e a URL de uma imagem.\n\n" +
           "Exemplo:\n" +
-          "`addemoji smile https://site.com/emoji.png`",
+          "`addemoji punbot https://punbot.xyz/logo.png`",
         id: "000000000000000002",
       },
       {
