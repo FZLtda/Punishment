@@ -1,7 +1,7 @@
 <div align="center">
 
   <a href="https://punbot.xyz" style="outline:none;">
-    <img src="https://raw.githubusercontent.com/FZLtda/Punishment/main/src/assets/logos/logo.png" width="240" alt="Punishment Logo">
+    <img src="https://raw.githubusercontent.com/FZLtda/Punishment/main/src/assets/banners/banner.png" width="240" alt="Punishment Logo">
   </a>
 
   <p style="margin-top:4px;">
