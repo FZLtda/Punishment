@@ -1,64 +1,93 @@
-name: Punishment - Expert CI/CD
+name: Punishment CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-cd-${{ github.ref }}
+  group: punishment-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build-and-test:
-    name: Qualidade & Testes
+  quality:
+    name: Code Quality & Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     strategy:
+      fail-fast: true
       matrix:
-        node-version: [ 20.x, 22.x ]
+        node: [20.x, 22.x]
 
     steps:
-      - name: Checkout código
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
-      - name: Setup Node.js ${{ matrix.node-version }}
+      - name: Setup Node.js ${{ matrix.node }}
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          node-version: ${{ matrix.node }}
+          cache: npm
 
-      - name: Instalar dependências
+      - name: Install dependencies
         run: npm ci
 
-      - name: Verificar Lint (Sintaxe)
+      - name: Run Linter
         run: npm run lint --if-present
 
-      - name: Rodar Testes Unitários
+      - name: Type Check
+        run: npm run typecheck --if-present
+
+      - name: Run Unit Tests
         run: npm test --if-present
 
+      - name: Check vulnerabilities
+        run: npm audit --audit-level=high || true
+
+      - name: Build project
+        run: npm run build --if-present
+
+
   deploy:
-    name: Deploy para VPS Hostinger
-    needs: build-and-test
+    name: Deploy to VPS
+    needs: quality
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
-      - name: Executar comandos via SSH
-        uses: appleboy/ssh-action@master
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.VPS_PASSWORD }}
           port: ${{ secrets.VPS_PORT }}
+
           script: |
             set -e
+
+            echo "Iniciando deploy do Punishment..."
+
             cd ~/Punishment
+
             git fetch origin main
             git reset --hard origin/main
-            npm ci --production
-            pm2 restart punishment --update-env
-            echo "Deploy concluido com sucesso"
+
+            echo "Instalando dependências..."
+            npm ci --omit=dev
+
+            echo "Reiniciando bot..."
+            pm2 restart punishment || pm2 start ecosystem.config.js
+
+            echo "Salvando estado PM2..."
+            pm2 save
+
+            echo "Deploy concluído com sucesso!"
