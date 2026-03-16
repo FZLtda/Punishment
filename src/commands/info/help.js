@@ -14,6 +14,7 @@ const { sendWarning } = require("@embeds/embedWarning");
 
 module.exports = {
   name: "help",
+  aliases: ["h", "commands", "cmds", "command", "menu", "?"],
   description: "Mostra todos os comandos disponíveis e como utilizá-los.",
   usage: "help",
   category: "util",
