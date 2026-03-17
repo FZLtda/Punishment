@@ -25,9 +25,9 @@ async function criarPagamento(amount, userId) {
       discord_user: userId,
     },
     back_urls: {
-      success: "https://funczero.xyz/success",
-      failure: "https://funczero.xyz/failure",
-      pending: "https://funczero.xyz/pending",
+      success: "https://punbot.xyz/success",
+      failure: "https://punbot.xyz/failure",
+      pending: "https://punbot.xyz/pending",
     },
     auto_return: "approved",
   };
