@@ -17,24 +17,37 @@ module.exports = {
     const quantidade = parseInt(args[0], 10);
     const alvo = message.mentions.users.first();
 
-    if (!quantidade || isNaN(quantidade) || quantidade < 1 || quantidade > 100) {
-      return sendWarning(message, "Forneça um valor entre 1 e 100 para apagar mensagens.");
+    if (!quantidade || isNaN(quantidade) || quantidade < 1 || quantidade > 1000) {
+      return sendWarning(message, "Forneça um valor entre 1 e 1000 para apagar mensagens.");
     }
 
+    let totalApagadas = 0;
+
     try {
-      const mensagens = await message.channel.messages.fetch({ limit: 100 });
+      while (totalApagadas < quantidade) {
+        const restante = quantidade - totalApagadas;
+        const limite = restante > 100 ? 100 : restante;
 
-      const filtradas = mensagens.filter(msg => {
-        const dentroLimite = (Date.now() - msg.createdTimestamp) < 14 * 24 * 60 * 60 * 1000;
-        const correspondeAlvo = !alvo || msg.author.id === alvo.id;
-        return correspondeAlvo && !msg.pinned && dentroLimite;
-      });
+        const mensagens = await message.channel.messages.fetch({ limit: 100 });
+        if (!mensagens.size) break;
 
-      const mensagensParaApagar = Array.from(filtradas.values()).slice(0, quantidade);
-      const apagadas = await message.channel.bulkDelete(mensagensParaApagar, true);
+        const filtradas = mensagens.filter(msg => {
+          const dentroLimite = (Date.now() - msg.createdTimestamp) < 14 * 24 * 60 * 60 * 1000;
+          const correspondeAlvo = !alvo || msg.author.id === alvo.id;
+          return correspondeAlvo && !msg.pinned && dentroLimite;
+        });
+
+        const mensagensParaApagar = Array.from(filtradas.values()).slice(0, limite);
+        if (!mensagensParaApagar.length) break;
+
+        const apagadas = await message.channel.bulkDelete(mensagensParaApagar, true);
+        totalApagadas += apagadas.size;
+
+        await new Promise(resolve => setTimeout(resolve, 800));
+      }
 
       const resposta = await message.channel.send({
-        content: `${emojis.done} ${apagadas.size} mensagens foram apagadas${alvo ? ` de ${alvo}` : ""}.`,
+        content: `${emojis.done} ${totalApagadas} mensagens foram apagadas${alvo ? ` de ${alvo}` : ""}.`,
         allowedMentions: { users: [] }
       });
 
@@ -44,7 +57,7 @@ module.exports = {
         action: "Clear",
         moderator: message.author,
         channel: message.channel,
-        extra: `${apagadas.size} mensagens apagadas${alvo ? ` de ${alvo.tag}` : ""}`
+        extra: `${totalApagadas} mensagens apagadas${alvo ? ` de ${alvo.tag}` : ""}`
       });
 
     } catch (error) {
