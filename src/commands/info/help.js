@@ -63,13 +63,13 @@ module.exports = {
           "```",
           ">>> Selecione uma categoria abaixo para exibir os comandos disponíveis, exemplos de uso e permissões.",
           "",
-          "Você verá tudo — desde ferramentas de moderação até recursos de personalização do servidor.",
+          "Tudo foi pensado pra ser rápido, prático e eficiente.",
         ].join("\n")
       );
 
     const menu = new StringSelectMenuBuilder()
       .setCustomId("help-category")
-      .setPlaceholder("Selecione uma categoria de comandos")
+      .setPlaceholder("Explorar categorias")
       .setMinValues(1)
       .setMaxValues(1)
       .addOptions(options);
