@@ -16,7 +16,7 @@
 
   <p>
     <strong>Invite Punishment to your server:</strong><br>
-    <a href="https://discord.com/oauth2/authorize?client_id=1155843839932764253&permissions=8&integration_type=0&scope=bot+applications.commands">
+    <a href="https://punbot.xyz">
       Add Punishment to your server
     </a>
   </p>
