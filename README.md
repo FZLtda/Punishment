@@ -1,9 +1,5 @@
 <div align="center">
-
-  <p>
-    ⚠️ <strong>Important Notice:</strong> Punishment will be officially discontinued on March 20, 2026.
-  </p>
-
+  
   <a href="https://punbot.xyz" style="outline:none;">
     <img src="https://raw.githubusercontent.com/FZLtda/Punishment/main/src/assets/banners/banner.png" width="240" alt="Punishment Logo">
   </a>
