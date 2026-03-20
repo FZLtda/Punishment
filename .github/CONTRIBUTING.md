@@ -76,7 +76,7 @@ Before submitting your PR:
 
 ## 🔐 Security
 
-For security vulnerabilities, please refer to the [SECURITY.md](./SECURITY.md) file.
+For security vulnerabilities, please refer to the [Security Policy](/.github/SECURITY.md) file.
 
 Do not report vulnerabilities publicly.
 
