@@ -1,38 +1,84 @@
 name: 🐞 Bug Report
-description: Reporte um bug no Punishment
+description: Report a bug or unexpected behavior in Punishment
 title: "[Bug]: "
-labels: [bug]
+labels: ["bug"]
 assignees:
   - FuncZero
 
 body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐞 Bug Report
+
+        Thank you for taking the time to report a bug in **Punishment**.
+        Please fill out the form below with as much detail as possible.
+
   - type: textarea
     id: description
     attributes:
-      label: Descrição
-      description: Explique claramente o problema
-      placeholder: O que aconteceu?
+      label: 📌 Description
+      description: Clearly describe the issue you encountered.
+      placeholder: What happened?
     validations:
       required: true
 
   - type: textarea
     id: steps
     attributes:
-      label: Passos para reproduzir
+      label: 🔁 Steps to Reproduce
+      description: Provide step-by-step instructions to reproduce the issue.
       placeholder: |
-        1. Execute o comando...
-        2. Veja o erro...
+        1. Run the command...
+        2. Perform action...
+        3. Observe the error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: ✅ Expected Behavior
+      description: What should have happened instead?
+      placeholder: Describe the expected result.
     validations:
       required: true
 
   - type: input
     id: version
     attributes:
-      label: Versão do bot
-      placeholder: ex: v1.4.0
+      label: 📦 Bot Version
+      description: Specify the version of Punishment you are using.
+      placeholder: e.g. v1.4.0
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: 🌐 Environment
+      description: Where is the bot running?
+      options:
+        - Local (Development)
+        - VPS / Dedicated Server
+        - Hosting Service (e.g. Render, Replit, etc.)
+        - Other
+    validations:
+      required: false
 
   - type: textarea
     id: logs
     attributes:
-      label: Logs ou prints
-      description: Se possível, cole logs relevantes
+      label: 📄 Logs / Screenshots
+      description: Provide relevant logs, error messages, or screenshots if available.
+      placeholder: Paste logs or upload images here.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✔️ Checklist
+      options:
+        - label: I am using the latest version of Punishment
+          required: true
+        - label: I have checked for existing issues
+          required: true
+        - label: I have provided all necessary information
+          required: true
