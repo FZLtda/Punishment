@@ -9,6 +9,7 @@ const { checkMemberGuard } = require("@permissions/memberGuards");
 module.exports = {
   name: "ban",
   description: "Bane permanentemente um membro do servidor.",
+  usage: "${currentPrefix}ban <@usuário|ID> [motivo]",
   userPermissions: ["BanMembers"],
   botPermissions: ["BanMembers"],
   deleteMessage: true,
