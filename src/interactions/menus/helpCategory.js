@@ -1,7 +1,7 @@
 "use strict";
 
 const { EmbedBuilder } = require("discord.js");
-const { colors, emojis } = require("@config");
+const { bot, colors, emojis } = require("@config");
 const { getPrefix } = require("@helpers/prefixManager");
 const { sendWarning } = require("@embeds/embedWarning");
 const categories = require("@helpers/helpCategories");
@@ -23,10 +23,10 @@ module.exports = {
       const prefix = await getPrefix(interaction.guildId);
 
       const embed = new EmbedBuilder()
-        .setTitle(`\`\`\`${category.name}\`\`\``)
+        .setTitle(`\`\`\`${bot.name} - ${category.name}\`\`\``)
         .setColor(colors.red)
         .setAuthor({
-          name: "Central de Recursos",
+          name: `${bot.name} - Central de Ajuda`,
           iconURL: emojis.helpIcon,
         })
         .setDescription(
