@@ -43,15 +43,14 @@ function buildEmbedDescription({
   channel,
   extraFields
 }) {
-  
   const lines = [
     moderator?.tag && moderator?.id ? `**Moderador:** ${moderator.tag} (\`${moderator.id}\`)` : null,
     ...resolveTargetLines(target),
     reason ? `**Motivo:** ${reason}` : null,
     channel ? `**Canal:** ${channel}` : null,
-    ...(Array.isArray(extraFields) 
-        ? extraFields.map(f => (f?.name && f?.value ? `**${f.name}:** ${f.value}` : null))
-        : []),
+    ...(Array.isArray(extraFields)
+      ? extraFields.map(f => (f?.name && f?.value ? `**${f.name}:** ${f.value}` : null))
+      : []),
     action ? `**Ação:** ${String(action).toLowerCase()}` : null
   ];
 
