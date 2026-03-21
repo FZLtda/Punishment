@@ -43,18 +43,20 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setAuthor({
-        name: "Central de Recursos",
+        name: `${bot.name} - Central de Ajuda`,
         iconURL: emojis.helpIcon,
       })
       .setColor(colors.red)
-      .setDescription([
-        "```",
-        `${bot.name} - Help Menu`,
-        "```",
-        ">>> Selecione uma categoria abaixo para exibir os comandos disponíveis, exemplos de uso e permissões.",
-        "",
-        "Tudo foi pensado pra ser rápido, prático e eficiente.",
-      ].join("\n"));
+      .setDescription(
+        [
+          "```",
+          `${bot.name} - Categorias`,
+          "```",
+          ">>> Escolha uma categoria abaixo para ver os comandos disponíveis, como utilizá-los e quais permissões são necessárias.",
+          "",
+          "Projetado para tornar a moderação do seu servidor mais simples e eficiente.",
+        ].join("\n")
+      );
 
     const menu = new StringSelectMenuBuilder()
       .setCustomId("help-category")
