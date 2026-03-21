@@ -5,57 +5,36 @@ const {
   ChannelType,
   TextChannel,
   User,
-  GuildMember
+  GuildMember,
+  PermissionsBitField
 } = require("discord.js");
 
 const GuildSettings = require("@models/GuildSettings");
 const { colors, bot, emojis } = require("@config");
 const Logger = require("@logger");
 
-/**
- * Resolve dinamicamente os campos relacionados ao alvo da ação.
- *
- * @param {*} target
- * @returns {string[]}
- */
 function resolveTargetLines(target) {
   if (!target) return [];
 
-  // User
   if (target instanceof User) {
-    return [
-      `**Usuário:** ${target.tag} (\`${target.id}\`)`
-    ];
+    return [`**Usuário:** ${target.tag} (\`${target.id}\`)`];
   }
 
-  // GuildMember
   if (target instanceof GuildMember) {
-    return [
-      `**Usuário:** ${target.user.tag} (\`${target.user.id}\`)`
-    ];
+    return [`**Usuário:** ${target.user.tag} (\`${target.user.id}\`)`];
   }
 
-  // Emoji
   if (typeof target.imageURL === "function" && target.id) {
-    return [
-      `**Nome:** ${target.name}`,
-      `**ID:** ${target.id}`
-    ];
+    return [`**Nome:** ${target.name}`, `**ID:** ${target.id}`];
   }
 
-  // Fallback seguro
   if (typeof target === "object" && target.id) {
-    return [
-      `**ID:** ${target.id}`
-    ];
+    return [`**ID:** ${target.id}`];
   }
 
   return [];
 }
 
-/**
- * Constrói a descrição do embed de forma segura e inteligente.
- */
 function buildEmbedDescription({
   action,
   target,
@@ -64,71 +43,63 @@ function buildEmbedDescription({
   channel,
   extraFields
 }) {
-  const lines = [];
+  
+  const lines = [
+    moderator?.tag && moderator?.id ? `**Moderador:** ${moderator.tag} (\`${moderator.id}\`)` : null,
+    ...resolveTargetLines(target),
+    reason ? `**Motivo:** ${reason}` : null,
+    channel ? `**Canal:** ${channel}` : null,
+    ...(Array.isArray(extraFields) 
+        ? extraFields.map(f => (f?.name && f?.value ? `**${f.name}:** ${f.value}` : null))
+        : []),
+    action ? `**Ação:** ${String(action).toLowerCase()}` : null
+  ];
 
-  // Moderador (sempre)
-  if (moderator?.tag && moderator?.id) {
-    lines.push(`**Moderador:** ${moderator.tag} (\`${moderator.id}\`)`);
-  }
-
-  // Target dinâmico
-  lines.push(...resolveTargetLines(target));
-
-  // Motivo
-  if (reason) {
-    lines.push(`**Motivo:** ${reason}`);
-  }
-
-  // Canal
-  if (channel) {
-    lines.push(`**Canal:** ${channel}`);
-  }
-
-  // Campos extras
-  if (Array.isArray(extraFields)) {
-    for (const field of extraFields) {
-      if (field?.name && field?.value) {
-        lines.push(`**${field.name}:** ${field.value}`);
-      }
-    }
-  }
-
-  // Ação (sempre por último)
-  lines.push(`**Ação:** ${String(action).toLowerCase()}`);
-
-  return lines.join("\n");
+  return lines.filter(Boolean).join("\n");
 }
 
-/**
- * Envia um log de moderação formatado.
- */
 async function sendModLog(guild, options) {
+  if (!guild?.id || !guild?.client) {
+    return Logger.warn("[MODLOG][unknown] Guild inválida ou ausente.");
+  }
+
+  const context = `[MODLOG][${guild.id}]`;
+
   const {
     action,
     target = null,
-    moderator,
+    moderator = null,
     reason = "Não especificado.",
     channel = null,
     extraFields = []
   } = options;
 
-  const context = `[MODLOG][${guild?.id ?? "unknown"}]`;
+  if (!action) {
+    return Logger.warn(`${context} Tentativa de enviar log sem ação definida.`);
+  }
 
   try {
-    if (!guild?.id) {
-      return Logger.warn(`${context} Guild inválida.`);
-    }
-
-    const config = await GuildSettings.findOne({ guildId: guild.id });
+    const config = await GuildSettings.findOne({ guildId: guild.id }).lean();
     if (!config?.logChannelId) {
-      return Logger.warn(`${context} Canal de logs não configurado.`);
+      return Logger.warn(`${context} Canal de logs não configurado no banco.`);
     }
-
+    
     const logChannel = guild.channels.cache.get(config.logChannelId);
     if (!(logChannel instanceof TextChannel) || logChannel.type !== ChannelType.GuildText) {
-      return Logger.warn(`${context} Canal de logs inválido.`);
+      return Logger.warn(`${context} Canal de logs inválido ou não encontrado.`);
     }
+    
+    const botPermissions = logChannel.permissionsFor(guild.client.user);
+    const requiredPerms = [
+      PermissionsBitField.Flags.ViewChannel,
+      PermissionsBitField.Flags.SendMessages,
+      PermissionsBitField.Flags.EmbedLinks
+    ];
 
+    if (!botPermissions?.has(requiredPerms)) {
+      return Logger.warn(`${context} Permissões insuficientes (View, Send ou Embed) no canal ${logChannel.name}.`);
+    }
+    
     const embed = new EmbedBuilder()
       .setColor(colors.yellow)
       .setAuthor({
@@ -153,8 +124,9 @@ async function sendModLog(guild, options) {
 
     await logChannel.send({ embeds: [embed] });
     Logger.info(`${context} Log enviado: ${action}`);
+
   } catch (error) {
-    Logger.error(`${context} Falha ao enviar log: ${error.stack || error.message}`);
+    Logger.error(`${context} Falha crítica ao enviar log: ${error.stack || error.message}`);
   }
 }
 
