@@ -143,7 +143,7 @@ module.exports = [
       {
         name: "ban",
         description: "Remove permanentemente um usuário do servidor.",
-        usage: "ban <@usuário> [motivo]",
+        usage: "ban <@usuário|ID> [motivo]",
         permissions: ["BanMembers"],
         details:
           "Bane o usuário do servidor.\n\n" +
@@ -204,7 +204,7 @@ module.exports = [
           "Apaga várias mensagens de uma vez.\n\n" +
           "Exemplo:\n" +
           "`clear 50`\n\n" +
-          "Limite máximo: **100 mensagens**.",
+          "Limite máximo: **1000 mensagens**.",
         id: "000000000000000014",
       },
       {
@@ -231,7 +231,7 @@ module.exports = [
         usage: "lockuser <@usuário>",
         permissions: ["ManageRoles"],
         details:
-          "Impede que o usuário envie mensagens neste canal.",
+          "Impede que o usuário envie mensagens no canal.",
         id: "000000000000000017",
       },
       {
