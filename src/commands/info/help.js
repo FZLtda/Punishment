@@ -52,18 +52,18 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setAuthor({
-        name: "Central de Recursos",
+        name: `${bot.name} | Central de Ajuda`,
         iconURL: emojis.helpIcon,
       })
       .setColor(colors.red)
       .setDescription(
         [
           "```",
-          `${bot.name} - Help Menu`,
+          `${bot.name} • Categorias`,
           "```",
-          ">>> Selecione uma categoria abaixo para exibir os comandos disponíveis, exemplos de uso e permissões.",
+          ">>> Escolha uma categoria abaixo para ver os comandos, como usar e quais permissões são necessárias.",
           "",
-          "Tudo foi pensado pra ser rápido, prático e eficiente.",
+          "Tudo organizado pra te ajudar a moderar o servidor de forma simples e eficiente.",
         ].join("\n")
       );
 
