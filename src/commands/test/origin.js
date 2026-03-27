@@ -23,8 +23,7 @@ module.exports = {
       return sendWarning(message, "Nome de branch inválido. Use apenas letras, números, hifens e underlines.");
     }
 
-    const repoLink = args[1]; 
-
+    const repoLink = args[1];
     const statusMessage = await message.reply("⏳ **Iniciando processo de atualização do repositório...**");
 
     try {
@@ -42,7 +41,7 @@ module.exports = {
       await statusMessage.edit("📦 **Código atualizado! Instalando possíveis novas dependências via NPM...**");
       const { stdout: npmOut } = await execAsync("npm install");
 
-      const formatOutput = (text) => text.length > 800 ? text.substring(0, 800) + "\n...[Output Truncado]" : text;
+      const formatOutput = (text) => (text.length > 800 ? text.substring(0, 800) + "\n...[Output Truncado]" : text);
 
       const embed = new EmbedBuilder()
         .setColor(colors.green)
@@ -57,9 +56,8 @@ module.exports = {
       await statusMessage.edit({ content: null, embeds: [embed] });
 
       setTimeout(() => {
-          process.exit(0);
+        process.exit(0);
       }, 3000);
-
     } catch (error) {
       console.error("[origin command] Erro crítico durante a atualização:", error);
 
@@ -75,4 +73,3 @@ module.exports = {
     }
   }
 };
-
