@@ -62,12 +62,11 @@ module.exports = {
 
     const tempoExtenso = formatVerboseDuration(tempo);
     const terminaEmUnix = Math.floor((Date.now() + duracao) / 1000);
-    const duracaoFormatadaEmbed = `${tempoExtenso} (Expira <t:${terminaEmUnix}:R>)`;
 
     try {
       await membro.timeout(duracao, motivo);
 
-      const embed = createMuteEmbed(message, membro, duracaoFormatadaEmbed, motivo);
+      const embed = createMuteEmbed(message, membro, tempoExtenso, motivo);
 
       await message.channel.send({ embeds: [embed] });
 
