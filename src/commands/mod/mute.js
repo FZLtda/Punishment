@@ -65,7 +65,7 @@ module.exports = {
     const tempoExtenso = formatVerboseDuration(tempo);
     const terminaEmUnix = Math.floor((Date.now() + duracao) / 1000);
 
-    const duracaoFormatadaEmbed = `\`${tempoExtenso}\` (Expira <t:${terminaEmUnix}:R>)`;
+    const duracaoFormatadaEmbed = `\`${tempoExtenso}\``;
 
     try {
       await membro.timeout(duracao, motivo);
