@@ -68,7 +68,7 @@ module.exports = {
       );
 
     const menu = new StringSelectMenuBuilder()
-      .setCustomId("help-category")
+      .setCustomId(`help-category:${message.author.id}`)
       .setPlaceholder("Explorar categorias")
       .setMinValues(1)
       .setMaxValues(1)
@@ -84,7 +84,7 @@ module.exports = {
           "https://discord.com/oauth2/authorize?client_id=1155843839932764253&permissions=8&integration_type=0&scope=applications.commands+bot"
         ),
       new ButtonBuilder()
-        .setCustomId("help_close")
+        .setCustomId(`help_close:${message.author.id}`)
         .setLabel("Fechar")
         .setStyle(ButtonStyle.Danger)
     );
