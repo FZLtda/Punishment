@@ -4,7 +4,7 @@ const { sendWarning } = require("@embeds/embedWarning");
 const { checkMemberGuard } = require("@permissions/memberGuards");
 const { sendModLog } = require("@modules/modlog");
 const { convertToMilliseconds } = require("@utils/convertToMilliseconds");
-const { createMuteEmbed } = require("@embeds/muteEmbed");
+const { createMuteEmbed } = require("@embeds/moderation/muteEmbed");
 
 /**
  * Converte uma string de tempo (ex: "1m", "2d") para sua representação por extenso.
