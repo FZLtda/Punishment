@@ -11,6 +11,15 @@ module.exports = {
   customId: "help-category",
 
   async execute(interaction) {
+    const [, ownerId] = interaction.customId.split(":");
+
+    if (ownerId && interaction.user.id !== ownerId) {
+      return sendWarning(
+        interaction,
+        "Você não pode interagir com este menu."
+      );
+    }
+
     const selected = interaction.values[0];
     const category = categories.find(c => c.id === selected);
 
