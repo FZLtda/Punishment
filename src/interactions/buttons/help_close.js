@@ -1,7 +1,6 @@
 "use strict";
 
 const Logger = require("@logger");
-const { sendWarning } = require("@embeds/embedWarning");
 
 module.exports = {
   customId: "help_close",
@@ -13,16 +12,6 @@ module.exports = {
   async execute(interaction) {
     try {
       await interaction.deferUpdate();
-
-      
-      const [, ownerId] = interaction.customId.split(":");
-
-      if (ownerId && interaction.user.id !== ownerId) {
-        return sendWarning(
-          interaction,
-          "Você não pode interagir com este botão."
-        );
-      }
 
       if (interaction.message?.flags?.has(1 << 6)) {
         await interaction.deleteReply();
