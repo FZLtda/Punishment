@@ -1,51 +1,65 @@
 "use strict";
 
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, Events } = require("discord.js");
 const { colors, emojis, channels, bot } = require("@config");
 const Logger = require("@logger");
 
 module.exports = {
-  name: "guildMemberRemove",
+  name: Events.GuildMemberRemove, 
   description: "Notifica quando um membro sai do servidor específico.",
   once: false,
 
   /**
-     * Executa quando um membro sai do servidor
-     * @param {import('discord.js').GuildMember} member
-     * @param {import('discord.js').Client} client
-     */
+   * Executa quando um membro sai do servidor.
+   * @param {import('discord.js').GuildMember | import('discord.js').PartialGuildMember} member
+   * @param {import('discord.js').Client} client
+   */
   async execute(member, client) {
     try {
-      // Garantir que o evento só funcione no servidor configurado
       if (member.guild.id !== bot.serverId) return;
 
-      const channel = await client.channels.fetch(channels.log).catch(() => null);
-      if (!channel) {
+      
+      const userId = member.id;
+      const user = member.user;
+
+      
+      const resolvedDisplayName = user?.displayName 
+        ?? user?.username 
+        ?? "Usuário desconhecido";
+        
+      
+      const resolvedAvatarURL = user?.displayAvatarURL?.({ dynamic: true }) ?? null;
+
+      
+      const logChannel = client.channels.cache.get(channels.log) 
+        ?? await client.channels.fetch(channels.log).catch(() => null);
+
+      if (!logChannel || !logChannel.isTextBased()) {
         return Logger.warn(
-          `[guildMemberRemove] Canal de logs (${channels.log}) não encontrado no servidor ${member.guild.id}.`
+          `[guildMemberRemove] Canal de logs (${channels.log}) não encontrado ou inválido no servidor ${member.guild.id}.`
         );
       }
 
-      const user = member.user ?? { id: member.id, tag: "Usuário desconhecido" };
-
+      
       const embed = new EmbedBuilder()
-        .setTitle(`${emojis?.kick} Membro saiu`)
-        .setColor(colors?.red)
-        .setDescription(`<@${user.id}> (\`${user.id}\`) saiu do servidor.`)
-        .setThumbnail(user.displayAvatarURL?.({ dynamic: true }) || null)
+        .setTitle(`${emojis.kick} Membro saiu`)
+        .setColor(colors.red)
+        .setDescription(`**${resolvedDisplayName}** (\`${userId}\`) saiu do servidor.`)
+        .setThumbnail(resolvedAvatarURL)
         .setFooter({
           text: member.guild.name,
-          iconURL: member.guild.iconURL?.({ dynamic: true }) || undefined
+          iconURL: member.guild.iconURL?.({ dynamic: true }) ?? undefined
         })
         .setTimestamp();
 
-      await channel.send({ embeds: [embed] });
+      
+      await logChannel.send({ embeds: [embed] });
 
       Logger.info(
-        `[guildMemberRemove] Membro ${user.tag} (${user.id}) saiu do servidor ${member.guild.id}.`
+        `[guildMemberRemove] Membro ${resolvedDisplayName} (${userId}) saiu do servidor ${member.guild.id}.`
       );
     } catch (error) {
-      Logger.error("[guildMemberRemove] Erro ao processar saída de membro:", error);
+      Logger.error(`[guildMemberRemove] Erro crítico ao processar saída do membro (ID: ${member?.id}):`, error);
     }
   }
 };
