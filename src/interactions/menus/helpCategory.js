@@ -8,58 +8,74 @@ const categories = require("@helpers/helpCategories");
 const Logger = require("@logger");
 
 module.exports = {
-customId: "help-category",
+  customId: "help-category",
 
-async execute(interaction) {
-const selected = interaction.values[0];
-const category = categories.find(c => c.id === selected);
+  async execute(interaction) {
+    const selected = interaction.values[0];
+    const category = categories.find(c => c.id === selected);
 
-if (!category) {  
-  Logger.warn(`[HELP] Categoria inválida selecionada por ${interaction.user.tag} (${interaction.user.id})`);  
-  return sendWarning(interaction, "Categoria inválida.");  
-}  
+    if (!category) {
+      Logger.warn(
+        `[HELP] Categoria inválida selecionada por ${interaction.user.tag} (${interaction.user.id})`
+      );
+      return sendWarning(interaction, "Categoria inválida.");
+    }
 
-try {  
-  const prefix = await getPrefix(interaction.guildId);  
+    try {
+      const prefix = await getPrefix(interaction.guildId);
 
-  const embed = new EmbedBuilder()  
-    .setTitle(`\`\`\`${bot.name} - ${category.name}\`\`\``)  
-    .setColor(colors.red)  
-    .setAuthor({  
-      name: `${bot.name} - Central de Ajuda`,  
-      iconURL: emojis.helpIcon,  
-    })  
-    .setDescription(  
-      category.commands.map(cmd => {  
-        const linha1 = `**${cmd.name}**`;  
-        const linha2 = cmd.description ? `> ${cmd.description}` : null;  
-        const linha3 = cmd.usage ? `> **Uso:** \`${prefix}${cmd.usage}\`` : null;  
-        const linha4 = cmd.permissions?.length ? `> **Acesso:** \`${cmd.permissions.join(", ")}\`` : null;  
-        const linha5 = cmd.details ? `> **Nota:** ${cmd.details}` : null;  
+      const embed = new EmbedBuilder()
+        .setTitle(`\`\`\`${bot.name} - ${category.name}\`\`\``)
+        .setColor(colors.red)
+        .setAuthor({
+          name: `${bot.name} - Central de Ajuda`,
+          iconURL: emojis.helpIcon,
+        })
+        .setDescription(
+          category.commands
+            .map(cmd => {
+              const linha1 = `**${cmd.name}**`;
+              const linha2 = cmd.description
+                ? `> ${cmd.description}`
+                : null;
+              const linha3 = cmd.usage
+                ? `> **Uso:** \`${prefix}${cmd.usage}\``
+                : null;
+              const linha4 = cmd.permissions?.length
+                ? `> **Acesso:** \`${cmd.permissions.join(", ")}\``
+                : null;
+              const linha5 = cmd.details
+                ? `> **Nota:** ${cmd.details}`
+                : null;
 
-        return [linha1, linha2, linha3, linha4, linha5]  
-          .filter(Boolean)  
-          .join("\n");  
-      }).join("\n\n")  
-    )  
-    .setFooter({  
-      text: `${category.name} • Total: ${category.commands.length} comandos`,  
-    });  
+              return [linha1, linha2, linha3, linha4, linha5]
+                .filter(Boolean)
+                .join("\n");
+            })
+            .join("\n\n")
+        )
+        .setFooter({
+          text: `${category.name} • Total: ${category.commands.length} comandos`,
+        });
 
-  await interaction.update({  
-    embeds: [embed],  
-    components: interaction.message.components,  
-  });  
+      await interaction.update({
+        embeds: [embed],
+        components: interaction.message.components,
+      });
 
-  Logger.info(  
-    `[HELP] Categoria exibida: ${category.name} • Solicitado por ${interaction.user.tag} (${interaction.user.id})`  
-  );  
-} catch (error) {  
-  Logger.error(  
-    `[HELP] Erro ao exibir categoria ${selected} para ${interaction.user.tag}: ${error.stack || error.message}`  
-  );  
-  return sendWarning(interaction, "Não foi possível exibir essa categoria.");  
-}
-
-},
+      Logger.info(
+        `[HELP] Categoria exibida: ${category.name} • Solicitado por ${interaction.user.tag} (${interaction.user.id})`
+      );
+    } catch (error) {
+      Logger.error(
+        `[HELP] Erro ao exibir categoria ${selected} para ${interaction.user.tag}: ${
+          error.stack || error.message
+        }`
+      );
+      return sendWarning(
+        interaction,
+        "Não foi possível exibir essa categoria."
+      );
+    }
+  },
 };
