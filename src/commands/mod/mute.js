@@ -36,7 +36,9 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message, args) {
-    const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
+    const membro =
+      message.mentions.members.first() ||
+      message.guild.members.cache.get(args[0]);
 
     const isValid = await checkMemberGuard(message, membro, "mute");
     if (!isValid) return;
@@ -63,10 +65,17 @@ module.exports = {
     const tempoExtenso = formatVerboseDuration(tempo);
     const terminaEmUnix = Math.floor((Date.now() + duracao) / 1000);
 
+    const duracaoFormatadaEmbed = `\`${tempoExtenso}\` (Expira <t:${terminaEmUnix}:R>)`;
+
     try {
       await membro.timeout(duracao, motivo);
 
-      const embed = createMuteEmbed(message, membro, tempoExtenso, motivo);
+      const embed = createMuteEmbed(
+        message,
+        membro,
+        duracaoFormatadaEmbed,
+        motivo
+      );
 
       await message.channel.send({ embeds: [embed] });
 
@@ -76,12 +85,13 @@ module.exports = {
         moderator: message.author,
         reason: motivo,
         extraFields: [
-          { name: "Duração", value: tempoExtenso, inline: true },
+          { name: "Duração", value: `\`${tempoExtenso}\``, inline: true },
           { name: "Expira em", value: `<t:${terminaEmUnix}:f>`, inline: true }
         ]
       });
     } catch (error) {
       console.error("[mute] Erro ao aplicar timeout:", error);
+
       return sendWarning(
         message,
         "Não foi possível silenciar o usuário devido a um erro inesperado."
