@@ -1,9 +1,7 @@
 "use strict";
 
-const { EmbedBuilder } = require("discord.js");
-const { colors, emojis } = require("@config");
 const { sendModLog } = require("@modules/modlog");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning, createKickEmbed } = require("@embeds");
 const { checkMemberGuard } = require("@permissions/memberGuards");
 
 module.exports = {
@@ -15,12 +13,6 @@ module.exports = {
   botPermissions: ["KickMembers"],
   deleteMessage: true,
 
-  /**
-   * Executa o comando de kick.
-   * @param {import('discord.js').Message} message
-   * @param {string[]} args
-   */
-  
   async execute(message, args) {
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
 
@@ -32,18 +24,7 @@ module.exports = {
     try {
       await membro.kick(motivo);
 
-      const embed = new EmbedBuilder()
-        .setTitle(`${emojis.kick} Punição aplicada`)
-        .setColor(colors.red)
-        .setDescription(`${membro} (\`${membro.id}\`) foi expulso(a) do servidor.`)
-        .addFields({ name: "Motivo", value: `\`${motivo}\`` })
-        .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
-        .setFooter({
-          text: message.author.username,
-          iconURL: message.author.displayAvatarURL({ dynamic: true })
-        })
-        .setTimestamp();
-
+      const embed = createKickEmbed(message, membro, motivo);
       await message.channel.send({ embeds: [embed] });
 
       await sendModLog(message.guild, {
