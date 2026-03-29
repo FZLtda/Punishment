@@ -16,20 +16,22 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message, args) {
-    const motivo = args.join(" ") || "Não especificado.";
     const canal = message.channel;
+    const motivo = args.join(" ") || "Não especificado.";
 
     try {
-      // Verifica se o canal já está desbloqueado
-      const overwrite = canal.permissionOverwrites.cache.get(message.guild.roles.everyone.id);
+      const everyoneRole = message.guild.roles.everyone;
+
+      
+      const overwrite = canal.permissionOverwrites.cache.get(everyoneRole.id);
       const jaDesbloqueado = overwrite?.allow.has(PermissionsBitField.Flags.SendMessages);
 
       if (jaDesbloqueado) {
         return sendWarning(message, "Este canal já está desbloqueado.");
       }
 
-      // Força o desbloqueio do canal
-      await canal.permissionOverwrites.edit(message.guild.roles.everyone, {
+      
+      await canal.permissionOverwrites.edit(everyoneRole, {
         SendMessages: true,
       });
 
@@ -38,8 +40,7 @@ module.exports = {
         .setColor(colors.green)
         .setDescription("Este canal foi desbloqueado com sucesso.")
         .addFields(
-          { name: "Canal", value: `${canal}`, inline: true },
-          { name: "Motivo", value: `\`${motivo}\``, inline: true },
+          { name: "Motivo", value: `\`${motivo}\``, inline: true }
         )
         .setFooter({
           text: message.author.username,
@@ -47,7 +48,7 @@ module.exports = {
         })
         .setTimestamp();
 
-      // Busca no banco a mensagem de lock
+      
       const lockData = await ChannelLock.findOne({
         guildId: message.guild.id,
         channelId: canal.id,
@@ -61,7 +62,7 @@ module.exports = {
           await canal.send({ embeds: [embed] });
         }
 
-        // Remove do banco
+        
         await ChannelLock.deleteOne({
           guildId: message.guild.id,
           channelId: canal.id,

@@ -16,19 +16,21 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message, args) {
-    const motivo = args.join(" ") || "Não especificado.";
     const canal = message.channel;
+    const motivo = args.join(" ") || "Não especificado.";
 
     try {
+      const everyoneRole = message.guild.roles.everyone;
+
       const jaBloqueado = canal.permissionOverwrites.cache
-        .get(message.guild.roles.everyone.id)
+        .get(everyoneRole.id)
         ?.deny.has(PermissionsBitField.Flags.SendMessages);
 
       if (jaBloqueado) {
         return sendWarning(message, "Este canal já está bloqueado.");
       }
 
-      await canal.permissionOverwrites.edit(message.guild.roles.everyone, {
+      await canal.permissionOverwrites.edit(everyoneRole, {
         SendMessages: false
       });
 
@@ -37,7 +39,6 @@ module.exports = {
         .setColor(colors.red)
         .setDescription("Este canal está temporariamente bloqueado para novas mensagens.")
         .addFields(
-          { name: "Canal", value: `${canal}`, inline: true },
           { name: "Motivo", value: `\`${motivo}\``, inline: true }
         )
         .setFooter({
@@ -48,10 +49,14 @@ module.exports = {
 
       const msg = await canal.send({ embeds: [embed] });
 
-      // Salva no banco
+      
       await ChannelLock.findOneAndUpdate(
         { guildId: message.guild.id, channelId: canal.id },
-        { guildId: message.guild.id, channelId: canal.id, messageId: msg.id },
+        {
+          guildId: message.guild.id,
+          channelId: canal.id,
+          messageId: msg.id
+        },
         { upsert: true }
       );
 
@@ -64,7 +69,10 @@ module.exports = {
 
     } catch (error) {
       console.error(error);
-      return sendWarning(message, "Não foi possível bloquear o canal devido a um erro inesperado.");
+      return sendWarning(
+        message,
+        "Não foi possível bloquear o canal devido a um erro inesperado."
+      );
     }
   }
 };
