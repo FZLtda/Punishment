@@ -1,7 +1,7 @@
 "use strict";
 
 const { sendModLog } = require("@modules/modlog");
-const { createMuteEmbed } = require("@embeds/muteEmbed");
+const { createMuteEmbed } = require("@embeds");
 const { formatVerboseDuration } = require("@utils/timeUtils");
 
 class ModerationService {
