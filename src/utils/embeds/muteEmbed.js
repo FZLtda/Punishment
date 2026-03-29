@@ -3,7 +3,13 @@
 const { EmbedBuilder } = require("discord.js");
 const { colors, emojis } = require("@config");
 
-function createMuteEmbed(message, membro, tempo, motivo) {
+/**
+ * @param {import('discord.js').User} moderator - O usuário que aplicou o mute.
+ * @param {import('discord.js').GuildMember} membro - O membro silenciado.
+ * @param {string} tempo - Tempo formatado.
+ * @param {string} motivo - Motivo da punição.
+ */
+function createMuteEmbed(moderator, membro, tempo, motivo) {
   return new EmbedBuilder()
     .setTitle(`${emojis.mute} Punição aplicada`)
     .setColor(colors.red)
@@ -12,10 +18,10 @@ function createMuteEmbed(message, membro, tempo, motivo) {
       { name: "Duração", value: tempo, inline: true },
       { name: "Motivo", value: `\`${motivo}\``, inline: true }
     )
-    .setThumbnail(membro.user.displayAvatarURL({ dynamic: true }))
+    .setThumbnail(membro.user.displayAvatarURL({ forceStatic: false }))
     .setFooter({
-      text: message.author.username,
-      iconURL: message.author.displayAvatarURL({ dynamic: true }),
+      text: `${moderator.username}`,
+      iconURL: moderator.displayAvatarURL({ forceStatic: false }),
     })
     .setTimestamp();
 }
