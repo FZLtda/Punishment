@@ -1,6 +1,6 @@
 "use strict";
 
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 const { checkMemberGuard } = require("@permissions/memberGuards");
 const { convertToMilliseconds } = require("@utils/timeUtils"); 
 const ModerationService = require("@services/ModerationService");
