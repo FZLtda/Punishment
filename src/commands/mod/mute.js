@@ -2,31 +2,8 @@
 
 const { sendWarning } = require("@embeds/embedWarning");
 const { checkMemberGuard } = require("@permissions/memberGuards");
-const { sendModLog } = require("@modules/modlog");
-const { convertToMilliseconds } = require("@utils/convertToMilliseconds");
-const { createMuteEmbed } = require("@embeds/moderation/muteEmbed");
-
-/**
- * Converte uma string de tempo (ex: "1m", "2d") para sua representação por extenso.
- * @param {string} input - A string de tempo original.
- * @returns {string} - O tempo formatado por extenso.
- */
-const formatVerboseDuration = (input) => {
-  const match = input.toLowerCase().match(/^(\d+)(s|m|h|d)$/);
-  if (!match) return input;
-
-  const value = parseInt(match[1], 10);
-  const unit = match[2];
-
-  const labels = {
-    s: value === 1 ? "segundo" : "segundos",
-    m: value === 1 ? "minuto" : "minutos",
-    h: value === 1 ? "hora" : "horas",
-    d: value === 1 ? "dia" : "dias"
-  };
-
-  return `${value} ${labels[unit]}`;
-};
+const { convertToMilliseconds } = require("@utils/timeUtils"); 
+const ModerationService = require("@services/ModerationService");
 
 module.exports = {
   name: "mute",
@@ -35,10 +12,21 @@ module.exports = {
   botPermissions: ["ModerateMembers"],
   deleteMessage: true,
 
+  /**
+   * @param {import('discord.js').Message} message 
+   * @param {string[]} args 
+   */
   async execute(message, args) {
-    const membro =
-      message.mentions.members.first() ||
-      message.guild.members.cache.get(args[0]);
+    
+    const targetId = message.mentions.members.first()?.id || args[0];
+    if (!targetId) {
+      return sendWarning(message, "Por favor, mencione um membro ou forneça o ID válido.");
+    }
+
+    const membro = await message.guild.members.fetch(targetId).catch(() => null);
+    if (!membro) {
+      return sendWarning(message, "Membro não encontrado neste servidor.");
+    }
 
     const isValid = await checkMemberGuard(message, membro, "mute");
     if (!isValid) return;
@@ -47,55 +35,33 @@ module.exports = {
     const motivo = args.slice(2).join(" ") || "Não especificado.";
 
     if (!tempo) {
-      return sendWarning(
-        message,
-        "Defina um tempo de duração para o mute (ex: `1m`, `1h`, `1d`)."
-      );
+      return sendWarning(message, "Defina um tempo de duração para o mute (ex: `1m`, `1h`, `1d`).");
     }
 
-    const duracao = convertToMilliseconds(tempo);
+    const duracaoMs = convertToMilliseconds(tempo);
 
-    if (!duracao) {
-      return sendWarning(
-        message,
-        "Duração inválida. Use `s`, `m`, `h`, `d` (ex: `10m`, `1h`)."
-      );
+    if (!duracaoMs) {
+      return sendWarning(message, "Duração inválida. Use `s`, `m`, `h`, `d` (ex: `10m`, `1h`).");
     }
 
-    const tempoExtenso = formatVerboseDuration(tempo);
-    const terminaEmUnix = Math.floor((Date.now() + duracao) / 1000);
-
-    const duracaoFormatadaEmbed = `\`${tempoExtenso}\``;
+    const vinteOitoDiasMs = 28 * 24 * 60 * 60 * 1000;
+    if (duracaoMs > vinteOitoDiasMs) {
+      return sendWarning(message, "O Discord permite um timeout máximo de apenas 28 dias.");
+    }
 
     try {
-      await membro.timeout(duracao, motivo);
-
-      const embed = createMuteEmbed(
-        message,
-        membro,
-        duracaoFormatadaEmbed,
-        motivo
-      );
-
-      await message.channel.send({ embeds: [embed] });
-
-      await sendModLog(message.guild, {
-        action: "Mute",
-        target: membro.user,
+      await ModerationService.applyMute({
+        target: membro,
         moderator: message.author,
+        durationMs: duracaoMs,
+        rawTime: tempo,
         reason: motivo,
-        extraFields: [
-          { name: "Duração", value: `\`${tempoExtenso}\``, inline: true },
-          { name: "Expira em", value: `<t:${terminaEmUnix}:f>`, inline: true }
-        ]
+        channel: message.channel 
       });
     } catch (error) {
-      console.error("[mute] Erro ao aplicar timeout:", error);
-
-      return sendWarning(
-        message,
-        "Não foi possível silenciar o usuário devido a um erro inesperado."
-      );
+      console.error(`[Command: mute] Falha ao mutar usuário ${membro.user.tag}:`, error);
+      return sendWarning(message, "Não foi possível silenciar o usuário devido a um erro na API do Discord.");
     }
   }
 };
+
