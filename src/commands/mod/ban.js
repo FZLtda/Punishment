@@ -1,10 +1,9 @@
 "use strict";
 
-const { EmbedBuilder } = require("discord.js");
-const { colors, emojis } = require("@config");
 const { sendModLog } = require("@modules/modlog");
 const { sendWarning } = require("@embeds/embedWarning");
 const { checkMemberGuard } = require("@permissions/memberGuards");
+const { createBanEmbed } = require("@embeds/banEmbed");
 
 module.exports = {
   name: "ban",
@@ -39,18 +38,7 @@ module.exports = {
     try {
       await message.guild.members.ban(targetUser.id, { reason: motivo });
 
-      const embed = new EmbedBuilder()
-        .setTitle(`${emojis.ban} Punição aplicada`)
-        .setColor(colors.red)
-        .setDescription(`${targetUser} (\`${targetUser.id}\`) foi banido permanentemente.`)
-        .addFields({ name: "Motivo", value: `\`${motivo}\`` })
-        .setThumbnail(targetUser.displayAvatarURL({ dynamic: true }))
-        .setFooter({
-          text: `${message.author.username}`,
-          iconURL: message.author.displayAvatarURL({ dynamic: true })
-        })
-        .setTimestamp();
-
+      const embed = createBanEmbed(message, targetUser, motivo);
       await message.channel.send({ embeds: [embed] });
 
       await sendModLog(message.guild, {
