@@ -1,9 +1,7 @@
 "use strict";
 
-const { EmbedBuilder } = require("discord.js");
-const { colors, emojis } = require("@config");
-const { sendWarning } = require("@embeds/embedWarning");
 const { sendModLog } = require("@modules/modlog");
+const { createUnbanEmbed, sendWarning } = require("@embeds");
 
 module.exports = {
   name: "unban",
@@ -29,18 +27,7 @@ module.exports = {
 
       await message.guild.members.unban(userId, motivo);
 
-      const embed = new EmbedBuilder()
-        .setTitle(`${emojis.unban} Banimento removido`)
-        .setColor(colors.green)
-        .setDescription(`${banInfo.user.tag} (\`${userId}\`) teve o banimento removido com sucesso.`)
-        .addFields({ name: "Motivo", value: `\`${motivo}\`` })
-        .setThumbnail(banInfo.user.displayAvatarURL({ dynamic: true }))
-        .setFooter({
-          text: message.author.username,
-          iconURL: message.author.displayAvatarURL({ dynamic: true })
-        })
-        .setTimestamp();
-
+      const embed = createUnbanEmbed(message, banInfo.user, userId, motivo);
       await message.channel.send({ embeds: [embed] });
 
       await sendModLog(message.guild, {
