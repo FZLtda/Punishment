@@ -1,9 +1,8 @@
 "use strict";
 
 const { sendModLog } = require("@modules/modlog");
-const { sendWarning } = require("@embeds/embedWarning");
+const { createBanEmbed, sendWarning } = require("@embeds");
 const { checkMemberGuard } = require("@permissions/memberGuards");
-const { createBanEmbed } = require("@embeds/banEmbed");
 
 module.exports = {
   name: "ban",
@@ -33,6 +32,12 @@ module.exports = {
     if (memberInGuild) {
       const isValid = await checkMemberGuard(message, memberInGuild, "ban");
       if (!isValid) return; 
+    }
+
+    const isAlreadyBanned = await message.guild.bans.fetch(targetUser.id).catch(() => null);
+    
+    if (isAlreadyBanned) {
+      return sendWarning(message, "Este usuário já se encontra banido neste servidor.");
     }
 
     try {
