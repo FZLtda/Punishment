@@ -1,79 +1,70 @@
 "use strict";
 
-const { sendWarning } = require("@embeds");
-// checkMemberGuard geralmente é para quem aplica punição, então foi removido aqui pois qualquer um pode denunciar.
+const { ApplicationCommandType } = require("discord.js");
+// Importe seus serviços normalmente
 const ModerationService = require("@services/ModerationService");
 
 module.exports = {
-  name: "denunciar",
-  description: "Denuncia uma mensagem ou membro para os administradores.",
-  userPermissions: [], // Array vazio indica que qualquer membro pode usar
-  botPermissions: ["SendMessages"],
-  deleteMessage: true, // Importante para apagar a mensagem e manter o sigilo da denúncia
+  // O 'name' é EXATAMENTE o que vai aparecer escrito lá no menu "Apps"
+  name: "Denunciar Mensagem",
+  
+  // Isso é o que define que o comando vai para o menu de mensagens (Apps)
+  type: ApplicationCommandType.Message, 
+  
+  // Context menus não usam 'description' na API do Discord, mas mantemos para organizar
+  description: "Denuncia a mensagem selecionada para a moderação.",
+  userPermissions: [], // Qualquer um pode usar
 
   /**
-   * @param {import('discord.js').Message} message 
-   * @param {string[]} args 
+   * @param {import('discord.js').MessageContextMenuCommandInteraction} interaction 
    */
-  async execute(message, args) {
-    
-    let targetUser;
-    let mensagemDenunciada = null;
-    let motivo = "";
+  async execute(interaction) {
+    // 1. O 'targetMessage' pega automaticamente a mensagem que o usuário clicou para abrir o menu "Apps"
+    const mensagemDenunciada = interaction.targetMessage;
+    const targetUser = mensagemDenunciada.author;
+    const denunciante = interaction.user;
 
-    // 1. Verifica se o usuário usou o comando respondendo a uma mensagem (Contexto)
-    if (message.reference && message.reference.messageId) {
-      mensagemDenunciada = await message.channel.messages.fetch(message.reference.messageId).catch(() => null);
-      if (mensagemDenunciada) {
-        targetUser = mensagemDenunciada.author;
-        // O motivo será todo o texto digitado após o comando
-        motivo = args.join(" ") || "Nenhum motivo fornecido.";
-      }
-    } else {
-      // 2. Se não respondeu, tenta pegar o alvo pela menção ou pelo ID (args[0])
-      const targetId = message.mentions.members.first()?.id || args[0];
-      if (!targetId) {
-        return sendWarning(message, "Por favor, **responda à mensagem** que deseja denunciar ou mencione o membro.");
-      }
-      
-      const membro = await message.guild.members.fetch(targetId).catch(() => null);
-      if (!membro) {
-        return sendWarning(message, "Membro não encontrado neste servidor.");
-      }
-      
-      targetUser = membro.user;
-      // O motivo será o resto da mensagem após a menção/ID
-      motivo = args.slice(1).join(" ") || "Nenhum motivo fornecido.";
-    }
-
-    // Validações básicas de segurança
-    if (targetUser.id === message.author.id) {
-      return sendWarning(message, "Você não pode denunciar a si mesmo.");
+    // 2. Validações básicas
+    if (targetUser.id === denunciante.id) {
+      return interaction.reply({ 
+        content: "Você não pode denunciar a sua própria mensagem.", 
+        ephemeral: true // ephemeral: true garante que só o usuário veja o erro (sigilo)
+      });
     }
 
     if (targetUser.bot) {
-      return sendWarning(message, "Você não pode denunciar um bot.");
+      return interaction.reply({ 
+        content: "Você não pode denunciar mensagens de bots.", 
+        ephemeral: true 
+      });
     }
 
+    // 3. Resposta de carregamento (para a API do Discord não dar timeout)
+    await interaction.deferReply({ ephemeral: true });
+
     try {
-      // Enviando os dados para o seu Service cuidar de criar o log/embed no canal de denúncias
-      // Certifique-se de que o método 'createReport' exista no seu ModerationService
+      // 4. Envia para o seu Service
+      // Como Menus de Contexto não abrem caixa de texto diretamente, 
+      // o motivo pode ser padrão ou você pode abrir um Modal (formulário) depois.
       await ModerationService.createReport({
-        reporter: message.author,
+        reporter: denunciante,
         target: targetUser,
         reportedMessage: mensagemDenunciada,
-        reason: motivo,
-        channel: message.channel,
-        guild: message.guild
+        reason: "Denúncia enviada via Menu de Contexto (Apps).",
+        channel: interaction.channel,
+        guild: interaction.guild
       });
 
-      // Feedback privado para o denunciante (já que deleteMessage é true)
-      await message.author.send(`✅ Sua denúncia contra **${targetUser.tag}** foi enviada com sucesso aos administradores do servidor **${message.guild.name}**.`).catch(() => null);
+      // 5. Confirmação de sucesso para quem denunciou
+      await interaction.editReply({ 
+        content: `✅ A mensagem de **${targetUser.tag}** foi denunciada com sucesso aos administradores.` 
+      });
 
     } catch (error) {
-      console.error(`[Command: denunciar] Falha ao enviar denúncia de ${message.author.tag}:`, error);
-      return sendWarning(message, "Não foi possível enviar a denúncia devido a um erro interno. Tente contatar a equipe diretamente.");
+      console.error(`[Context Command: Denunciar] Falha:`, error);
+      await interaction.editReply({ 
+        content: "Não foi possível enviar a denúncia devido a um erro interno. Tente contatar a equipe diretamente." 
+      });
     }
   }
 };
-
