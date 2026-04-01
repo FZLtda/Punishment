@@ -75,6 +75,7 @@
     "@loadModals": "src/handlers/modals",
     "@handleSlash": "src/handlers/slash",
     "@loadEvents": "src/handlers/events",
+    "@loadContext": "src/handlers/context",
     "@permissions": "src/utils/permissions",
     "@loadCommands": "src/handlers/commands",
     "@loadSlashCommands": "src/handlers/slash",
