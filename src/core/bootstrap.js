@@ -5,7 +5,6 @@ const { validateEnvironment } = require("@core/environment");
 const { connectMongo } = require("@database");
 
 const { loadCommands } = require("@loadCommands/loader");
-const { loadContext } = require("@loadContext/loader");
 const { loadEvents } = require("@loadEvents/loader");
 const { loadMenus } = require("@loadMenus/loader");
 const { loadModals } = require("@loadModals/loader");
@@ -22,7 +21,6 @@ module.exports = async function bootstrap() {
 
   await Promise.all([
     loadCommands(client),
-    loadContext(client),
     loadEvents(client),
     loadMenus(client),
     loadSlashCommands(client),
