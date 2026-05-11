@@ -1,10 +1,8 @@
 "use strict";
 
-const { EmbedBuilder, PermissionsBitField } = require("discord.js");
-const { colors, emojis } = require("@config");
-const { sendModLog } = require("@modules/modlog");
-const { sendWarning } = require("@embeds/embedWarning");
-const ChannelLock = require("@models/ChannelLock");
+const { sendWarning } = require("@embeds");
+const { checkChannelLock } = require("@permissions/channelGuards");
+const ChannelLockService = require("@services/ChannelLockService");
 
 module.exports = {
   name: "lock",
@@ -15,60 +13,35 @@ module.exports = {
   botPermissions: ["ManageChannels"],
   deleteMessage: true,
 
+  /**
+   * @param {import('discord.js').Message} message
+   * @param {string[]} args
+   */
   async execute(message, args) {
     const canal = message.channel;
     const motivo = args.join(" ") || "Não especificado.";
 
+    if (!canal.isTextBased()) {
+      return sendWarning(message, "Este comando só pode ser usado em canais de texto.");
+    }
+
     try {
-      const everyoneRole = message.guild.roles.everyone;
+      const isLocked = await checkChannelLock(canal);
 
-      const jaBloqueado = canal.permissionOverwrites.cache
-        .get(everyoneRole.id)
-        ?.deny.has(PermissionsBitField.Flags.SendMessages);
-
-      if (jaBloqueado) {
+      if (isLocked) {
         return sendWarning(message, "Este canal já está bloqueado.");
       }
 
-      await canal.permissionOverwrites.edit(everyoneRole, {
-        SendMessages: false
-      });
-
-      const embed = new EmbedBuilder()
-        .setTitle(`${emojis.lock} Canal bloqueado`)
-        .setColor(colors.red)
-        .setDescription("Este canal está temporariamente bloqueado para novas mensagens.")
-        .addFields(
-          { name: "Motivo", value: `\`${motivo}\``, inline: true }
-        )
-        .setFooter({
-          text: message.author.username,
-          iconURL: message.author.displayAvatarURL({ dynamic: true })
-        })
-        .setTimestamp();
-
-      const msg = await canal.send({ embeds: [embed] });
-
-      
-      await ChannelLock.findOneAndUpdate(
-        { guildId: message.guild.id, channelId: canal.id },
-        {
-          guildId: message.guild.id,
-          channelId: canal.id,
-          messageId: msg.id
-        },
-        { upsert: true }
-      );
-
-      await sendModLog(message.guild, {
-        action: "Lock",
+      await ChannelLockService.lock({
+        guild: message.guild,
+        channel: canal,
         moderator: message.author,
-        reason: motivo,
-        channel: canal
+        reason: motivo
       });
 
     } catch (error) {
-      console.error(error);
+      console.error(`[Command: lock] Falha ao bloquear canal ${canal.id}:`, error);
+
       return sendWarning(
         message,
         "Não foi possível bloquear o canal devido a um erro inesperado."
