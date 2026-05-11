@@ -20,7 +20,7 @@ module.exports = {
 
     const branch = args[0] || "main";
     if (!/^[a-zA-Z0-9_-]+$/.test(branch)) {
-      return sendWarning(message, "Nome de branch inválido. Use apenas letras, números, hifens e underlines.");
+      return sendWarning(message, "Branch inválido. Use apenas letras, números, hifens e underlines.");
     }
 
     const repoLink = args[1];
