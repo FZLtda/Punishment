@@ -3,7 +3,7 @@
 const { PermissionsBitField } = require("discord.js");
 const { sendModLog } = require("@modules/modlog");
 const ChannelLock = require("@models/ChannelLock");
-const { createLockEmbed } = require("@embeds/moderation/createLockEmbed");
+const { createLockEmbed } = require("@embeds");
 
 class ChannelLockService {
   /**
