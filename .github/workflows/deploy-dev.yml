@@ -4,6 +4,18 @@ on:
   push:
     branches:
       - develop
+    paths-ignore:
+      - "**.md"
+      - "README.md"
+      - ".gitignore"
+
+  pull_request:
+    branches:
+      - develop
+    paths-ignore:
+      - "**.md"
+      - "README.md"
+      - ".gitignore"
 
 jobs:
   deploy:
@@ -18,7 +30,8 @@ jobs:
           zip -r bot.zip . \
           -x "*.git*" \
           "node_modules/*" \
-          ".github/*"
+          ".github/*" \
+          "README.md"
 
       - name: Upload to Square Cloud
         run: |
@@ -27,4 +40,4 @@ jobs:
           -F "file=@bot.zip"
 
       - name: Deployment success
-        run: echo "Deploy completed successfully!"
+        run: echo "Deploy completed successfully on develop branch!"
