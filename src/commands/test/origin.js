@@ -24,7 +24,7 @@ module.exports = {
     }
 
     const repoLink = args[1];
-    const statusMessage = await message.reply("⏳ **Iniciando processo de atualização do repositório...**");
+    const statusMessage = await message.reply("**Iniciando processo de atualização do repositório...**");
 
     try {
       const gitCommand = repoLink
@@ -65,7 +65,7 @@ module.exports = {
 
       const errorEmbed = new EmbedBuilder()
         .setColor(colors.red)
-        .setTitle("❌ Falha na Atualização (Merge Conflict / Erro de Sintaxe)")
+        .setTitle("Falha na Atualização (Merge Conflict / Erro de Sintaxe)")
         .setDescription(`\`\`\`bash\n${errorMessage}\n\`\`\``)
         .setFooter({ text: "Verifique possíveis conflitos de merge ou problemas de conexão no host." });
 
