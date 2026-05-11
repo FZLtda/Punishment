@@ -1,0 +1,844 @@
+{
+  "backupId": 1776784932163,
+  "guildId": "1006910950286299246",
+  "guildName": "Punishment",
+  "iconURL": "https://cdn.discordapp.com/icons/1006910950286299246/606ef760dc13f787006bff3fa06e2336.webp",
+  "createdAt": "2022-08-10T13:04:38.049Z",
+  "region": "pt-BR",
+  "createdBy": {
+    "id": "1006909671908585586",
+    "tag": "funczero.xyz"
+  },
+  "roles": [
+    {
+      "id": "1326566485094563880",
+      "name": "https://funczero.xyz",
+      "color": "#8c9cfc",
+      "hoist": true,
+      "permissions": "0",
+      "position": -1326566485094563800,
+      "mentionable": false
+    },
+    {
+      "id": "1136438098226581565",
+      "name": "Nº 1",
+      "color": "#8c9cfc",
+      "hoist": true,
+      "permissions": "6893937906155511",
+      "position": -1136438098226581500,
+      "mentionable": false
+    },
+    {
+      "id": "1323099772206186578",
+      "name": "Dr. Pu",
+      "color": "#fe3838",
+      "hoist": true,
+      "permissions": "0",
+      "position": -1323099772206186500,
+      "mentionable": false
+    },
+    {
+      "id": "1133902870249480233",
+      "name": "🗝️",
+      "color": "#000000",
+      "hoist": false,
+      "permissions": "6827338397773633",
+      "position": -1133902870249480200,
+      "mentionable": false
+    },
+    {
+      "id": "1127755180738351145",
+      "name": "Administrador",
+      "color": "#fe3838",
+      "hoist": true,
+      "permissions": "6788357408944071",
+      "position": -1127755180738351100,
+      "mentionable": false
+    },
+    {
+      "id": "1140012582481178735",
+      "name": "Developer",
+      "color": "#dc143c",
+      "hoist": true,
+      "permissions": "0",
+      "position": -1140012582481178800,
+      "mentionable": false
+    },
+    {
+      "id": "1246925939791630471",
+      "name": "Líder Geral",
+      "color": "#05f5f0",
+      "hoist": true,
+      "permissions": "0",
+      "position": -1246925939791630600,
+      "mentionable": false
+    },
+    {
+      "id": "1124802732348407808",
+      "name": "Mod  leader",
+      "color": "#ff0000",
+      "hoist": true,
+      "permissions": "0",
+      "position": -1124802732348407800,
+      "mentionable": false
+    },
+    {
+      "id": "1265035706460409878",
+      "name": "Moderador",
+      "color": "#fe3838",
+      "hoist": true,
+      "permissions": "0",
+      "position": -1265035706460409900,
+      "mentionable": false
+    },
+    {
+      "id": "1109959852370964581",
+      "name": "Aluno  Moderador",
+      "color": "#235e92",
+      "hoist": true,
+      "permissions": "6755399441129472",
+      "position": -1109959852370964600,
+      "mentionable": false
+    },
+    {
+      "id": "1381795373802197092",
+      "name": "Sponsor",
+      "color": "#ad1457",
+      "hoist": true,
+      "permissions": "0",
+      "position": -1381795373802197000,
+      "mentionable": false
+    },
+    {
+      "id": "1210035886989901905",
+      "name": "Vip",
+      "color": "#b03ba4",
+      "hoist": true,
+      "permissions": "0",
+      "position": -1210035886989901800,
+      "mentionable": false
+    },
+    {
+      "id": "1177741980936188067",
+      "name": "TikTok Trender",
+      "color": "#e74c3c",
+      "hoist": true,
+      "permissions": "0",
+      "position": -1177741980936188200,
+      "mentionable": false
+    },
+    {
+      "id": "1132662420259737710",
+      "name": "Free Fire",
+      "color": "#630101",
+      "hoist": true,
+      "permissions": "0",
+      "position": -1132662420259737700,
+      "mentionable": false
+    },
+    {
+      "id": "1132662763588681838",
+      "name": "Farlight 84",
+      "color": "#ffdd00",
+      "hoist": true,
+      "permissions": "0",
+      "position": -1132662763588681900,
+      "mentionable": false
+    },
+    {
+      "id": "1122491521594302574",
+      "name": "Crimson",
+      "color": "#dc143c",
+      "hoist": false,
+      "permissions": "0",
+      "position": -1122491521594302600,
+      "mentionable": false
+    },
+    {
+      "id": "1122491262457626694",
+      "name": "DeepPink",
+      "color": "#ff1493",
+      "hoist": false,
+      "permissions": "0",
+      "position": -1122491262457626800,
+      "mentionable": false
+    },
+    {
+      "id": "1122490739088167002",
+      "name": "Purple",
+      "color": "#a020f0",
+      "hoist": false,
+      "permissions": "0",
+      "position": -1122490739088167000,
+      "mentionable": false
+    },
+    {
+      "id": "1122491021373214822",
+      "name": "DarkMagenta",
+      "color": "#8b008b",
+      "hoist": false,
+      "permissions": "0",
+      "position": -1122491021373214800,
+      "mentionable": false
+    },
+    {
+      "id": "1122623775142334474",
+      "name": "Aqua/Cyan",
+      "color": "#00ffff",
+      "hoist": false,
+      "permissions": "0",
+      "position": -1122623775142334500,
+      "mentionable": false
+    },
+    {
+      "id": "1143700309923868754",
+      "name": "DarkSlateGray",
+      "color": "#2f4f4f",
+      "hoist": false,
+      "permissions": "0",
+      "position": -1143700309923868800,
+      "mentionable": false
+    },
+    {
+      "id": "1143711874635026586",
+      "name": "OrangeRed",
+      "color": "#ff4500",
+      "hoist": false,
+      "permissions": "0",
+      "position": -1143711874635026600,
+      "mentionable": false
+    },
+    {
+      "id": "1374885517631688785",
+      "name": "Rei da Sorte",
+      "color": "#ff5600",
+      "hoist": true,
+      "permissions": "0",
+      "position": -1374885517631688700,
+      "mentionable": false
+    },
+    {
+      "id": "1267270735232110644",
+      "name": "Verificado",
+      "color": "#2ecc71",
+      "hoist": true,
+      "permissions": "65536",
+      "position": -1267270735232110600,
+      "mentionable": false
+    },
+    {
+      "id": "1363302922414194718",
+      "name": "Notificações",
+      "color": "#000000",
+      "hoist": false,
+      "permissions": "0",
+      "position": -1363302922414194700,
+      "mentionable": false
+    },
+    {
+      "id": "1403892644026908682",
+      "name": "Punishment Muted",
+      "color": "#000000",
+      "hoist": false,
+      "permissions": "0",
+      "position": -1403892644026908700,
+      "mentionable": false
+    }
+  ],
+  "channels": [
+    {
+      "id": "1113246344920977498",
+      "name": "Punishment",
+      "type": 4,
+      "parentId": null,
+      "position": 0,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "65536",
+          "deny": "8853849661119296"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "1024"
+        },
+        {
+          "id": "1267270735232110644",
+          "type": 0,
+          "allow": "66560",
+          "deny": "8854365862820689"
+        }
+      ]
+    },
+    {
+      "id": "1372703139127361626",
+      "name": "👋│entrada",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 0,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "0",
+          "deny": "3147840"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "8515703330569297"
+        },
+        {
+          "id": "1267270735232110644",
+          "type": 0,
+          "allow": "197632",
+          "deny": "7389184948238416"
+        },
+        {
+          "id": "1427346675201998908",
+          "type": 1,
+          "allow": "8515703330569297",
+          "deny": "0"
+        }
+      ]
+    },
+    {
+      "id": "1018658580016152736",
+      "name": "⚖️│regras",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 1,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "0",
+          "deny": "3147840"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "66560",
+          "deny": "8572890886110033"
+        },
+        {
+          "id": "1267270735232110644",
+          "type": 0,
+          "allow": "66560",
+          "deny": "8515703330502737"
+        }
+      ]
+    },
+    {
+      "id": "1363301411865235656",
+      "name": "🟢│status",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 2,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "65536",
+          "deny": "8853849661119296"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "1024"
+        },
+        {
+          "id": "1267270735232110644",
+          "type": 0,
+          "allow": "66560",
+          "deny": "8854365862820689"
+        }
+      ]
+    },
+    {
+      "id": "1325174074229391475",
+      "name": "🗣│avisos",
+      "type": 5,
+      "parentId": "1113246344920977498",
+      "position": 3,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "0",
+          "deny": "3147840"
+        },
+        {
+          "id": "1155843839932764253",
+          "type": 1,
+          "allow": "6755399441263616",
+          "deny": "0"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "377957125120"
+        },
+        {
+          "id": "1267270735232110644",
+          "type": 0,
+          "allow": "66560",
+          "deny": "2147483648"
+        }
+      ]
+    },
+    {
+      "id": "1340693821700182067",
+      "name": "📋│termos",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 4,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "65536",
+          "deny": "8853849661119296"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "1024"
+        },
+        {
+          "id": "1267270735232110644",
+          "type": 0,
+          "allow": "66560",
+          "deny": "8854365862820689"
+        }
+      ]
+    },
+    {
+      "id": "1277353794874900520",
+      "name": "❓│suporte",
+      "type": 15,
+      "parentId": "1113246344920977498",
+      "position": 5,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "65536",
+          "deny": "8853849661119296"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "1024"
+        },
+        {
+          "id": "1267270735232110644",
+          "type": 0,
+          "allow": "274878008384",
+          "deny": "8854090984878865"
+        }
+      ]
+    },
+    {
+      "id": "1325172777501851708",
+      "name": "🚀│booster",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 6,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "0",
+          "deny": "3147840"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "67584",
+          "deny": "1024"
+        },
+        {
+          "id": "1267270735232110644",
+          "type": 0,
+          "allow": "66560",
+          "deny": "8515703330502737"
+        }
+      ]
+    },
+    {
+      "id": "1482843855932887252",
+      "name": "🎁│sorteios",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 7,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "0",
+          "deny": "3147840"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "67584",
+          "deny": "1024"
+        },
+        {
+          "id": "1267270735232110644",
+          "type": 0,
+          "allow": "66560",
+          "deny": "8515703330502737"
+        }
+      ]
+    },
+    {
+      "id": "1324125694984323078",
+      "name": "💰│doações",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 8,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "0",
+          "deny": "3147840"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "274877910016"
+        },
+        {
+          "id": "1267270735232110644",
+          "type": 0,
+          "allow": "66560",
+          "deny": "8515703330502737"
+        },
+        {
+          "id": "1127755180738351145",
+          "type": 0,
+          "allow": "6755899805264961",
+          "deny": "128141220647696"
+        },
+        {
+          "id": "1109959852370964581",
+          "type": 0,
+          "allow": "66560",
+          "deny": "6884041025846097"
+        },
+        {
+          "id": "1124802732348407808",
+          "type": 0,
+          "allow": "66560",
+          "deny": "6884041025846097"
+        }
+      ]
+    },
+    {
+      "id": "1398062752534106244",
+      "name": "👨‍💻│sugestões",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 9,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "65536",
+          "deny": "8853849661119296"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "1024"
+        },
+        {
+          "id": "1267270735232110644",
+          "type": 0,
+          "allow": "66560",
+          "deny": "8854365862820689"
+        }
+      ]
+    },
+    {
+      "id": "1335385881443307601",
+      "name": "🤖│comandos",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 10,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "65536",
+          "deny": "8853849661119296"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "3072"
+        },
+        {
+          "id": "1267270735232110644",
+          "type": 0,
+          "allow": "2147552256",
+          "deny": "8854363715334993"
+        }
+      ]
+    },
+    {
+      "id": "1277083669948923994",
+      "name": "💬│chat-geral",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 11,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "0",
+          "deny": "3147840"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "65536",
+          "deny": "3072"
+        },
+        {
+          "id": "1267270735232110644",
+          "type": 0,
+          "allow": "66560",
+          "deny": "1125902054326272"
+        }
+      ]
+    },
+    {
+      "id": "1267699137017806848",
+      "name": "🛡│administração",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 12,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "0",
+          "deny": "3147840"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "274877910016"
+        },
+        {
+          "id": "1127755180738351145",
+          "type": 0,
+          "allow": "6755899805264961",
+          "deny": "128141220647696"
+        },
+        {
+          "id": "1124802732348407808",
+          "type": 0,
+          "allow": "0",
+          "deny": "6884041025912657"
+        },
+        {
+          "id": "1109959852370964581",
+          "type": 0,
+          "allow": "137439463488",
+          "deny": "6883903586449169"
+        }
+      ]
+    },
+    {
+      "id": "1386459278444855327",
+      "name": "🟢│logs-status",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 13,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "0",
+          "deny": "3147840"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "274877910016"
+        },
+        {
+          "id": "1127755180738351145",
+          "type": 0,
+          "allow": "6755899805199425",
+          "deny": "128141220713232"
+        },
+        {
+          "id": "1124802732348407808",
+          "type": 0,
+          "allow": "0",
+          "deny": "6884041025912657"
+        },
+        {
+          "id": "1109959852370964581",
+          "type": 0,
+          "allow": "0",
+          "deny": "6884041025912657"
+        }
+      ]
+    },
+    {
+      "id": "1356022546654433492",
+      "name": "📁│logs-ação",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 14,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "0",
+          "deny": "3147840"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "274877910016"
+        },
+        {
+          "id": "1127755180738351145",
+          "type": 0,
+          "allow": "6755899805199425",
+          "deny": "128141220713232"
+        },
+        {
+          "id": "1124802732348407808",
+          "type": 0,
+          "allow": "0",
+          "deny": "6884041025912657"
+        },
+        {
+          "id": "1109959852370964581",
+          "type": 0,
+          "allow": "0",
+          "deny": "6884041025912657"
+        }
+      ]
+    },
+    {
+      "id": "1374545376773931079",
+      "name": "📁│logs-erros",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 15,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "0",
+          "deny": "3147840"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "274877910016"
+        },
+        {
+          "id": "1127755180738351145",
+          "type": 0,
+          "allow": "6755899805199425",
+          "deny": "128141220713232"
+        },
+        {
+          "id": "1124802732348407808",
+          "type": 0,
+          "allow": "0",
+          "deny": "6884041025912657"
+        },
+        {
+          "id": "1109959852370964581",
+          "type": 0,
+          "allow": "0",
+          "deny": "6884041025912657"
+        }
+      ]
+    },
+    {
+      "id": "1381065414246662286",
+      "name": "📁│logs-bot",
+      "type": 0,
+      "parentId": "1113246344920977498",
+      "position": 16,
+      "nsfw": false,
+      "permissionOverwrites": [
+        {
+          "id": "1403892644026908682",
+          "type": 0,
+          "allow": "0",
+          "deny": "3147840"
+        },
+        {
+          "id": "1006910950286299246",
+          "type": 0,
+          "allow": "0",
+          "deny": "274877910016"
+        },
+        {
+          "id": "1127755180738351145",
+          "type": 0,
+          "allow": "6755899805199425",
+          "deny": "128141220713232"
+        },
+        {
+          "id": "1124802732348407808",
+          "type": 0,
+          "allow": "0",
+          "deny": "6884041025912657"
+        },
+        {
+          "id": "1109959852370964581",
+          "type": 0,
+          "allow": "0",
+          "deny": "6884041025912657"
+        }
+      ]
+    }
+  ]
+}
