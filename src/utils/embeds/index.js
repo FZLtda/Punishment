@@ -12,6 +12,7 @@ const unbanEmbed = require("./unbanEmbed");
 const embedError = require("./embedError");
 const embedSuccess = require("./embedSuccess");
 const embedWarning = require("./embedWarning");
+const createLockEmbed = require("./createLockEmbed");
 
 module.exports = {
   ...banEmbed,
@@ -21,4 +22,5 @@ module.exports = {
   ...embedError,
   ...embedSuccess,
   ...embedWarning,
+  ...createLockEmbed,
 };
