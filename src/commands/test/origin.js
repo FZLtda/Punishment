@@ -31,21 +31,21 @@ module.exports = {
         ? `git pull ${repoLink} ${branch}`
         : `git pull origin ${branch}`;
 
-      await statusMessage.edit(`🔄 **Puxando atualizações (Branch: \`${branch}\`)...**`);
+      await statusMessage.edit(`**Puxando atualizações (Branch: \`${branch}\`)...**`);
       const { stdout: gitOut } = await execAsync(gitCommand);
 
       if (gitOut.includes("Already up to date.") || gitOut.includes("Already up-to-date.")) {
-        return statusMessage.edit("✅ **O bot já está atualizado com o repositório.** Nenhuma alteração foi feita.");
+        return statusMessage.edit("**O bot já está atualizado com o repositório.** Nenhuma alteração foi feita.");
       }
 
-      await statusMessage.edit("📦 **Código atualizado! Instalando possíveis novas dependências via NPM...**");
+      await statusMessage.edit("**Código atualizado! Instalando possíveis novas dependências via NPM...**");
       const { stdout: npmOut } = await execAsync("npm install");
 
       const formatOutput = (text) => (text.length > 800 ? text.substring(0, 800) + "\n...[Output Truncado]" : text);
 
       const embed = new EmbedBuilder()
         .setColor(colors.green)
-        .setTitle("✅ Deploy Concluído com Sucesso!")
+        .setTitle("Deploy Concluído com Sucesso!")
         .addFields(
           { name: "Terminal: Git", value: `\`\`\`bash\n${formatOutput(gitOut) || "Concluído sem saída no terminal."}\n\`\`\`` },
           { name: "Terminal: NPM", value: `\`\`\`bash\n${formatOutput(npmOut) || "Nenhuma nova dependência instalada."}\n\`\`\`` }
