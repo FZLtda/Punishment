@@ -49,9 +49,6 @@ module.exports = {
       .setColor(colors.red)
       .setDescription(
         [
-          "```",
-          `${bot.name} - Categorias`,
-          "```",
           ">>> Escolha uma categoria abaixo para ver os comandos disponíveis, como utilizá-los e quais permissões são necessárias.",
           "",
           "Projetado para tornar a moderação do seu servidor mais simples e eficiente.",
