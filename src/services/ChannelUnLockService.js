@@ -65,5 +65,5 @@ class ChannelLockService {
   }
 }
 
-module.exports = ChannelLockService;
+module.exports = ChannelUnLockService;
 
