@@ -31,13 +31,21 @@ jobs:
           -x "*.git*" \
           "node_modules/*" \
           ".github/*" \
-          "README.md"
+          "*.md"
 
       - name: Upload to Square Cloud
         run: |
-          curl -X POST "https://api.squarecloud.app/v2/apps/${{ secrets.SQUARE_APP_ID }}/commit" \
+          curl -s -X POST "https://api.squarecloud.app/v2/apps/${{ secrets.SQUARE_APP_ID }}/commit" \
           -H "Authorization: ${{ secrets.SQUARE_TOKEN }}" \
           -F "file=@bot.zip"
 
+      - name: Wait deployment sync
+        run: sleep 6
+
+      - name: Force restart app
+        run: |
+          curl -s -X POST "https://api.squarecloud.app/v2/apps/${{ secrets.SQUARE_APP_ID }}/restart" \
+          -H "Authorization: ${{ secrets.SQUARE_TOKEN }}"
+
       - name: Deployment success
-        run: echo "Deploy completed successfully on develop branch!"
+        run: echo "🚀 Deploy + restart completed successfully on develop branch!"
