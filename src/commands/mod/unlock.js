@@ -1,10 +1,8 @@
 "use strict";
 
-const { EmbedBuilder, PermissionsBitField } = require("discord.js");
-const { colors, emojis } = require("@config");
-const { sendModLog } = require("@modules/modlog");
-const { sendWarning } = require("@embeds/embedWarning");
-const ChannelLock = require("@models/ChannelLock");
+const { sendWarning } = require("@embeds");
+const { checkChannelLock } = require("@permissions/channelGuards");
+const ChannelLockService = require("@services/ChannelLockService");
 
 module.exports = {
   name: "unlock",
@@ -15,75 +13,39 @@ module.exports = {
   botPermissions: ["ManageChannels"],
   deleteMessage: true,
 
+  /**
+   * @param {import('discord.js').Message} message
+   * @param {string[]} args
+   */
   async execute(message, args) {
     const canal = message.channel;
-    const motivo = args.join(" ") || "Não especificado.";
+    const motivo = args.join(" ")?.trim() || "Não especificado.";
+
+    if (!canal.isTextBased()) {
+      return sendWarning(message, "Este comando só pode ser usado em canais de texto.");
+    }
 
     try {
-      const everyoneRole = message.guild.roles.everyone;
+      const isLocked = await checkChannelLock(canal);
 
-      
-      const overwrite = canal.permissionOverwrites.cache.get(everyoneRole.id);
-      const jaDesbloqueado = overwrite?.allow.has(PermissionsBitField.Flags.SendMessages);
-
-      if (jaDesbloqueado) {
+      if (!isLocked) {
         return sendWarning(message, "Este canal já está desbloqueado.");
       }
 
-      
-      await canal.permissionOverwrites.edit(everyoneRole, {
-        SendMessages: true,
-      });
-
-      const embed = new EmbedBuilder()
-        .setTitle(`${emojis.unlock} Canal desbloqueado`)
-        .setColor(colors.green)
-        .setDescription("Este canal foi desbloqueado com sucesso.")
-        .addFields(
-          { name: "Motivo", value: `\`${motivo}\``, inline: true }
-        )
-        .setFooter({
-          text: message.author.username,
-          iconURL: message.author.displayAvatarURL({ dynamic: true }),
-        })
-        .setTimestamp();
-
-      
-      const lockData = await ChannelLock.findOne({
-        guildId: message.guild.id,
-        channelId: canal.id,
-      });
-
-      if (lockData) {
-        try {
-          const lockMsg = await canal.messages.fetch(lockData.messageId);
-          await lockMsg.edit({ embeds: [embed] });
-        } catch {
-          await canal.send({ embeds: [embed] });
-        }
-
-        
-        await ChannelLock.deleteOne({
-          guildId: message.guild.id,
-          channelId: canal.id,
-        });
-      } else {
-        await canal.send({ embeds: [embed] });
-      }
-
-      await sendModLog(message.guild, {
-        action: "Unlock",
-        moderator: message.author,
-        reason: motivo,
+      await ChannelLockService.unlock({
+        guild: message.guild,
         channel: canal,
+        moderator: message.author,
+        reason: motivo
       });
 
     } catch (error) {
-      console.error(error);
+      console.error(`[Command: unlock] Falha ao desbloquear canal ${canal.id}:`, error);
+
       return sendWarning(
         message,
-        "Não foi possível desbloquear o canal devido a um erro inesperado.",
+        "Não foi possível desbloquear o canal devido a um erro inesperado."
       );
     }
-  },
+  }
 };
