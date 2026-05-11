@@ -1,0 +1,30 @@
+name: Deploy Dev Bot
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create zip
+        run: |
+          zip -r bot.zip . \
+          -x "*.git*" \
+          "node_modules/*" \
+          ".github/*"
+
+      - name: Upload to Square Cloud
+        run: |
+          curl -X POST "https://api.squarecloud.app/v2/apps/${{ secrets.SQUARE_APP_ID }}/commit" \
+          -H "Authorization: ${{ secrets.SQUARE_TOKEN }}" \
+          -F "file=@bot.zip"
+
+      - name: Deployment success
+        run: echo "Deploy completed successfully!"
