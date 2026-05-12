@@ -8,6 +8,7 @@
 const ChannelUserUnlockService = require("./ChannelUserUnlockService");
 const ChannelUserLockService = require("./ChannelUserLockService");
 const ChannelSlowmodeService = require("./ChannelSlowmodeService");
+const ChannelUnmuteService = require("./ChannelUnmuteService");
 const ChannelLockService = require("./ChannelLockService");
 const ModerationService = require("./ModerationService");
 const deeplService = require("./deeplService");
@@ -18,6 +19,7 @@ module.exports = {
   ChannelUserUnlockService,
   ChannelUserLockService,
   ChannelSlowmodeService,
+  ChannelUnmuteService,
   ChannelLockService,
   ModerationService,
   deeplService,
