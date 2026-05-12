@@ -14,6 +14,7 @@ const embedSuccess = require("./embedSuccess");
 const embedWarning = require("./embedWarning");
 const createLockEmbed = require("./createLockEmbed");
 const createUnlockEmbed = require("./createUnlockEmbed");
+const createUnmuteEmbed = require("./createUnmuteEmbed");
 const createSlowmodeEmbed = require("./createSlowmodeEmbed");
 const createUserLockEmbed = require("./createUserLockEmbed");
 const createUserUnlockEmbed = require("./createUserUnlockEmbed");
@@ -28,6 +29,7 @@ module.exports = {
   ...embedWarning,
   ...createLockEmbed,
   ...createUnlockEmbed,
+  ...createUnmuteEmbed,
   ...createSlowmodeEmbed,
   ...createUserLockEmbed,
   ...createUserUnlockEmbed,
