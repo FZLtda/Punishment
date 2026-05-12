@@ -1,8 +1,12 @@
 "use strict";
 
-const { sendWarning } = require("@embeds");
-const { checkMemberGuard } = require("@permissions/memberGuards");
-const ChannelUserLockService = require("@services/ChannelUserLockService");
+const { 
+  sendWarning 
+} = require("@embeds");
+const { 
+  checkMemberGuard 
+} = require("@permissions/memberGuards");
+const { ChannelUserLockService } = require("@services");
 
 module.exports = {
   name: "lockuser",
