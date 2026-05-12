@@ -2,7 +2,7 @@
 
 const { sendWarning } = require("@embeds");
 const { checkMemberGuard } = require("@permissions/memberGuards");
-const ChannelUserUnlockService = require("@services/ChannelUserUnlockService");
+const { ChannelUserUnlockService } = require("@services");
 
 module.exports = {
   name: "unlockuser",
