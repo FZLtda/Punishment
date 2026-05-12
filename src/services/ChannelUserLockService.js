@@ -5,15 +5,7 @@ const { sendModLog } = require("@modules/modlog");
 const { createUserLockEmbed } = require("@embeds");
 
 class ChannelUserLockService {
-  /**
-   * Bloqueia um usuário específico no canal
-   * @param {Object} options
-   * @param {import('discord.js').Guild} options.guild
-   * @param {import('discord.js').TextChannel} options.channel
-   * @param {import('discord.js').User} options.moderator
-   * @param {import('discord.js').GuildMember} options.target
-   */
-  static async lock({ guild, channel, moderator, target }) {
+  static async lock({ guild, channel, moderator, target, reason }) {
     if (!guild || !channel || !target) {
       throw new Error("Guild, canal ou usuário inválido para bloqueio.");
     }
@@ -26,18 +18,16 @@ class ChannelUserLockService {
     try {
       await channel.permissionOverwrites.edit(target, { SendMessages: false });
 
-      const embed = createUserLockEmbed(moderator, target);
+      const embed = createUserLockEmbed(moderator, target, reason);
       await channel.send({ embeds: [embed] });
 
       await sendModLog(guild, {
         action: "User Lock",
         target: target.user,
         moderator,
-        reason: `Usuário bloqueado de enviar mensagens no canal ${channel}`,
+        reason,
         channel
       });
-
-      console.info(`[Service: ChannelUserLock] Usuário ${target.id} bloqueado no canal ${channel.id}.`);
 
     } catch (error) {
       console.error(`[Service: ChannelUserLock] Erro ao bloquear usuário ${target.id} no canal ${channel.id}:`, error);
@@ -47,4 +37,3 @@ class ChannelUserLockService {
 }
 
 module.exports = ChannelUserLockService;
-
