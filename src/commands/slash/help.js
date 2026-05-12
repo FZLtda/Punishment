@@ -11,7 +11,7 @@ const {
 
 const { bot, colors, emojis } = require("@config");
 const categories = require("@helpers/helpCategories");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 
 module.exports = {
   data: new SlashCommandBuilder()
