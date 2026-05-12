@@ -1,10 +1,8 @@
 "use strict";
 
-const { EmbedBuilder } = require("discord.js");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 const { checkMemberGuard } = require("@permissions/memberGuards");
-const { sendModLog } = require("@modules/modlog");
-const { colors, emojis } = require("@config");
+const ChannelUserLockService = require("@services/ChannelUserLockService");
 
 module.exports = {
   name: "lockuser",
@@ -15,6 +13,10 @@ module.exports = {
   botPermissions: ["ManageChannels"],
   deleteMessage: true,
 
+  /**
+   * @param {import('discord.js').Message} message
+   * @param {string[]} args
+   */
   async execute(message, args) {
     const target =
       message.mentions.members.first() ||
@@ -24,31 +26,14 @@ module.exports = {
     if (!isValid) return;
 
     try {
-      await message.channel.permissionOverwrites.edit(target, {
-        SendMessages: false,
-      });
-
-      const embed = new EmbedBuilder()
-        .setTitle(`${emojis.lock} Punição aplicada`)
-        .setColor(colors.red)
-        .setDescription(`${target} (\`${target.id}\`) não poderá mais enviar mensagens neste canal.`)
-        .setFooter({
-          text: message.author.username,
-          iconURL: message.author.displayAvatarURL({ dynamic: true }),
-        })
-        .setTimestamp();
-
-      await message.channel.send({ embeds: [embed] });
-
-      await sendModLog(message.guild, {
-        action: "Bloqueio de Canal",
-        target: target.user,
+      await ChannelUserLockService.lock({
+        guild: message.guild,
+        channel: message.channel,
         moderator: message.author,
-        reason: `Usuário bloqueado de enviar mensagens no canal ${message.channel}`,
+        target
       });
-
     } catch (error) {
-      console.error("[COMMAND: lockuser] Erro ao aplicar bloqueio:", error);
+      console.error(`[Command: lockuser] Erro ao bloquear usuário ${target?.id}:`, error);
       await sendWarning(message, "Ocorreu um erro ao tentar bloquear o usuário neste canal.");
     }
   },
