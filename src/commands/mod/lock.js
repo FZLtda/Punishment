@@ -6,7 +6,7 @@ const {
 const { 
   checkChannelLock 
 } = require("@permissions/channelGuards");
-const ChannelLockService = require("@services");
+const { ChannelLockService } = require("@services");
 
 module.exports = {
   name: "lock",
