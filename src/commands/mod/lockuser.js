@@ -1,10 +1,8 @@
 "use strict";
 
+const { sendWarning } = require("@embeds");
 const { 
-  sendWarning 
-} = require("@embeds");
-const { 
-  checkMemberGuard 
+  checkMemberGuard,
 } = require("@permissions/memberGuards");
 const { ChannelUserLockService } = require("@services");
 
