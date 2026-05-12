@@ -1,8 +1,12 @@
 "use strict";
 
-const { sendWarning } = require("@embeds");
-const { checkChannelLock } = require("@permissions/channelGuards");
-const ChannelLockService = require("@services/ChannelLockService");
+const { 
+  sendWarning 
+} = require("@embeds");
+const { 
+  checkChannelLock 
+} = require("@permissions/channelGuards");
+const { ChannelLockService } = require("@services");
 
 module.exports = {
   name: "unlock",
