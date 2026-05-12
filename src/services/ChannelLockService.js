@@ -7,24 +7,37 @@ const { createLockEmbed, createUnlockEmbed } = require("@embeds");
 
 class ChannelLockService {
   /**
-   * Bloqueia o canal
+   * Valida contexto antes de executar lock/unlock
    */
-  static async lock({ guild, channel, moderator, reason }) {
+  static _validateContext(guild, channel) {
     if (!guild || !channel) {
-      throw new Error("Guild ou canal inválido para bloqueio.");
+      throw new Error("Guild ou canal inválido.");
     }
 
-    const everyoneRole = guild.roles.everyone;
+    const botMember = guild.members.me;
+    if (!botMember) {
+      throw new Error("Bot não encontrado no servidor.");
+    }
 
-    if (!channel.permissionsFor(guild.members.me)
+    if (!channel.permissionsFor(botMember)
       ?.has(PermissionsBitField.Flags.ManageChannels)) {
       throw new Error("O bot não possui permissão para gerenciar canais.");
     }
 
+    return guild.roles.everyone;
+  }
+
+  /**
+   * Bloqueia o canal
+   */
+  static async lock({ guild, channel, moderator, reason }) {
+    const everyoneRole = this._validateContext(guild, channel);
+    const motivo = reason?.trim() || "Não especificado.";
+
     try {
       await channel.permissionOverwrites.edit(everyoneRole, { SendMessages: false });
 
-      const embed = createLockEmbed(moderator, reason);
+      const embed = createLockEmbed(moderator, motivo);
       const msg = await channel.send({ embeds: [embed] });
 
       await ChannelLock.findOneAndUpdate(
@@ -36,13 +49,15 @@ class ChannelLockService {
       await sendModLog(guild, {
         action: "Lock",
         moderator,
-        reason,
+        reason: motivo,
         channel
       });
 
+      console.info(`[Service: ChannelLock] Canal ${channel.id} bloqueado com sucesso.`);
+
     } catch (error) {
       console.error(`[Service: ChannelLock] Erro ao bloquear canal ${channel.id}:`, error);
-      throw error;
+      throw new Error("Falha ao bloquear canal.");
     }
   }
 
@@ -50,21 +65,13 @@ class ChannelLockService {
    * Desbloqueia o canal
    */
   static async unlock({ guild, channel, moderator, reason }) {
-    if (!guild || !channel) {
-      throw new Error("Guild ou canal inválido para desbloqueio.");
-    }
-
-    const everyoneRole = guild.roles.everyone;
-
-    if (!channel.permissionsFor(guild.members.me)
-      ?.has(PermissionsBitField.Flags.ManageChannels)) {
-      throw new Error("O bot não possui permissão para gerenciar canais.");
-    }
+    const everyoneRole = this._validateContext(guild, channel);
+    const motivo = reason?.trim() || "Não especificado.";
 
     try {
       await channel.permissionOverwrites.edit(everyoneRole, { SendMessages: true });
 
-      const embed = createUnlockEmbed(moderator, reason);
+      const embed = createUnlockEmbed(moderator, motivo);
 
       const lockData = await ChannelLock.findOne({
         guildId: guild.id,
@@ -75,7 +82,8 @@ class ChannelLockService {
         try {
           const lockMsg = await channel.messages.fetch(lockData.messageId);
           await lockMsg.edit({ embeds: [embed] });
-        } catch {
+        } catch (err) {
+          console.warn(`[Service: ChannelLock] Mensagem de lock não encontrada para canal ${channel.id}:`, err);
           await channel.send({ embeds: [embed] });
         }
 
@@ -90,13 +98,15 @@ class ChannelLockService {
       await sendModLog(guild, {
         action: "Unlock",
         moderator,
-        reason,
-        channel,
+        reason: motivo,
+        channel
       });
+
+      console.info(`[Service: ChannelLock] Canal ${channel.id} desbloqueado com sucesso.`);
 
     } catch (error) {
       console.error(`[Service: ChannelLock] Erro ao desbloquear canal ${channel.id}:`, error);
-      throw error;
+      throw new Error("Falha ao desbloquear canal.");
     }
   }
 }
