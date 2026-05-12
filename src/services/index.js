@@ -14,12 +14,11 @@ const deeplService = require("./deeplService");
 const mercadoPago = require("./mercadoPago");
 
 module.exports = {
-  ...ChannelLockService,
-  ...ChannelUserLockService,
-  ...ChannelUserUnlockService,
-  ...ModerationService,
-  ...apiClient,
-  ...deeplService,
-  ...mercadoPago,
+  ChannelLockService,
+  ChannelUserLockService,
+  ChannelUserUnlockService,
+  ModerationService,
+  apiClient,
+  deeplService,
+  mercadoPago,
 };
-
