@@ -14,7 +14,7 @@ class ChannelUnmuteService {
     }
 
     try {
-      await target.timeout(null, reason);
+      await target.timeout(0, reason);
 
       const embed = createUnmuteEmbed(moderator, target, reason);
       await channel.send({ embeds: [embed] });
@@ -35,4 +35,3 @@ class ChannelUnmuteService {
 }
 
 module.exports = ChannelUnmuteService;
-
