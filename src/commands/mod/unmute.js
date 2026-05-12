@@ -2,7 +2,7 @@
 
 const { sendWarning } = require("@embeds");
 const { checkMemberGuard } = require("@permissions/memberGuards");
-const { ChannelUnmuteService } = require("@services");
+const ChannelUnmuteService  = require("@services");
 
 module.exports = {
   name: "unmute",
