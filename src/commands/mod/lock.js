@@ -1,10 +1,8 @@
 "use strict";
 
+const { sendWarning } = require("@embeds");
 const { 
-  sendWarning 
-} = require("@embeds");
-const { 
-  checkChannelLock 
+  checkChannelLock, 
 } = require("@permissions/channelGuards");
 const { ChannelLockService } = require("@services");
 
