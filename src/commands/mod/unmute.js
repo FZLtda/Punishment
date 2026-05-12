@@ -17,8 +17,16 @@ module.exports = {
     const membro = message.mentions.members.first() || message.guild.members.cache.get(args[0]);
     const motivo = args.slice(1).join(" ") || "Não especificado.";
 
+    if (!membro) {
+      return sendWarning(message, "Você deve mencionar um usuário válido.");
+    }
+
     const isValid = await checkMemberGuard(message, membro, "unmute");
     if (!isValid) return;
+
+    if (!membro.communicationDisabledUntilTimestamp) {
+      return sendWarning(message, "Este usuário não está silenciado no momento.");
+    }
 
     try {
       await ChannelUnmuteService.unmute({
