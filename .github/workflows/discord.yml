@@ -4,16 +4,26 @@ on:
   push:
     branches:
       - develop
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: webhook-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   notify:
     name: Send Discord Notification
     runs-on: ubuntu-latest
 
+    env:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+
     steps:
-      - name: Send webhook
+      - name: Send webhook notification
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           REPOSITORY: ${{ github.repository }}
           ACTOR: ${{ github.actor }}
           BRANCH: ${{ github.ref_name }}
@@ -30,6 +40,14 @@ jobs:
 
           TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
+          if [ "$BRANCH" = "main" ]; then
+            ENVIRONMENT="Production"
+            COLOR=15158332
+          else
+            ENVIRONMENT="Development"
+            COLOR=5763719
+          fi
+
           PAYLOAD=$(jq -n \
             --arg actor "$ACTOR" \
             --arg author_url "$AUTHOR_URL" \
@@ -37,15 +55,17 @@ jobs:
             --arg commit_url "$COMMIT_URL" \
             --arg repository "$REPOSITORY" \
             --arg branch "$BRANCH" \
+            --arg environment "$ENVIRONMENT" \
             --arg message "$COMMIT_MESSAGE" \
             --arg short_sha "$SHORT_SHA" \
             --arg timestamp "$TIMESTAMP" \
+            --argjson color "$COLOR" \
             '{
-              username: "GitHub",
+              username: "GitHub Actions",
               avatar_url: "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
               embeds: [
                 {
-                  color: 242424,
+                  color: $color,
                   author: {
                     name: $actor,
                     icon_url: $author_avatar,
@@ -56,8 +76,8 @@ jobs:
                   description: $message,
                   fields: [
                     {
-                      name: "Repository",
-                      value: ("`" + $repository + "`"),
+                      name: "Environment",
+                      value: ("`" + $environment + "`"),
                       inline: true
                     },
                     {
@@ -69,10 +89,15 @@ jobs:
                       name: "Commit",
                       value: ("[`" + $short_sha + "`](" + $commit_url + ")"),
                       inline: true
+                    },
+                    {
+                      name: "Repository",
+                      value: ("`" + $repository + "`"),
+                      inline: false
                     }
                   ],
                   footer: {
-                    text: "GitHub Actions"
+                    text: "Punishment CI/CD"
                   },
                   timestamp: $timestamp
                 }
