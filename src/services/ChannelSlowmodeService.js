@@ -1,8 +1,9 @@
 "use strict";
 
-const { ChannelType, 
-       PermissionsBitField 
-      } = require("discord.js");
+const { 
+  ChannelType,
+  PermissionsBitField, 
+} = require("discord.js");
 const { sendModLog } = require("@modules/modlog");
 const { createSlowmodeEmbed } = require("@embeds");
 
