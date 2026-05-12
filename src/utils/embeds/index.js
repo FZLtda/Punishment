@@ -32,13 +32,3 @@ module.exports = {
   ...createUserLockEmbed,
   ...createUserUnlockEmbed,
 };
-
-
-
-
-
-
-
-
-
-
