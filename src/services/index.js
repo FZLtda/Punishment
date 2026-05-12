@@ -5,20 +5,22 @@
  * Keeps imports clean and makes the services layer scalable.
  */
 
-const ChannelLockService = require("./ChannelLockService");
-const ChannelUserLockService = require("./ChannelUserLockService");
 const ChannelUserUnlockService = require("./ChannelUserUnlockService");
+const ChannelUserLockService = require("./ChannelUserLockService");
+const ChannelSlowmodeService = require("./ChannelSlowmodeService");
+const ChannelLockService = require("./ChannelLockService");
 const ModerationService = require("./ModerationService");
-const apiClient = require("./apiClient");
 const deeplService = require("./deeplService");
 const mercadoPago = require("./mercadoPago");
+const apiClient = require("./apiClient");
 
 module.exports = {
-  ChannelLockService,
-  ChannelUserLockService,
   ChannelUserUnlockService,
+  ChannelUserLockService,
+  ChannelSlowmodeService,
+  ChannelLockService,
   ModerationService,
-  apiClient,
   deeplService,
   mercadoPago,
+  apiClient,
 };
