@@ -1,8 +1,16 @@
 "use strict";
 
-const { ChannelType, EmbedBuilder } = require("discord.js");
-const { emojis, colors } = require("@config");
-const { sendWarning } = require("@embeds/embedWarning");
+const { 
+  ChannelType, 
+  EmbedBuilder 
+} = require("discord.js");
+const { emojis, 
+       colors 
+      } = require("@config");
+const { 
+  sendWarning 
+} = require("@embeds");
+
 const { sendModLog } = require("@modules/modlog");
 
 module.exports = {
@@ -14,7 +22,6 @@ module.exports = {
   deleteMessage: true,
 
   async execute(message, args) {
-    // Validação de argumentos
     const tempo = args[0];
     if (!tempo)
       return sendWarning(message, "Você deve fornecer um tempo válido. Ex: `10s`, `5m`, `0s`.");
@@ -26,13 +33,11 @@ module.exports = {
     const motivo = args.slice(1).join(" ").trim() || "Sem motivo fornecido.";
     const canal = message.channel;
 
-    // Verificações de contexto
     if (canal.type !== ChannelType.GuildText)
       return sendWarning(message, "Este comando só pode ser executado em canais de texto.");
     if (canal.rateLimitPerUser === segundos)
       return sendWarning(message, `O modo lento já está definido como \`${tempo}\` neste canal.`);
 
-    // Aplicando o slowmode
     try {
       await canal.setRateLimitPerUser(segundos, motivo);
 
@@ -53,7 +58,6 @@ module.exports = {
 
       await canal.send({ embeds: [embed] });
 
-      // Log de moderação
       await sendModLog(message.guild, {
         action: "Slowmode",
         target: canal,
@@ -72,7 +76,6 @@ module.exports = {
   }
 };
 
-// Utilitário para converter tempo humano em segundos
 function parseTempo(tempo) {
   const match = tempo.match(/^(\d+)([smh])$/i);
   if (!match) return null;
