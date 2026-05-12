@@ -1,93 +1,106 @@
-name: Punishment CI/CD Pipeline
+name: Punishment CI/CD
 
 on:
   push:
-    branches: [main, develop]
+    branches:
+      - main
+      - develop
+
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - develop
 
 permissions:
   contents: read
 
 concurrency:
-  group: punishment-ci-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  NODE_VERSION: 22.x
 
 jobs:
   quality:
-    name: Code Quality & Tests
+    name: Quality & Tests
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        node: [20.x, 22.x]
+        node-version: [22.x]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: false
 
-      - name: Setup Node.js ${{ matrix.node }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.node-version }}
           cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run Linter
+      - name: Run ESLint
         run: npm run lint --if-present
 
-      - name: Type Check
+      - name: Run Type Check
         run: npm run typecheck --if-present
 
-      - name: Run Unit Tests
+      - name: Run Tests
         run: npm test --if-present
 
-      - name: Check vulnerabilities
-        run: npm audit --audit-level=high || true
-
-      - name: Build project
+      - name: Build Project
         run: npm run build --if-present
 
-
   deploy:
-    name: Deploy to VPS
+    name: Deploy Square Cloud
     needs: quality
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+
+    if: github.event_name == 'push'
+
+    environment:
+      name: ${{ github.ref_name }}
+
+    env:
+      APP_ID: ${{ github.ref == 'refs/heads/main' && secrets.SQUARE_APP_ID_MAIN || secrets.SQUARE_APP_ID_DEV }}
+      TOKEN: ${{ github.ref == 'refs/heads/main' && secrets.SQUARE_TOKEN_MAIN || secrets.SQUARE_TOKEN_DEV }}
 
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          password: ${{ secrets.VPS_PASSWORD }}
-          port: ${{ secrets.VPS_PORT }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-          script: |
-            set -e
+      - name: Create deployment archive
+        run: |
+          zip -r app.zip . \
+          -x "*.git*" \
+          "node_modules/*" \
+          ".github/*" \
+          "*.md" \
+          ".gitignore"
 
-            echo "Iniciando deploy do Punishment..."
+      - name: Upload application
+        run: |
+          curl --fail --show-error \
+          -X POST "https://api.squarecloud.app/v2/apps/$APP_ID/commit" \
+          -H "Authorization: $TOKEN" \
+          -F "file=@app.zip"
 
-            cd ~/Punishment
+      - name: Wait deployment sync
+        run: sleep 5
 
-            git fetch origin main
-            git reset --hard origin/main
+      - name: Restart application
+        run: |
+          curl --fail --show-error \
+          -X POST "https://api.squarecloud.app/v2/apps/$APP_ID/restart" \
+          -H "Authorization: $TOKEN"
 
-            echo "Instalando dependências..."
-            npm ci --omit=dev
-
-            echo "Reiniciando bot..."
-            pm2 restart punishment || pm2 start ecosystem.config.js
-
-            echo "Salvando estado PM2..."
-            pm2 save
-
-            echo "Deploy concluído com sucesso!"
+      - name: Deployment success
+        run: |
+          echo "Deploy realizado com sucesso!"
+          echo "Branch: ${{ github.ref_name }}"
