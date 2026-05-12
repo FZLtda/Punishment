@@ -1,8 +1,15 @@
 "use strict";
 
+const { 
+  sendWarning, 
+  createKickEmbed 
+} = require("@embeds");
+
 const { sendModLog } = require("@modules/modlog");
-const { sendWarning, createKickEmbed } = require("@embeds");
-const { checkMemberGuard } = require("@permissions/memberGuards");
+
+const { 
+  checkMemberGuard 
+} = require("@permissions/memberGuards");
 
 module.exports = {
   name: "kick",
