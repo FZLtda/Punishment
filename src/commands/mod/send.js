@@ -1,9 +1,18 @@
 "use strict";
 
-const { EmbedBuilder, PermissionFlagsBits, ChannelType } = require("discord.js");
-const { colors, emojis } = require("@config");
-const { sendWarning } = require("@embeds/embedWarning");
+const { 
+  EmbedBuilder, 
+  PermissionFlagsBits, 
+  ChannelType 
+} = require("discord.js");
+const { 
+  colors, 
+  emojis 
+} = require("@config");
+
 const { sendModLog } = require("@modules/modlog");
+
+const { sendWarning } = require("@embeds");
 
 module.exports = {
   name: "send",
