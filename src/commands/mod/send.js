@@ -3,11 +3,11 @@
 const { 
   EmbedBuilder, 
   PermissionFlagsBits, 
-  ChannelType 
+  ChannelType,
 } = require("discord.js");
 const { 
   colors, 
-  emojis 
+  emojis, 
 } = require("@config");
 
 const { sendModLog } = require("@modules/modlog");
