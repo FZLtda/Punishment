@@ -1,10 +1,8 @@
 "use strict";
 
-const { EmbedBuilder } = require("discord.js");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 const { checkMemberGuard } = require("@permissions/memberGuards");
-const { sendModLog } = require("@modules/modlog");
-const { colors, emojis } = require("@config");
+const ChannelUserUnlockService = require("@services/ChannelUserUnlockService");
 
 module.exports = {
   name: "unlockuser",
@@ -15,6 +13,10 @@ module.exports = {
   botPermissions: ["ManageChannels"],
   deleteMessage: true,
 
+  /**
+   * @param {import('discord.js').Message} message
+   * @param {string[]} args
+   */
   async execute(message, args) {
     const target =
       message.mentions.members.first() ||
@@ -24,32 +26,15 @@ module.exports = {
     if (!isValid) return;
 
     try {
-      await message.channel.permissionOverwrites.edit(target, {
-        SendMessages: true
-      });
-
-      const embed = new EmbedBuilder()
-        .setTitle(`${emojis.unlock} Punição removida`)
-        .setColor(colors.green)
-        .setDescription(`${target} (\`${target.id}\`) pode novamente enviar mensagens neste canal.`)
-        .setFooter({
-          text: message.author.username,
-          iconURL: message.author.displayAvatarURL({ dynamic: true })
-        })
-        .setTimestamp();
-
-      await message.channel.send({ embeds: [embed] });
-
-      await sendModLog(message.guild, {
-        action: "Desbloqueio de Canal",
-        target: target.user,
+      await ChannelUserUnlockService.unlock({
+        guild: message.guild,
+        channel: message.channel,
         moderator: message.author,
-        reason: `Desbloqueado para enviar mensagens no canal ${message.channel}`
+        target
       });
-
     } catch (error) {
-      console.error("[unlockuser] Erro ao desbloquear usuário:", error);
-      return sendWarning(message, "Não foi possível desbloquear o usuário devido a um erro inesperado.");
+      console.error(`[Command: unlockuser] Erro ao desbloquear usuário ${target?.id}:`, error);
+      await sendWarning(message, "Não foi possível desbloquear o usuário devido a um erro inesperado.");
     }
-  }
+  },
 };
