@@ -1,8 +1,8 @@
 "use strict";
 
 const { sendWarning } = require("@embeds");
-const { checkMemberGuard } = require("@permissions/memberGuards");
-const ChannelUnmuteService  = require("@services");
+const { checkMemberGuard } = require("@permissions");
+const { ChannelUnmuteService } = require("@services");
 
 module.exports = {
   name: "unmute",
