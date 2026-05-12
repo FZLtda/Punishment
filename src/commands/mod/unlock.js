@@ -2,7 +2,7 @@
 
 const { sendWarning } = require("@embeds");
 const { checkChannelLock } = require("@permissions/channelGuards");
-const ChannelUnLockService = require("@services/ChannelUnLockService");
+const ChannelLockService = require("@services/ChannelLockService");
 
 module.exports = {
   name: "unlock",
@@ -32,7 +32,7 @@ module.exports = {
         return sendWarning(message, "Este canal já está desbloqueado.");
       }
 
-      await ChannelUnLockService({
+      await ChannelLockService.unlock({
         guild: message.guild,
         channel: canal,
         moderator: message.author,
