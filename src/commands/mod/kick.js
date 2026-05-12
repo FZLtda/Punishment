@@ -2,13 +2,13 @@
 
 const { 
   sendWarning, 
-  createKickEmbed 
+  createKickEmbed,
 } = require("@embeds");
 
 const { sendModLog } = require("@modules/modlog");
 
 const { 
-  checkMemberGuard 
+  checkMemberGuard,
 } = require("@permissions/memberGuards");
 
 module.exports = {
