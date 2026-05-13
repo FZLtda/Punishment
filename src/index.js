@@ -9,12 +9,15 @@ const v8 = require("node:v8");
 const Logger = require("@logger");
 const { bot, env } = require("@config");
 
-const { validateEnvironment } = require("@core/environment");
-const { registerGlobalErrorHandlers } = require("@core/errors");
-const { registerSignalHandlers } = require("@core/signals");
-const { registerResources, gracefulExit } = require("@core/shutdown");
-const bootstrap = require("@core/bootstrap");
-const Monitor = require("@core/monitor"); 
+const {
+  validateEnvironment,
+  registerGlobalErrorHandlers,
+  registerSignalHandlers,
+  registerResources,
+  gracefulExit,
+  bootstrap,
+  Monitor,
+} = require("@core");
 
 Object.freeze(bot);
 
