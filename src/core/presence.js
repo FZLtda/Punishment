@@ -6,16 +6,13 @@ const ROTATION_INTERVAL = 15000;
 
 const ACTIVITIES = [
   { name: "/help • Translate smarter with DeepL", type: 0 },
-  { name: "Code with ❤️ by FuncZero • Full-Stack Dev", type: 3 },
+  { name: "Code with ❤️ by FuncZero", type: 3 },
   { name: "Support the project’s growth — .doar", type: 0 },
 ];
 
 let activityIndex = 0;
 let rotationInterval = null;
 
-/**
- * Atualiza a activity atual do Punishment.
- */
 async function updatePresence(client) {
   if (!client?.user || !client.isReady()) return;
 
@@ -35,9 +32,6 @@ async function updatePresence(client) {
   activityIndex = (activityIndex + 1) % ACTIVITIES.length;
 }
 
-/**
- * Inicia a rotação de presença.
- */
 function startPresenceRotation(client) {
   if (rotationInterval) {
     clearInterval(rotationInterval);
@@ -53,9 +47,6 @@ function startPresenceRotation(client) {
   }, ROTATION_INTERVAL);
 }
 
-/**
- * Para a rotação de presença.
- */
 function stopPresenceRotation() {
   if (!rotationInterval) return;
 
@@ -65,11 +56,6 @@ function stopPresenceRotation() {
   Logger.warn("[Presence] Rotação de presença finalizada.");
 }
 
-/**
- * Controlador principal de presença do bot.
- * @param {import('discord.js').Client} client
- * @param {string} [contexto='manual']
- */
 async function setBotPresence(client, contexto = "manual") {
   if (!client?.user || !client.isReady()) {
     Logger.debug(`[Presence] Ignorado: cliente não pronto (contexto: ${contexto})`);
