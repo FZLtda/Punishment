@@ -1,7 +1,7 @@
 "use strict";
 
 const { EmbedBuilder } = require("discord.js");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 const { colors, emojis } = require("@config");
 const { sendModLog } = require("@modules/modlog");
 const Logger = require("@logger");
