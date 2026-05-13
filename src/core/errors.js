@@ -2,7 +2,7 @@
 
 const Logger = require("@logger");
 const { reportErrorToWebhook } = require("@monitors/webhookMonitor");
-const { gracefulExit } = require("@core/shutdown");
+const { gracefulExit } = require("@core");
 
 function registerGlobalErrorHandlers() {
   process.on("uncaughtException", async (err) => {
@@ -10,6 +10,7 @@ function registerGlobalErrorHandlers() {
     await reportErrorToWebhook("uncaughtException", err);
 
     await gracefulExit(1);
+    
   });
 
   process.on("unhandledRejection", async (reason) => {
