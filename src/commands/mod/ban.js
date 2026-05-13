@@ -7,9 +7,7 @@ const {
 
 const { sendModLog } = require("@modules/modlog");
 
-const {
-  checkMemberGuard,
-} = require("@permissions/memberGuards");
+const { checkMemberGuard } = require("@permissions");
 
 module.exports = {
   name: "ban",
@@ -76,7 +74,7 @@ module.exports = {
       });
 
       await sendModLog(message.guild, {
-        action: "Ban",
+        action: "ban",
         target: targetUser,
         moderator: message.author,
         reason: motivo,
