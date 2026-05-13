@@ -1,20 +1,44 @@
 "use strict";
 
-const client = require("@core/client");
-const { validateEnvironment } = require("@core/validateEnvironment");
-const { connectMongo } = require("@database");
+const client = require("./client");
 
-const { loadCommands } = require("@loadCommands/loader");
-const { loadEvents } = require("@loadEvents/loader");
-const { loadMenus } = require("@loadMenus/loader");
-const { loadModals } = require("@loadModals/loader");
-const { loadSlashCommands } = require("@loadSlashCommands/loader");
-const { loadButtonInteractions } = require("@loadButtonInteractions/loader");
+const {
+  validateEnvironment,
+} = require("./environment");
 
-const { showStartupDiagnostic } = require("@core/showStartupDiagnostic");
+const {
+  showStartupDiagnostic,
+} = require("./diagnostic");
+
+const {
+  connectMongo,
+} = require("@database");
+
+const {
+  loadCommands,
+} = require("@loadCommands/loader");
+
+const {
+  loadEvents,
+} = require("@loadEvents/loader");
+
+const {
+  loadMenus,
+} = require("@loadMenus/loader");
+
+const {
+  loadModals,
+} = require("@loadModals/loader");
+
+const {
+  loadSlashCommands,
+} = require("@loadSlashCommands/loader");
+
+const {
+  loadButtonInteractions,
+} = require("@loadButtonInteractions/loader");
 
 module.exports = async function bootstrap() {
-  
   validateEnvironment();
 
   const mongo = await connectMongo();
@@ -29,7 +53,11 @@ module.exports = async function bootstrap() {
   ]);
 
   await client.login(process.env.TOKEN);
+
   await showStartupDiagnostic(client);
 
-  return { discordClient: client, mongo };
+  return {
+    discordClient: client,
+    mongo,
+  };
 };
