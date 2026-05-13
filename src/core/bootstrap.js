@@ -1,6 +1,6 @@
 "use strict";
 
-const client = require("@core/client");
+const client = require("@core");
 const { validateEnvironment } = require("@core");
 const { connectMongo } = require("@database");
 
