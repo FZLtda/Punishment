@@ -7,11 +7,11 @@
 const {
   ChannelType,
   PermissionsBitField,
-  EmbedBuilder
+  EmbedBuilder,
 } = require("discord.js");
 
 const { colors, emojis } = require("@config");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 const { sendModLog } = require("@modules/modlog");
 const fs = require("fs");
 const path = require("path");
@@ -56,7 +56,6 @@ module.exports = {
     const restoredCategories = [];
     const restoredChannels = [];
 
-    // Restaurar cargos ausentes
     for (const roleData of backupData.roles.sort((a, b) => a.position - b.position)) {
       if (existingRoles.has(roleData.id)) continue;
 
@@ -77,7 +76,6 @@ module.exports = {
       }
     }
 
-    // Aplicar posições aos cargos restaurados
     for (const { role, position } of restoredRoles) {
       try {
         await role.setPosition(position).catch(() => {});
@@ -86,7 +84,6 @@ module.exports = {
       }
     }
 
-    // Restaurar categorias
     const categories = backupData.channels
       .filter(c => c.type === ChannelType.GuildCategory)
       .sort((a, b) => a.position - b.position);
@@ -115,7 +112,6 @@ module.exports = {
       }
     }
 
-    // Restaurar canais
     const nonCategories = backupData.channels
       .filter(c => c.type !== ChannelType.GuildCategory)
       .sort((a, b) => a.position - b.position);
@@ -163,7 +159,7 @@ module.exports = {
     await message.channel.send({ embeds: [embed] });
 
     await sendModLog(guild, {
-      action: "Restore",
+      action: "restore",
       target: message.author,
       moderator: message.author,
       reason: `Restore de itens ausentes mantendo hierarquia (Backup ${backupId})`,
