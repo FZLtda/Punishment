@@ -1,9 +1,9 @@
 "use strict";
 
-const { AttachmentBuilder }  = require("discord.js");
-const { bot, emojis }        = require("@config");
-const { sendWarning }        = require("@embeds/embedWarning");
-const TermsAgreement         = require("@models/TermsAgreement");
+const { AttachmentBuilder } = require("discord.js");
+const { bot, emojis } = require("@config");
+const { sendWarning } = require("@embeds");
+const TermsAgreement = require("@models/TermsAgreement");
 
 module.exports = {
   name: "termslist",
