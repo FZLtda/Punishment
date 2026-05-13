@@ -2,7 +2,7 @@
 
 const { ChannelType } = require("discord.js");
 const { bot } = require("@config");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 
 module.exports = {
   name: "reply",
