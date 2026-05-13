@@ -13,7 +13,7 @@ const ChannelLockService = require("./ChannelLockService");
 const ModerationService = require("./ModerationService");
 const deeplService = require("./deeplService");
 const mercadoPago = require("./mercadoPago");
-const apiClient = require("./apiClient");
+const api = require("./apiClient");
 
 module.exports = {
   ChannelUserUnlockService,
@@ -24,5 +24,5 @@ module.exports = {
   ModerationService,
   deeplService,
   mercadoPago,
-  apiClient,
+  api,
 };
