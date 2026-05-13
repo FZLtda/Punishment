@@ -4,12 +4,8 @@ const {
   Client,
   GatewayIntentBits,
   Partials,
-  Collection
+  Collection,
 } = require("discord.js");
-
-/**
- * Classe personalizada que estende o Client do Discord.js
- */
 
 class PunishmentClient extends Client {
   constructor(options = {}) {
@@ -32,7 +28,6 @@ class PunishmentClient extends Client {
       ...options
     });
 
-    // Inicialização das coleções
     this.commands = new Collection();
     this.slashCommands = new Collection();
     this.contexts = new Collection();
@@ -41,7 +36,6 @@ class PunishmentClient extends Client {
     this.modals = new Collection();
     this.cooldowns = new Collection();
 
-    // Carga dinâmica
     this.utils = new Map();
     this.services = new Map();
     this.modules = new Map();
