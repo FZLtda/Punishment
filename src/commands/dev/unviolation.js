@@ -2,13 +2,14 @@
 
 const { EmbedBuilder } = require("discord.js");
 const GlobalBan = require("@models/GlobalBan");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 const { emojis, colors, bot } = require("@config");
 
 module.exports = {
   name: "unviolation",
   description: "Remove o banimento global de um usuário.",
   usage: "${currentPrefix}unviolation <ID do usuário>",
+  aliases: ["v+"],
   deleteMessage: true,
   devOnly: true,
 
