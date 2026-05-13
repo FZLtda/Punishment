@@ -1,6 +1,6 @@
 "use strict";
 
-const TermsAgreement = require("@models/TermsAgreement");
+const { TermsAgreement } = require("@models");
 const { 
   EmbedBuilder, 
   ActionRowBuilder, 
