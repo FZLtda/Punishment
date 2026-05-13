@@ -1,9 +1,9 @@
 "use strict";
 
-const fs               = require("fs");
-const path             = require("path");
-const { bot, emojis }  = require("@config");
-const { sendWarning }  = require("@embeds/embedWarning");
+const fs = require("fs");
+const path = require("path");
+const { bot, emojis } = require("@config");
+const { sendWarning } = require("@embeds");
 
 module.exports = {
   name: "reload",
