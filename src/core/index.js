@@ -3,21 +3,39 @@
 const bootstrap = require("./bootstrap");
 const client = require("./client");
 const diagnostic = require("./diagnostic");
-const environment = require("./environment");
-const errors = require("./errors");
-const monitor = require("./monitor");
+const Monitor = require("./monitor");
 const presence = require("./presence");
-const shutdown = require("./shutdown");
-const signals = require("./signals");
+
+const {
+  validateEnvironment,
+} = require("./environment");
+
+const {
+  registerGlobalErrorHandlers,
+} = require("./errors");
+
+const {
+  registerResources,
+  gracefulExit,
+} = require("./shutdown");
+
+const {
+  registerSignalHandlers,
+} = require("./signals");
 
 module.exports = {
   bootstrap,
   client,
   diagnostic,
-  environment,
-  errors,
-  monitor,
+  Monitor,
   presence,
-  shutdown,
-  signals,
+
+  validateEnvironment,
+
+  registerGlobalErrorHandlers,
+
+  registerResources,
+  gracefulExit,
+
+  registerSignalHandlers,
 };
