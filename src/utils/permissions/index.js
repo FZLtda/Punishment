@@ -12,8 +12,8 @@ const memberGuards = require("./memberGuards");
 
 module.exports = {
   ...channelGuards,
-  ...checkBotPermissions,
-  ...checkUserPermissions,
   ...memberGuards,
-};
 
+  checkBotPermissions,
+  checkUserPermissions,
+};
