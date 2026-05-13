@@ -16,7 +16,7 @@ const {
   registerResources,
   gracefulExit,
   bootstrap,
-  monitor,
+  Monitor,
 } = require("@core");
 
 Object.freeze(bot);
