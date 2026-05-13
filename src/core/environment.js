@@ -2,9 +2,6 @@
 
 const Logger = require("@logger");
 
-/**
- * Lista de variáveis de ambiente obrigatórias agrupadas por responsabilidade
- */
 const REQUIRED_ENV_VARS = {
   Discord: ["TOKEN", "CLIENT_ID", "OWNER_ID", "DEFAULT_PREFIX", "COMMAND_SCOPE"],
   MongoDB: ["MONGO_URI"],
@@ -12,13 +9,6 @@ const REQUIRED_ENV_VARS = {
   Logging: ["LOG_LEVEL"]
 };
 
-/**
- * Valida se todas as variáveis de ambiente obrigatórias estão definidas.
- * Encerra o processo em caso de ausência de qualquer uma.
- * 
- * @function validateEnvironment
- * @returns {void}
- */
 function validateEnvironment() {
   const missing = [];
 
