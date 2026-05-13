@@ -1,22 +1,15 @@
 "use strict";
 
 const TermsAgreement = require("@models/TermsAgreement");
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { 
+  EmbedBuilder, 
+  ActionRowBuilder, 
+  ButtonBuilder, 
+  ButtonStyle 
+} = require("discord.js");
 const { bot, colors } = require("@config");
 const { TERMS_URL } = process.env;
 
-/**
- * Middleware para verificar se o usuário aceitou os Termos de Uso.
- * @param {{
- *   user: import('discord.js').User,
- *   client: import('discord.js').Client,
- *   reply: (options: import('discord.js').InteractionReplyOptions | import('discord.js').MessagePayload) => Promise<any>,
- *   message?: import('discord.js').Message,
- *   interaction?: import('discord.js').Interaction,
- *   deferReply?: Function
- * }} context - Contexto do comando ou interação.
- * @returns {Promise<boolean>} Retorna true se o usuário já aceitou os termos, senão envia os termos e retorna false.
- */
 module.exports = async function checkTerms(context) {
   try {
     const { user, client, reply, message, interaction } = context;
