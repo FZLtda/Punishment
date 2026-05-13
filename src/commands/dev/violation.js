@@ -2,13 +2,14 @@
 
 const { EmbedBuilder } = require("discord.js");
 const GlobalBan = require("@models/GlobalBan");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 const { emojis, colors, bot } = require("@config");
 
 module.exports = {
   name: "violation",
   description: "Bane um usuário globalmente do uso do bot.",
   usage: "${currentPrefix}violation <ID do usuário> [motivo]",
+  aliases: ["v+"],
   deleteMessage: true,
   devOnly: true,
 
