@@ -7,9 +7,7 @@ const {
 
 const { sendModLog } = require("@modules/modlog");
 
-const { 
-  checkMemberGuard,
-} = require("@permissions/memberGuards");
+const { checkMemberGuard } = require("@permissions");
 
 module.exports = {
   name: "kick",
@@ -35,7 +33,7 @@ module.exports = {
       await message.channel.send({ embeds: [embed] });
 
       await sendModLog(message.guild, {
-        action: "Kick",
+        action: "kick",
         target: membro.user,
         moderator: message.author,
         reason: motivo
