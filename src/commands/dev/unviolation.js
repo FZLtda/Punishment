@@ -9,7 +9,7 @@ module.exports = {
   name: "unviolation",
   description: "Remove o banimento global de um usuário.",
   usage: "${currentPrefix}unviolation <ID do usuário>",
-  aliases: ["v+"],
+  aliases: ["v-"],
   deleteMessage: true,
   devOnly: true,
 
