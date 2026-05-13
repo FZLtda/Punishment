@@ -2,7 +2,7 @@
 
 const { 
   setBotPresence, 
-  Monitor, 
+  monitor, 
 } = require("@core");
 const Logger = require("@logger");
 const iniciarSorteiosTask = require("@tasks/sorteios");
