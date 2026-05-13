@@ -2,62 +2,46 @@
 
 const client = require("./client");
 
-const {
-  validateEnvironment,
-} = require("./environment");
+const { validateEnvironment } = require("./environment");
+const { showStartupDiagnostic } = require("./diagnostic");
+const { connectMongo } = require("@database");
 
-const {
-  showStartupDiagnostic,
-} = require("./diagnostic");
-
-const {
-  connectMongo,
-} = require("@database");
-
-const {
-  loadCommands,
-} = require("@loadCommands/loader");
-
-const {
-  loadEvents,
-} = require("@loadEvents/loader");
-
-const {
-  loadMenus,
-} = require("@loadMenus/loader");
-
-const {
-  loadModals,
-} = require("@loadModals/loader");
-
-const {
-  loadSlashCommands,
-} = require("@loadSlashCommands/loader");
-
-const {
-  loadButtonInteractions,
-} = require("@loadButtonInteractions/loader");
+const { loadCommands } = require("@loadCommands/loader");
+const { loadEvents } = require("@loadEvents/loader");
+const { loadMenus } = require("@loadMenus/loader");
+const { loadModals } = require("@loadModals/loader");
+const { loadSlashCommands } = require("@loadSlashCommands/loader");
+const { loadButtonInteractions } = require("@loadButtonInteractions/loader");
 
 module.exports = async function bootstrap() {
-  validateEnvironment();
+  try {
+    validateEnvironment();
 
-  const mongo = await connectMongo();
+    const mongo = await connectMongo();
 
-  await Promise.all([
-    loadCommands(client),
-    loadEvents(client),
-    loadMenus(client),
-    loadSlashCommands(client),
-    loadButtonInteractions(client),
-    loadModals(client),
-  ]);
+    await Promise.all([
+      loadCommands(client),
+      loadEvents(client),
+      loadMenus(client),
+      loadSlashCommands(client),
+      loadButtonInteractions(client),
+      loadModals(client),
+    ]);
 
-  await client.login(process.env.TOKEN);
+    await client.login(process.env.TOKEN);
 
-  await showStartupDiagnostic(client);
+    await showStartupDiagnostic(client);
 
-  return {
-    discordClient: client,
-    mongo,
-  };
+    return {
+      discordClient: client,
+      mongo,
+    };
+
+  } catch (err) {
+    const Logger = require("@logger");
+
+    Logger.fatal("[Startup] Falha crítica na inicialização:", err?.stack || err);
+
+    throw err;
+  }
 };
