@@ -1,7 +1,7 @@
 "use strict";
 
-const client = require("@core");
-const { validateEnvironment } = require("@core");
+const client = require("@core/client");
+const { validateEnvironment } = require("@core/validateEnvironment");
 const { connectMongo } = require("@database");
 
 const { loadCommands } = require("@loadCommands/loader");
@@ -11,7 +11,7 @@ const { loadModals } = require("@loadModals/loader");
 const { loadSlashCommands } = require("@loadSlashCommands/loader");
 const { loadButtonInteractions } = require("@loadButtonInteractions/loader");
 
-const { showStartupDiagnostic } = require("@core");
+const { showStartupDiagnostic } = require("@core/showStartupDiagnostic");
 
 module.exports = async function bootstrap() {
   
