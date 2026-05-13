@@ -31,7 +31,7 @@ module.exports = {
       await message.channel.send({ embeds: [embed] });
 
       await sendModLog(message.guild, {
-        action: "Unban",
+        action: "unban",
         target: banInfo.user,
         moderator: message.author,
         reason: motivo
