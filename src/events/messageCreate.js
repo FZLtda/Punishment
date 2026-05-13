@@ -191,8 +191,7 @@ module.exports = {
 
     } catch (error) {
       Logger.error(
-        `[ERROR][${message?.guild?.name ?? "Unknown"}] ` +
-        `Falha ao executar comando`,
+        `[ERROR][${message?.guild?.name ?? "Unknown"}] Falha ao executar comando`,
         error,
       );
 
