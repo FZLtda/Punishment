@@ -1,8 +1,8 @@
 "use strict";
 
 const Logger = require("@logger");
+const { gracefulExit } = require("./shutdown");
 const { reportErrorToWebhook } = require("@monitors/webhookMonitor");
-const { gracefulExit } = require("@core");
 
 function registerGlobalErrorHandlers() {
   process.on("uncaughtException", async (err) => {
