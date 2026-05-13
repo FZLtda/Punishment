@@ -2,7 +2,7 @@
 
 const { 
   setBotPresence, 
-  monitor, 
+  Monitor, 
 } = require("@core");
 const Logger = require("@logger");
 const iniciarSorteiosTask = require("@tasks/sorteios");
@@ -37,13 +37,13 @@ module.exports = {
         }, 60000);
       }
 
-      monitor.emit("ready", client.user.tag);
+      Monitor.emit("ready", client.user.tag);
       
       Logger.info("[Ready] Inicialização concluída com sucesso.");
 
     } catch (err) {
       Logger.fatal(`[Ready] Falha durante inicialização: ${err.stack || err.message}`);
-      monitor.emit("error", "event:ready", err);
+      Monitor.emit("error", "event:ready", err);
     }
   }
 };
