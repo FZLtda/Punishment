@@ -9,7 +9,7 @@ const {
   PermissionsBitField
 } = require("discord.js");
 
-const GuildSettings = require("@models/GuildSettings");
+const { GuildSettings } = require("@models");
 const { colors, bot, emojis } = require("@config");
 const Logger = require("@logger");
 
