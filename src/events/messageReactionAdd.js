@@ -1,18 +1,10 @@
 "use strict";
 
-/**
- * Evento: messageReactionAdd
- * Descrição:
- * - Adiciona usuário ao sorteio 🎉
- * - Traduz mensagens por bandeiras
- * 🔒 Protegido pelo sistema de Global Ban
- */
-
 const { EmbedBuilder } = require("discord.js");
 const Giveaway = require("@models/Giveaway");
 const { colors, emojis, langFlags } = require("@config");
-const { translateText } = require("@services/deeplService");
-const checkGlobalBan = require("@middlewares/checkGlobalBan");
+const { translateText } = require("@services");
+const { checkGlobalBan } = require("@middlewares");
 const Logger = require("@logger").child({ module: "messageReactionAdd" });
 
 const translationCooldown = new Map();
