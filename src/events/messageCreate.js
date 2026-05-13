@@ -2,7 +2,7 @@
 
 const Logger = require("@logger");
 
-const { getPrefix } = require("@helpers/prefixManager");
+const { getPrefix } = require("@helpers");
 
 const {
   checkTerms,
