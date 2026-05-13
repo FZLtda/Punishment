@@ -3,7 +3,7 @@
 const util = require("node:util");
 
 const { bot } = require("@config");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 
 module.exports = {
   name: "eval",
