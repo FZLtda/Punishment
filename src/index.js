@@ -10,6 +10,7 @@ const Logger = require("@logger");
 const { bot, env } = require("@config");
 
 const {
+  validateEnvironment,
   registerGlobalErrorHandlers,
   registerSignalHandlers,
   registerResources,
@@ -17,7 +18,6 @@ const {
   bootstrap,
   Monitor,
 } = require("@core");
-const validateEnvironment = require("@core");
 
 Object.freeze(bot);
 
