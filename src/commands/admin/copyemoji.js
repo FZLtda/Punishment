@@ -7,7 +7,7 @@
 
 const { EmbedBuilder } = require("discord.js");
 const { colors, emojis } = require("@config");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 const { sendModLog } = require("@modules/modlog");
 const Logger = require("@logger");
 
@@ -61,7 +61,7 @@ module.exports = {
       await message.channel.send({ embeds: [embed] });
 
       await sendModLog(message.guild, {
-        action: "Emoji Copied",
+        action: "copyemoji",
         moderator: message.author,
         target: emoji,
         reason: "Cópia de emoji",
