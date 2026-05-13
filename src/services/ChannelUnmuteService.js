@@ -15,7 +15,7 @@ class ChannelUnmuteService {
    */
   static async unmute({ guild, channel, moderator, target, reason }) {
     try {
-      await target.timeout(0, reason);
+      await target.timeout(null, reason);
 
       const embed = createUnmuteEmbed(moderator, target, reason);
       await channel.send({ embeds: [embed] }).catch(err =>
