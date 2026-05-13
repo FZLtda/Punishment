@@ -3,14 +3,18 @@
 const { getPrefix } = require("@helpers/prefixManager");
 const Logger = require("@logger");
 
-const checkTerms = require("@middlewares/checkTerms");
-const checkGlobalBan = require("@middlewares/checkGlobalBan");
-const checkCooldown = require("@middlewares/checkCooldown");
+const { 
+  checkTerms, 
+  checkGlobalBan, 
+  checkCooldown,
+} = require("@middlewares");
 
-const checkUserPermissions = require("@permissions/checkUserPermissions");
-const checkBotPermissions = require("@permissions/checkBotPermissions");
+const { 
+  checkUserPermissions, 
+  checkBotPermissions 
+} = require("@permissions");
 
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 
 async function resolvePrefix(client, guildId) {
   if (client.getPrefix) return await client.getPrefix(guildId);
