@@ -5,7 +5,7 @@ const path = require("path");
 const { EmbedBuilder } = require("discord.js");
 const { colors, emojis } = require("@config");
 const { sendModLog } = require("@modules/modlog");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 
 module.exports = {
   name: "backup",
@@ -101,7 +101,7 @@ module.exports = {
       await message.channel.send({ embeds: [embed] });
 
       await sendModLog(guild, {
-        action: "Backup",
+        action: "backup",
         target: message.author,
         moderator: message.author,
         reason: "Backup manual solicitado.",
