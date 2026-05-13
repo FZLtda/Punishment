@@ -1,7 +1,11 @@
 "use strict";
 
-const { EmbedBuilder, ActionRowBuilder, UserSelectMenuBuilder } = require("discord.js");
-const { sendWarning } = require("@embeds/embedWarning");
+const { 
+  EmbedBuilder, 
+  ActionRowBuilder, 
+  UserSelectMenuBuilder,
+} = require("discord.js");
+const { sendWarning } = require("@embeds");
 const { colors } = require("@config");
 
 module.exports = {
