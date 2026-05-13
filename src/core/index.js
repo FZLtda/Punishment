@@ -2,9 +2,12 @@
 
 const bootstrap = require("./bootstrap");
 const client = require("./client");
-const diagnostic = require("./diagnostic");
 const Monitor = require("./monitor");
 const presence = require("./presence");
+
+const {
+  showStartupDiagnostic,
+} = require("./diagnostic");
 
 const {
   validateEnvironment,
@@ -26,9 +29,10 @@ const {
 module.exports = {
   bootstrap,
   client,
-  diagnostic,
   Monitor,
   presence,
+
+  showStartupDiagnostic,
 
   validateEnvironment,
 
