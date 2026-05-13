@@ -3,7 +3,12 @@
 const bootstrap = require("./bootstrap");
 const client = require("./client");
 const Monitor = require("./monitor");
-const presence = require("./presence");
+
+const {
+  setBotPresence,
+  startPresenceRotation,
+  stopPresenceRotation, 
+} = require("./presence");
 
 const {
   showStartupDiagnostic,
@@ -30,7 +35,10 @@ module.exports = {
   bootstrap,
   client,
   Monitor,
-  presence,
+  
+  setBotPresence,
+  startPresenceRotation,
+  stopPresenceRotation,
 
   showStartupDiagnostic,
 
