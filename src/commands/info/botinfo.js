@@ -20,7 +20,6 @@ module.exports = {
   async execute(message) {
     const { client } = message;
 
-    /* Uptime */
     const uptimeSeconds = Math.floor(process.uptime());
     const days = Math.floor(uptimeSeconds / 86400);
     const hours = Math.floor((uptimeSeconds % 86400) / 3600);
@@ -28,7 +27,6 @@ module.exports = {
     const seconds = uptimeSeconds % 60;
     const uptime = `${days}d ${hours}h ${minutes}m ${seconds}s`;
 
-    /* Memória */
     const memory = process.memoryUsage();
     const rssMB = (memory.rss / 1024 / 1024).toFixed(2);
     const heapUsedMB = (memory.heapUsed / 1024 / 1024).toFixed(2);
@@ -36,7 +34,6 @@ module.exports = {
     const totalSystemMemoryMB = (os.totalmem() / 1024 / 1024).toFixed(0);
     const memoryPercent = ((memory.rss / os.totalmem()) * 100).toFixed(2);
 
-    /* CPU */
     const cpuUsage = process.cpuUsage();
     const cpuUserMs = (cpuUsage.user / 1000).toFixed(0);
     const cpuSystemMs = (cpuUsage.system / 1000).toFixed(0);
@@ -44,11 +41,9 @@ module.exports = {
     const cpuModel = cpuInfo?.[0]?.model ?? "Desconhecido";
     const cpuCores = cpuInfo.length;
 
-    /* Sistema */
     const platform = `${os.type()} (${os.platform()})`;
     const architecture = os.arch();
 
-    /* Usuários */
     const totalUsers = client.guilds.cache.reduce(
       (acc, guild) => acc + (guild.memberCount || 0),
       0
