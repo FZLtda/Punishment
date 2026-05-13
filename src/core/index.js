@@ -1,7 +1,7 @@
 "use strict";
 
 const bootstrap = require("./bootstrap");
-const client = require("./client");
+const PunishmentClient = require("./client");
 const Monitor = require("./monitor");
 
 const {
@@ -33,7 +33,7 @@ const {
 
 module.exports = {
   bootstrap,
-  client,
+  PunishmentClient,
   Monitor,
   
   setBotPresence,
