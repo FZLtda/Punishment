@@ -2,7 +2,7 @@
 
 const { emojis, bot } = require("@config");
 const { sendModLog } = require("@modules/modlog");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 
 module.exports = {
   name: "c",
@@ -35,7 +35,7 @@ module.exports = {
       setTimeout(() => resposta.delete().catch(() => null), 4000);
 
       await sendModLog(message.guild, {
-        action: "Clear (Rápido)",
+        action: "clear",
         moderator: message.author,
         channel: message.channel,
         extra: `${apagadas.size} mensagens apagadas com atalho`
