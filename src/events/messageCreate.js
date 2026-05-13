@@ -1,65 +1,116 @@
 "use strict";
 
-const { getPrefix } = require("@helpers/prefixManager");
 const Logger = require("@logger");
 
-const { 
-  checkTerms, 
-  checkGlobalBan, 
+const { getPrefix } = require("@helpers/prefixManager");
+
+const {
+  checkTerms,
+  checkGlobalBan,
   checkCooldown,
 } = require("@middlewares");
 
-const { 
-  checkUserPermissions, 
-  checkBotPermissions 
+const {
+  checkUserPermissions,
+  checkBotPermissions,
 } = require("@permissions");
 
-const { sendWarning } = require("@embeds");
+const {
+  sendWarning,
+} = require("@embeds");
 
 async function resolvePrefix(client, guildId) {
-  if (client.getPrefix) return await client.getPrefix(guildId);
+  if (client.getPrefix) {
+    return await client.getPrefix(guildId);
+  }
+
   return await getPrefix(guildId);
 }
 
 function parseCommand(messageContent, prefix) {
-  if (!messageContent.startsWith(prefix)) return null;
-  if (messageContent[prefix.length] === " ") return null;
-
-  const args = messageContent.slice(prefix.length).trim().split(/\s+/);
-  const commandName = args.shift()?.toLowerCase();
-
-  if (!commandName || ["__proto__", "constructor", "prototype"].includes(commandName)) {
+  if (!messageContent.startsWith(prefix)) {
     return null;
   }
 
-  return { commandName, args };
+  if (messageContent[prefix.length] === " ") {
+    return null;
+  }
+
+  const args = messageContent
+    .slice(prefix.length)
+    .trim()
+    .split(/\s+/);
+
+  const commandName = args.shift()?.toLowerCase();
+
+  if (
+    !commandName ||
+    ["__proto__", "constructor", "prototype"].includes(commandName)
+  ) {
+    return null;
+  }
+
+  return {
+    commandName,
+    args,
+  };
 }
 
-async function preExecutionPipeline({ message, command, member, botMember }) {
-
-  if (await checkGlobalBan(message)) return false;
+async function preExecutionPipeline({
+  message,
+  command,
+  member,
+  botMember,
+}) {
+  if (await checkGlobalBan(message)) {
+    return false;
+  }
 
   const accepted = await checkTerms({
     user: message.author,
     client: message.client,
-    reply: opts => message.channel.send(opts),
+    reply: (opts) => message.channel.send(opts),
   });
 
   if (!accepted) {
-    Logger.info(`[TERMS] ${message.author.tag} não aceitou os termos.`);
+    Logger.info(
+      `[TERMS] ${message.author.tag} não aceitou os termos.`,
+    );
+
     return false;
   }
 
-  if (!(await checkCooldown({ message, command }))) return false;
+  const cooldownPassed = await checkCooldown({
+    message,
+    command,
+  });
+
+  if (!cooldownPassed) {
+    return false;
+  }
 
   if (command.userPermissions) {
-    const has = await checkUserPermissions(member, message, command.userPermissions);
-    if (!has) return false;
+    const hasPermission = await checkUserPermissions(
+      member,
+      message,
+      command.userPermissions,
+    );
+
+    if (!hasPermission) {
+      return false;
+    }
   }
 
   if (command.botPermissions) {
-    const has = await checkBotPermissions(botMember, message, command.botPermissions);
-    if (!has) return false;
+    const hasPermission = await checkBotPermissions(
+      botMember,
+      message,
+      command.botPermissions,
+    );
+
+    if (!hasPermission) {
+      return false;
+    }
   }
 
   return true;
@@ -70,21 +121,42 @@ module.exports = {
 
   async execute(message) {
     try {
-      if (!message.guild || message.author.bot) return;
+      if (!message.guild || message.author.bot) {
+        return;
+      }
 
-      const prefix = await resolvePrefix(message.client, message.guild.id);
-      const parsed = parseCommand(message.content, prefix);
-      if (!parsed) return;
+      const prefix = await resolvePrefix(
+        message.client,
+        message.guild.id,
+      );
 
-      const { commandName, args } = parsed;
+      const parsed = parseCommand(
+        message.content,
+        prefix,
+      );
+
+      if (!parsed) {
+        return;
+      }
+
+      const {
+        commandName,
+        args,
+      } = parsed;
+
       const command =
         message.client.commands.get(commandName) ??
-        message.client.commands.find(cmd => cmd.aliases?.includes(commandName));
+        message.client.commands.find((cmd) =>
+          cmd.aliases?.includes(commandName),
+        );
 
-      if (!command) return;
+      if (!command) {
+        return;
+      }
 
       const member =
-        message.member ?? await message.guild.members.fetch(message.author.id);
+        message.member ??
+        await message.guild.members.fetch(message.author.id);
 
       const botMember = message.guild.members.me;
 
@@ -95,37 +167,50 @@ module.exports = {
         botMember,
       });
 
-      if (!canProceed) return;
+      if (!canProceed) {
+        return;
+      }
 
       if (command.deleteMessage) {
         try {
           await message.delete();
         } catch (err) {
           Logger.warn(
-            `[DELETE] Falha ao apagar msg de ${message.author.tag}: ${err.message}`
+            `[DELETE] Falha ao apagar msg de ${message.author.tag}: ${err.message}`,
           );
         }
       }
 
       Logger.info(
         `[COMMAND] ${message.author.tag} (${message.author.id}) ` +
-        `usou ${prefix}${commandName} em #${message.channel.name} (${message.guild.name})`
+        `usou ${prefix}${commandName} em ` +
+        `#${message.channel.name} (${message.guild.name})`,
       );
 
       await command.execute(message, args);
 
     } catch (error) {
       Logger.error(
-        `[ERROR][${message?.guild?.name ?? "Unknown"}] Falha ao executar comando`,
-        error
+        `[ERROR][${message?.guild?.name ?? "Unknown"}] ` +
+        `Falha ao executar comando`,
+        error,
       );
 
       try {
-        if (message?.channel && message.client?.isReady()) {
-          await sendWarning(message, "Não foi possível executar o comando.");
+        if (
+          message?.channel &&
+          message.client?.isReady()
+        ) {
+          await sendWarning(
+            message,
+            "Não foi possível executar o comando.",
+          );
         }
       } catch (warnError) {
-        Logger.warn("[messageCreate] Falha ao enviar aviso de erro", warnError);
+        Logger.warn(
+          "[messageCreate] Falha ao enviar aviso de erro",
+          warnError,
+        );
       }
     }
   },
