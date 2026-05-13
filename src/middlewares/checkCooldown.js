@@ -1,15 +1,10 @@
 "use strict";
 
 const { Collection } = require("discord.js");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 
 const cooldowns = new Collection();
 
-/**
- * @param {Object} options
- * @param {import('discord.js').Message} options.message
- * @param {Object} options.command
- */
 module.exports = async function checkCooldown({ message, command }) {
   const cooldownTime = (command.cooldown ?? 3) * 1000;
 
