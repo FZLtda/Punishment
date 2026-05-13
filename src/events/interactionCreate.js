@@ -1,22 +1,15 @@
 "use strict";
 
-/*
- * interactionCreate
- * - Middleware pipeline
- * - GlobalBan
- * - Terms enforcement
- * - Metrics & observability
- * - Circuit breaker
- */
-
 const { InteractionType } = require("discord.js");
 
 const Logger = require("@logger");
 const handleInteraction = require("@interactions/handleInteraction");
-const { sendInteractionError } = require("@helpers/responses");
+const { sendInteractionError } = require("@helpers");
 
-const checkGlobalBan = require("@middlewares/checkGlobalBan");
-const checkTerms = require("@middlewares/checkTerms");
+const { 
+  checkGlobalBan, 
+  checkTerms, 
+} = require("@middlewares");
 
 const CONFIG = {
   MIDDLEWARE_TIMEOUT: 3000,
