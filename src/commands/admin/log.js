@@ -1,9 +1,13 @@
 "use strict";
 
-const { ChannelType, EmbedBuilder, PermissionsBitField } = require("discord.js");
+const { 
+  ChannelType, 
+  EmbedBuilder, 
+  PermissionsBitField,
+} = require("discord.js");
 const GuildSettings = require("@models/GuildSettings");
 const { emojis, colors } = require("@config");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 
 module.exports = {
   name: "log",
