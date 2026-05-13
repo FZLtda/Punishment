@@ -2,7 +2,7 @@
 
 const { EmbedBuilder } = require("discord.js");
 const { performance } = require("node:perf_hooks");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 const { colors } = require("@config");
 
 module.exports = {
