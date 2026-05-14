@@ -6,7 +6,7 @@ const ChannelSlowmodeService = require("./ChannelSlowmodeService");
 const ChannelUnmuteService = require("./ChannelUnmuteService");
 const ChannelLockService = require("./ChannelLockService");
 const ModerationService = require("./ModerationService");
-const deeplService = require("./deeplService");
+const translateText = require("./deeplService");
 const mercadoPago = require("./mercadoPago");
 const api = require("./apiClient");
 
@@ -17,7 +17,7 @@ module.exports = {
   ChannelUnmuteService,
   ChannelLockService,
   ModerationService,
-  deeplService,
+  translateText,
   mercadoPago,
   api,
 };
