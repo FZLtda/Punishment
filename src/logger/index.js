@@ -1,11 +1,10 @@
 "use strict";
 
 const winston = require("winston");
-const { levels, colors } = require("@logger/config");
-const { createTransports } = require("@logger/transports");
-const { applyOverrides } = require("@logger/overrides");
+const { levels, colors } = require("./config");
+const { createTransports } = require("./transports");
+const { applyOverrides } = require("./overrides");
 
-// adiciona cores customizadas
 winston.addColors(colors);
 
 const baseLogger = winston.createLogger({
@@ -15,7 +14,6 @@ const baseLogger = winston.createLogger({
   transports: createTransports(levels),
 });
 
-// aplica overrides (error → webhook, fatal → exit)
 applyOverrides(baseLogger, levels);
 
 module.exports = baseLogger;
