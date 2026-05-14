@@ -1,7 +1,7 @@
 "use strict";
 
 const { EmbedBuilder } = require("discord.js");
-const Giveaway = require("@models/Giveaway");
+const Giveaway = require("@models");
 const { colors, emojis, langFlags } = require("@config");
 const { translateText } = require("@services");
 const { checkGlobalBan } = require("@middlewares");
