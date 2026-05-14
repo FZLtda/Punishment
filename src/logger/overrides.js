@@ -1,11 +1,7 @@
 "use strict";
 
-const { sendToWebhook } = require("@logger/webhook");
+const { sendToWebhook } = require("./webhook");
 
-/**
- * Sobrescreve os métodos do logger para adicionar
- * envio ao Discord e comportamento customizado
- */
 function applyOverrides(baseLogger, levels) {
   for (const [level] of Object.entries(levels)) {
     baseLogger[level] = (message, error) => {
@@ -18,12 +14,10 @@ function applyOverrides(baseLogger, levels) {
 
       baseLogger.log({ level, message: formattedMessage });
 
-      // Envia logs críticos ao Discord
       if (["error", "fatal"].includes(level)) {
         sendToWebhook(level, formattedMessage);
       }
 
-      // Fatal derruba a aplicação
       if (level === "fatal") process.exit(1);
     };
   }
