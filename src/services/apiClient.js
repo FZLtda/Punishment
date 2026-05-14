@@ -57,4 +57,4 @@ api.interceptors.response.use(
   }
 );
 
-module.exports = { api };
+module.exports = api;
