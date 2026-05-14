@@ -2,7 +2,7 @@
 
 const path = require("path");
 const winston = require("winston");
-const { logDir, getTimestamp } = require("@logger/config");
+const { logDir, getTimestamp } = require("./config");
 
 const formatter = winston.format.printf(({ level, message, timestamp, stack }) => {
   return `[${timestamp}] [${level.toUpperCase()}]: ${stack || message}`;
