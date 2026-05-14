@@ -1,10 +1,5 @@
 "use strict";
 
-/**
- * Central export file for all services.
- * Keeps imports clean and makes the services layer scalable.
- */
-
 const ChannelUserUnlockService = require("./ChannelUserUnlockService");
 const ChannelUserLockService = require("./ChannelUserLockService");
 const ChannelSlowmodeService = require("./ChannelSlowmodeService");
