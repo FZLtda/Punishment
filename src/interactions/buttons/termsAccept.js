@@ -1,20 +1,12 @@
 "use strict";
 
-const TermsAgreement = require("@models/TermsAgreement");
+const { TermsAgreement } = require("@models");
 const { EmbedBuilder } = require("discord.js");
 const { bot, emojis, colors } = require("@config");
 
-/**
- * Manipula o clique no botão de aceitar os Termos de Uso.
- */
 module.exports = {
   customId: "terms_accept",
 
-  /**
-   * Executa a lógica ao clicar no botão "Aceitar Termos".
-   * @param {import('discord.js').ButtonInteraction} interaction
-   * @returns {Promise<void>}
-   */
   async execute(interaction) {
     try {
       const { user, client, message } = interaction;
@@ -45,7 +37,6 @@ module.exports = {
         flags: 1 << 6
       });
 
-      // Deleta a mensagem original após aceitar
       if (message?.deletable) {
         setTimeout(() => {
           message.delete().catch(() => {});
