@@ -60,4 +60,4 @@ async function translateText(text, targetLang = "PT-BR") {
   }
 }
 
-module.exports = { translateText };
+module.exports = translateText;
