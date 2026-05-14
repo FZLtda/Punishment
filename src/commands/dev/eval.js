@@ -11,7 +11,7 @@ module.exports = {
   usage: "${currentPrefix}eval <código>",
   aliases: ["e"],
   category: "dev",
-  deleteMessage: true,
+  deleteMessage: false,
 
   async execute(message, args) {
     if (message.author.id !== bot.ownerId) return;
