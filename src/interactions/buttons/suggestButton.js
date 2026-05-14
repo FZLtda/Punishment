@@ -1,15 +1,15 @@
 "use strict";
 
-const { ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require("discord.js");
+const { 
+  ModalBuilder, 
+  TextInputBuilder, 
+  TextInputStyle, 
+  ActionRowBuilder 
+} = require("discord.js");
 
 module.exports = {
   customId: "openSuggestionModal",
 
-  /**
-   * Executa o botão de abrir modal de sugestão.
-   * @param {import('discord.js').ButtonInteraction} interaction
-   * @param {import('discord.js').Client} client
-   */
   async execute(interaction) {
     const modal = new ModalBuilder()
       .setCustomId("suggestModal")
