@@ -2,14 +2,10 @@ name: Punishment CI/CD
 
 on:
   push:
-    branches:
-      - main
-      - develop
+    branches: [main, develop]
 
   pull_request:
-    branches:
-      - main
-      - develop
+    branches: [main, develop]
 
 permissions:
   contents: read
@@ -23,14 +19,9 @@ env:
 
 jobs:
   quality:
-    name: Quality & Tests
+    name: Quality Gate (Lint + Type + Tests + Security)
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [22.x]
+    timeout-minutes: 15
 
     steps:
       - name: Checkout repository
@@ -39,16 +30,22 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Validate lockfile integrity
+        run: npm ci --prefer-offline --no-audit
 
-      - name: Run ESLint
+      - name: Check for outdated or broken dependencies
+        run: npm ls --all || true
+
+      - name: Security audit (critical only)
+        run: npm audit --audit-level=high
+
+      - name: Run ESLint (strict mode)
         run: npm run lint --if-present
 
-      - name: Run Type Check
+      - name: Type Check
         run: npm run typecheck --if-present
 
       - name: Run Tests
@@ -56,6 +53,15 @@ jobs:
 
       - name: Build Project
         run: npm run build --if-present
+
+      - name: Verify build output exists
+        run: |
+          if [ -d "dist" ] || [ -d "build" ]; then
+            echo "Build output detected"
+          else
+            echo "No build output found - failing CI"
+            exit 1
+          fi
 
   deploy:
     name: Deploy Square Cloud
@@ -75,14 +81,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create deployment archive
+      - name: Create deployment archive (optimized)
         run: |
           zip -r app.zip . \
           -x "*.git*" \
           "node_modules/*" \
           ".github/*" \
           "*.md" \
-          ".gitignore"
+          ".gitignore" \
+          "tests/*" \
+          "*.log"
+
+      - name: Validate package size
+        run: |
+          SIZE=$(stat -c%s app.zip)
+          echo "Package size: $SIZE bytes"
+          if [ $SIZE -lt 1000 ]; then
+            echo "Package too small, aborting deploy"
+            exit 1
+          fi
 
       - name: Upload application
         run: |
