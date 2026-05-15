@@ -34,7 +34,7 @@
     "axios": "^1.8.4",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
-    "mercadopago": "^1.5.14",
+    "mercadopago": "^2.12.1",
     "module-alias": "^2.2.2",
     "moment-timezone": "^0.5.48",
     "mongoose": "^8.3.3",
