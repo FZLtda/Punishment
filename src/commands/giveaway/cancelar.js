@@ -1,8 +1,11 @@
 "use strict";
 
-const { EmbedBuilder, PermissionsBitField } = require("discord.js");
-const { sendWarning } = require("@embeds/embedWarning");
-const Giveaway = require("@models/Giveaway");
+const { 
+  EmbedBuilder, 
+  PermissionsBitField 
+} = require("discord.js");
+const { sendWarning } = require("@embeds");
+const { Giveaway } = require("@models");
 const { colors, emojis } = require("@config");
 const logger = require("@logger");
 
@@ -20,7 +23,6 @@ module.exports = {
 
     const msgId = args[0];
 
-    /* Validação por ID */
     if (!msgId || !/^\d{17,20}$/.test(msgId)) {
       logger.warn(
         `[CANCELAR] ID inválido fornecido por ${message.author.tag} (${message.author.id})`
@@ -32,7 +34,6 @@ module.exports = {
       );
     }
 
-    /* Busca segura por servidor */
     const sorteio = await Giveaway.findOne({
       messageId: msgId,
       guildId: message.guild.id,
@@ -50,7 +51,6 @@ module.exports = {
       );
     }
 
-    /* Autorização */
     const isCreator = sorteio.createdBy === message.author.id;
     const isAdmin = message.member.permissions.has(
       PermissionsBitField.Flags.Administrator
@@ -67,7 +67,6 @@ module.exports = {
       );
     }
 
-    /* Cancelamento */
     sorteio.status = "cancelado";
     await sorteio.save();
 
@@ -105,7 +104,6 @@ module.exports = {
         }
       }
 
-      /* Confirmação */
       if (message.channel.id !== sorteio.channelId) {
         const confirm = new EmbedBuilder()
           .setColor(colors.green)
