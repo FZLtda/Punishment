@@ -5,50 +5,58 @@ const path = require("node:path");
 const { Collection } = require("discord.js");
 const Logger = require("@logger");
 
-/**
- * Percorre diretórios recursivamente e retorna todos os arquivos .js
- */
 async function getModalFiles(dir) {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
+  try {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+    const files = [];
 
-  const files = await Promise.all(
-    entries.map(entry => {
+    for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
 
       if (entry.isDirectory()) {
-        return getModalFiles(fullPath);
+        const nested = await getModalFiles(fullPath);
+        files.push(...nested);
+        continue;
       }
 
-      if (entry.isFile() && entry.name.endsWith(".js")) {
-        return fullPath;
+      if (entry.isFile() && path.extname(entry.name).toLowerCase() === ".js") {
+        files.push(fullPath);
       }
+    }
 
-      return [];
-    })
-  );
-
-  return files.flat();
+    return files;
+  } catch (err) {
+    Logger.error(`[MODAL] Falha ao ler diretório ${dir}:`, err);
+    return [];
+  }
 }
 
-/**
- * Carrega todos os Modals personalizados e registra no client.
- * Suporta customId como string exata ou RegExp.
- * @param {import("discord.js").Client} client
- */
-async function loadModals(client) {
-  const start = Date.now();
+function safeRequire(filePath) {
+  try {
+    const resolved = require.resolve(filePath);
+    delete require.cache[resolved];
+    return require(resolved);
+  } catch (err) {
+    Logger.error(`[MODAL] Falha ao requerer ${path.basename(filePath)}:`, err);
+    return undefined;
+  }
+}
 
-  const modalsPath = path.resolve(
-    __dirname,
-    "../../../src/interactions/modals"
-  );
+async function loadModals(client) {
+  if (!client) {
+    Logger.error("[MODAL] Client não fornecido.");
+    return;
+  }
+
+  const start = Date.now();
+  const modalsPath = path.resolve(__dirname, "../../../src/interactions/modals");
 
   client.modals = new Collection();
 
   try {
     const files = await getModalFiles(modalsPath);
 
-    if (files.length === 0) {
+    if (!files || files.length === 0) {
       Logger.warn("[MODAL] Nenhum modal encontrado.");
       return;
     }
@@ -58,43 +66,39 @@ async function loadModals(client) {
 
     for (const filePath of files) {
       try {
-        delete require.cache[require.resolve(filePath)];
+        const raw = safeRequire(filePath);
+        if (!raw) {
+          skipped++;
+          continue;
+        }
 
-        const raw = require(filePath);
-        const modal = raw?.default || raw;
+        const modal = raw?.default ?? raw;
 
         const isValidCustomId =
-          typeof modal?.customId === "string" ||
-          modal?.customId instanceof RegExp;
+          typeof modal?.customId === "string" || modal?.customId instanceof RegExp;
 
         if (!isValidCustomId || typeof modal?.execute !== "function") {
-          Logger.warn(
-            `[MODAL] Ignorado (estrutura inválida): ${path.basename(filePath)}`
-          );
+          Logger.warn(`[MODAL] Ignorado (estrutura inválida): ${path.basename(filePath)}`);
           skipped++;
           continue;
         }
 
         client.modals.set(modal.customId, modal);
-
         Logger.info(`[MODAL] Carregado: ${modal.customId}`);
         loaded++;
       } catch (err) {
         Logger.error(
-          `[MODAL] Falha ao carregar ${path.basename(filePath)}\n${err.stack || err.message}`
+          `[MODAL] Falha ao processar ${path.basename(filePath)}:`,
+          err
         );
+        skipped++;
       }
     }
 
     const duration = Date.now() - start;
-
-    Logger.success(
-      `[MODAL] Concluído: ${loaded} carregados | ${skipped} ignorados | ${duration}ms`
-    );
+    Logger.success(`[MODAL] Concluído: ${loaded} carregados | ${skipped} ignorados | ${duration}ms`);
   } catch (err) {
-    Logger.error(
-      `[MODAL] Falha crítica ao ler diretório de modals\n${err.stack || err.message}`
-    );
+    Logger.error("[MODAL] Falha crítica ao carregar modals:", err);
   }
 }
 

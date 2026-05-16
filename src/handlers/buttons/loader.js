@@ -4,49 +4,54 @@ const fs = require("node:fs/promises");
 const path = require("node:path");
 const Logger = require("@logger");
 
-/**
- * Percorre diretórios recursivamente e retorna todos os arquivos .js
- */
 async function getButtonFiles(dir) {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
+  try {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+    const files = [];
 
-  const files = await Promise.all(
-    entries.map(entry => {
+    for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
 
       if (entry.isDirectory()) {
-        return getButtonFiles(fullPath);
+        const nested = await getButtonFiles(fullPath);
+        files.push(...nested);
+        continue;
       }
 
-      if (entry.isFile() && entry.name.endsWith(".js")) {
-        return fullPath;
+      if (entry.isFile() && path.extname(entry.name).toLowerCase() === ".js") {
+        files.push(fullPath);
       }
+    }
 
-      return [];
-    })
-  );
-
-  return files.flat();
+    return files;
+  } catch (err) {
+    Logger.error(`[BUTTON] Falha ao ler diretório ${dir}:`, err);
+    return [];
+  }
 }
 
-/**
- * Carrega todos os botões e registra no client.
- * @param {import("discord.js").Client} client
- */
+function safeRequire(filePath) {
+  try {
+    const resolved = require.resolve(filePath);
+    delete require.cache[resolved];
+    return require(resolved);
+  } catch (err) {
+    Logger.error(`[BUTTON] Falha ao requerer ${path.basename(filePath)}:`, err);
+    return undefined;
+  }
+}
+
 async function loadButtonInteractions(client) {
   const start = Date.now();
 
-  const buttonsPath = path.join(
-    __dirname,
-    "../../../src/interactions/buttons"
-  );
+  const buttonsPath = path.join(__dirname, "../../../src/interactions/buttons");
 
   if (!client.buttons) client.buttons = new Map();
 
   try {
     const files = await getButtonFiles(buttonsPath);
 
-    if (files.length === 0) {
+    if (!files || files.length === 0) {
       Logger.warn("[BUTTON] Nenhum botão encontrado.");
       return;
     }
@@ -56,39 +61,32 @@ async function loadButtonInteractions(client) {
 
     for (const filePath of files) {
       try {
-        delete require.cache[require.resolve(filePath)];
+        const raw = safeRequire(filePath);
+        if (!raw) {
+          skipped++;
+          continue;
+        }
 
-        const raw = require(filePath);
-        const button = raw?.default || raw;
+        const button = raw?.default ?? raw;
 
         if (!button?.customId || typeof button?.execute !== "function") {
-          Logger.warn(
-            `[BUTTON] Ignorado (estrutura inválida): ${path.basename(filePath)}`
-          );
+          Logger.warn(`[BUTTON] Ignorado (estrutura inválida): ${path.basename(filePath)}`);
           skipped++;
           continue;
         }
 
         client.buttons.set(button.customId, button);
-
         Logger.success(`[BUTTON] Carregado: ${button.customId}`);
         loaded++;
       } catch (err) {
-        Logger.error(
-          `[BUTTON] Falha ao carregar ${path.basename(filePath)}\n${err.stack || err.message}`
-        );
+        Logger.error(`[BUTTON] Falha ao processar ${path.basename(filePath)}:`, err);
       }
     }
 
     const duration = Date.now() - start;
-
-    Logger.info(
-      `[BUTTON] Concluído: ${loaded} carregados | ${skipped} ignorados | ${duration}ms`
-    );
+    Logger.info(`[BUTTON] Concluído: ${loaded} carregados | ${skipped} ignorados | ${duration}ms`);
   } catch (err) {
-    Logger.error(
-      `[BUTTON] Falha crítica ao ler diretório de botões\n${err.stack || err.message}`
-    );
+    Logger.error("[BUTTON] Falha crítica ao carregar botões:", err);
   }
 }
 
