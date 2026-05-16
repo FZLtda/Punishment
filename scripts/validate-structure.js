@@ -2,7 +2,7 @@
 
 const fs = require("node:fs/promises");
 const path = require("node:path");
-const Logger = require("@logger");
+const Logger = require(path.join(__dirname, "../src/logger"));
 
 async function findFiles(dir) {
   try {
