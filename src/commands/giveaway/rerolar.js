@@ -1,9 +1,12 @@
 "use strict";
 
-const { EmbedBuilder, PermissionsBitField } = require("discord.js");
-const { sendWarning } = require("@embeds/embedWarning");
+const { 
+  EmbedBuilder, 
+  PermissionsBitField 
+} = require("discord.js");
+const { sendWarning } = require("@embeds");
 const { colors } = require("@config");
-const Giveaway = require("@models/Giveaway");
+const { Giveaway } = require("@models");
 const logger = require("@logger");
 
 module.exports = {
@@ -18,7 +21,6 @@ module.exports = {
   async execute(message, args) {
     const msgId = args[0];
 
-    /* Validação do ID */
     if (!msgId || !/^\d{17,20}$/.test(msgId)) {
       logger.warn(
         `[REROLL] ID inválido fornecido por ${message.author.tag} (${message.author.id})`
@@ -30,7 +32,6 @@ module.exports = {
       );
     }
 
-    /* Busca por servidor */
     let sorteio;
     try {
       sorteio = await Giveaway.findOne({
@@ -60,7 +61,6 @@ module.exports = {
       );
     }
 
-    /* Autorização */
     const isCreator = sorteio.createdBy === message.author.id;
     const isAdmin = message.member.permissions.has(
       PermissionsBitField.Flags.Administrator
@@ -77,7 +77,6 @@ module.exports = {
       );
     }
 
-    /* Processo de reroll */
     const participantes = Array.isArray(sorteio.participants)
       ? [...sorteio.participants]
       : [];
@@ -98,7 +97,6 @@ module.exports = {
       if (escolhido) ganhadores.push(`<@${escolhido}>`);
     }
 
-    /* Pluralização */
     const winnersLabel =
       ganhadores.length === 1 ? "Novo ganhador" : "Novos ganhadores";
 
