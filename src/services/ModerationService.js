@@ -4,7 +4,7 @@ const { sendModLog } = require("@modules/modlog");
 const { createMuteEmbed } = require("@embeds");
 const { formatVerboseDuration } = require("@utils/timeUtils");
 
-class ModerationService {
+class ChannelMuteService {
   static async applyMute({ target, moderator, durationMs, rawTime, reason, channel }) {
     
     await target.timeout(durationMs, reason);
@@ -38,4 +38,4 @@ class ModerationService {
   }
 }
 
-module.exports = ModerationService;
+module.exports = ChannelMuteService;
