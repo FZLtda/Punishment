@@ -2,8 +2,13 @@
 
 const { EmbedBuilder } = require("discord.js");
 const Logger = require("@logger");
-const { colors, emojis, channels, bot } = require("@config");
-const { sendWarning } = require("@embeds/embedWarning");
+const { 
+  colors, 
+  emojis, 
+  channels, 
+  bot 
+} = require("@config");
+const { sendWarning } = require("@embeds");
 
 module.exports = {
   customId: "suggestModal",
@@ -14,18 +19,17 @@ module.exports = {
    * @param {import('discord.js').Client} client
    */
   async execute(interaction, client) {
-    const title = interaction.fields.getTextInputValue("suggestTitle");
     const description = interaction.fields.getTextInputValue("suggestDescription");
 
-    Logger.info(`[modal:suggestModal] Sugestão recebida de ${interaction.user.tag}: ${title}`);
+    Logger.info(`[modal:suggestModal] Nova sugestão enviada por ${interaction.user.tag}.`);
 
     const embed = new EmbedBuilder()
       .setColor(colors.green)
-      .setTitle("📢 Nova Sugestão")
+      .setTitle(`${bot.name} - Sugestão`)
+      .setDescription("Uma nova sugestão foi enviada pela comunidade.")
       .addFields(
         { name: "👤 Autor", value: `${interaction.user}`, inline: true },
-        { name: "📌 Título", value: title || "Não informado", inline: true },
-        { name: "📝 Descrição", value: description || "Não informado" }
+        { name: "📝 Sugestão", value: description || "Não informado" }
       )
       .setFooter({
         text: bot.name,
