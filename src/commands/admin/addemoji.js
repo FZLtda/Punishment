@@ -21,7 +21,7 @@ module.exports = {
     const [nome, url] = args;
 
     if (!nome || !url)
-      return sendWarning(message, "Uso correto: `addemoji <nome> <link da imagem>`");
+      return sendWarning(message, "Como usar: addemoji <nome> <link da imagem>");
 
     if (!isValidURL(url))
       return sendWarning(
@@ -34,7 +34,7 @@ module.exports = {
     if (!permitidas.includes(extensao))
       return sendWarning(
         message,
-        "Formato inválido. Use apenas: `.png`, `.jpg`, `.jpeg`, ou `.gif`."
+        "Formato inválido. Use apenas: .png, .jpg, .jpeg, ou .gif."
       );
 
     const animated = extensao === ".gif";
