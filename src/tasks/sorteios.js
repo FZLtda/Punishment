@@ -1,15 +1,9 @@
 "use strict";
 
-const Giveaway = require("@models/Giveaway");
+const { Giveaway } = require("@models");
 const { finalizarSorteio } = require("@utils/sorteios");
 const Logger = require("@logger");
 
-/**
- * Finaliza sorteios vencidos automaticamente.
- * Protegido contra flood quando a mensagem do sorteio não existe mais.
- *
- * @param {import('discord.js').Client} client
- */
 module.exports = (client) => {
   setInterval(async () => {
     const agora = new Date();
