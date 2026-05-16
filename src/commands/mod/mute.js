@@ -20,7 +20,7 @@ module.exports = {
     
     const targetId = message.mentions.members.first()?.id || args[0];
     if (!targetId) {
-      return sendWarning(message, "Por favor, mencione um membro ou forneça o ID válido.");
+      return sendWarning(message, "Mencione um usuário válido para continuar.");
     }
 
     const membro = await message.guild.members.fetch(targetId).catch(() => null);
