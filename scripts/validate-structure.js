@@ -2,7 +2,28 @@
 
 const fs = require("node:fs/promises");
 const path = require("node:path");
-const Logger = require(path.join(__dirname, "../src/logger"));
+
+try {
+  require("module-alias/register");
+} catch (err) {
+
+}
+
+let Logger;
+try {
+  Logger = require("@logger");
+} catch (err) {
+  try {
+    Logger = require(path.join(__dirname, "../src/logger"));
+  } catch (err2) {
+    Logger = {
+      info: (...args) => console.log("[logger][info]", ...args),
+      warn: (...args) => console.warn("[logger][warn]", ...args),
+      error: (...args) => console.error("[logger][error]", ...args),
+    };
+    Logger.error("[validate-structure] Failed to load @logger and fallback logger. Errors:", err, err2);
+  }
+}
 
 async function findFiles(dir) {
   try {
