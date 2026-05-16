@@ -8,7 +8,14 @@ const traverse = require("@babel/traverse").default || require("@babel/traverse"
 function parseFileToAST(code) {
   return parser.parse(code, {
     sourceType: "unambiguous",
-    plugins: ["jsx", "classProperties", "dynamicImport", "optionalChaining", "nullishCoalescingOperator"],
+    plugins: [
+      "jsx",
+      "classProperties",
+      "dynamicImport",
+      "optionalChaining",
+      "nullishCoalescingOperator",
+      "topLevelAwait",
+    ],
   });
 }
 
@@ -30,6 +37,88 @@ async function findFiles(dir) {
   }
 }
 
+/**
+ * Summarize an AST node into a small shape descriptor used by validators.
+ * Recognizes:
+ *  - object literals (ObjectExpression) -> { type: "object", props: [...] }
+ *  - builders/new expressions (NewExpression / CallExpression wrapping NewExpression) -> { type: "builder", callee: "Name" }
+ *  - functions -> { type: "function" }
+ *  - literals -> { type: "literal", value }
+ *  - identifiers -> { type: "identifier", name }
+ *  - fallback -> { type: "unknown" }
+ */
+function summarizeNode(node) {
+  if (!node) return { type: "unknown" };
+
+  // Object literal: module.exports = { ... }
+  if (node.type === "ObjectExpression") {
+    const props = node.properties
+      .filter((p) => p && p.key && (p.key.name || (p.key.value && String(p.key.value))))
+      .map((p) => (p.key && p.key.name ? p.key.name : String(p.key && p.key.value)));
+    return { type: "object", props };
+  }
+
+  // New expression: new SlashCommandBuilder()
+  if (node.type === "NewExpression") {
+    const calleeName = node.callee && node.callee.name ? node.callee.name : null;
+    return { type: "builder", callee: calleeName || "unknown" };
+  }
+
+  // Call expression that may wrap a NewExpression, e.g.:
+  // new SlashCommandBuilder().setName(...).setDescription(...)
+  if (node.type === "CallExpression") {
+    const callee = node.callee;
+    // direct chained call: MemberExpression whose object is NewExpression
+    if (callee && callee.type === "MemberExpression") {
+      const obj = callee.object;
+      if (obj && obj.type === "NewExpression") {
+        const calleeName = obj.callee && obj.callee.name ? obj.callee.name : null;
+        return { type: "builder", callee: calleeName || "unknown" };
+      }
+      // nested chained calls: object is CallExpression wrapping MemberExpression -> NewExpression
+      if (obj && obj.type === "CallExpression") {
+        // try to find NewExpression inside nested structure
+        let inner = obj;
+        while (inner && inner.type === "CallExpression") {
+          const innerCallee = inner.callee;
+          if (innerCallee && innerCallee.type === "MemberExpression") {
+            const innerObj = innerCallee.object;
+            if (innerObj && innerObj.type === "NewExpression") {
+              const calleeName = innerObj.callee && innerObj.callee.name ? innerObj.callee.name : null;
+              return { type: "builder", callee: calleeName || "unknown" };
+            }
+            inner = innerObj;
+          } else {
+            break;
+          }
+        }
+      }
+    }
+    // direct call of a NewExpression (rare): (new X)()
+    if (callee && callee.type === "NewExpression") {
+      const calleeName = callee.callee && callee.callee.name ? callee.callee.name : null;
+      return { type: "builder", callee: calleeName || "unknown" };
+    }
+  }
+
+  // Functions
+  if (["FunctionExpression", "ArrowFunctionExpression", "FunctionDeclaration"].includes(node.type)) {
+    return { type: "function" };
+  }
+
+  // Literals
+  if (["StringLiteral", "NumericLiteral", "BooleanLiteral", "Literal"].includes(node.type)) {
+    return { type: "literal", value: node.value };
+  }
+
+  // Identifier (e.g., exported variable reference)
+  if (node.type === "Identifier") {
+    return { type: "identifier", name: node.name };
+  }
+
+  return { type: node.type || "unknown" };
+}
+
 function analyzeExports(ast) {
   const result = { exports: { default: null, named: {} } };
 
@@ -38,6 +127,7 @@ function analyzeExports(ast) {
       const left = path.node.left;
       const right = path.node.right;
 
+      // module.exports = ...
       if (
         left.type === "MemberExpression" &&
         left.object.type === "Identifier" &&
@@ -48,6 +138,7 @@ function analyzeExports(ast) {
         result.exports.default = summarizeNode(right);
       }
 
+      // exports.foo = ...
       if (
         left.type === "MemberExpression" &&
         left.object.type === "Identifier" &&
@@ -55,13 +146,6 @@ function analyzeExports(ast) {
         left.property.type === "Identifier"
       ) {
         result.exports.named[left.property.name] = summarizeNode(right);
-      }
-    },
-
-    ExpressionStatement(path) {
-      const expr = path.node.expression;
-      if (expr && expr.type === "AssignmentExpression") {
-        // handled above
       }
     },
 
@@ -95,26 +179,6 @@ function analyzeExports(ast) {
   return result;
 }
 
-function summarizeNode(node) {
-  if (!node) return { type: "unknown" };
-  if (node.type === "ObjectExpression") {
-    const props = node.properties
-      .filter((p) => p.key && (p.key.name || (p.key.value && String(p.key.value))))
-      .map((p) => (p.key.name ? p.key.name : String(p.key.value)));
-    return { type: "object", props };
-  }
-  if (node.type === "FunctionExpression" || node.type === "ArrowFunctionExpression" || node.type === "FunctionDeclaration") {
-    return { type: "function" };
-  }
-  if (node.type === "Literal" || node.type === "StringLiteral" || node.type === "NumericLiteral" || node.type === "BooleanLiteral") {
-    return { type: "literal", value: node.value };
-  }
-  if (node.type === "Identifier") {
-    return { type: "identifier", name: node.name };
-  }
-  return { type: node.type || "unknown" };
-}
-
 function checkShapeForType(filePath, exportsInfo, check) {
   try {
     return check.validator(exportsInfo);
@@ -124,6 +188,10 @@ function checkShapeForType(filePath, exportsInfo, check) {
 }
 
 function defaultValidators() {
+  // helper to detect builder/new/object for a node descriptor
+  const isDataLike = (nodeDesc) =>
+    !!nodeDesc && (nodeDesc.type === "object" || nodeDesc.type === "builder" || nodeDesc.type === "new");
+
   return [
     {
       dirSuffix: "commands",
@@ -142,13 +210,26 @@ function defaultValidators() {
       dirSuffix: path.join("commands", "slash"),
       type: "slash command",
       validator: (exportsInfo) => {
-        // expect data and execute
-        const obj = exportsInfo.exports.default?.type === "object" ? exportsInfo.exports.default : null;
+        // Accept object with data+execute OR named data + execute OR builder/new used directly in data property
+        const def = exportsInfo.exports.default;
         const named = exportsInfo.exports.named;
-        const ok =
-          (obj && obj.props && obj.props.includes("data") && obj.props.includes("execute")) ||
-          (named.data && named.execute) ||
+
+        const defIsObjectWithData =
+          def && def.type === "object" && def.props && def.props.includes("data") && def.props.includes("execute");
+
+        const namedDataIsOk =
+          (named.data && (named.data.type === "object" || named.data.type === "builder" || named.data.type === "new") && named.execute) ||
           (named.default && named.default.type === "object" && named.default.props && named.default.props.includes("data") && named.default.props.includes("execute"));
+
+        // If default export is an object, we already checked props above.
+        // If default export itself is a builder/new (rare), accept it as data only if there's also an execute export (named or default object)
+        const defIsBuilder = def && (def.type === "builder" || def.type === "new");
+
+        const ok =
+          defIsObjectWithData ||
+          namedDataIsOk ||
+          (defIsBuilder && (named.execute || (def.type === "object" && def.props && def.props.includes("execute"))));
+
         return { ok: !!ok, reason: ok ? undefined : "missing data or execute" };
       },
     },
