@@ -16,7 +16,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "clean": "rm -rf logs/*.log"
+    "clean": "rm -rf logs/*.log",
+    "validate-structure": "node scripts/validate-structure.js"
   },
   "keywords": [
     "discord",
