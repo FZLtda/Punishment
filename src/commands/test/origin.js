@@ -5,7 +5,7 @@ const util = require("util");
 const execAsync = util.promisify(exec);
 const { EmbedBuilder } = require("discord.js");
 const { bot, colors } = require("@config");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 
 module.exports = {
   name: "origin",

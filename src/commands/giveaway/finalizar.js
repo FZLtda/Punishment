@@ -1,9 +1,9 @@
 "use strict";
 
 const { PermissionsBitField } = require("discord.js");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 const { finalizarSorteio } = require("@utils/sorteios");
-const Giveaway = require("@models/Giveaway");
+const { Giveaway } = require("@models");
 const { emojis } = require("@config");
 const logger = require("@logger");
 
@@ -19,7 +19,6 @@ module.exports = {
   async execute(message, args) {
     const messageId = args[0];
 
-    /* Validação do ID*/
     if (!messageId || !/^\d{17,20}$/.test(messageId)) {
       logger.warn(
         `[FINALIZAR] ID inválido fornecido por ${message.author.tag} (${message.author.id})`
@@ -32,7 +31,6 @@ module.exports = {
     }
 
     try {
-      /* Busca segura por servidor */
       const giveaway = await Giveaway.findOne({
         guildId: message.guild.id,
         messageId,
@@ -50,7 +48,6 @@ module.exports = {
         );
       }
 
-      /* Autorização */
       const isCreator = giveaway.createdBy === message.author.id;
       const isAdmin = message.member.permissions.has(
         PermissionsBitField.Flags.Administrator
@@ -67,10 +64,8 @@ module.exports = {
         );
       }
 
-      /* Finalização */
       await finalizarSorteio(giveaway, message.client);
 
-      /* Confirmação */
       if (message.channel.id !== giveaway.channelId) {
         await message.channel.send({
           content: `${emojis.successEmoji} O sorteio **${giveaway.prize}** foi finalizado com sucesso.`,

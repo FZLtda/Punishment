@@ -2,8 +2,8 @@
 
 const { EmbedBuilder } = require("discord.js");
 const { colors, emojis } = require("@config");
-const { sendWarning } = require("@embeds/embedWarning");
-const { translateText } = require("@services/deeplService");
+const { sendWarning } = require("@embeds");
+const { translateText } = require("@services");
 
 module.exports = {
   name: "t",
@@ -13,12 +13,6 @@ module.exports = {
   botPermissions: ["SendMessages"],
   deleteMessage: true,
 
-  /**
-   * Executa o comando de tradução.
-   * @param {import('discord.js').Message} message
-   * @param {string[]} args
-   */
-  
   async execute(message, args) {
     const replied = message.reference?.messageId
       ? await message.channel.messages.fetch(message.reference.messageId).catch(() => null)

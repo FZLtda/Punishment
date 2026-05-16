@@ -1,17 +1,11 @@
 "use strict";
 
-const PendingDonor = require("@models/PendingDonor");
+const { PendingDonor } = require("@models");
 const logger = require("@logger");
 
 const INTERVALO = 60_000;
 const CARGO_DOADOR_ID = process.env.CARGO_DOADOR_ID;
 const GUILD_ID = process.env.GUILD_ID;
-
-/**
- * Tarefa que verifica doadores pendentes e atribui o cargo se já estiverem no servidor.
- * Executada automaticamente em intervalos definidos.
- * @param {import('discord.js').Client} client
- */
 
 module.exports = function iniciarAtribuicaoDeDoadores(client) {
   setInterval(async () => {

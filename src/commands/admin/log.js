@@ -5,7 +5,7 @@ const {
   EmbedBuilder, 
   PermissionsBitField,
 } = require("discord.js");
-const GuildSettings = require("@models/GuildSettings");
+const { GuildSettings } = require("@models");
 const { emojis, colors } = require("@config");
 const { sendWarning } = require("@embeds");
 
