@@ -2,12 +2,27 @@
 
 const fs = require("node:fs/promises");
 const path = require("node:path");
+const Module = require("module");
 
 try {
   require("module-alias/register");
 } catch (err) {
   void err;
 }
+
+const originalLoad = Module._load;
+Module._load = function (request, parent, isMain) {
+  if (request === "mercadopago") {
+    return {
+      configure: () => {},
+      payment: {
+        create: async () => ({ status: "stub" }),
+      },
+      // add other expected members if your code uses them
+    };
+  }
+  return originalLoad.apply(this, arguments);
+};
 
 let Logger;
 try {
@@ -87,6 +102,8 @@ async function validate() {
       }
     }
   }
+
+  Module._load = originalLoad;
 
   if (failed) {
     Logger.error("[validate-structure] Validation failed. See errors above.");
