@@ -98,7 +98,7 @@ async function loadCommands(client) {
     const duration = Date.now() - start;
     Logger.info(`[loadCommands] Concluído: ${loaded} carregados | ${skipped} ignorados | ${duration}ms`);
   } catch (err) {
-    Logger.error(`[loadCommands] Falha crítica ao ler diretório de comandos:`, err);
+    Logger.error("[loadCommands] Falha crítica ao ler diretório de comandos:", err);
   }
 }
 
