@@ -24,7 +24,7 @@ module.exports = {
     if (!targetId) {
       return sendWarning(
         message,
-        "Você precisa mencionar um usuário ou fornecer um ID válido."
+        "Mencione um usuário válido para continuar."
       );
     }
 
