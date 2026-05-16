@@ -3,7 +3,7 @@
 const { sendWarning } = require("@embeds");
 const { checkMemberGuard } = require("@permissions");
 const { convertToMilliseconds } = require("@utils/timeUtils"); 
-const { ModerationService } = require("@services");
+const { ChannelMuteService } = require("@services");
 
 module.exports = {
   name: "mute",
@@ -50,7 +50,7 @@ module.exports = {
     }
 
     try {
-      await ModerationService.applyMute({
+      await ChannelMuteService.applyMute({
         target: membro,
         moderator: message.author,
         durationMs: duracaoMs,
