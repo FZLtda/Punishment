@@ -6,7 +6,7 @@ const path = require("node:path");
 try {
   require("module-alias/register");
 } catch (err) {
-
+  void err;
 }
 
 let Logger;
