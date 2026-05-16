@@ -41,19 +41,6 @@ function safeRequire(filePath) {
   }
 }
 
-async function safeExecute(fn, interaction, client, type) {
-  if (typeof fn !== "function") {
-    Logger.warn(`[${type}] Handler inválido ou ausente para ${interaction?.customId ?? interaction?.commandName ?? "unknown"}`);
-    return;
-  }
-
-  try {
-    await fn(interaction, client);
-  } catch (err) {
-    Logger.error(`[${type}] Erro na execução:`, err);
-  }
-}
-
 async function loadButtonInteractions(client) {
   const start = Date.now();
 
@@ -99,7 +86,7 @@ async function loadButtonInteractions(client) {
     const duration = Date.now() - start;
     Logger.info(`[BUTTON] Concluído: ${loaded} carregados | ${skipped} ignorados | ${duration}ms`);
   } catch (err) {
-    Logger.error(`[BUTTON] Falha crítica ao carregar botões:`, err);
+    Logger.error("[BUTTON] Falha crítica ao carregar botões:", err);
   }
 }
 
