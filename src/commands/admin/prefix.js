@@ -1,6 +1,6 @@
 "use strict";
 
-const GuildConfig = require("@models/GuildConfig");
+const { GuildConfig } = require("@models");
 const { sendWarning } = require("@embeds");
 const { emojis } = require("@config");
 
