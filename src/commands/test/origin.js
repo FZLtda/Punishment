@@ -5,9 +5,9 @@ const util = require("util");
 const execAsync = util.promisify(exec);
 const { EmbedBuilder } = require("discord.js");
 const { bot, colors } = require("@config");
-const { sendWarning } = require("@embeds/embedWarning");
+const { sendWarning } = require("@embeds");
 
-module.exports = {
+module.exports = 
   name: "origin",
   aliases: ["update", "pull"],
   description: "Atualiza o código do bot puxando diretamente do repositório GitHub.",
