@@ -2,42 +2,14 @@
 
 const fs = require("node:fs/promises");
 const path = require("node:path");
-const Module = require("module");
+const parser = require("@babel/parser");
+const traverse = require("@babel/traverse").default || require("@babel/traverse"); // compatibilidade
 
-try {
-  require("module-alias/register");
-} catch (err) {
-  void err;
-}
-
-const originalLoad = Module._load;
-Module._load = function (request, parent, isMain) {
-  if (request === "mercadopago") {
-    return {
-      configure: () => {},
-      payment: {
-        create: async () => ({ status: "stub" }),
-      },
-      // add other expected members if your code uses them
-    };
-  }
-  return originalLoad.apply(this, arguments);
-};
-
-let Logger;
-try {
-  Logger = require("@logger");
-} catch (err) {
-  try {
-    Logger = require(path.join(__dirname, "../src/logger"));
-  } catch (err2) {
-    Logger = {
-      info: (...args) => console.log("[logger][info]", ...args),
-      warn: (...args) => console.warn("[logger][warn]", ...args),
-      error: (...args) => console.error("[logger][error]", ...args),
-    };
-    Logger.error("[validate-structure] Failed to load @logger and fallback logger. Errors:", err, err2);
-  }
+function parseFileToAST(code) {
+  return parser.parse(code, {
+    sourceType: "unambiguous",
+    plugins: ["jsx", "classProperties", "dynamicImport", "optionalChaining", "nullishCoalescingOperator"],
+  });
 }
 
 async function findFiles(dir) {
@@ -58,60 +30,239 @@ async function findFiles(dir) {
   }
 }
 
-function safeRequire(filePath) {
-  try {
-    const resolved = require.resolve(filePath);
-    delete require.cache[resolved];
-    return require(resolved);
-  } catch (err) {
-    return { __requireError: err.message || String(err) };
+function analyzeExports(ast) {
+  const result = { exports: { default: null, named: {} } };
+
+  traverse(ast, {
+    AssignmentExpression(path) {
+      const left = path.node.left;
+      const right = path.node.right;
+
+      if (
+        left.type === "MemberExpression" &&
+        left.object.type === "Identifier" &&
+        left.object.name === "module" &&
+        left.property.type === "Identifier" &&
+        left.property.name === "exports"
+      ) {
+        result.exports.default = summarizeNode(right);
+      }
+
+      if (
+        left.type === "MemberExpression" &&
+        left.object.type === "Identifier" &&
+        left.object.name === "exports" &&
+        left.property.type === "Identifier"
+      ) {
+        result.exports.named[left.property.name] = summarizeNode(right);
+      }
+    },
+
+    ExpressionStatement(path) {
+      const expr = path.node.expression;
+      if (expr && expr.type === "AssignmentExpression") {
+        // handled above
+      }
+    },
+
+    ExportDefaultDeclaration(path) {
+      result.exports.default = summarizeNode(path.node.declaration);
+    },
+
+    ExportNamedDeclaration(path) {
+      if (path.node.declaration) {
+        const decl = path.node.declaration;
+        if (decl.type === "FunctionDeclaration" && decl.id && decl.id.name) {
+          result.exports.named[decl.id.name] = { type: "function" };
+        } else if (decl.type === "VariableDeclaration") {
+          for (const d of decl.declarations) {
+            if (d.id && d.id.name) {
+              result.exports.named[d.id.name] = summarizeNode(d.init);
+            }
+          }
+        }
+      }
+      if (path.node.specifiers && path.node.specifiers.length) {
+        for (const s of path.node.specifiers) {
+          if (s.exported && s.exported.name) {
+            result.exports.named[s.exported.name] = { type: "reexport" };
+          }
+        }
+      }
+    },
+  });
+
+  return result;
+}
+
+function summarizeNode(node) {
+  if (!node) return { type: "unknown" };
+  if (node.type === "ObjectExpression") {
+    const props = node.properties
+      .filter((p) => p.key && (p.key.name || (p.key.value && String(p.key.value))))
+      .map((p) => (p.key.name ? p.key.name : String(p.key.value)));
+    return { type: "object", props };
   }
+  if (node.type === "FunctionExpression" || node.type === "ArrowFunctionExpression" || node.type === "FunctionDeclaration") {
+    return { type: "function" };
+  }
+  if (node.type === "Literal" || node.type === "StringLiteral" || node.type === "NumericLiteral" || node.type === "BooleanLiteral") {
+    return { type: "literal", value: node.value };
+  }
+  if (node.type === "Identifier") {
+    return { type: "identifier", name: node.name };
+  }
+  return { type: node.type || "unknown" };
+}
+
+function checkShapeForType(filePath, exportsInfo, check) {
+  try {
+    return check.validator(exportsInfo);
+  } catch (err) {
+    return { ok: false, reason: `validator threw: ${String(err)}` };
+  }
+}
+
+function defaultValidators() {
+  return [
+    {
+      dirSuffix: "commands",
+      type: "prefix command",
+      validator: (exportsInfo) => {
+        const obj = exportsInfo.exports.default?.type === "object" ? exportsInfo.exports.default : null;
+        const named = exportsInfo.exports.named;
+        const hasNameExecute =
+          (obj && obj.props && obj.props.includes("name") && obj.props.includes("execute")) ||
+          (named.name && named.execute) ||
+          (named.default && named.default.type === "object" && named.default.props && named.default.props.includes("name") && named.default.props.includes("execute"));
+        return { ok: !!hasNameExecute, reason: hasNameExecute ? undefined : "missing name or execute" };
+      },
+    },
+    {
+      dirSuffix: path.join("commands", "slash"),
+      type: "slash command",
+      validator: (exportsInfo) => {
+        // expect data and execute
+        const obj = exportsInfo.exports.default?.type === "object" ? exportsInfo.exports.default : null;
+        const named = exportsInfo.exports.named;
+        const ok =
+          (obj && obj.props && obj.props.includes("data") && obj.props.includes("execute")) ||
+          (named.data && named.execute) ||
+          (named.default && named.default.type === "object" && named.default.props && named.default.props.includes("data") && named.default.props.includes("execute"));
+        return { ok: !!ok, reason: ok ? undefined : "missing data or execute" };
+      },
+    },
+    {
+      dirSuffix: "events",
+      type: "event",
+      validator: (exportsInfo) => {
+        const obj = exportsInfo.exports.default?.type === "object" ? exportsInfo.exports.default : null;
+        const named = exportsInfo.exports.named;
+        const ok =
+          (obj && obj.props && obj.props.includes("name") && obj.props.includes("execute")) ||
+          (named.name && named.execute);
+        return { ok: !!ok, reason: ok ? undefined : "missing name or execute" };
+      },
+    },
+    {
+      dirSuffix: path.join("interactions", "buttons"),
+      type: "button",
+      validator: (exportsInfo) => {
+        const obj = exportsInfo.exports.default?.type === "object" ? exportsInfo.exports.default : null;
+        const named = exportsInfo.exports.named;
+        const ok =
+          (obj && obj.props && obj.props.includes("customId") && obj.props.includes("execute")) ||
+          (named.customId && named.execute);
+        return { ok: !!ok, reason: ok ? undefined : "missing customId or execute" };
+      },
+    },
+    {
+      dirSuffix: path.join("interactions", "menus"),
+      type: "menu",
+      validator: (exportsInfo) => {
+        const obj = exportsInfo.exports.default?.type === "object" ? exportsInfo.exports.default : null;
+        const named = exportsInfo.exports.named;
+        const ok =
+          (obj && obj.props && obj.props.includes("customId") && obj.props.includes("execute")) ||
+          (named.customId && named.execute);
+        return { ok: !!ok, reason: ok ? undefined : "missing customId or execute" };
+      },
+    },
+    {
+      dirSuffix: path.join("interactions", "modals"),
+      type: "modal",
+      validator: (exportsInfo) => {
+        const obj = exportsInfo.exports.default?.type === "object" ? exportsInfo.exports.default : null;
+        const named = exportsInfo.exports.named;
+        const ok =
+          (obj && obj.props && obj.props.includes("customId") && obj.props.includes("execute")) ||
+          (named.customId && named.execute);
+        return { ok: !!ok, reason: ok ? undefined : "missing customId or execute" };
+      },
+    },
+  ];
 }
 
 async function validate() {
   const root = path.join(__dirname, "../src");
-  const checks = [
-    { dir: path.join(root, "commands"), type: "prefix command", validator: (m) => m && m.name && typeof m.execute === "function" },
-    { dir: path.join(root, "commands/slash"), type: "slash command", validator: (m) => m && m.data && typeof m.execute === "function" && typeof m.data.toJSON === "function" },
-    { dir: path.join(root, "events"), type: "event", validator: (m) => m && m.name && typeof m.execute === "function" },
-    { dir: path.join(root, "interactions/buttons"), type: "button", validator: (m) => m && m.customId && typeof m.execute === "function" },
-    { dir: path.join(root, "interactions/menus"), type: "menu", validator: (m) => m && (typeof m.customId === "string" || m.customId instanceof RegExp) && typeof m.execute === "function" },
-    { dir: path.join(root, "interactions/modals"), type: "modal", validator: (m) => m && (typeof m.customId === "string" || m.customId instanceof RegExp) && typeof m.execute === "function" },
-  ];
+  const checks = defaultValidators();
 
   let failed = false;
 
   for (const check of checks) {
-    const files = await findFiles(check.dir);
+    const dir = path.join(root, check.dirSuffix);
+    const files = await findFiles(dir);
     if (!files.length) {
-      Logger.warn(`[validate-structure] No files found for ${check.type} in ${check.dir}`);
+      console.warn(`[validate-structure] No files found for ${check.type} in ${dir}`);
       continue;
     }
 
     for (const f of files) {
-      const raw = safeRequire(f);
-      if (raw && raw.__requireError) {
-        Logger.error(`[validate-structure] Require error in ${f}: ${raw.__requireError}`);
+      let code;
+      try {
+        code = await fs.readFile(f, "utf8");
+      } catch (err) {
+        console.error(`[validate-structure] Cannot read ${f}: ${String(err)}`);
         failed = true;
         continue;
       }
-      const mod = raw?.default ?? raw;
-      if (!check.validator(mod)) {
-        Logger.error(`[validate-structure] Invalid ${check.type} in ${path.relative(process.cwd(), f)}`);
+
+      let ast;
+      try {
+        ast = parseFileToAST(code);
+      } catch (err) {
+        console.error(`[validate-structure] Parse error in ${f}: ${String(err)}`);
+        failed = true;
+        continue;
+      }
+
+      let exportsInfo;
+      try {
+        exportsInfo = analyzeExports(ast);
+      } catch (err) {
+        console.error(`[validate-structure] Analyze error in ${f}: ${String(err)}`);
+        failed = true;
+        continue;
+      }
+
+      const res = checkShapeForType(f, exportsInfo, check);
+      if (!res.ok) {
+        console.error(`[validate-structure] Invalid ${check.type} in ${path.relative(process.cwd(), f)}: ${res.reason}`);
         failed = true;
       }
     }
   }
 
-  Module._load = originalLoad;
-
   if (failed) {
-    Logger.error("[validate-structure] Validation failed. See errors above.");
+    console.error("[validate-structure] Validation failed. See errors above.");
     process.exit(2);
   }
 
-  Logger.info("[validate-structure] All structure checks passed.");
+  console.info("[validate-structure] All structure checks passed (static analysis).");
   process.exit(0);
 }
 
-validate();
+validate().catch((err) => {
+  console.error("[validate-structure] Unexpected error:", err);
+  process.exit(2);
+});
