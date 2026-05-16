@@ -30,6 +30,7 @@ module.exports = {
       if (!bot?.ownerId) {
         return message.channel.send("```js\nBot config inválida (ownerId não encontrado).\n```");
       }
+
       if (message.author.id !== bot.ownerId) return;
 
       const code = args.join(" ");
@@ -50,7 +51,11 @@ module.exports = {
         author: message.author,
         args,
         console,
-        require: () => { throw new Error("require() está bloqueado no eval."); },
+
+        require: () => {
+          throw new Error("require() está bloqueado no eval.");
+        },
+
         process: undefined,
         Buffer,
         setTimeout,
@@ -68,6 +73,7 @@ module.exports = {
       `);
 
       let result;
+
       try {
         result = await Promise.race([
           script.runInContext(context),
@@ -76,17 +82,18 @@ module.exports = {
           ),
         ]);
       } catch (err) {
-
         const rawMsg = err && err.message ? String(err.message) : String(err);
+
         const token =
           process.env.DISCORD_TOKEN ||
           process.env.TOKEN ||
           bot?.token ||
           "";
 
-        const sanitized = SANITIZE_ERRORS && token
-          ? rawMsg.split(token).join("[TOKEN]")
-          : rawMsg;
+        const sanitized =
+          SANITIZE_ERRORS && token
+            ? rawMsg.split(token).join("[TOKEN]")
+            : rawMsg;
 
         const payload = RAW_ERROR_IN_QUOTES
           ? `"${sanitized}"`
@@ -115,16 +122,23 @@ module.exports = {
           process.env.TOKEN ||
           bot?.token ||
           "";
-        if (token) result = result.split(token).join("[TOKEN]");
+
+        if (token) {
+          result = result.split(token).join("[TOKEN]");
+        }
       }
 
-      if (result.length > 1900) result = result.slice(0, 1900) + "...";
+      if (result.length > 1900) {
+        result = result.slice(0, 1900) + "...";
+      }
 
       Logger.info(`[EVAL] ${message.author.tag} - ${time.toFixed(2)}ms`);
 
+      const output = result;
+
       return message.channel.send(
         "```js\n" +
-          result +
+          output +
           `\n\n⏱ ${time.toFixed(2)}ms` +
           "\n```"
       );
