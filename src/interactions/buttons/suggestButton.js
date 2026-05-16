@@ -15,13 +15,6 @@ module.exports = {
       .setCustomId("suggestModal")
       .setTitle("Nova Sugestão");
 
-    const titleInput = new TextInputBuilder()
-      .setCustomId("suggestTitle")
-      .setLabel("Título da sugestão")
-      .setStyle(TextInputStyle.Short)
-      .setPlaceholder("Ex: Melhorar sistema de logs")
-      .setRequired(true);
-
     const descInput = new TextInputBuilder()
       .setCustomId("suggestDescription")
       .setLabel("Descreva sua sugestão")
@@ -30,7 +23,6 @@ module.exports = {
       .setRequired(true);
 
     modal.addComponents(
-      new ActionRowBuilder().addComponents(titleInput),
       new ActionRowBuilder().addComponents(descInput)
     );
 
