@@ -18,7 +18,7 @@ module.exports = {
     const motivo = args.slice(1).join(" ") || "Não especificado.";
 
     if (!membro) {
-      return sendWarning(message, "Você deve mencionar um usuário válido.");
+      return sendWarning(message, "Mencione um usuário válido para continuar.");
     }
 
     const isValid = await checkMemberGuard(message, membro, "unmute");
