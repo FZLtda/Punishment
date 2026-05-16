@@ -16,7 +16,7 @@ module.exports = {
   deleteMessage: false,
 
   async execute(message, args) {
-    if (messag.author.id !== bot.ownerId) return;
+    if (message.author.id !== bot.ownerId) return;
 
     const branch = args[0] || "main";
     if (!/^[a-zA-Z0-9_-]+$/.test(branch)) {
