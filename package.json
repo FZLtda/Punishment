@@ -18,6 +18,7 @@
     "format": "prettier --write .",
     "clean": "rm -rf logs/*.log",
     "validate-structure": "node scripts/validate-structure.js"
+    "test": "echo \"No tests defined yet\" && exit 0"
   },
   "keywords": [
     "discord",
