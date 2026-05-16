@@ -1,10 +1,14 @@
 "use strict";
 
-const { EmbedBuilder, ChannelType, PermissionFlagsBits } = require("discord.js");
-const { sendWarning } = require("@embeds/embedWarning");
-const { getPrefix } = require("@helpers/prefixManager");
+const { 
+  EmbedBuilder, 
+  ChannelType, 
+  PermissionFlagsBits 
+} = require("discord.js");
+const { sendWarning } = require("@embeds");
+const { getPrefix } = require("@helpers");
 const { colors, emojis } = require("@config");
-const Giveaway = require("@models/Giveaway");
+const { Giveaway } = require("@models");
 const logger = require("@logger");
 const ms = require("ms");
 
@@ -24,7 +28,6 @@ module.exports = {
       return sendWarning(message, `Uso correto: ${prefix}${this.usage}`);
     }
 
-    // Extrai e valida argumentos
     const { canal, premio, vencedores, duracao } = this.parseArgs(message, args);
     if (!premio || isNaN(vencedores) || vencedores <= 0 || !duracao || duracao < 10000) {
       return sendWarning(message, "Parâmetros inválidos. Preencha todos corretamente.");
@@ -36,7 +39,6 @@ module.exports = {
 
     const terminaEm = new Date(Date.now() + duracao);
 
-    // Cria o embed do sorteio
     const embed = this.createEmbed(message, premio, vencedores, terminaEm);
 
     try {
@@ -107,7 +109,6 @@ module.exports = {
     return { canal, premio, vencedores, duracao };
   },
 
-  // Embed do sorteio
   createEmbed(message, premio, vencedores, terminaEm) {
     const plural = vencedores === 1 ? "ganhador" : "ganhadores";
 
