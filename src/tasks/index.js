@@ -1,10 +1,10 @@
 'use strict';
 
 const iniciarAtribuicaoDeDoadores = require('./atribuirDoadoresPendentes');
-const iniciarVerificacaoSorteios = require('./sorteios');
+const iniciarSorteiosTask = require('./sorteios');
 
 module.exports = {
   iniciarAtribuicaoDeDoadores,
-  iniciarVerificacaoSorteios
+  iniciarSorteiosTask
 };
 
