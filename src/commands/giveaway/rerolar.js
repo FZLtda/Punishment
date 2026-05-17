@@ -1,9 +1,10 @@
 "use strict";
 
-const { 
-  EmbedBuilder, 
-  PermissionsBitField 
+const {
+  EmbedBuilder,
+  PermissionsBitField,
 } = require("discord.js");
+
 const { sendWarning } = require("@embeds");
 const { colors } = require("@config");
 const { Giveaway } = require("@models");
@@ -33,6 +34,7 @@ module.exports = {
     }
 
     let sorteio;
+
     try {
       sorteio = await Giveaway.findOne({
         messageId: msgId,
@@ -41,7 +43,9 @@ module.exports = {
       });
     } catch (error) {
       logger.error(
-        `[REROLL] Erro ao buscar sorteio | ID: ${msgId} | ${error.stack || error.message}`
+        `[REROLL] Erro ao buscar sorteio | ID: ${msgId} | ${
+          error.stack || error.message
+        }`
       );
 
       return sendWarning(
@@ -62,6 +66,7 @@ module.exports = {
     }
 
     const isCreator = sorteio.createdBy === message.author.id;
+
     const isAdmin = message.member.permissions.has(
       PermissionsBitField.Flags.Administrator
     );
@@ -89,22 +94,36 @@ module.exports = {
     }
 
     const ganhadores = [];
-    const totalWinners = Math.min(sorteio.winners, participantes.length);
+
+    const totalWinners = Math.min(
+      sorteio.winners,
+      participantes.length
+    );
 
     for (let i = 0; i < totalWinners; i++) {
-      const index = Math.floor(Math.random() * participantes.length);
+      const index = Math.floor(
+        Math.random() * participantes.length
+      );
+
       const escolhido = participantes.splice(index, 1)[0];
-      if (escolhido) ganhadores.push(`<@${escolhido}>`);
+
+      if (escolhido) {
+        ganhadores.push(escolhido);
+      }
     }
 
     const winnersLabel =
-      ganhadores.length === 1 ? "Novo ganhador" : "Novos ganhadores";
+      ganhadores.length === 1
+        ? "Novo ganhador"
+        : "Novos ganhadores";
 
     const rerollEmbed = new EmbedBuilder()
       .setTitle("🔁 Sorteio Rerolado")
       .setDescription(
         `**Prêmio:** ${sorteio.prize}\n` +
-        `**${winnersLabel}:** ${ganhadores.join(", ")}`
+        `**${winnersLabel}:** ${ganhadores
+          .map((id) => `<@${id}>`)
+          .join(", ")}`
       )
       .setColor(colors.red)
       .setTimestamp()
@@ -117,9 +136,24 @@ module.exports = {
       `[REROLL] Sorteio "${sorteio.prize}" (${msgId}) rerolado por ${message.author.tag} (${message.author.id}) | Ganhadores: ${ganhadores.length}`
     );
 
-    return message.channel.send({
+    await message.channel.send({
       embeds: [rerollEmbed],
-      allowedMentions: { parse: [] },
+      allowedMentions: {
+        parse: [],
+      },
     });
+
+    for (const userId of ganhadores) {
+      await message.channel.send({
+        content: `🎉 Parabéns <@${userId}>! Você ganhou o **${sorteio.prize}**!`,
+        allowedMentions: {
+          users: [userId],
+        },
+      }).catch((error) => {
+        logger.warn(
+          `[REROLL] Não foi possível enviar mensagem de parabéns para ${userId}: ${error.message}`
+        );
+      });
+    }
   },
 };
